@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -17,6 +17,7 @@ jobs:
         with:
           channel: 'dev' # or: 'beta' or 'dev'
       - run: flutter channel dev
+      - run: flutter --version
       - run: flutter pub get
       - run: flutter test
       - run: flutter build web
