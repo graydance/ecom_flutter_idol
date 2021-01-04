@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -16,10 +16,10 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'dev' # or: 'beta' or 'dev'
+      - run: flutter config --enable-web
       - run: flutter pub get
       - run: flutter test
-      - run: flutter build apk
-      - run: flutter build web
-      - run: flutter build ipa
+      # - run: flutter build web
+      # - run: flutter build apk
+      - run: flutter build ios --release --no-codesign
       - run: xcodebuild -exportArchive -allowProvisioningUpdates -archivePath ./build/ios/archive/Runner.xcarchive -exportPath ./build/idol.ipa -exportOptionsPlist exportOptions.plist
-
