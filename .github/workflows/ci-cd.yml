@@ -16,8 +16,7 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'dev' # or: 'beta' or 'dev'
-      - run: flutter channel dev
-      - run: flutter --version
+      - run: flutter doctor -v
       - run: flutter pub get
       - run: flutter test
       - run: flutter build web
