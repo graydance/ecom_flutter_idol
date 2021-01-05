@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:idol/api.dart';
+import 'package:idol/net/api.dart';
 import 'package:idol/app.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/middleware.dart';
@@ -26,7 +26,7 @@ void main() {
         .thenAnswer((_) async => Response(
             data: {"code": 100, "msg": 'error test'}, statusCode: 200));
     // throwOnMissingStub(mockDio);
-    setApiIO(mockDio);
+    DioClient.getInstance().setApiIO(mockDio);
 
     final logger = new Logger('redux');
     logger.onRecord
@@ -37,7 +37,7 @@ void main() {
     await tester.pumpWidget(ReduxApp(
       store: Store<AppState>(
         appReducer,
-        initialState: AppState.loading(),
+        initialState: AppState(),
         middleware: [...createStoreMiddleware(), middleware],
       ),
     ));

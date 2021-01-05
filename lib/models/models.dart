@@ -1,3 +1,2 @@
-export './idol.dart';
-export './goods.dart';
+export './dashboard.dart';
 export './appstate.dart';

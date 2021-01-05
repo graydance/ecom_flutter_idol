@@ -1,24 +1,32 @@
-import 'package:idol/api.dart';
-import 'package:idol/store/actions.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:idol/models/dashboard.dart';
+import 'package:idol/net/api.dart';
+import 'package:idol/net/request/base.dart';
+import 'package:idol/store/actions/actions_dashboard.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 
 List<Middleware<AppState>> createStoreMiddleware() {
-  final loadHots = _createLoadHots();
-
   return [
-    TypedMiddleware<AppState, LoadHotsAction>(loadHots),
+    TypedMiddleware<AppState, RequestDashboardDataAction>(
+        requestDashboardDataMiddleware),
   ];
 }
 
-Middleware<AppState> _createLoadHots() {
-  return (Store<AppState> store, action, NextDispatcher next) {
-    api('/hots', {}, '').then(
-      (hots) {
-        store.dispatch(
-            HotsLoadedAction(hots['idols'], hots['goods'], hots['cart']));
-      },
-    ).catchError((err) => store.dispatch(HotsNotLoadedAction(err.toString())));
-    next(action);
-  };
-}
+final Middleware<AppState> requestDashboardDataMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  BaseRequest req = (action as RequestDashboardDataAction).request;
+  DioClient.getInstance()
+      .dashboard('/dashboard', baseRequest: req)
+      .then((data) => {
+            store.dispatch(
+                RequestDashboardDataSuccessAction(Dashboard.fromJson(data)))
+          })
+      .catchError((err) {
+    print(err.toString());
+    EasyLoading.showToast(err.toString());
+    // store.dispatch(
+    //     RequestDashboardDataErrorAction(err is String ? err : '_TypeError'));
+  });
+  next(action);
+};
