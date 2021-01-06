@@ -45,10 +45,9 @@ class DashboardPageState extends State<DashboardPage>
       builder: (context, vm) => Container(
         margin: EdgeInsets.only(top: 30),
         alignment: Alignment.topCenter,
-        color: Color(0xFFF8F8F8),
-        child: vm.dashboard == null
-            ? null
-            : Column(
+        color: Colours.color_F8F8F8,
+        child: vm.dashboard != null
+            ? Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +82,7 @@ class DashboardPageState extends State<DashboardPage>
                           'Lifetime Earnings',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFFA9A9A9),
+                            color: Colours.color_A9A9A9,
                           ),
                         ),
                         Container(
@@ -98,7 +97,7 @@ class DashboardPageState extends State<DashboardPage>
                               _decimalFormat(vm.dashboard.lifetimeEarnings),
                           style: TextStyle(
                             fontSize: 16,
-                            color: Color(0xFFEA5228),
+                            color: Colours.color_EA5228,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -109,17 +108,43 @@ class DashboardPageState extends State<DashboardPage>
                   // Invite frineds to receive extra earnings
                   Container(
                     padding:
-                        EdgeInsets.only(left: 16, top: 4, right: 16, bottom: 4),
+                        EdgeInsets.only(left: 11, top: 4, right: 11, bottom: 4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(13)),
-                      color: Color(0xFFFFD8B1),
+                      color: Colours.color_FFD8B1,
                     ),
-                    child: Text(
-                      'Invite frineds to receive extra earnings! >',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 3, top: 2, right: 3, bottom: 2),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colours.color_EA5228,
+                                Colours.color_FFD8B1,
+                              ],
+                            ),
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(11),
+                                bottomLeft: Radius.circular(11)),
+                          ),
+                          child: Text(
+                            'Early Bird',
+                            style: TextStyle(color: Colors.white, fontSize: 8),
+                          ),
+                        ),
+                        Text(
+                          ' Invite frineds to receive extra earnings! >',
+                          style: TextStyle(
+                            color: Colours.color_555764,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 
@@ -131,10 +156,26 @@ class DashboardPageState extends State<DashboardPage>
                           top: 20, left: 15, right: 15, bottom: 45),
                       decoration: BoxDecoration(
                         color: Colors.white,
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colours.white,
+                            Colours.color_F8F8F8,
+                          ],
+                        ),
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(35),
                           topRight: Radius.circular(35),
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colours.color_10777777,
+                            offset: Offset(0.0, -1.0),
+                            blurRadius: 10.0, // 阴影模糊程度
+                            spreadRadius: 0.0, // 阴影扩散程度
+                          ),
+                        ],
                       ),
                       child: Column(
                         children: [
@@ -172,6 +213,12 @@ class DashboardPageState extends State<DashboardPage>
                     ),
                   ),
                 ],
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(Colours.color_EA5228),
+                ),
               ),
       ),
     );
@@ -179,7 +226,7 @@ class DashboardPageState extends State<DashboardPage>
 
   String _decimalFormat(double money) {
     /// 1,234,567.00
-    return TextUtil.formatComma3(money);
+    return TextUtil.formatDoubleComma3(money);
   }
 }
 
@@ -194,6 +241,7 @@ class RewardsTabView extends StatefulWidget {
 
 class _RewardsTabViewState extends State<RewardsTabView> {
   final List<Reward> list;
+
   _RewardsTabViewState(this.list);
 
   @override
@@ -228,49 +276,49 @@ class _RewardsItemState extends State<RewardsItem> {
 
   _RewardsItemState(this.reward);
 
-  bool _clickable(){
+  bool _clickable() {
     return reward.rewardStatus == 1;
   }
 
-  bool _unClickable(){
+  bool _unClickable() {
     return reward.rewardStatus == 2 || reward.rewardStatus == 3;
   }
 
-  Color _cardBorderColor(){
-    if(_clickable()){
+  Color _cardBorderColor() {
+    if (_clickable()) {
       return Colours.color_EA5228;
     }
-    if(_unClickable()){
+    if (_unClickable()) {
       return Colours.color_EDEDF2;
     }
     return Colours.white;
   }
 
-  Color _buttonBorderColor(){
-    if(_unClickable()){
-      return Colours.color_B1B1B3;
+  Color _buttonBorderColor() {
+    if (_unClickable()) {
+      return Colours.color_EDEDF2;
     }
     return Colours.color_EA5228;
   }
 
-  List<Color> _buttonLinearGradientColor(){
-    if(_clickable()){
+  List<Color> _buttonLinearGradientColor() {
+    if (_clickable()) {
       return [Colours.color_FA812B, Colours.color_F95453];
     }
-    if(reward.rewardStatus == 0){
+    if (reward.rewardStatus == 0) {
       return [Colours.white, Colours.white];
     }
     return [Colours.color_EDEDF2, Colours.color_EDEDF2];
   }
 
-  Color _buttonTextColor(){
-    if(_clickable()){
+  Color _buttonTextColor() {
+    if (_clickable()) {
       return Colours.white;
     }
-    if(reward.rewardStatus == 0){
+    if (reward.rewardStatus == 0) {
       return Colours.color_EA5228;
     }
-    return Colours.color_B1B2B3;
+    return Colours.color_B1B1B3;
   }
 
   @override
@@ -285,7 +333,8 @@ class _RewardsItemState extends State<RewardsItem> {
             width: 1,
           ),
         ),
-        clipBehavior: Clip.antiAlias, // 抗锯齿
+        clipBehavior: Clip.antiAlias,
+        // 抗锯齿
         elevation: 2,
         child: Stack(
           children: [
@@ -294,10 +343,14 @@ class _RewardsItemState extends State<RewardsItem> {
                   EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 10),
               child: Row(
                 children: [
-                  ..._clickable() ? [Container(
-                    margin: EdgeInsets.only(right: 10),
-                    child: Icon(Icons.settings),
-                  ),] : [],
+                  ..._clickable()
+                      ? [
+                          Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: Icon(Icons.settings),
+                          ),
+                        ]
+                      : [],
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -319,7 +372,7 @@ class _RewardsItemState extends State<RewardsItem> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF979AA9),
+                            color: Colours.color_979AA9,
                           ),
                         ),
                       ],
@@ -346,39 +399,44 @@ class _RewardsItemState extends State<RewardsItem> {
                       padding: EdgeInsets.only(
                           left: 14, top: 4, right: 14, bottom: 4),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: _buttonLinearGradientColor()),
-                        border: Border.all(color: _buttonBorderColor(), width: 1)
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: _buttonLinearGradientColor()),
+                          border: Border.all(
+                              color: _buttonBorderColor(), width: 1)),
                     ),
                   ),
                 ],
               ),
             ),
             // 设置左上角Label
-            ..._clickable()  ? [Container(
-              padding: EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFF68A51),
-                    Color(0XFFEA5228),
-                  ],
-                ),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(100)),
-              ),
-              child: Text(
-                'COLLECT',
-                style: TextStyle(color: Colors.white, fontSize: 8),
-              ),
-            ),] : [],
+            ..._clickable()
+                ? [
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 10, top: 5, right: 10, bottom: 5),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFFF68A51),
+                            Color(0XFFEA5228),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(100)),
+                      ),
+                      child: Text(
+                        'COLLECT',
+                        style: TextStyle(color: Colors.white, fontSize: 8),
+                      ),
+                    ),
+                  ]
+                : [],
           ],
         ),
       ),

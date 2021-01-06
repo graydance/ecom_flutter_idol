@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.hookar.idol">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="idol"
         android:icon="@mipmap/ic_launcher">
