@@ -12,7 +12,7 @@ lane :beta do
   sh("security default-keychain -d user")
   sh("security find-identity -v -p codesigning CI")
   gym(
-    output_directory: './build',
+    output_directory: '../build',
     export_options: {
       method: "ad-hoc", # 这可以不指定
       thinning: "<none>"
