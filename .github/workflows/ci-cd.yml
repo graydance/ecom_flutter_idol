@@ -68,6 +68,7 @@ jobs:
             echo "const fans = {\"timestamp\":\"$TIME\", \"version\":\"${GITHUB_SHA::8}\"}" > ${GITHUB_SHA::8}/ver.js
             scp -r ${GITHUB_SHA::8} cnwesleywang@35.203.63.151:/var/www/html/cicd/idol/
             ssh cnwesleywang@35.203.63.151 "ln -s -n -f /var/www/html/cicd/idol/${GITHUB_SHA::8} /var/www/html/cicd/idol/current"
+            ssh cnwesleywang@35.203.63.151  /var/www/html/cicd/upver.sh
           env:
             TIME: "${{ steps.time.outputs.time }}"
 
