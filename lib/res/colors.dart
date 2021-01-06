@@ -48,12 +48,13 @@ class Colours {
   static const Color colorPrimary = white;
   static const Color colorPrimaryVariant = white;
   static const Color colorOnPrimary = color_EA5228;
-
   static const Color color_A9A9A9 = Color(0xFFA9A9A9);
-
   static const Color color_FFD8B1 = Color(0xFFFFD8B1);
-
   static const Color color_FF8B4E = Color(0xFFFF8B4E);
   static const Color color_B1B1B3 = Color(0xFFB1B1B3);
   static const Color color_F1F1F6 = Color(0xFFF1F1F6);
+  static const Color color_FA812B = Color(0xFFFA812B);
+  static const Color color_F95453 = Color(0xFFF95453);
+  static const Color color_EDEDF2 = Color(0xFFEDEDF2);
+  static const Color color_B1B2B3 = Color(0xFFB1B2B3);
 }

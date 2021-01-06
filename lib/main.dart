@@ -9,7 +9,6 @@ import 'package:idol/store/middleware.dart';
 import 'package:idol/store/reducers/appreducers.dart';
 import 'package:logging/logging.dart';
 import 'package:redux/redux.dart';
-
 import 'models/appstate.dart';
 
 final logger = Logger('idol');

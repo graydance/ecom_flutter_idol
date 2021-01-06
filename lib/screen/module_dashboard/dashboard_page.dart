@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/models.dart';
+import 'package:idol/res/colors.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
 
@@ -214,28 +215,73 @@ class _RewardsTabViewState extends State<RewardsTabView> {
 }
 
 class RewardsItem extends StatefulWidget {
-  final Reward data;
+  final Reward reward;
 
-  const RewardsItem(this.data);
+  const RewardsItem(this.reward);
 
   @override
-  State<StatefulWidget> createState() => _RewardsItemState(data);
+  State<StatefulWidget> createState() => _RewardsItemState(reward);
 }
 
 class _RewardsItemState extends State<RewardsItem> {
-  final Reward data;
+  final Reward reward;
 
-  _RewardsItemState(this.data);
+  _RewardsItemState(this.reward);
+
+  bool _clickable(){
+    return reward.rewardStatus == 1;
+  }
+
+  bool _unClickable(){
+    return reward.rewardStatus == 2 || reward.rewardStatus == 3;
+  }
+
+  Color _cardBorderColor(){
+    if(_clickable()){
+      return Colours.color_EA5228;
+    }
+    if(_unClickable()){
+      return Colours.color_EDEDF2;
+    }
+    return Colours.white;
+  }
+
+  Color _buttonBorderColor(){
+    if(_unClickable()){
+      return Colours.color_B1B1B3;
+    }
+    return Colours.color_EA5228;
+  }
+
+  List<Color> _buttonLinearGradientColor(){
+    if(_clickable()){
+      return [Colours.color_FA812B, Colours.color_F95453];
+    }
+    if(reward.rewardStatus == 0){
+      return [Colours.white, Colours.white];
+    }
+    return [Colours.color_EDEDF2, Colours.color_EDEDF2];
+  }
+
+  Color _buttonTextColor(){
+    if(_clickable()){
+      return Colours.white;
+    }
+    if(reward.rewardStatus == 0){
+      return Colours.color_EA5228;
+    }
+    return Colours.color_B1B2B3;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Card(
-        color: Color(0xFFF1F1F6),
+        color: _unClickable() ? Colours.color_EDEDF2 : Colours.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(6)),
           side: BorderSide(
-            color: Color(0xFFF27945),
+            color: _cardBorderColor(),
             width: 1,
           ),
         ),
@@ -248,10 +294,10 @@ class _RewardsItemState extends State<RewardsItem> {
                   EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 10),
               child: Row(
                 children: [
-                  Container(
+                  ..._clickable() ? [Container(
                     margin: EdgeInsets.only(right: 10),
                     child: Icon(Icons.settings),
-                  ),
+                  ),] : [],
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -259,7 +305,7 @@ class _RewardsItemState extends State<RewardsItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          data.rewardTitle,
+                          reward.rewardTitle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -268,7 +314,7 @@ class _RewardsItemState extends State<RewardsItem> {
                           ),
                         ),
                         Text(
-                          data.rewardDescription,
+                          reward.rewardDescription,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -290,9 +336,9 @@ class _RewardsItemState extends State<RewardsItem> {
                   Container(
                     child: Container(
                       child: Text(
-                        data.rewardCoins,
+                        reward.rewardCoins,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: _buttonTextColor(),
                           fontSize: 14,
                         ),
                       ),
@@ -304,8 +350,8 @@ class _RewardsItemState extends State<RewardsItem> {
                         gradient: LinearGradient(
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                            colors: [Color(0xFFFA812B), Color(0xFFF95453)]),
-                        color: Colors.green,
+                            colors: _buttonLinearGradientColor()),
+                        border: Border.all(color: _buttonBorderColor(), width: 1)
                       ),
                     ),
                   ),
@@ -313,7 +359,7 @@ class _RewardsItemState extends State<RewardsItem> {
               ),
             ),
             // 设置左上角Label
-            Container(
+            ..._clickable()  ? [Container(
               padding: EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -332,7 +378,7 @@ class _RewardsItemState extends State<RewardsItem> {
                 'COLLECT',
                 style: TextStyle(color: Colors.white, fontSize: 8),
               ),
-            ),
+            ),] : [],
           ],
         ),
       ),
