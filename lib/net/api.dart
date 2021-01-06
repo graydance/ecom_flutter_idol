@@ -12,8 +12,8 @@ class DioClient {
   Dio _dio;
   BaseOptions _options = BaseOptions(
     baseUrl: _baseUrl,
-    connectTimeout: 5000,
-    receiveTimeout: 5000,
+    connectTimeout: 10000,
+    receiveTimeout: 10000,
     contentType: "application/json; charset=utf-8",
     responseType: ResponseType.json,
     headers: {
