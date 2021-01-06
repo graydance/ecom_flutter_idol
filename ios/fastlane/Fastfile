@@ -1,0 +1,21 @@
+lane :beta do
+  create_keychain(
+    name: "CI",
+    password: 'ecom!@#$',
+    default_keychain: true,
+    unlock: true,
+    timeout: 3600,
+    lock_when_sleeps: false
+  )
+  match(type: "adhoc", readonly: is_ci, keychain_name: "CI", keychain_password:'ecom!@#$')
+  sh("security list-keychains -d user")
+  sh("security default-keychain -d user")
+  sh("security find-identity -v -p codesigning CI")
+  gym(
+    output_directory: './build',
+    export_options: {
+      method: "ad-hoc", # 这可以不指定
+      thinning: "<none>"
+    }
+  )
+end
