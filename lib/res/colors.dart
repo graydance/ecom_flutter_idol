@@ -57,9 +57,34 @@ class Colours {
   static const Color color_F95453 = Color(0xFFF95453);
   static const Color color_EDEDF2 = Color(0xFFEDEDF2);
   static const Color color_B1B2B3 = Color(0xFFB1B2B3);
+  static const Color color_29292B = Color(0xFF29292B);
+  static const Color color_575859 = Color(0xFF575859);
+  static const Color color_C3C4C6 = Color(0xFFC3C4C6);
   static const Color color_10777777 = Color(0x1A777777);
+  static const Color color_10EA5228 = Color(0x1AEA5228);
+
+  static const Color color_black100 = Color(0xFF000000);
+  static const Color color_black95 = Color(0xF2000000);
+  static const Color color_black90 = Color(0xE6000000);
+  static const Color color_black85 = Color(0x85000000);
+  static const Color color_black80 = Color(0xCC000000);
+  static const Color color_black75 = Color(0xBF000000);
+  static const Color color_black70 = Color(0xB3000000);
+  static const Color color_black65 = Color(0xA6000000);
+  static const Color color_black60 = Color(0x99000000);
+  static const Color color_black55 = Color(0x8C000000);
+  static const Color color_black50 = Color(0x80000000);
+  static const Color color_black45 = Color(0x73000000);
+  static const Color color_black40 = Color(0x66000000);
+  static const Color color_black35 = Color(0x59000000);
+  static const Color color_black30 = Color(0x4D000000);
+  static const Color color_black25 = Color(0x4D000000);
+  static const Color color_black20 = Color(0x33000000);
+  static const Color color_black15 = Color(0x26000000);
+  static const Color color_black10 = Color(0x1A000000);
+  static const Color color_black5 = Color(0x0D000000);
 
   /// 透明度对应关系
-  /// 100->FF 99->99 95->F2 90->E6 85->D9 80->CC 75->BF 70->B3 65->A6 60->99
+  /// 100->FF 95->F2 90->E6 85->D9 80->CC 75->BF 70->B3 65->A6 60->99
   /// 55->8C 50->80 45->73 40->66 35->59 30->4D 25->30 20->33 15->26 10->1A 5->0D
 }
