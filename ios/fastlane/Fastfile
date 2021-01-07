@@ -1,16 +1,13 @@
 lane :beta do
   create_keychain(
     name: "CI",
-    password: 'ecom!@#$',
+    password: '123456',
     default_keychain: true,
     unlock: true,
     timeout: 3600,
     lock_when_sleeps: false
   )
-  match(type: "adhoc", readonly: is_ci, keychain_name: "CI", keychain_password:'ecom!@#$')
-  sh("security list-keychains -d user")
-  sh("security default-keychain -d user")
-  sh("security find-identity -v -p codesigning CI")
+  match(type: "adhoc", readonly: is_ci, keychain_name: "CI", keychain_password:'123456')
   gym(
     output_directory: '../build',
     export_options: {

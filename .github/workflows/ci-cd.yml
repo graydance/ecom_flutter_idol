@@ -21,6 +21,7 @@ jobs:
         - run: flutter pub get
         - run: flutter test
         - run: flutter build web
+        - run: uuid=$(uuidgen) && sed -i.bak 's/main.dart.js/'"$uuid"'.main.dart.js/g' build/web/index.html && mv build/web/main.dart.js build/web/"$uuid.main.dart.js"
         - run: flutter build apk
         - uses: r0adkll/sign-android-release@v1
           name: Sign app APK
