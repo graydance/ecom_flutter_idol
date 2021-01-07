@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:idol/res/colors.dart';
 import 'package:idol/screen/module_dashboard/dashboard_page.dart';
 import 'package:idol/screen/module_supply/supply_page.dart';
 import 'package:idol/screen/module_inbox/inbox_page.dart';
@@ -59,8 +60,8 @@ class HomeScreenState extends State<HomeScreen>
   Widget _buildNavigationBarItemIcon(int index, bool active) {
     return Image.asset(
       active ? _tabIconSelectedPaths[index] : _tabIconNormalPaths[index],
-      width: 24,
-      height: 24,
+      width: 30,
+      height: 30,
     );
   }
 
@@ -90,17 +91,19 @@ class HomeScreenState extends State<HomeScreen>
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-            color: Colors.red,
+            color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  offset: Offset(1.0, -1.0),
-                  color: Colors.grey,
+                  offset: Offset(0, -2.0),
+                  color: Colours.color_10777777,
                   blurRadius: 1.0,
-                  spreadRadius: -3.0),
+                  spreadRadius: 1.0),
             ],
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30), topRight: Radius.circular(30))),
         child: BottomNavigationBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: _buildNavigationBarItemIcon(0, false), // Dashboard

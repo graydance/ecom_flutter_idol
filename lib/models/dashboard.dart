@@ -79,8 +79,8 @@ class Reward {
 class PastSales {
   int date;
   String monetaryUnit;
-  double monthSales;
-  List<double> dailySales;
+  int monthSales;
+  List<int> dailySales;
 
   PastSales({this.date, this.monetaryUnit, this.monthSales, this.dailySales});
 
@@ -88,7 +88,7 @@ class PastSales {
     date = json['date'];
     monetaryUnit = json['monetary_unit'];
     monthSales = json['month_sales'];
-    dailySales = json['daily_sales'].cast<double>();
+    dailySales = json['daily_sales'].cast<int>();
   }
 
   Map<String, dynamic> toJson() {

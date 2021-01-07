@@ -1,5 +1,4 @@
 import 'package:flustars/flustars.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -153,7 +152,7 @@ class DashboardPageState extends State<DashboardPage>
                     child: Container(
                       margin: EdgeInsets.only(top: 33),
                       padding: EdgeInsets.only(
-                          top: 20, left: 15, right: 15, bottom: 45),
+                          top: 20, left: 0, right: 0, bottom: 40),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         gradient: LinearGradient(
@@ -179,33 +178,35 @@ class DashboardPageState extends State<DashboardPage>
                       ),
                       child: Column(
                         children: [
-                          TabBar(
-                            tabs: _tabValues.map((title) {
-                              return Text(
-                                title,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              );
-                            }).toList(),
-                            isScrollable: false,
-                            controller: _tabController,
-                            indicatorColor: Color(0xFFEA5228),
-                            indicatorSize: TabBarIndicatorSize.label,
-                            unselectedLabelColor: Color(0xFFB1B1B3),
-                            labelColor: Color(0xFF29292B),
-                            labelStyle: TextStyle(fontSize: 16),
+                          Container(
+                            margin: EdgeInsets.only(left: 20, right: 20),
+                            child: TabBar(
+                              tabs: _tabValues.map((title) {
+                                return Text(
+                                  title,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                );
+                              }).toList(),
+                              isScrollable: false,
+                              controller: _tabController,
+                              indicatorColor: Colours.color_EA5228,
+                              indicatorSize: TabBarIndicatorSize.label,
+                              unselectedLabelColor: Colours.color_B1B1B3,
+                              labelColor: Colours.color_29292B,
+                              labelStyle: TextStyle(fontSize: 16),
+                            ),
                           ),
                           Expanded(
-                            child: Container(
-                              margin: EdgeInsets.only(top: 24),
-                              child: TabBarView(
-                                controller: _tabController,
-                                children: [
-                                  RewardsTabView(
-                                    vm.dashboard.rewardList,
-                                  ),
-                                  PastSalesTabView(),
-                                ].toList(),
-                              ),
+                            child: TabBarView(
+                              controller: _tabController,
+                              children: [
+                                RewardsTabView(
+                                  vm.dashboard.rewardList,
+                                ),
+                                PastSalesTabView(
+                                  vm.dashboard.pastSales,
+                                ),
+                              ].toList(),
                             ),
                           ),
                         ],
@@ -246,19 +247,21 @@ class _RewardsTabViewState extends State<RewardsTabView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      scrollDirection: Axis.vertical,
-      separatorBuilder: (context, index) {
-        return Divider(
-          height: 10,
-          color: Colors.transparent,
-        );
-      },
-      itemCount: list.length,
-      itemBuilder: (context, index) {
-        return RewardsItem(list[index]);
-      },
-    );
+    return Container(
+        padding: EdgeInsets.only(left: 20, right: 20, top: 24),
+        child: ListView.separated(
+          scrollDirection: Axis.vertical,
+          separatorBuilder: (context, index) {
+            return Divider(
+              height: 10,
+              color: Colors.transparent,
+            );
+          },
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            return RewardsItem(list[index]);
+          },
+        ));
   }
 }
 
@@ -363,7 +366,7 @@ class _RewardsItemState extends State<RewardsItem> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF555764),
+                            color: Colours.color_555764,
                           ),
                         ),
                         Text(
@@ -422,8 +425,8 @@ class _RewardsItemState extends State<RewardsItem> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color(0xFFF68A51),
-                            Color(0XFFEA5228),
+                            Colours.color_F68A51,
+                            Colours.color_EA5228,
                           ],
                         ),
                         borderRadius: BorderRadius.only(
@@ -445,15 +448,146 @@ class _RewardsItemState extends State<RewardsItem> {
 }
 
 class PastSalesTabView extends StatefulWidget {
+  final List<PastSales> dataList;
+
+  PastSalesTabView(this.dataList);
+
   @override
-  State<StatefulWidget> createState() => _PastSalesTabViewSate();
+  State<StatefulWidget> createState() => _PastSalesTabViewSate(dataList);
 }
 
 class _PastSalesTabViewSate extends State<PastSalesTabView> {
+  PageController _pageController;
+  final List<PastSales> pastSales;
+
+  _PastSalesTabViewSate(this.pastSales);
+
+  var weekTableNames = const ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var weekTableTextStyle = const TextStyle(
+      fontSize: 12, color: Colours.color_0F1015, fontWeight: FontWeight.bold);
+
+  List<Text> _getWeekText() {
+    List<Text> weekTextList = [];
+    weekTableNames.forEach((element) {
+      weekTextList.add(Text(
+        element,
+        style: weekTableTextStyle,
+      ));
+    });
+    return weekTextList;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Text('TODO');
+    return Container(
+      color: Colours.white,
+      padding: EdgeInsets.only(top: 24),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 7, bottom: 7, left: 22, right: 22),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _getWeekText(),
+            ),
+          ),
+          Container(
+            color: Colours.color_E7E8EC,
+            padding: EdgeInsets.only(top: 7, bottom: 7, left: 22, right: 22),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'November 2020',
+                  style: TextStyle(
+                      color: Colours.color_0F1015,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '\$21,232.00',
+                  style: TextStyle(
+                      color: Colours.color_EA5228,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            // PageView | ListView等可滑动的列表需要外层确定高度，否则会抛出 Vertical viewport was given unbounded height.异常
+            child: PageView.builder(
+              controller: _pageController,
+              scrollDirection: Axis.vertical,
+              physics: PageScrollPhysics(parent: BouncingScrollPhysics()),
+              //onPageChanged: _,
+              itemCount: pastSales.length,
+              itemBuilder: (context, index) {
+                return _buildCalendarPage(pastSales[index]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
+
+  Widget _buildCalendarPage(PastSales pastSales) {
+    return Padding(
+      padding: EdgeInsets.all(11),
+      child: GridView.count(
+        crossAxisCount: 7,
+        crossAxisSpacing: 0.0,
+        mainAxisSpacing: 0.0,
+        childAspectRatio: 1.0,
+        physics: NeverScrollableScrollPhysics(),
+        children: pastSales.dailySales
+            .asMap()
+            .map((index, dailySale) {
+              return MapEntry(
+                  index,
+                  Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colours.white,//Colours.color_10EA5228,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          (index + 1).toString(),
+                          style: TextStyle(
+                            color: Colours.color_575859,
+                            fontSize: 14,
+                          ),
+                        ),
+                        Text(
+                          pastSales.monetaryUnit + (dailySale / 100).toString(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colours.color_C3C4C6,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ));
+            })
+            .values
+            .toList(),
+      ),
+    );
+  }
+
+  void _onPageChanged() {}
 }
 
 class _ViewModel {

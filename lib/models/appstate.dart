@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 @immutable
 class AppState {
-  /// dasboard data
+
   final Dashboard dashboard;
 
   AppState({this.dashboard});
