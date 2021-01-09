@@ -23,6 +23,7 @@ jobs:
         - name: Prepare version key
           run: |
             echo "$VERSION_KEY" > /tmp/version.dart
+            cat /tmp/version.dart
           env:
             VERSION_KEY: ${{ secrets.VERSION_KEY }}
         - run: flutter config --enable-web
