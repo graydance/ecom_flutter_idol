@@ -28,13 +28,13 @@ jobs:
         - run: flutter config --enable-web
         - run: flutter pub get
         - run: dart /tmp/version.dart > ./lib/env.dart
-          enc:
+          env:
             ECOM_PLATFORM: 'web'
         - run: flutter test
         - run: flutter build web
         - run: uuid=$(uuidgen) && sed -i.bak 's/main.dart.js/'"$uuid"'.main.dart.js/g' build/web/index.html && mv build/web/main.dart.js build/web/"$uuid.main.dart.js"
         - run: dart /tmp/version.dart > ./lib/env.dart
-          enc:
+          env:
             ECOM_PLATFORM: 'android'
         - run: flutter build apk
         - uses: r0adkll/sign-android-release@v1
@@ -47,7 +47,7 @@ jobs:
             keyStorePassword: ${{ secrets.KEY_PASSWORD }}
             keyPassword: ${{ secrets.KEY_PASSWORD }}
         - run: dart /tmp/version.dart > ./lib/env.dart
-          enc:
+          env:
             ECOM_PLATFORM: 'ios'
         - run: flutter build ios --release --no-codesign
         - uses: actions/setup-ruby@v1
