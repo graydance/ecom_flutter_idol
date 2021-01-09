@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/res/colors.dart';
@@ -37,7 +36,6 @@ class ReduxApp extends StatelessWidget {
                   },
                 ),
           },
-          builder: EasyLoading.init(),
         ));
   }
 }

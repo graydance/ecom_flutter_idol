@@ -7,7 +7,7 @@ class AppState {
 
   final Dashboard dashboard;
 
-  AppState({this.dashboard});
+  AppState({this.dashboard = const Dashboard()});
 
   AppState copyWith({Dashboard dashboard}) {
     return AppState(dashboard: dashboard ?? this.dashboard);

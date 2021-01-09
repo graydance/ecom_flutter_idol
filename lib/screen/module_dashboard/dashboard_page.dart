@@ -1,6 +1,5 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/models.dart';
@@ -26,9 +25,6 @@ class DashboardPageState extends State<DashboardPage>
 
   @override
   void initState() {
-    if (widget == null) {
-      EasyLoading.show(status: 'loading...');
-    }
     _tabController = TabController(
       length: _tabValues.length,
       vsync: this, //ScrollableState(),
@@ -45,7 +41,7 @@ class DashboardPageState extends State<DashboardPage>
         margin: EdgeInsets.only(top: 30),
         alignment: Alignment.topCenter,
         color: Colours.color_F8F8F8,
-        child: vm.dashboard != null
+        child: vm.dashboard.isLoaded
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -225,9 +221,9 @@ class DashboardPageState extends State<DashboardPage>
     );
   }
 
-  String _decimalFormat(double money) {
+  String _decimalFormat(int money) {
     /// 1,234,567.00
-    return TextUtil.formatDoubleComma3(money);
+    return TextUtil.formatDoubleComma3(money / 100);
   }
 }
 
@@ -392,7 +388,9 @@ class _RewardsItemState extends State<RewardsItem> {
                   Container(
                     child: Container(
                       child: Text(
-                        reward.rewardCoins,
+                        reward.monetaryUnit +
+                            TextUtil.formatDoubleComma3(
+                                reward.rewardCoins / 100).replaceAll(".0", ""),
                         style: TextStyle(
                           color: _buttonTextColor(),
                           fontSize: 14,
@@ -555,7 +553,7 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
                   Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colours.white,//Colours.color_10EA5228,
+                      color: Colours.white, //Colours.color_10EA5228,
                       shape: BoxShape.circle,
                     ),
                     child: Column(
@@ -569,7 +567,7 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
                           ),
                         ),
                         Text(
-                          pastSales.monetaryUnit + (dailySale / 100).toString(),
+                          pastSales.monetaryUnit + TextUtil.formatDoubleComma3(dailySale / 100),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
