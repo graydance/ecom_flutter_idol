@@ -45,3 +45,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 coverage/
+
+# env.dart
+/lib/env.dart

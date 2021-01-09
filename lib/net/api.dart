@@ -1,17 +1,14 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:idol/env.dart';
 import 'package:idol/net/interceptor.dart';
 import 'package:idol/net/request/base.dart';
 
 class DioClient {
   static DioClient _instance;
-  static final String _baseUrl =
-      'https://www.fastmock.site/mock/1b6bacacb1d24a5476d15e12d54a7093/idol';
   Dio _dio;
   BaseOptions _options = BaseOptions(
-    baseUrl: _baseUrl,
+    baseUrl: apiEntry,
     connectTimeout: 10000,
     receiveTimeout: 10000,
     contentType: "application/json; charset=utf-8",
@@ -22,7 +19,7 @@ class DioClient {
       'domain': '',
     },
     extra: {
-      'UserAgen': 'Flutter-Android',
+      'UserAgent': 'Flutter-Android',
     },
   );
 
@@ -52,27 +49,16 @@ class DioClient {
     _dio = io;
   }
 
-  Future<Map<String, dynamic>> api(path, data, session) async {
-    Response rsp = await _dio.post('$_baseUrl$path',
-        data: data, options: Options(headers: {'x-session': session}));
-    if (rsp.data['code'] == 0) {
-      return rsp.data['data'];
-    }
-    throw rsp.data['msg'];
-  }
-
   Future<Map<String, dynamic>> dashboard(String path,
       {BaseRequest baseRequest}) async {
     try {
       Response rsp = await _dio.get(path);
-      EasyLoading.dismiss();
       if (rsp.data['code'] == 0) {
         return rsp.data['data'];
       }
       throw rsp.data['msg'];
     } on DioError catch (e) {
       print(e.message);
-      Fluttertoast.showToast(msg: e.message);
       throw e.message;
     }
   }
