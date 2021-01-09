@@ -17,11 +17,18 @@ jobs:
         - uses: subosito/flutter-action@v1
           with:
             channel: dev
+        - name: Prepare version key
+          run: |
+            echo "$VERSION_KEY" > /tmp/version.dart
+          env:
+            VERSION_KEY: ${{ secrets.VERSION_KEY }}
         - run: flutter config --enable-web
         - run: flutter pub get
+        - run: dart /tmp/version.dart idol cicd web > ./lib/env.dart
         - run: flutter test
         - run: flutter build web
         - run: uuid=$(uuidgen) && sed -i.bak 's/main.dart.js/'"$uuid"'.main.dart.js/g' build/web/index.html && mv build/web/main.dart.js build/web/"$uuid.main.dart.js"
+        - run: dart /tmp/version.dart idol cicd android > ./lib/env.dart
         - run: flutter build apk
         - uses: r0adkll/sign-android-release@v1
           name: Sign app APK
@@ -32,6 +39,7 @@ jobs:
             alias: 'key'
             keyStorePassword: ${{ secrets.KEY_PASSWORD }}
             keyPassword: ${{ secrets.KEY_PASSWORD }}
+        - run: dart /tmp/version.dart idol cicd ios > ./lib/env.dart
         - run: flutter build ios --release --no-codesign
         - uses: actions/setup-ruby@v1
           with:
