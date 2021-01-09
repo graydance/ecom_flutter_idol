@@ -83,9 +83,9 @@ jobs:
             cp build/Runner.ipa ${GITHUB_SHA::8}/
             cp -r build/web ${GITHUB_SHA::8}/web
             echo "const idol = {\"timestamp\":\"$TIME\", \"version\":\"${GITHUB_SHA::8}\"}" > ${GITHUB_SHA::8}/ver.js
-            scp -r ${GITHUB_SHA::8} cnwesleywang@35.203.63.151:/var/www/html/cicd/idol/
-            ssh cnwesleywang@35.203.63.151 "ln -s -n -f /var/www/html/cicd/idol/${GITHUB_SHA::8} /var/www/html/cicd/idol/current"
-            ssh cnwesleywang@35.203.63.151  /var/www/html/cicd/upver.sh
+            scp -r ${GITHUB_SHA::8} liuc24231@34.95.13.206:/var/www/html/qa/idol/
+            ssh liuc24231@34.95.13.206 "ln -s -n -f /var/www/html/qa/idol/${GITHUB_SHA::8} /var/www/html/qa/idol/current"
+            ssh liuc24231@34.95.13.206  /var/www/html/qa/upver.sh
           env:
             TIME: "${{ steps.time.outputs.time }}"
 
