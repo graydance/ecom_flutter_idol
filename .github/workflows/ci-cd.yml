@@ -12,29 +12,27 @@ jobs:
     env:
       ECOM_PROD: 'idol'
       ECOM_ENV: 'cicd'
+      VERSION_KEY: ${{ secrets.VERSION_KEY }}
     steps:
         - uses: actions/checkout@v2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: 12
         - uses: actions/setup-java@v1
           with:
             java-version: '12.x'
         - uses: subosito/flutter-action@v1
           with:
             channel: dev
-        - name: Prepare version key
-          run: |
-            echo "$VERSION_KEY" > /tmp/version.dart
-            cat /tmp/version.dart
-          env:
-            VERSION_KEY: ${{ secrets.VERSION_KEY }}
         - run: flutter config --enable-web
         - run: flutter pub get
-        - run: dart /tmp/version.dart > ./lib/env.dart
+        - run: node -e "$VERSION_KEY"
           env:
             ECOM_PLATFORM: 'web'
         - run: flutter test
         - run: flutter build web
         - run: uuid=$(uuidgen) && sed -i.bak 's/main.dart.js/'"$uuid"'.main.dart.js/g' build/web/index.html && mv build/web/main.dart.js build/web/"$uuid.main.dart.js"
-        - run: dart /tmp/version.dart > ./lib/env.dart
+        - run: node -e "$VERSION_KEY"
           env:
             ECOM_PLATFORM: 'android'
         - run: flutter build apk
@@ -47,7 +45,7 @@ jobs:
             alias: 'key'
             keyStorePassword: ${{ secrets.KEY_PASSWORD }}
             keyPassword: ${{ secrets.KEY_PASSWORD }}
-        - run: dart /tmp/version.dart > ./lib/env.dart
+        - run: node -e "$VERSION_KEY"
           env:
             ECOM_PLATFORM: 'ios'
         - run: flutter build ios --release --no-codesign
