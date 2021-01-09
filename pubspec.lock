@@ -207,13 +207,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_easyloading:
-    dependency: "direct main"
-    description:
-      name: flutter_easyloading
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.2.2"
   flutter_redux:
     dependency: "direct main"
     description:
@@ -228,13 +221,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.4.2"
-  flutter_spinkit:
-    dependency: transitive
-    description:
-      name: flutter_spinkit
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "4.1.2+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -245,13 +231,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  fluttertoast:
-    dependency: "direct main"
-    description:
-      name: fluttertoast
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "7.1.6"
   fuchsia_remote_debug_protocol:
     dependency: transitive
     description: flutter
