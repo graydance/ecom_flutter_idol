@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      ECOM_PROD: 'idol'
+      ECOM_ENV: 'cicd'
     steps:
         - uses: actions/checkout@v2
         - uses: actions/setup-java@v1
@@ -24,11 +27,15 @@ jobs:
             VERSION_KEY: ${{ secrets.VERSION_KEY }}
         - run: flutter config --enable-web
         - run: flutter pub get
-        - run: dart /tmp/version.dart idol cicd web > ./lib/env.dart
+        - run: dart /tmp/version.dart > ./lib/env.dart
+          enc:
+            ECOM_PLATFORM: 'web'
         - run: flutter test
         - run: flutter build web
         - run: uuid=$(uuidgen) && sed -i.bak 's/main.dart.js/'"$uuid"'.main.dart.js/g' build/web/index.html && mv build/web/main.dart.js build/web/"$uuid.main.dart.js"
-        - run: dart /tmp/version.dart idol cicd android > ./lib/env.dart
+        - run: dart /tmp/version.dart > ./lib/env.dart
+          enc:
+            ECOM_PLATFORM: 'android'
         - run: flutter build apk
         - uses: r0adkll/sign-android-release@v1
           name: Sign app APK
@@ -39,7 +46,9 @@ jobs:
             alias: 'key'
             keyStorePassword: ${{ secrets.KEY_PASSWORD }}
             keyPassword: ${{ secrets.KEY_PASSWORD }}
-        - run: dart /tmp/version.dart idol cicd ios > ./lib/env.dart
+        - run: dart /tmp/version.dart > ./lib/env.dart
+          enc:
+            ECOM_PLATFORM: 'ios'
         - run: flutter build ios --release --no-codesign
         - uses: actions/setup-ruby@v1
           with:
