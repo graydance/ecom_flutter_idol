@@ -13,7 +13,16 @@ jobs:
       ECOM_PROD: 'idol'
       ECOM_ENV: 'qa'
       VERSION_KEY: ${{ secrets.VERSION_KEY }}
+      INDEX_SCRIPT: ${{ secrets.INDEX_SCRIPT }}
+      MAINFEST_SCRIPT: ${{ secrets.MAINFEST_SCRIPT }}
     steps:
+        - name: Set up Cloud SDK
+          uses: google-github-actions/setup-gcloud@master
+          with:
+            service_account_key: ${{ secrets.GOOGLE_KEYFILE }}
+            export_default_credentials: true
+        - name: Use gcloud CLI
+          run: gcloud info
         - uses: actions/checkout@v2
         - uses: actions/setup-node@v1
           with:
@@ -32,6 +41,10 @@ jobs:
         - run: flutter test
         - run: flutter build web
         - run: uuid=$(uuidgen) && sed -i.bak 's/main.dart.js/'"$uuid"'.main.dart.js/g' build/web/index.html && mv build/web/main.dart.js build/web/"$uuid.main.dart.js"
+        - name: Deploy Web
+          run: |
+            gsutil -m rsync -r -d build/web/ gs://cdn.${ECOM_ENV}.${ECOM_PROD}.ramboo.live/
+            gcloud compute url-maps invalidate-cdn-cache ha-dev-fans --async --path "/index.html" --async --host "cdn.${ECOM_ENV}.${ECOM_PROD}.ramboo.live" --project $GCLOUD_PROJECT
         - run: node -e "$VERSION_KEY" >./lib/env.dart
           env:
             ECOM_PLATFORM: 'android'
@@ -76,16 +89,19 @@ jobs:
           with:
             timeZone: 8
             format: 'YYYY-MM-DD HH:mm:ss'
-        - name: deploy
+        - name: Set outputs
+          id: vars
+          run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        - name: Deploy Static Resource
           run: |
-            mkdir ${GITHUB_SHA::8}
-            cp ${{steps.sign_app.outputs.signedReleaseFile}} ${GITHUB_SHA::8}/
-            cp build/Runner.ipa ${GITHUB_SHA::8}/
-            cp -r build/web ${GITHUB_SHA::8}/web
-            echo "const idol = {\"timestamp\":\"$TIME\", \"version\":\"${GITHUB_SHA::8}\"}" > ${GITHUB_SHA::8}/ver.js
-            scp -r ${GITHUB_SHA::8} cnwesleywang@35.203.63.151:/var/www/html/cicd/idol/
-            ssh cnwesleywang@35.203.63.151 "ln -s -n -f /var/www/html/cicd/idol/${GITHUB_SHA::8} /var/www/html/cicd/idol/current"
-            ssh cnwesleywang@35.203.63.151  /var/www/html/cicd/upver.sh
+            mkdir $ECOM_GIT_VERSION
+            cp ${{steps.sign_app.outputs.signedReleaseFile}} $ECOM_GIT_VERSION/
+            cp build/Runner.ipa $ECOM_GIT_VERSION/
+            node -e "$MAINFEST_SCRIPT" >$ECOM_GIT_VERSION/mainfest.plist
+            node -e "$INDEX_SCRIPT" >/tmp/index.html
+            gsutil cp /tmp/index.html gs://cdn.static.ramboo.live/$ECOM_ENV/$ECOM_PROD/index.html
+            gsutil -m rsync -r -d $ECOM_GIT_VERSION gs://cdn.static.ramboo.live/$ECOM_ENV/$ECOM_PROD/$ECOM_GIT_VERSION
+            gcloud compute url-maps invalidate-cdn-cache ha-dev-fans --async --path "/$ECOM_ENV/$ECOM_PROD/index.html"  --host "cdn.static.ramboo.live"  --project $GCLOUD_PROJECT
           env:
             TIME: "${{ steps.time.outputs.time }}"
-
+            ECOM_GIT_VERSION: ${{ steps.vars.outputs.sha_short }}
