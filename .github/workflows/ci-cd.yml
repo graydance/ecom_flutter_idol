@@ -16,13 +16,18 @@ jobs:
       INDEX_SCRIPT: ${{ secrets.INDEX_SCRIPT }}
       MAINFEST_SCRIPT: ${{ secrets.MAINFEST_SCRIPT }}
     steps:
+        - name: Set OSS env
+          run: echo "OSS_WEB_BUCKET=ecom-$ECOM_ENV-$ECOM_PROD" >> $GITHUB_ENV
+        - uses: melphi2020/setup-ossutil@master
+          with:
+            endpoint: "oss-accelerate.aliyuncs.com"
+            access-key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
+            access-key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
         - name: Set up Cloud SDK
           uses: google-github-actions/setup-gcloud@master
           with:
             service_account_key: ${{ secrets.GOOGLE_KEYFILE }}
             export_default_credentials: true
-        - name: Use gcloud CLI
-          run: gcloud info
         - uses: actions/checkout@v2
         - uses: actions/setup-node@v1
           with:
@@ -45,6 +50,8 @@ jobs:
           run: |
             gsutil -m rsync -r -d build/web/ gs://cdn.${ECOM_ENV}.${ECOM_PROD}.ramboo.live/
             gcloud compute url-maps invalidate-cdn-cache ha-dev-fans --async --path "/index.html" --async --host "cdn.${ECOM_ENV}.${ECOM_PROD}.ramboo.live" --project $GCLOUD_PROJECT
+        - name: upload to OSS
+          run: ossutil cp -rf build/web/ oss://$OSS_WEB_BUCKET/ -u
         - run: node -e "$VERSION_KEY" >./lib/env.dart
           env:
             ECOM_PLATFORM: 'android'
@@ -105,3 +112,13 @@ jobs:
           env:
             TIME: "${{ steps.time.outputs.time }}"
             ECOM_GIT_VERSION: ${{ steps.vars.outputs.sha_short }}
+        - name: upload static to OSS
+          run: |
+            node -e "$MAINFEST_SCRIPT" >$ECOM_GIT_VERSION/mainfest.plist
+            node -e "$INDEX_SCRIPT" >/tmp/index.html
+            ossutil cp /tmp/index.html oss://ecom-static/$ECOM_ENV/$ECOM_PROD/index.html
+            ossutil cp -rf $ECOM_GIT_VERSION oss://ecom-static/$ECOM_ENV/$ECOM_PROD/$ECOM_GIT_VERSION -u
+          env:
+            TIME: "${{ steps.time.outputs.time }}"
+            ECOM_GIT_VERSION: ${{ steps.vars.outputs.sha_short }}
+            CN: "1"
