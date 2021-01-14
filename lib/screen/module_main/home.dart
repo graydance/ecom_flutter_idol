@@ -6,17 +6,18 @@ import 'package:idol/screen/module_supply/supply_page.dart';
 import 'package:idol/screen/module_inbox/inbox_page.dart';
 import 'package:idol/screen/module_biolinks/biolinks_page.dart';
 import 'package:idol/screen/module_store/store_page.dart';
+import 'package:idol/r.g.dart';
+import 'package:idol/store/actions/actions.dart';
 
 class HomeScreen extends StatefulWidget {
-  final void Function() onInit;
-  HomeScreen({this.onInit});
+
   @override
   State<StatefulWidget> createState() {
-    return HomeScreenState();
+    return _HomeScreenState();
   }
 }
 
-class HomeScreenState extends State<HomeScreen>
+class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin {
   PageController _pageController;
 
@@ -41,25 +42,35 @@ class HomeScreenState extends State<HomeScreen>
     'Store'
   ];
 
-  static const _tabIconNormalPaths = <String>[
-    'assets/images/ic_tab_dashboard_normal.png',
-    'assets/images/ic_tab_supply_normal.png',
-    'assets/images/ic_tab_inbox_normal.png',
-    'assets/images/ic_tab_biolinks_normal.png',
-    'assets/images/ic_tab_store_normal.png'
+  var _tabIconNormalPaths = <AssetImage>[
+    // 'assets/images/ic_tab_dashboard_normal.png',
+    R.image.ic_tab_dashboard_normal(),
+    // 'assets/images/ic_tab_supply_normal.png',
+    R.image.ic_tab_supply_normal(),
+    // 'assets/images/ic_tab_inbox_normal.png',
+    R.image.ic_tab_inbox_normal(),
+    // 'assets/images/ic_tab_biolinks_normal.png',
+    R.image.ic_tab_biolinks_normal(),
+    // 'assets/images/ic_tab_store_normal.png'
+    R.image.ic_tab_store_normal()
   ];
 
-  static const _tabIconSelectedPaths = <String>[
-    'assets/images/ic_tab_dashboard_selected.png',
-    'assets/images/ic_tab_supply_selected.png',
-    'assets/images/ic_tab_inbox_selected.png',
-    'assets/images/ic_tab_biolinks_selected.png',
-    'assets/images/ic_tab_store_selected.png'
+  var _tabIconSelectedPaths = <AssetImage>[
+    // 'assets/images/ic_tab_dashboard_selected.png',
+    R.image.ic_tab_dashboard_selected(),
+    // 'assets/images/ic_tab_supply_selected.png',
+    R.image.ic_tab_supply_selected(),
+    // 'assets/images/ic_tab_inbox_selected.png',
+    R.image.ic_tab_inbox_selected(),
+    // 'assets/images/ic_tab_biolinks_selected.png',
+    R.image.ic_tab_biolinks_selected(),
+    // 'assets/images/ic_tab_store_selected.png'
+    R.image.ic_tab_store_selected(),
   ];
 
   Widget _buildNavigationBarItemIcon(int index, bool active) {
-    return Image.asset(
-      active ? _tabIconSelectedPaths[index] : _tabIconNormalPaths[index],
+    return Image(
+      image: active ? _tabIconSelectedPaths[index] : _tabIconNormalPaths[index],
       width: 30,
       height: 30,
     );
@@ -67,7 +78,6 @@ class HomeScreenState extends State<HomeScreen>
 
   @override
   void initState() {
-    if (widget.onInit != null) widget.onInit();
     super.initState();
     _pageController = PageController();
   }
@@ -86,7 +96,7 @@ class HomeScreenState extends State<HomeScreen>
         title: Text(_titles[_selectedIndex]),
         elevation: 0,
       ),
-      extendBodyBehindAppBar: false, // 禁止延伸body至底部
+      extendBodyBehindAppBar: false, // 禁止延伸body至顶部
       extendBody: true, // 延伸body至底部
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
@@ -142,5 +152,5 @@ class HomeScreenState extends State<HomeScreen>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }

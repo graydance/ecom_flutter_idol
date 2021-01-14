@@ -1,0 +1,235 @@
+/// availableBalance : 100
+/// lifetimeEarnings : 90
+/// withdraw : 50
+/// freeze : 40
+/// FAQ : ""
+/// withdrawType : [{"id":"1","payName":"提现方式的名称","portrait":"图标","serviceFee":3}]
+
+class WithdrawInfo {
+  final int availableBalance;
+  final int lifetimeEarnings;
+  final String monetaryCountry;
+  final String monetaryUnit;
+  final int withdraw;
+  final int freeze;
+  final String faq;
+  final List<WithdrawType> withdrawType;
+
+//<editor-fold desc="Data Methods" defaultstate="collapsed">
+
+  const WithdrawInfo({
+    this.availableBalance = 0,
+    this.lifetimeEarnings = 0,
+    this.monetaryCountry = 'USD',
+    this.monetaryUnit = '\$',
+    this.withdraw = 0,
+    this.freeze = 0,
+    this.faq = '',
+    this.withdrawType = const [],
+  });
+
+  WithdrawInfo copyWith({
+    int availableBalance,
+    int lifetimeEarnings,
+    String monetaryCountry,
+    String monetaryUnit,
+    int withdraw,
+    int freeze,
+    String faq,
+    List<WithdrawType> withdrawType,
+  }) {
+    if ((availableBalance == null ||
+            identical(availableBalance, this.availableBalance)) &&
+        (lifetimeEarnings == null ||
+            identical(lifetimeEarnings, this.lifetimeEarnings)) &&
+        (monetaryCountry == null ||
+            identical(monetaryCountry, this.monetaryCountry)) &&
+        (monetaryUnit == null || identical(monetaryUnit, this.monetaryUnit)) &&
+        (withdraw == null || identical(withdraw, this.withdraw)) &&
+        (freeze == null || identical(freeze, this.freeze)) &&
+        (faq == null || identical(faq, this.faq)) &&
+        (withdrawType == null || identical(withdrawType, this.withdrawType))) {
+      return this;
+    }
+
+    return WithdrawInfo(
+      availableBalance: availableBalance ?? this.availableBalance,
+      lifetimeEarnings: lifetimeEarnings ?? this.lifetimeEarnings,
+      monetaryCountry: monetaryCountry ?? this.monetaryCountry,
+      monetaryUnit: monetaryUnit ?? this.monetaryUnit,
+      withdraw: withdraw ?? this.withdraw,
+      freeze: freeze ?? this.freeze,
+      faq: faq ?? this.faq,
+      withdrawType: withdrawType ?? this.withdrawType,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'WithdrawInfo{availableBalance: $availableBalance, lifetimeEarnings: $lifetimeEarnings, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, withdraw: $withdraw, freeze: $freeze, faq: $faq, withdrawType: $withdrawType}';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WithdrawInfo &&
+          runtimeType == other.runtimeType &&
+          availableBalance == other.availableBalance &&
+          lifetimeEarnings == other.lifetimeEarnings &&
+          monetaryCountry == other.monetaryCountry &&
+          monetaryUnit == other.monetaryUnit &&
+          withdraw == other.withdraw &&
+          freeze == other.freeze &&
+          faq == other.faq &&
+          withdrawType == other.withdrawType);
+
+  @override
+  int get hashCode =>
+      availableBalance.hashCode ^
+      lifetimeEarnings.hashCode ^
+      monetaryCountry.hashCode ^
+      monetaryUnit.hashCode ^
+      withdraw.hashCode ^
+      freeze.hashCode ^
+      faq.hashCode ^
+      withdrawType.hashCode;
+
+  factory WithdrawInfo.fromMap(
+    Map<String, dynamic> map, {
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+    return WithdrawInfo(
+      availableBalance: map[keyMapper('availableBalance')] as int,
+      lifetimeEarnings: map[keyMapper('lifetimeEarnings')] as int,
+      monetaryCountry: map[keyMapper('monetaryCountry')] as String,
+      monetaryUnit: map[keyMapper('monetaryUnit')] as String,
+      withdraw: map[keyMapper('withdraw')] as int,
+      freeze: map[keyMapper('freeze')] as int,
+      faq: map[keyMapper('faq')] as String,
+      withdrawType: map[keyMapper('withdrawType')] as List<WithdrawType>,
+    );
+  }
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+// ignore: unnecessary_cast
+    return {
+      keyMapper('availableBalance'): this.availableBalance,
+      keyMapper('lifetimeEarnings'): this.lifetimeEarnings,
+      keyMapper('monetaryCountry'): this.monetaryCountry,
+      keyMapper('monetaryUnit'): this.monetaryUnit,
+      keyMapper('withdraw'): this.withdraw,
+      keyMapper('freeze'): this.freeze,
+      keyMapper('faq'): this.faq,
+      keyMapper('withdrawType'): this.withdrawType,
+    } as Map<String, dynamic>;
+  }
+
+//</editor-fold>
+}
+
+/// id : "1"
+/// payName : "提现方式的名称"
+/// portrait : "图标"
+/// serviceFee : 3
+
+class WithdrawType {
+  final String id;
+  final String payName;
+  final String portrait;
+  final int serviceFee;
+
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+    map["id"] = id;
+    map["payName"] = payName;
+    map["portrait"] = portrait;
+    map["serviceFee"] = serviceFee;
+    return map;
+  }
+
+//<editor-fold desc="Data Methods" defaultstate="collapsed">
+
+  const WithdrawType({
+    this.id = '',
+    this.payName = '',
+    this.portrait = '',
+    this.serviceFee = 0,
+  });
+
+  WithdrawType copyWith({
+    String id,
+    String payName,
+    String portrait,
+    int serviceFee,
+  }) {
+    if ((id == null || identical(id, this.id)) &&
+        (payName == null || identical(payName, this.payName)) &&
+        (portrait == null || identical(portrait, this.portrait)) &&
+        (serviceFee == null || identical(serviceFee, this.serviceFee))) {
+      return this;
+    }
+
+    return WithdrawType(
+      id: id ?? this.id,
+      payName: payName ?? this.payName,
+      portrait: portrait ?? this.portrait,
+      serviceFee: serviceFee ?? this.serviceFee,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'WithdrawType{id: $id, payName: $payName, portrait: $portrait, serviceFee: $serviceFee}';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WithdrawType &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          payName == other.payName &&
+          portrait == other.portrait &&
+          serviceFee == other.serviceFee);
+
+  @override
+  int get hashCode =>
+      id.hashCode ^ payName.hashCode ^ portrait.hashCode ^ serviceFee.hashCode;
+
+  factory WithdrawType.fromMap(
+    Map<String, dynamic> map, {
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+    return WithdrawType(
+      id: map[keyMapper('id')] as String,
+      payName: map[keyMapper('payName')] as String,
+      portrait: map[keyMapper('portrait')] as String,
+      serviceFee: map[keyMapper('serviceFee')] as int,
+    );
+  }
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+// ignore: unnecessary_cast
+    return {
+      keyMapper('id'): this.id,
+      keyMapper('payName'): this.payName,
+      keyMapper('portrait'): this.portrait,
+      keyMapper('serviceFee'): this.serviceFee,
+    } as Map<String, dynamic>;
+  }
+
+//</editor-fold>
+
+}

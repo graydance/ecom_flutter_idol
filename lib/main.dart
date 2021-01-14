@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/app.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/store/middleware.dart';
@@ -12,15 +14,23 @@ import 'package:redux_logging/redux_logging.dart';
 import 'models/appstate.dart';
 
 final logger = Logger('idol');
+/// 在拿不到context的地方通过navigatorKey进行路由跳转：
+/// https://stackoverflow.com/questions/52962112/how-to-navigate-without-context-in-flutter-app
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initLogging();
+  SpUtil.getInstance();
+  configLogging();
+  configLoading();
   runApp(ReduxApp(
     store: Store<AppState>(
       appReducer,
       initialState: AppState(),
-      middleware: [...createStoreMiddleware(),  LoggingMiddleware(logger: logger)],
+      middleware: [
+        ...createStoreMiddleware(),
+        LoggingMiddleware(logger: logger)
+      ],
     ),
   ));
   if (Platform.isAndroid) {
@@ -36,12 +46,29 @@ Future<void> main() async {
   }
 }
 
-void initLogging() {
+void configLogging() {
   Logger.root.onRecord.listen((LogRecord r) {
     print('${r.time}\t${r.loggerName}\t[${r.level.name}]:\t${r.message}');
   });
   Logger.root.level = Level.FINEST;
   // Add redux middleware log listener.
-  logger.onRecord.where((event) => event.loggerName == logger.name)
-  .listen((loggingMiddlewareRecord) => print(loggingMiddlewareRecord));
+  logger.onRecord
+      .where((event) => event.loggerName == logger.name)
+      .listen((loggingMiddlewareRecord) => print(loggingMiddlewareRecord));
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 40.0
+    ..radius = 5.0
+    // ..progressColor = Colors.white
+    // ..backgroundColor = Colors.green
+    // ..indicatorColor = Colors.white
+    // ..textColor = Colors.white
+    // ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = true
+    ..dismissOnTap = false;
 }
