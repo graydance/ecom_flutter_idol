@@ -1,9 +1,9 @@
-name: CI/CD
+name: QA
 
 on:
   push:
     branches:
-      - dev
+      - test
   workflow_dispatch:
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-latest
     env:
       ECOM_PROD: 'idol'
-      ECOM_ENV: 'dev'
+      ECOM_ENV: 'qa'
       VERSION_KEY: ${{ secrets.VERSION_KEY }}
       INDEX_SCRIPT: ${{ secrets.INDEX_SCRIPT }}
       MAINFEST_SCRIPT: ${{ secrets.MAINFEST_SCRIPT }}
