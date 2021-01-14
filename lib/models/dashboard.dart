@@ -76,18 +76,18 @@ class Dashboard {
       rewardList.hashCode ^
       pastSales.hashCode;
 
-  factory Dashboard.fromJson(Map<String, dynamic> json) {
+  factory Dashboard.fromMap(Map<String, dynamic> map) {
     return Dashboard(
       isLoaded: true,
-      availableBalance: json['available_balance'] as int,
-      lifetimeEarnings: json['lifetime_earnings'] as int,
-      monetaryCountry: json['monetary_country'] as String,
-      monetaryUnit: json['monetary_unit'] as String,
-      rewardList: json['reward_list'] != null
-          ? _convertRewardListJson(json['reward_list'])
+      availableBalance: map['available_balance'] as int,
+      lifetimeEarnings: map['lifetime_earnings'] as int,
+      monetaryCountry: map['monetary_country'] as String,
+      monetaryUnit: map['monetary_unit'] as String,
+      rewardList: map['reward_list'] != null
+          ? _convertRewardListJson(map['reward_list'])
           : const [],
-      pastSales: json['past_sales'] != null
-          ? _convertPastSalesListJson(json['past_sales'])
+      pastSales: map['past_sales'] != null
+          ? _convertPastSalesListJson(map['past_sales'])
           : const [],
     );
   }
@@ -109,7 +109,7 @@ class Dashboard {
     return pastSales;
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['available_balance'] = this.availableBalance;
     data['lifetime_earnings'] = this.lifetimeEarnings;

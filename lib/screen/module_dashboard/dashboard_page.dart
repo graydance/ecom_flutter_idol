@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/models.dart';
+import 'package:idol/net/request/base.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
+import 'package:idol/store/actions/actions_dashboard.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
 
@@ -15,7 +18,7 @@ class DashboardPage extends StatefulWidget {
 }
 
 class DashboardPageState extends State<DashboardPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin  {
   TabController _tabController;
 
   final List<String> _tabValues = [
@@ -37,194 +40,216 @@ class DashboardPageState extends State<DashboardPage>
     print('DashboardPageState build...');
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
+      distinct: true,
+      onInit: (Store<AppState> store){
+        StoreProvider.of<AppState>(context).dispatch(
+            DashboardAction(BaseRequestImpl()));
+      },
       builder: (context, vm) => Container(
         margin: EdgeInsets.only(top: 30),
         alignment: Alignment.topCenter,
         color: Colours.color_F8F8F8,
-        child: vm.dashboard.isLoaded
-            ? Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: _createChildWidgetByState(vm.dashboardState),
+      ),
+    );
+  }
+
+  Widget _createChildWidgetByState(DashboardState state) {
+    if (state is DashboardInitial) {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colours.color_EA5228),
+        ),
+      );
+    } else if (state is DashboardSuccess) {
+      var dashboard = (state).dashboard;
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // $1,516.23
+          GestureDetector(
+            onTap: () => IdolRoute.startDashboardBalance(context),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  dashboard.monetaryUnit +
+                      _decimalFormat(dashboard.availableBalance),
+                  style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                    color: Colours.color_EA5228,
+                  ),
+                ),
+                Icon(Icons.keyboard_arrow_right)
+              ],
+            ),
+          ),
+
+          // Lifetime Earnings
+          Container(
+            margin: EdgeInsets.only(top: 20, bottom: 20),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Lifetime Earnings',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colours.color_A9A9A9,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 8, right: 16),
+                  child: Icon(
+                    Icons.help,
+                    size: 15,
+                  ),
+                ),
+                Text(
+                  dashboard.monetaryUnit +
+                      _decimalFormat(dashboard.lifetimeEarnings),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colours.color_EA5228,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Invite frineds to receive extra earnings
+          Container(
+            padding:
+            EdgeInsets.only(left: 11, top: 4, right: 11, bottom: 4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(13)),
+              color: Colours.color_FFD8B1,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(
+                      left: 3, top: 2, right: 3, bottom: 2),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colours.color_EA5228,
+                        Colours.color_FFD8B1,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(11),
+                        bottomLeft: Radius.circular(11)),
+                  ),
+                  child: Text(
+                    'Early Bird',
+                    style: TextStyle(color: Colors.white, fontSize: 8),
+                  ),
+                ),
+                Text(
+                  ' Invite frineds to receive extra earnings! >',
+                  style: TextStyle(
+                    color: Colours.color_555764,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Rewards | Past Sales
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(top: 33),
+              padding: EdgeInsets.only(
+                  top: 20, left: 0, right: 0, bottom: 40),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colours.white,
+                    Colours.color_F8F8F8,
+                  ],
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(35),
+                  topRight: Radius.circular(35),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colours.color_10777777,
+                    offset: Offset(0.0, -1.0),
+                    blurRadius: 10.0, // 阴影模糊程度
+                    spreadRadius: 0.0, // 阴影扩散程度
+                  ),
+                ],
+              ),
+              child: Column(
                 children: [
-                  // $1,516.23
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        vm.dashboard.monetaryUnit +
-                            _decimalFormat(vm.dashboard.availableBalance),
-                        style: TextStyle(
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFEA5228),
-                        ),
-                      ),
-                      Icon(Icons.keyboard_arrow_right)
-                    ],
-                  ),
-                  // Lifetime Earnings
                   Container(
-                    margin: EdgeInsets.only(top: 20, bottom: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Lifetime Earnings',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colours.color_A9A9A9,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 8, right: 16),
-                          child: Icon(
-                            Icons.help,
-                            size: 15,
-                          ),
-                        ),
-                        Text(
-                          vm.dashboard.monetaryUnit +
-                              _decimalFormat(vm.dashboard.lifetimeEarnings),
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colours.color_EA5228,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    child: TabBar(
+                      tabs: _tabValues.map((title) {
+                        return Text(
+                          title,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        );
+                      }).toList(),
+                      isScrollable: false,
+                      controller: _tabController,
+                      indicatorColor: Colours.color_EA5228,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      unselectedLabelColor: Colours.color_B1B1B3,
+                      labelColor: Colours.color_29292B,
+                      labelStyle: TextStyle(fontSize: 16),
                     ),
                   ),
-
-                  // Invite frineds to receive extra earnings
-                  Container(
-                    padding:
-                        EdgeInsets.only(left: 11, top: 4, right: 11, bottom: 4),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(13)),
-                      color: Colours.color_FFD8B1,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(
-                              left: 3, top: 2, right: 3, bottom: 2),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Colours.color_EA5228,
-                                Colours.color_FFD8B1,
-                              ],
-                            ),
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(11),
-                                bottomLeft: Radius.circular(11)),
-                          ),
-                          child: Text(
-                            'Early Bird',
-                            style: TextStyle(color: Colors.white, fontSize: 8),
-                          ),
-                        ),
-                        Text(
-                          ' Invite frineds to receive extra earnings! >',
-                          style: TextStyle(
-                            color: Colours.color_555764,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Rewards | Past Sales
                   Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 33),
-                      padding: EdgeInsets.only(
-                          top: 20, left: 0, right: 0, bottom: 40),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colours.white,
-                            Colours.color_F8F8F8,
-                          ],
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        RewardsTabView(
+                          dashboard.rewardList,
                         ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(35),
-                          topRight: Radius.circular(35),
+                        PastSalesTabView(
+                          dashboard.pastSales,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colours.color_10777777,
-                            offset: Offset(0.0, -1.0),
-                            blurRadius: 10.0, // 阴影模糊程度
-                            spreadRadius: 0.0, // 阴影扩散程度
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(left: 20, right: 20),
-                            child: TabBar(
-                              tabs: _tabValues.map((title) {
-                                return Text(
-                                  title,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                );
-                              }).toList(),
-                              isScrollable: false,
-                              controller: _tabController,
-                              indicatorColor: Colours.color_EA5228,
-                              indicatorSize: TabBarIndicatorSize.label,
-                              unselectedLabelColor: Colours.color_B1B1B3,
-                              labelColor: Colours.color_29292B,
-                              labelStyle: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                          Expanded(
-                            child: TabBarView(
-                              controller: _tabController,
-                              children: [
-                                RewardsTabView(
-                                  vm.dashboard.rewardList,
-                                ),
-                                PastSalesTabView(
-                                  vm.dashboard.pastSales,
-                                ),
-                              ].toList(),
-                            ),
-                          ),
-                        ],
-                      ),
+                      ].toList(),
                     ),
                   ),
                 ],
-              )
-            : Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(Colours.color_EA5228),
-                ),
               ),
-      ),
-    );
+            ),
+          ),
+        ],
+      );
+    } else if (state is DashboardFailure) {
+      Center(
+        child: Text('Error!',style: TextStyle(color: Colours.color_ED3544, fontSize: 20),),
+      );
+    }
   }
 
   String _decimalFormat(int money) {
     /// 1,234,567.00
     return TextUtil.formatDoubleComma3(money / 100);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class RewardsTabView extends StatefulWidget {
@@ -390,7 +415,8 @@ class _RewardsItemState extends State<RewardsItem> {
                       child: Text(
                         reward.monetaryUnit +
                             TextUtil.formatDoubleComma3(
-                                reward.rewardCoins / 100).replaceAll(".0", ""),
+                                    reward.rewardCoins / 100)
+                                .replaceAll(".0", ""),
                         style: TextStyle(
                           color: _buttonTextColor(),
                           fontSize: 14,
@@ -567,7 +593,8 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
                           ),
                         ),
                         Text(
-                          pastSales.monetaryUnit + TextUtil.formatDoubleComma3(dailySale / 100),
+                          pastSales.monetaryUnit +
+                              TextUtil.formatDoubleComma3(dailySale / 100),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -589,11 +616,21 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
 }
 
 class _ViewModel {
-  final Dashboard dashboard;
+  final DashboardState dashboardState;
 
-  _ViewModel(this.dashboard);
+  _ViewModel(this.dashboardState);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.dashboard);
+    return _ViewModel(store.state.dashboardState);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          dashboardState == other.dashboardState;
+
+  @override
+  int get hashCode => dashboardState.hashCode;
 }
