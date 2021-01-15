@@ -1,14 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:idol/net/api.dart';
-import 'package:idol/app.dart';
-import 'package:idol/models/models.dart';
-import 'package:idol/store/middleware.dart';
-import 'package:idol/store/reducers/appreducers.dart';
-import 'package:logging/logging.dart';
 import 'package:mockito/mockito.dart';
-import 'package:redux/redux.dart';
-import 'package:redux_logging/redux_logging.dart';
 
 class MockDio extends Mock implements Dio {}
 
