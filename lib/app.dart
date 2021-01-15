@@ -4,7 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'file:///D:/WorkSpace/Flutter/ecom_flutter_idol/lib/screen/module_main/splash.dart';
+import 'package:idol/screen/screens.dart';
 import 'package:redux/redux.dart';
 
 class ReduxApp extends StatelessWidget {
