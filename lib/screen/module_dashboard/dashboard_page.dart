@@ -1,24 +1,23 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'package:idol/store/actions/actions_dashboard.dart';
+import 'package:idol/store/actions/dashboard.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return DashboardPageState();
-  }
+  State<StatefulWidget> createState() =>_DashboardPageState();
 }
 
-class DashboardPageState extends State<DashboardPage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin  {
+class _DashboardPageState extends State<DashboardPage>
+    with AutomaticKeepAliveClientMixin<DashboardPage>, SingleTickerProviderStateMixin{
   TabController _tabController;
 
   final List<String> _tabValues = [
@@ -37,13 +36,13 @@ class DashboardPageState extends State<DashboardPage>
 
   @override
   Widget build(BuildContext context) {
-    print('DashboardPageState build...');
+    super.build(context);
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       distinct: true,
-      onInit: (Store<AppState> store){
-        StoreProvider.of<AppState>(context).dispatch(
-            DashboardAction(BaseRequestImpl()));
+      onInit: (Store<AppState> store) {
+        StoreProvider.of<AppState>(context)
+            .dispatch(DashboardAction(BaseRequestImpl()));
       },
       builder: (context, vm) => Container(
         margin: EdgeInsets.only(top: 30),
@@ -70,7 +69,12 @@ class DashboardPageState extends State<DashboardPage>
         children: [
           // $1,516.23
           GestureDetector(
-            onTap: () => IdolRoute.startDashboardBalance(context),
+            onTap: () => IdolRoute.startDashboardBalance(context).then((value) {
+              if(value != null){
+                // TODO 切换到选品页
+
+              }
+            }),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,10 +129,9 @@ class DashboardPageState extends State<DashboardPage>
             ),
           ),
 
-          // Invite frineds to receive extra earnings
+          // Invite friends to receive extra earnings
           Container(
-            padding:
-            EdgeInsets.only(left: 11, top: 4, right: 11, bottom: 4),
+            padding: EdgeInsets.only(left: 11, top: 4, right: 11, bottom: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(13)),
               color: Colours.color_FFD8B1,
@@ -137,8 +140,8 @@ class DashboardPageState extends State<DashboardPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: EdgeInsets.only(
-                      left: 3, top: 2, right: 3, bottom: 2),
+                  padding:
+                      EdgeInsets.only(left: 3, top: 2, right: 3, bottom: 2),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -158,7 +161,7 @@ class DashboardPageState extends State<DashboardPage>
                   ),
                 ),
                 Text(
-                  ' Invite frineds to receive extra earnings! >',
+                  ' Invite friends to receive extra earnings! >',
                   style: TextStyle(
                     color: Colours.color_555764,
                     fontSize: 12,
@@ -172,8 +175,7 @@ class DashboardPageState extends State<DashboardPage>
           Expanded(
             child: Container(
               margin: EdgeInsets.only(top: 33),
-              padding: EdgeInsets.only(
-                  top: 20, left: 0, right: 0, bottom: 40),
+              padding: EdgeInsets.only(top: 20, left: 0, right: 0, bottom: 40),
               decoration: BoxDecoration(
                 color: Colors.white,
                 gradient: LinearGradient(
@@ -236,9 +238,20 @@ class DashboardPageState extends State<DashboardPage>
           ),
         ],
       );
-    } else if (state is DashboardFailure) {
-      Center(
-        child: Text('Error!',style: TextStyle(color: Colours.color_ED3544, fontSize: 20),),
+    } else if(state is DashboardFailure){
+      // TODO 展示请求错误页面（包含重试按钮），待UI设计
+      EasyLoading.showToast((state).message);
+      return Center(
+        child: Text(
+          (state).message,
+          style: TextStyle(color: Colours.color_ED3544, fontSize: 20),
+        ),
+      );
+    }else{
+      return Center(
+        child: Text(
+          '',
+        ),
       );
     }
   }
@@ -252,7 +265,7 @@ class DashboardPageState extends State<DashboardPage>
   bool get wantKeepAlive => true;
 }
 
-class RewardsTabView extends StatefulWidget {
+class RewardsTabView extends StatefulWidget{
   final List<Reward> list;
 
   const RewardsTabView(this.list);
@@ -261,13 +274,14 @@ class RewardsTabView extends StatefulWidget {
   State<StatefulWidget> createState() => _RewardsTabViewState(list);
 }
 
-class _RewardsTabViewState extends State<RewardsTabView> {
+class _RewardsTabViewState extends State<RewardsTabView> with AutomaticKeepAliveClientMixin<RewardsTabView> {
   final List<Reward> list;
 
   _RewardsTabViewState(this.list);
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
         padding: EdgeInsets.only(left: 20, right: 20, top: 24),
         child: ListView.separated(
@@ -284,6 +298,9 @@ class _RewardsTabViewState extends State<RewardsTabView> {
           },
         ));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class RewardsItem extends StatefulWidget {
@@ -295,7 +312,7 @@ class RewardsItem extends StatefulWidget {
   State<StatefulWidget> createState() => _RewardsItemState(reward);
 }
 
-class _RewardsItemState extends State<RewardsItem> {
+class _RewardsItemState extends State<RewardsItem>{
   final Reward reward;
 
   _RewardsItemState(this.reward);
@@ -480,22 +497,42 @@ class PastSalesTabView extends StatefulWidget {
   State<StatefulWidget> createState() => _PastSalesTabViewSate(dataList);
 }
 
-class _PastSalesTabViewSate extends State<PastSalesTabView> {
+class _PastSalesTabViewSate extends State<PastSalesTabView> with AutomaticKeepAliveClientMixin<PastSalesTabView> {
   PageController _pageController;
   final List<PastSales> pastSales;
 
   _PastSalesTabViewSate(this.pastSales);
 
-  var weekTableNames = const ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  var weekTableTextStyle = const TextStyle(
+  var _year = '';
+  var _month = '';
+  var _monthSales = '';
+  var _currentYearMonth = '';
+  var _currentDayOfMonth = '';
+
+  var _monthMap = const {
+    '01': 'January',
+    '02': 'February',
+    '03': 'March',
+    '04': 'April',
+    '05': 'May',
+    '06': 'June',
+    '07': 'July',
+    '08': 'August',
+    '09': 'September',
+    '10': 'October',
+    '11': 'November',
+    '12': 'December',
+  };
+  var _weekTableNames = const ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var _weekTableTextStyle = const TextStyle(
       fontSize: 12, color: Colours.color_0F1015, fontWeight: FontWeight.bold);
 
   List<Text> _getWeekText() {
     List<Text> weekTextList = [];
-    weekTableNames.forEach((element) {
+    _weekTableNames.forEach((element) {
       weekTextList.add(Text(
         element,
-        style: weekTableTextStyle,
+        style: _weekTableTextStyle,
       ));
     });
     return weekTextList;
@@ -505,10 +542,23 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    // 获取当前年月进行_year _month初始化赋值
+    String nowDate = DateUtil.getNowDateStr();
+    if (nowDate.contains(" ")) {
+      nowDate = nowDate.split(" ")[0];
+      var formatDate = nowDate.split("-");
+      _currentYearMonth = formatDate[0] + formatDate[1];
+      _currentDayOfMonth = formatDate[2];
+    }
+    debugPrint('nowDate：$nowDate');
+    _year = pastSales[0].date.substring(0, 4);
+    _month =
+        _monthMap[pastSales[0].date.substring(4, pastSales[0].date.length)];
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Colours.white,
       padding: EdgeInsets.only(top: 24),
@@ -528,14 +578,14 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'November 2020',
+                  '$_month $_year',
                   style: TextStyle(
                       color: Colours.color_0F1015,
                       fontSize: 14,
                       fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '\$21,232.00',
+                  _monthSales,
                   style: TextStyle(
                       color: Colours.color_EA5228,
                       fontSize: 14,
@@ -550,7 +600,7 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
               controller: _pageController,
               scrollDirection: Axis.vertical,
               physics: PageScrollPhysics(parent: BouncingScrollPhysics()),
-              //onPageChanged: _,
+              onPageChanged: (index) => _onPageChanged(pastSales[index]),
               itemCount: pastSales.length,
               itemBuilder: (context, index) {
                 return _buildCalendarPage(pastSales[index]);
@@ -579,7 +629,7 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
                   Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colours.white, //Colours.color_10EA5228,
+                      color: _isToday(pastSales.date, index) ? Colours.color_10EA5228 : Colours.white,
                       shape: BoxShape.circle,
                     ),
                     child: Column(
@@ -612,7 +662,42 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> {
     );
   }
 
-  void _onPageChanged() {}
+  bool _isToday(String pastSalesDate, int index) {
+    debugPrint('pastSalesDate：$pastSalesDate, '
+        '_currentYearMonth：$_currentYearMonth, '
+        'index：$index, _currentDayOfMonth：$_currentDayOfMonth');
+    if (pastSalesDate == _currentYearMonth) {
+      if (_currentDayOfMonth.length == 2) {
+        if (_currentDayOfMonth.startsWith('0')) {
+          return int.tryParse(_currentDayOfMonth.substring(1, 2)) ==
+              (index + 1);
+        } else {
+          return int.tryParse(_currentDayOfMonth) == (index + 1);
+        }
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  void _onPageChanged(PastSales pastSales) {
+    if (pastSales.date.isNotEmpty) {
+      setState(() {
+        // 更新月份
+        _year = pastSales.date.substring(0, 4);
+        String month = pastSales.date.substring(4, pastSales.date.length);
+        _month = _monthMap[month];
+        _monthSales = pastSales.monetaryUnit +
+            TextUtil.formatDoubleComma3(pastSales.monthSales / 100);
+        debugPrint(
+            'current select year：$_year, month：$_month, monthSales：$_monthSales');
+      });
+    }
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _ViewModel {

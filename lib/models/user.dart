@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 @immutable
 class User {
-  final bool isLoaded;
   final String nickName;
   final String portrait;
   final int gender;
@@ -24,7 +23,6 @@ class User {
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const User({
-    this.isLoaded = false,
     this.nickName = '',
     this.portrait = '',
     this.gender = 0,
@@ -64,8 +62,7 @@ class User {
     String createdAt,
     String token,
   }) {
-    if ((isLoaded == null || identical(isLoaded, this.isLoaded)) &&
-        (nickName == null || identical(nickName, this.nickName)) &&
+    if ((nickName == null || identical(nickName, this.nickName)) &&
         (portrait == null || identical(portrait, this.portrait)) &&
         (gender == null || identical(gender, this.gender)) &&
         (aboutMe == null || identical(aboutMe, this.aboutMe)) &&
@@ -89,7 +86,6 @@ class User {
     }
 
     return User(
-      isLoaded: isLoaded ?? this.isLoaded,
       nickName: nickName ?? this.nickName,
       portrait: portrait ?? this.portrait,
       gender: gender ?? this.gender,
@@ -112,7 +108,7 @@ class User {
 
   @override
   String toString() {
-    return 'User{isLoaded: $isLoaded, nickName: $nickName, portrait: $portrait, gender: $gender, aboutMe: $aboutMe, bindPhone: $bindPhone, availableBalance: $availableBalance, lifetimeEarnings: $lifetimeEarnings, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, shopStatus: $shopStatus, heatRank: $heatRank, bioLink: $bioLink, id: $id, email: $email, updatedAt: $updatedAt, createdAt: $createdAt, token: $token}';
+    return 'User{nickName: $nickName, portrait: $portrait, gender: $gender, aboutMe: $aboutMe, bindPhone: $bindPhone, availableBalance: $availableBalance, lifetimeEarnings: $lifetimeEarnings, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, shopStatus: $shopStatus, heatRank: $heatRank, bioLink: $bioLink, id: $id, email: $email, updatedAt: $updatedAt, createdAt: $createdAt, token: $token}';
   }
 
   @override
@@ -120,7 +116,6 @@ class User {
       identical(this, other) ||
       (other is User &&
           runtimeType == other.runtimeType &&
-          isLoaded == other.isLoaded &&
           nickName == other.nickName &&
           portrait == other.portrait &&
           gender == other.gender &&
@@ -141,7 +136,6 @@ class User {
 
   @override
   int get hashCode =>
-      isLoaded.hashCode ^
       nickName.hashCode ^
       portrait.hashCode ^
       gender.hashCode ^
@@ -167,7 +161,6 @@ class User {
     keyMapper ??= (key) => key;
 
     return User(
-      isLoaded: map[keyMapper('isLoaded')] as bool,
       nickName: map[keyMapper('nickName')] as String,
       portrait: map[keyMapper('portrait')] as String,
       gender: map[keyMapper('gender')] as int,
@@ -195,7 +188,6 @@ class User {
 
 // ignore: unnecessary_cast
     return {
-      keyMapper('isLoaded'): this.isLoaded,
       keyMapper('nickName'): this.nickName,
       keyMapper('portrait'): this.portrait,
       keyMapper('gender'): this.gender,

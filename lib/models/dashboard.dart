@@ -79,15 +79,15 @@ class Dashboard {
   factory Dashboard.fromMap(Map<String, dynamic> map) {
     return Dashboard(
       isLoaded: true,
-      availableBalance: map['available_balance'] as int,
-      lifetimeEarnings: map['lifetime_earnings'] as int,
-      monetaryCountry: map['monetary_country'] as String,
-      monetaryUnit: map['monetary_unit'] as String,
-      rewardList: map['reward_list'] != null
-          ? _convertRewardListJson(map['reward_list'])
+      availableBalance: map['availableBalance'] ?? 0,
+      lifetimeEarnings: map['lifetimeEarnings'] ?? 0,
+      monetaryCountry: map['monetaryCountry'] ?? 'USD',
+      monetaryUnit: map['monetaryUnit'] ?? '\$',
+      rewardList: map['rewardList'] != null
+          ? _convertRewardListJson(map['rewardList'])
           : const [],
-      pastSales: map['past_sales'] != null
-          ? _convertPastSalesListJson(map['past_sales'])
+      pastSales: map['pastSales'] != null
+          ? _convertPastSalesListJson(map['pastSales'])
           : const [],
     );
   }
@@ -95,7 +95,7 @@ class Dashboard {
   static List<Reward> _convertRewardListJson(List<dynamic> rewardListJson) {
     List<Reward> rewardList = <Reward>[];
     rewardListJson.forEach((value) {
-      rewardList.add(Reward.fromJson(value));
+      rewardList.add(Reward.fromMap(value));
     });
     return rewardList;
   }
@@ -111,20 +111,21 @@ class Dashboard {
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['available_balance'] = this.availableBalance;
-    data['lifetime_earnings'] = this.lifetimeEarnings;
-    data['monetary_country'] = this.monetaryCountry;
-    data['monetary_unit'] = this.monetaryUnit;
+    data['availableBalance'] = this.availableBalance;
+    data['lifetimeEarnings'] = this.lifetimeEarnings;
+    data['monetaryCountry'] = this.monetaryCountry;
+    data['monetaryUnit'] = this.monetaryUnit;
     if (this.rewardList != null) {
-      data['reward_list'] = this.rewardList.map((v) => v.toJson()).toList();
+      data['rewardList'] = this.rewardList.map((v) => v.toMap()).toList();
     }
     if (this.pastSales != null) {
-      data['past_sales'] = this.pastSales.map((v) => v.toJson()).toList();
+      data['pastSales'] = this.pastSales.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
+@immutable
 class Reward {
   final int rewardStatus;
   final String rewardTitle;
@@ -184,25 +185,25 @@ class Reward {
       monetaryCountry.hashCode ^
       monetaryUnit.hashCode;
 
-  factory Reward.fromJson(Map<String, dynamic> json) {
+  factory Reward.fromMap(Map<String, dynamic> json) {
     return Reward(
-      rewardStatus: json['reward_status'],
-      rewardTitle: json['reward_title'],
-      rewardDescription: json['reward_description'],
-      rewardCoins: json['reward_coins'],
-      monetaryCountry: json['monetary_country'],
-      monetaryUnit: json['monetary_unit'],
+      rewardStatus: json['rewardStatus'] ?? -1,
+      rewardTitle: json['rewardTitle'] ?? '',
+      rewardDescription: json['rewardDescription'] ?? '',
+      rewardCoins: json['rewardCoins'] ?? 0,
+      monetaryCountry: json['monetaryCountry'] ?? 'USD',
+      monetaryUnit: json['monetaryUnit'] ?? '\$',
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['reward_status'] = this.rewardStatus;
-    data['reward_title'] = this.rewardTitle;
-    data['reward_description'] = this.rewardDescription;
-    data['reward_coins'] = this.rewardCoins;
-    data['monetary_country'] = this.monetaryCountry;
-    data['monetary_unit'] = this.monetaryUnit;
+    data['rewardStatus'] = this.rewardStatus;
+    data['rewardTitle'] = this.rewardTitle;
+    data['rewardDescription'] = this.rewardDescription;
+    data['rewardCoins'] = this.rewardCoins;
+    data['monetaryCountry'] = this.monetaryCountry;
+    data['monetaryUnit'] = this.monetaryUnit;
     return data;
   }
 }
@@ -266,19 +267,19 @@ class PastSales {
   factory PastSales.fromJson(Map<String, dynamic> json) {
     return PastSales(
         date: json['date'],
-        monetaryCountry: json['monetary_country'],
-        monetaryUnit: json['monetary_unit'],
-        monthSales: json['month_sales'],
-        dailySales: json['daily_sales'].cast<int>());
+        monetaryCountry: json['monetaryCountry'] ?? 'USD',
+        monetaryUnit: json['monetaryUnit'] ?? '\$',
+        monthSales: json['monthSales'] ?? 0,
+        dailySales: json['dailySales'] == null ? const [] : json['dailySales'].cast<int>());
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['date'] = this.date;
-    data['monetary_country'] = this.monetaryCountry;
-    data['monetary_unit'] = this.monetaryUnit;
-    data['month_sales'] = this.monthSales;
-    data['daily_sales'] = this.dailySales;
+    data['monetaryCountry'] = this.monetaryCountry;
+    data['monetaryUnit'] = this.monetaryUnit;
+    data['monthSales'] = this.monthSales;
+    data['dailySales'] = this.dailySales;
     return data;
   }
 }

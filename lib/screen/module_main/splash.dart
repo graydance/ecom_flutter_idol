@@ -7,7 +7,7 @@ import 'package:idol/net/request/login.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/router.dart';
 import 'package:redux/redux.dart';
-import 'package:idol/store/actions/actions_main.dart';
+import 'package:idol/store/actions/main.dart';
 import 'package:idol/utils/keystore.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,28 +16,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    if (_isUserLoggedIn()) {
-      // auto login
-      debugPrint(
-          'User is logged in. will running auto login.');
-      String email = SpUtil.getString(KeyStore.EMAIL);
-      String password = SpUtil.getString(KeyStore.PASSWORD);
-      StoreProvider.of<AppState>(context)
-          .dispatch(LoginAction(LoginRequest(email, password)));
-    } else {
-      debugPrint(
-          'User is not logged in. will jump to Sign Up/Sign In.');
-      // sing up/sign in.
-      Future.delayed(Duration(milliseconds: 3000),
-          () => {IdolRoute.startSignUpOrSignIn(context)});
-    }
-    super.initState();
-  }
 
   bool _isUserLoggedIn() {
-    return !TextUtil.isEmpty(SpUtil.getString(KeyStore.TOKEN));
+    return SpUtil.getString(KeyStore.TOKEN).isNotEmpty;
   }
 
   void _onLoginStateChange(LoginState state) {
@@ -55,6 +36,23 @@ class SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
         distinct: true,
+        onInit: (store){
+          if (_isUserLoggedIn()) {
+            // auto login
+            debugPrint(
+                'User is logged in. will running auto login.');
+            String email = SpUtil.getString(KeyStore.EMAIL);
+            String password = SpUtil.getString(KeyStore.PASSWORD);
+            StoreProvider.of<AppState>(context)
+                .dispatch(LoginAction(LoginRequest(email, password)));
+          } else {
+            debugPrint(
+                'User is not logged in. will jump to Sign Up/Sign In.');
+            // sing up/sign in.
+            Future.delayed(Duration(milliseconds: 3000),
+                    () => {IdolRoute.startSignUpOrSignIn(context)});
+          }
+        },
         onWillChange: (oldVM, newVM) =>
             {_onLoginStateChange(newVM == null ? oldVM.loginState : newVM)},
         converter: _ViewModel.fromStore,
@@ -71,7 +69,6 @@ class SplashScreenState extends State<SplashScreen> {
 
 class _ViewModel {
   final LoginState loginState;
-
   _ViewModel(this.loginState);
 
   static _ViewModel fromStore(Store<AppState> store) {

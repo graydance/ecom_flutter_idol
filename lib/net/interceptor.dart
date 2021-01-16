@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flustars/flustars.dart';
 import 'package:idol/main.dart';
 
 class TokenInterceptors extends InterceptorsWrapper {
@@ -10,6 +11,13 @@ class TokenInterceptors extends InterceptorsWrapper {
   Future onRequest(RequestOptions options) async {
     logger.fine(
         "TokenInterceptors REQUEST[${options?.method}] => PATH: ${options?.path}");
+    String token = options.headers['x-token'];
+    if(token.isEmpty){
+      String cacheToken = SpUtil.getString('token');
+      if(cacheToken.isNotEmpty){
+        options.headers['x-token'] = cacheToken;
+      }
+    }
     // String token = SpUtil.getString('token');
     // 进行token过期处理
     // if (token == null) {

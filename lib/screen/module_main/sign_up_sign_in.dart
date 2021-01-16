@@ -8,7 +8,7 @@ import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/login.dart';
 import 'package:idol/res/colors.dart';
-import 'package:idol/store/actions/actions_main.dart';
+import 'package:idol/store/actions/main.dart';
 import 'package:idol/widgets/widgets.dart';
 
 /// Sign Up/Sign In
@@ -29,8 +29,9 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController(/*text: 'gaopengfeidev@gmail.com'*/);
-    _passwordController = TextEditingController(/*text: 'abc123'*/);
+    _emailController =
+        TextEditingController(text: 'gaopengfeidev@gmail.com');
+    _passwordController = TextEditingController(text: 'abc123');
     _emailController.addListener(() {
       debugPrint('email => ${_emailController.text}');
       setState(() {
@@ -72,7 +73,7 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
 
   void _onLoginStateChange(LoginState state) {
     if (state is LoginLoading) {
-      EasyLoading.show(status: 'loading...');
+      EasyLoading.show(status: 'Signing in...');
     } else if (state is LoginSuccess) {
       EasyLoading.dismiss();
       IdolRoute.startHome(context);
@@ -89,7 +90,8 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
         distinct: true,
         onWillChange: (oldVM, newVM) {
           debugPrint('oldVM：$oldVM, newVM：$newVM');
-          _onLoginStateChange(newVM == null ? oldVM.loginState : newVM.loginState);
+          _onLoginStateChange(
+              newVM == null ? oldVM.loginState : newVM.loginState);
         },
         converter: _ViewModel.fromStore,
         builder: (context, vm) => Container(
@@ -105,7 +107,9 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
                     fontWeight: FontWeight.bold,
                     color: Colors.black),
               ),
-              SizedBox(height: 40,),
+              SizedBox(
+                height: 40,
+              ),
               TextField(
                 controller: _emailController,
                 //cursorColor: Colours.color_F68A51,
@@ -114,14 +118,19 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
                 //style: TextStyle(color: Colours.color_3B3F42, fontSize: 14),
                 decoration: InputDecoration(
                   focusColor: Colours.color_B1B2B3,
-                 // errorText: _emailErrorText,
+                  // errorText: _emailErrorText,
                   hintText: 'Please input email',
                   //hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
                   prefixIcon: Icon(
-                    Icons.email, color: Colours.color_B1B2B3,
+                    Icons.email,
+                    color: Colours.color_B1B2B3,
                   ),
-                  suffixIcon:
-                      IconButton(icon: Icon(Icons.clear, color: Colours.color_B1B2B3,), onPressed: _clear),
+                  suffixIcon: IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        color: Colours.color_B1B2B3,
+                      ),
+                      onPressed: _clear),
                 ),
               ),
               TextField(
@@ -137,12 +146,16 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
                   hintText: 'Please input password',
                   //hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
                   prefixIcon: Icon(
-                    Icons.lock, color: Colours.color_B1B2B3,
+                    Icons.lock,
+                    color: Colours.color_B1B2B3,
                   ),
                   suffixIcon: IconButton(
-                      icon: Icon(_passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off, color: Colours.color_B1B2B3,),
+                      icon: Icon(
+                        _passwordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colours.color_B1B2B3,
+                      ),
                       onPressed: _changePasswordVisibility),
                 ),
               ),
@@ -154,11 +167,9 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
                 status: _buttonStatus,
                 listener: (status) {
                   if (status == IdolButtonStatus.enable) {
-                    EasyLoading.show(status: 'loading...');
+                    FocusScope.of(context).requestFocus(FocusNode());
                     // 发起登录请求
-                    StoreProvider.of<AppState>(context).dispatch(LoginAction(
-                        LoginRequest(
-                            _emailController.text, _passwordController.text)));
+                    vm._signInOrSignUp(_emailController.text, _passwordController.text);
                   }
                 },
               )
@@ -172,11 +183,16 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
 
 class _ViewModel {
   final LoginState loginState;
-
-  _ViewModel(this.loginState);
+  final Function(String, String) _signInOrSignUp;
+  _ViewModel(this.loginState,this._signInOrSignUp);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.loginState);
+    
+    _signInOrSignUp(String email, String password){
+      store.dispatch(LoginAction(LoginRequest(email, password)));
+    }
+    
+    return _ViewModel(store.state.loginState, _signInOrSignUp);
   }
 
   @override

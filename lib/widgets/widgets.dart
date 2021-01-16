@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/res/colors.dart';
@@ -9,6 +8,7 @@ import 'package:idol/widgets/rating_widget.dart';
 class IdolUI {
   static AppBar appBar(BuildContext context, String title) {
     return AppBar(
+      elevation: 0,
       titleSpacing: 0,
       title: Text(
         title,
@@ -216,17 +216,23 @@ class WithdrawMessageDialog extends StatelessWidget {
   }
 }
 
+/// 列表Item被点击或选中
+/// index：索引
+/// T t 返回index对应Item绑定的元素
+typedef OnItemSelectedListener<T> = void Function(int index, T t);
+
 /// 选择支付方式弹窗
 class SelectPaymentMethodsDialog extends StatefulWidget {
+  final defaultSelectedIndex;
   final List<WithdrawType> withdrawType;
   final OnClickListener onClose;
-  final OnClickListener onNext;
+  final OnItemSelectedListener<WithdrawType> onItemSelected;
 
   const SelectPaymentMethodsDialog(
     this.withdrawType, {
-    Key key,
+    this.defaultSelectedIndex = -1,
     this.onClose,
-    this.onNext,
+    this.onItemSelected,
   });
 
   @override
@@ -235,6 +241,9 @@ class SelectPaymentMethodsDialog extends StatefulWidget {
 
 class _SelectPaymentMethodsDialogState
     extends State<SelectPaymentMethodsDialog> {
+  int _selectedItemIndex;
+  WithdrawType _withdrawType;
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -255,7 +264,7 @@ class _SelectPaymentMethodsDialogState
               mainAxisSize: MainAxisSize.min,
               children: [
                 GestureDetector(
-                  onTap: () => widget.onClose,
+                  onTap: () => widget.onClose(),
                   child: Container(
                     alignment: Alignment.topRight,
                     padding: EdgeInsets.all(12),
@@ -277,16 +286,14 @@ class _SelectPaymentMethodsDialogState
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(
-                  height: 15,
-                ),
                 GridView.count(
+                  shrinkWrap: true,
                   //水平子Widget之间间距
-                  crossAxisSpacing: 10.0,
+                  crossAxisSpacing: 0.0,
                   //垂直子Widget之间间距
-                  mainAxisSpacing: 10.0,
+                  mainAxisSpacing: 5.0,
                   //GridView内边距
-                  padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(30.0),
                   //一行的Widget数量
                   crossAxisCount: 2,
                   //子Widget宽高比例
@@ -294,16 +301,14 @@ class _SelectPaymentMethodsDialogState
                   //子Widget列表
                   children: _createPaymentMethodsWidgets(),
                 ),
-                SizedBox(
-                  height: 15,
-                ),
-                IdolButton(
-                  'Next',
-                  status: IdolButtonStatus.enable,
-                  width: 100,
-                  height: 36,
-                  listener: (status) => widget.onNext,
-                ),
+                IdolButton('Done',
+                    status: IdolButtonStatus.enable,
+                    width: 100,
+                    height: 36, listener: (status) {
+                  debugPrint(
+                      '_selectedItemIndex：$_selectedItemIndex, _withdrawType：$_withdrawType');
+                  widget.onItemSelected(_selectedItemIndex, _withdrawType);
+                }),
               ],
             ),
           ),
@@ -313,28 +318,79 @@ class _SelectPaymentMethodsDialogState
   }
 
   List<Widget> _createPaymentMethodsWidgets() {
-    widget.withdrawType.forEach((element) {
-      Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(6)),
-                border: Border.all(color: Colours.color_4E9AE3, width: 1)),
-            child: Image(
-              image: NetworkImage(element.portrait),
-              width: 65,
-              height: 24,
+    return widget.withdrawType
+        .asMap()
+        .map((key, value) {
+          return MapEntry(
+            key,
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedItemIndex = key;
+                    _withdrawType = value;
+                  });
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 10, top: 5, right: 10, bottom: 5),
+                      decoration: BoxDecoration(
+                        color: Colours.white,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        border: Border.all(
+                            color: _selected(key)
+                                ? Colours.color_4E9AE3
+                                : Colours.white,
+                            width: 1),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colours.color_40A2A2A2,
+                              offset: Offset(1.0, 1.0),
+                              blurRadius: 2,
+                              spreadRadius: 0.5),
+                        ],
+                      ),
+                      child: Image(
+                        image: NetworkImage(value.portrait),
+                        width: 65,
+                        height: 24,
+                      ),
+                    ),
+                    ...(_selected(key))
+                        ? [
+                            Align(
+                              widthFactor: 6.2,
+                              heightFactor: 0,
+                              alignment: Alignment.topRight,
+                              child:
+                                // Expanded(),
+                                Icon(
+                                  Icons.check_circle,
+                                  color: Colours.color_4E9AE3,
+                                  size: 15,
+                                ),
+                            ),
+                          ]
+                        : [],
+                  ],
+                ),
+              ),
             ),
-          ),
-          Icon(
-            Icons.check_circle,
-            color: Colours.color_4E9AE3,
-            size: 12,
-          ),
-        ],
-      );
-    });
+          );
+        })
+        .values
+        .toList();
+  }
+
+  bool _selected(int currentIndex) {
+    debugPrint('_selected >>> currentIndex:$currentIndex | _selectedItemIndex:$_selectedItemIndex');
+    if(_selectedItemIndex != null){
+      return currentIndex == _selectedItemIndex;
+  }else{
+      return widget.defaultSelectedIndex != null && currentIndex == widget.defaultSelectedIndex;
+    }
   }
 }
 
@@ -405,6 +461,7 @@ class RatingDialog extends StatelessWidget {
                     count: 5,
                     maxRating: 10,
                     padding: 5,
+                    value: 0,
                   ),
                 ),
                 IdolButton(

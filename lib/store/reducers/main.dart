@@ -1,5 +1,5 @@
 import 'package:redux/redux.dart';
-import 'package:idol/store/actions/actions_main.dart';
+import 'package:idol/store/actions/main.dart';
 
 final loginReducer = combineReducers<LoginState>([
   TypedReducer<LoginState, LoginAction>(_onLogin),

@@ -1,10 +1,9 @@
 import 'package:flustars/flustars.dart';
-import 'package:flutter/material.dart';
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/api.dart';
-import 'package:idol/store/actions/actions_dashboard.dart';
-import 'package:idol/store/actions/actions_main.dart';
+import 'package:idol/store/actions/dashboard.dart';
+import 'package:idol/store/actions/main.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';

@@ -1,44 +1,78 @@
-import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/store/actions/actions_main.dart';
+import 'package:idol/store/actions/main.dart';
 import 'package:meta/meta.dart';
+import 'arguments/arguments.dart';
 
 @immutable
 class AppState {
   final LoginState loginState;
   final DashboardState dashboardState;
   final WithdrawInfoState withdrawInfoState;
+  final WithdrawState withdrawState;
+  final WithdrawVerifyArguments withdrawVerifyArguments;
+  final WithdrawResultArguments withdrawResultArguments;
 
   AppState(
       {this.dashboardState = const DashboardInitial(),
       this.loginState = const LoginInitial(),
-      this.withdrawInfoState = const WithdrawInfoInitial()});
+      this.withdrawInfoState = const WithdrawInfoInitial(),
+      this.withdrawState = const WithdrawInitial(),
+      this.withdrawVerifyArguments = const WithdrawVerifyArguments(),
+      this.withdrawResultArguments = const WithdrawResultArguments()});
 
-  AppState copyWith({Dashboard dashboard}) {
+  AppState copyWith({
+    LoginState loginState,
+    DashboardState dashboardState,
+    WithdrawInfoState withdrawInfoState,
+    WithdrawState withdrawState,
+    WithdrawVerifyArguments withdrawVerifyArguments,
+    WithdrawResultArguments withdrawResultArguments,
+  }) {
+    if ((loginState == null || identical(loginState, this.loginState)) &&
+        (dashboardState == null ||
+            identical(dashboardState, this.dashboardState)) &&
+        (withdrawInfoState == null ||
+            identical(withdrawInfoState, this.withdrawInfoState)) &&
+        (withdrawState == null ||
+            identical(withdrawState, this.withdrawState)) &&
+        (withdrawVerifyArguments == null ||
+            identical(withdrawVerifyArguments, this.withdrawVerifyArguments)) &&
+        (withdrawResultArguments == null ||
+            identical(withdrawResultArguments, this.withdrawResultArguments))) {
+      return this;
+    }
+
     return AppState(
-        dashboardState: dashboardState ?? this.dashboardState,
-        loginState: loginState ?? this.loginState,
-        withdrawInfoState: withdrawInfoState ?? this.withdrawInfoState);
+      loginState: loginState ?? this.loginState,
+      dashboardState: dashboardState ?? this.dashboardState,
+      withdrawInfoState: withdrawInfoState ?? this.withdrawInfoState,
+      withdrawState: withdrawState ?? this.withdrawState,
+      withdrawVerifyArguments:
+          withdrawVerifyArguments ?? this.withdrawVerifyArguments,
+      withdrawResultArguments:
+          withdrawResultArguments ?? this.withdrawResultArguments,
+    );
   }
-
-  @override
-  int get hashCode =>
-      dashboardState.hashCode ^
-      loginState.hashCode ^
-      withdrawInfoState.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AppState &&
           runtimeType == other.runtimeType &&
-          dashboardState == other.dashboardState &&
           loginState == other.loginState &&
-          withdrawInfoState == other.withdrawInfoState;
+          dashboardState == other.dashboardState &&
+          withdrawInfoState == other.withdrawInfoState &&
+          withdrawState == other.withdrawState &&
+          withdrawVerifyArguments == other.withdrawVerifyArguments &&
+          withdrawResultArguments == other.withdrawResultArguments;
 
   @override
-  String toString() {
-    return 'AppState{dashboardResponse:$dashboardState}, loginState:$loginState, withdrawInfoState:$withdrawInfoState';
-  }
+  int get hashCode =>
+      loginState.hashCode ^
+      dashboardState.hashCode ^
+      withdrawInfoState.hashCode ^
+      withdrawState.hashCode ^
+      withdrawVerifyArguments.hashCode ^
+      withdrawResultArguments.hashCode;
 }

@@ -1,5 +1,4 @@
 import 'package:flustars/flustars.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/withdraw_info.dart';
@@ -20,7 +19,6 @@ class BalanceScreen extends StatefulWidget {
 }
 
 class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,221 +46,227 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
             withdrawInfo =
                 (vm.withdrawInfoState as WithdrawInfoSuccess).withdrawInfo;
           }
-          return Container(
-            color: Colours.color_F8F8F8,
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: R.image.bg_withdraw_webp(),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  height: 220,
-                ),
-                // Container(
-                //   margin: EdgeInsets.only(top: 30),
-                //   padding:
-                //       EdgeInsets.only(left: 10, top: 16, right: 10, bottom: 16),
-                //   child: IconButton(
-                //     icon: Icon(
-                //       Icons.arrow_back_ios,
-                //       color: Colours.color_444648,
-                //       size: 20,
-                //     ),
-                //     onPressed: () => Navigator.of(context).pop(),
-                //   ),
-                // ),
-                Container(
-                  //height: 220,
-                  margin: EdgeInsets.only(top: 120, left: 15, right: 15),
-                  padding:
-                      EdgeInsets.only(left: 24, right: 24, top: 33, bottom: 33),
-                  decoration: BoxDecoration(
-                    color: Colours.white,
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        withdrawInfo == null
-                            ? '-'
-                            : withdrawInfo.monetaryUnit +
-                                TextUtil.formatDoubleComma3(
-                                    withdrawInfo.availableBalance / 100),
-                        //vm.dashboard.monetaryUnit + TextUtil.formatDoubleComma3(vm.dashboard.availableBalance/100),
-                        style: TextStyle(
-                            color: Colours.color_EA5228,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Balance('+ (withdrawInfo == null ? "\$" : withdrawInfo.monetaryUnit) + ')',
-                            style: TextStyle(
-                                color: Colours.color_5028292A,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          GestureDetector(
-                            onTap: _tips('Money you\'ve earned but have yet to withdraw.'),
-                            // message: 'Money you\'ve earned but have yet to withdraw.',
-                            child: Icon(
-                              Icons.info,
-                              size: 15,
-                              color: Colours.color_40A2A2A2,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 22,
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Available(' + (withdrawInfo == null ? "\$" : withdrawInfo.monetaryUnit) + ')',
-                                      style: TextStyle(
-                                          color: Colours.color_A9A9A9,
-                                          fontSize: 14),
-                                    ),
-                                    GestureDetector(
-                                      onTap: _tips('Money you\'ve earned and yuo can withdraw now.'),
-                                      // message: 'Money you\'ve earned and yuo can withdraw now.',
-                                      child: Icon(
-                                        Icons.info,
-                                        size: 15,
-                                        color: Colours.color_40A2A2A2,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 7),
-                                  child: Text(
-                                    withdrawInfo == null
-                                        ? '-'
-                                        : withdrawInfo.monetaryUnit +
-                                            TextUtil.formatDoubleComma3(
-                                                withdrawInfo.withdraw / 100),
-                                    style: TextStyle(
-                                        color: Colours.color_28292A,
-                                        fontSize: 16),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Unavailable(' + (withdrawInfo == null ? "\$" : withdrawInfo.monetaryUnit) + ')',
-                                          style: TextStyle(
-                                              color: Colours.color_A9A9A9,
-                                              fontSize: 14),
-                                        ),
-                                        GestureDetector(
-                                          onTap: _tips('Money you\'ve earned but you can\'t withdraw now.\nThe money will available after the sale confirmed.'),
-                                          //_showWithdrawNotSetAccountDialog(context),
-                                          // message: 'Money you\'ve earned but you can\'t withdraw now.\nThe money will available after the sale confirmed.',
-                                          child: Icon(
-                                            Icons.info,
-                                            size: 15,
-                                            color: Colours.color_40A2A2A2,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 7),
-                                      child: Text(
-                                        withdrawInfo == null
-                                            ? '-'
-                                            : withdrawInfo.monetaryUnit +
-                                                TextUtil.formatDoubleComma3(
-                                                    withdrawInfo.freeze / 100),
-                                        style: TextStyle(
-                                            color: Colours.color_28292A,
-                                            fontSize: 16),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  margin: EdgeInsets.only(left: 40, right: 40, bottom: 180),
-                  child: IdolButton(
-                    'Withdraw',
-                    status: withdrawInfo == null
-                        ? IdolButtonStatus.normal
-                        : IdolButtonStatus.enable,
-                    listener: (status) =>
-                        _withdraw(status, withdrawInfo?.withdraw),
-                  ),
-                ),
-              ],
-            ),
-          );
+          return _buildWidget(withdrawInfo);
         },
       ),
     );
   }
 
-  _withdraw(IdolButtonStatus status, int availableAmount) {
+  Widget _buildWidget(WithdrawInfo withdrawInfo){
+    return Container(
+      color: Colours.color_F8F8F8,
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: R.image.bg_withdraw_webp(),
+                fit: BoxFit.cover,
+              ),
+            ),
+            height: 220,
+          ),
+          Container(
+            //height: 220,
+            margin: EdgeInsets.only(top: 120, left: 15, right: 15),
+            padding:
+            EdgeInsets.only(left: 24, right: 24, top: 33, bottom: 33),
+            decoration: BoxDecoration(
+              color: Colours.white,
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  withdrawInfo == null
+                      ? '-'
+                      : withdrawInfo.monetaryUnit +
+                      TextUtil.formatDoubleComma3(
+                          withdrawInfo.availableBalance / 100),
+                  style: TextStyle(
+                      color: Colours.color_EA5228,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Balance(' +
+                          (withdrawInfo == null
+                              ? "\$"
+                              : withdrawInfo.monetaryUnit) +
+                          ')',
+                      style: TextStyle(
+                          color: Colours.color_5028292A,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    GestureDetector(
+                      onTap: _tips(
+                          'Money you\'ve earned but have yet to withdraw.'),
+                      child: Icon(
+                        Icons.info,
+                        size: 15,
+                        color: Colours.color_40A2A2A2,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 22,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Available(' +
+                                    (withdrawInfo == null
+                                        ? "\$"
+                                        : withdrawInfo.monetaryUnit) +
+                                    ')',
+                                style: TextStyle(
+                                    color: Colours.color_A9A9A9,
+                                    fontSize: 14),
+                              ),
+                              GestureDetector(
+                                onTap: _tips(
+                                    'Money you\'ve earned and yuo can withdraw now.'),
+                                child: Icon(
+                                  Icons.info,
+                                  size: 15,
+                                  color: Colours.color_40A2A2A2,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 7),
+                            child: Text(
+                              withdrawInfo == null
+                                  ? '-'
+                                  : withdrawInfo.monetaryUnit +
+                                  TextUtil.formatDoubleComma3(
+                                      withdrawInfo.withdraw / 100),
+                              style: TextStyle(
+                                  color: Colours.color_28292A,
+                                  fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Unavailable(' +
+                                        (withdrawInfo == null
+                                            ? "\$"
+                                            : withdrawInfo.monetaryUnit) +
+                                        ')',
+                                    style: TextStyle(
+                                        color: Colours.color_A9A9A9,
+                                        fontSize: 14),
+                                  ),
+                                  GestureDetector(
+                                    onTap: _tips(
+                                        'Money you\'ve earned but you can\'t withdraw now.\nThe money will available after the sale confirmed.'),
+                                    child: Icon(
+                                      Icons.info,
+                                      size: 15,
+                                      color: Colours.color_40A2A2A2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 7),
+                                child: Text(
+                                  withdrawInfo == null
+                                      ? '-'
+                                      : withdrawInfo.monetaryUnit +
+                                      TextUtil.formatDoubleComma3(
+                                          withdrawInfo.freeze / 100),
+                                  style: TextStyle(
+                                      color: Colours.color_28292A,
+                                      fontSize: 16),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            margin: EdgeInsets.only(left: 40, right: 40, bottom: 180),
+            child: IdolButton(
+              'Withdraw',
+              status: withdrawInfo == null
+                  ? IdolButtonStatus.normal
+                  : IdolButtonStatus.enable,
+              listener: (status) => _withdraw(status),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _withdraw(IdolButtonStatus status) {
     if (status == IdolButtonStatus.enable) {
       String paymentAccount = SpUtil.getString(KeyStore.PAYMENT_ACCOUNT);
-      if (TextUtil.isEmpty(paymentAccount)) {
-        _showNeedSetWithdrawAccountDialog(context, availableAmount);
+      if (paymentAccount.isEmpty) {
+        _showNeedSetWithdrawAccountDialog(context);
       } else {
-        IdolRoute.startDashboardWithdraw(context, availableAmount);
+        IdolRoute.startDashboardWithdraw(context)
+            .then((value){
+              if(value != null){
+                // 通知上层跳转到选品页
+                IdolRoute.popAndResult(context);
+              }
+        });
       }
     }
   }
 
   /// 临时方案
   _tips(String tips) {
-    // EasyLoading.showToast(tips);
+    // TODO 展示PopupWindow
   }
 
   /// 未设置提现账户弹窗
-  _showNeedSetWithdrawAccountDialog(BuildContext context, int availableAmount) {
+  _showNeedSetWithdrawAccountDialog(BuildContext context) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -273,8 +277,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                 onClose: () => {IdolRoute.pop(context)},
                 onNext: () {
                   IdolRoute.pop(context);
-                  IdolRoute.startDashboardWithdraw(context, availableAmount)
-                      .then((value) {
+                  IdolRoute.startDashboardWithdraw(context).then((value) {
                     IdolRoute.pop(context);
                   });
                 },

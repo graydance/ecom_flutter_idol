@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+
 /// availableBalance : 100
 /// lifetimeEarnings : 90
 /// withdraw : 50
 /// freeze : 40
 /// FAQ : ""
 /// withdrawType : [{"id":"1","payName":"提现方式的名称","portrait":"图标","serviceFee":3}]
-
+@immutable
 class WithdrawInfo {
   final int availableBalance;
   final int lifetimeEarnings;
@@ -101,15 +103,26 @@ class WithdrawInfo {
     keyMapper ??= (key) => key;
 
     return WithdrawInfo(
-      availableBalance: map[keyMapper('availableBalance')] as int,
-      lifetimeEarnings: map[keyMapper('lifetimeEarnings')] as int,
-      monetaryCountry: map[keyMapper('monetaryCountry')] as String,
-      monetaryUnit: map[keyMapper('monetaryUnit')] as String,
-      withdraw: map[keyMapper('withdraw')] as int,
-      freeze: map[keyMapper('freeze')] as int,
-      faq: map[keyMapper('faq')] as String,
-      withdrawType: map[keyMapper('withdrawType')] as List<WithdrawType>,
+      availableBalance: map[keyMapper('availableBalance')] ?? 0,
+      lifetimeEarnings: map[keyMapper('lifetimeEarnings')] ?? 0,
+      monetaryCountry: map[keyMapper('monetaryCountry')] ?? 'USD',
+      monetaryUnit: map[keyMapper('monetaryUnit')] ?? '\$',
+      withdraw: map[keyMapper('withdraw')] ?? 0,
+      freeze: map[keyMapper('freeze')] ?? 0,
+      faq: map[keyMapper('faq')] ?? '',
+      withdrawType: map[keyMapper('withdrawType')] != null
+          ? _convertWithdrawTypeListJson(map[keyMapper('withdrawType')])
+          : const [],
     );
+  }
+
+  static List<WithdrawType> _convertWithdrawTypeListJson(
+      List<dynamic> withdrawTypeListJson) {
+    List<WithdrawType> withdrawTypeList = <WithdrawType>[];
+    withdrawTypeListJson.forEach((value) {
+      withdrawTypeList.add(WithdrawType.fromMap(value));
+    });
+    return withdrawTypeList;
   }
 
   Map<String, dynamic> toMap({
@@ -137,7 +150,7 @@ class WithdrawInfo {
 /// payName : "提现方式的名称"
 /// portrait : "图标"
 /// serviceFee : 3
-
+@immutable
 class WithdrawType {
   final String id;
   final String payName;
@@ -209,10 +222,10 @@ class WithdrawType {
     keyMapper ??= (key) => key;
 
     return WithdrawType(
-      id: map[keyMapper('id')] as String,
-      payName: map[keyMapper('payName')] as String,
-      portrait: map[keyMapper('portrait')] as String,
-      serviceFee: map[keyMapper('serviceFee')] as int,
+      id: map[keyMapper('id')] ?? '',
+      payName: map[keyMapper('payName')] ?? '',
+      portrait: map[keyMapper('portrait')] ?? '',
+      serviceFee: map[keyMapper('serviceFee')] ?? 0,
     );
   }
 
