@@ -1,4 +1,4 @@
-import 'package:idol/store/actions/actions_dashboard.dart';
+import 'package:idol/store/actions/dashboard.dart';
 import 'package:redux/redux.dart';
 
 /// DashboardReducer
@@ -26,9 +26,9 @@ DashboardFailure _onDashboardFailure(
 final withdrawInfoReducer = combineReducers<WithdrawInfoState>([
   TypedReducer<WithdrawInfoState, WithdrawInfoAction>(_onWithdrawInfo),
   TypedReducer<WithdrawInfoState, WithdrawInfoSuccessAction>(
-      _onWithdrawSuccessInfo),
+      _onWithdrawInfoSuccess),
   TypedReducer<WithdrawInfoState, WithdrawInfoFailureAction>(
-      _onWithdrawFailureInfo),
+      _onWithdrawInfoFailure),
 ]);
 
 WithdrawInfoLoading _onWithdrawInfo(
@@ -36,12 +36,33 @@ WithdrawInfoLoading _onWithdrawInfo(
   return WithdrawInfoLoading();
 }
 
-WithdrawInfoSuccess _onWithdrawSuccessInfo(
+WithdrawInfoSuccess _onWithdrawInfoSuccess(
     WithdrawInfoState state, WithdrawInfoSuccessAction action) {
   return WithdrawInfoSuccess(action.withdrawInfo);
 }
 
-WithdrawInfoFailure _onWithdrawFailureInfo(
+WithdrawInfoFailure _onWithdrawInfoFailure(
     WithdrawInfoState state, WithdrawInfoFailureAction action) {
   return WithdrawInfoFailure(action.message);
+}
+
+/// WithdrawReducer
+final withdrawReducer = combineReducers<WithdrawState>([
+  TypedReducer<WithdrawState, WithdrawAction>(_onWithdraw),
+  TypedReducer<WithdrawState, WithdrawSuccessAction>(
+      _onWithdrawSuccess),
+  TypedReducer<WithdrawState, WithdrawFailureAction>(
+      _onWithdrawFailure),
+]);
+
+WithdrawLoading _onWithdraw(WithdrawState state, WithdrawAction action){
+  return WithdrawLoading();
+}
+
+WithdrawSuccess _onWithdrawSuccess(WithdrawState state, WithdrawSuccessAction action){
+  return WithdrawSuccess();
+}
+
+WithdrawFailure _onWithdrawFailure(WithdrawState state, WithdrawFailureAction action){
+  return WithdrawFailure(action.message);
 }

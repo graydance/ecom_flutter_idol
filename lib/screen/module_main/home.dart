@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/screen/module_dashboard/dashboard_page.dart';
@@ -7,18 +6,15 @@ import 'package:idol/screen/module_inbox/inbox_page.dart';
 import 'package:idol/screen/module_biolinks/biolinks_page.dart';
 import 'package:idol/screen/module_store/store_page.dart';
 import 'package:idol/r.g.dart';
-import 'package:idol/store/actions/actions.dart';
-
+/// 应用主页面
+/// 对于当前页面缓存一级Page页面问题，可参考该[https://www.jb51.net/article/157680.htm]
 class HomeScreen extends StatefulWidget {
 
   @override
-  State<StatefulWidget> createState() {
-    return _HomeScreenState();
-  }
+  State<StatefulWidget> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin {
+class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin<HomeScreen> {
   PageController _pageController;
 
   int _selectedIndex = 0;
@@ -84,8 +80,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void dispose() {
-    super.dispose();
     _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -98,7 +94,16 @@ class _HomeScreenState extends State<HomeScreen>
       ),
       extendBodyBehindAppBar: false, // 禁止延伸body至顶部
       extendBody: true, // 延伸body至底部
-      body: _pages[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index){
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: _pages,
+        physics: NeverScrollableScrollPhysics(),
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
             color: Colors.white,
@@ -145,12 +150,12 @@ class _HomeScreenState extends State<HomeScreen>
           showSelectedLabels: false,
           showUnselectedLabels: false,
           currentIndex: _selectedIndex,
-          onTap: (index) => setState(() => _selectedIndex = index),
+          onTap: (index) => _pageController.jumpToPage(index),
         ),
       ),
     );
   }
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 }

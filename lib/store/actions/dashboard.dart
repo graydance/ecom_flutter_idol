@@ -1,9 +1,10 @@
 import 'package:idol/models/dashboard.dart';
+import 'package:idol/models/models.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/withdraw.dart';
 
-/// dashboard action
+/// DashboardState
 abstract class DashboardState {}
 
 class DashboardInitial implements DashboardState {
@@ -19,11 +20,12 @@ class DashboardSuccess implements DashboardState {
 }
 
 class DashboardFailure implements DashboardState {
-  final String error;
+  final String message;
 
-  DashboardFailure(this.error);
+  DashboardFailure(this.message);
 }
 
+/// DashboardAction
 class DashboardAction {
   final BaseRequest request;
 
@@ -42,7 +44,7 @@ class DashboardSuccessAction {
   DashboardSuccessAction(this.dashboard);
 }
 
-/// withdrawInfo
+/// WithdrawInfoState
 abstract class WithdrawInfoState {}
 
 class WithdrawInfoInitial implements WithdrawInfoState {
@@ -63,6 +65,7 @@ class WithdrawInfoFailure implements WithdrawInfoState {
   WithdrawInfoFailure(this.message);
 }
 
+/// WithdrawInfoAction
 class WithdrawInfoAction {
   final BaseRequest request;
 
@@ -81,10 +84,12 @@ class WithdrawInfoFailureAction {
   WithdrawInfoFailureAction(this.message);
 }
 
-/// withdraw
+/// WithdrawState
 abstract class WithdrawState {}
 
-class WithdrawInitial implements WithdrawState {}
+class WithdrawInitial implements WithdrawState {
+  const WithdrawInitial();
+}
 
 class WithdrawLoading implements WithdrawState {}
 
@@ -96,6 +101,7 @@ class WithdrawFailure implements WithdrawState {
 
 class WithdrawSuccess implements WithdrawState {}
 
+/// WithdrawAction
 class WithdrawAction {
   final WithdrawRequest request;
 
@@ -103,9 +109,9 @@ class WithdrawAction {
 }
 
 class WithdrawFailureAction {
-  final String error;
+  final String message;
 
-  WithdrawFailureAction(this.error);
+  WithdrawFailureAction(this.message);
 }
 
 class WithdrawSuccessAction {}
