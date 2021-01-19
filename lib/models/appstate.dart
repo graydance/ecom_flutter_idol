@@ -12,14 +12,44 @@ class AppState {
   final WithdrawState withdrawState;
   final WithdrawVerifyArguments withdrawVerifyArguments;
   final WithdrawResultArguments withdrawResultArguments;
+  final FollowingState followingState;
+  final ForYouState forYouState;
 
-  AppState(
-      {this.dashboardState = const DashboardInitial(),
-      this.loginState = const LoginInitial(),
-      this.withdrawInfoState = const WithdrawInfoInitial(),
-      this.withdrawState = const WithdrawInitial(),
-      this.withdrawVerifyArguments = const WithdrawVerifyArguments(),
-      this.withdrawResultArguments = const WithdrawResultArguments()});
+  AppState({
+    this.dashboardState = const DashboardInitial(),
+    this.loginState = const LoginInitial(),
+    this.withdrawInfoState = const WithdrawInfoInitial(),
+    this.withdrawState = const WithdrawInitial(),
+    this.withdrawVerifyArguments = const WithdrawVerifyArguments(),
+    this.withdrawResultArguments = const WithdrawResultArguments(),
+    this.followingState = const FollowingInitial(),
+    this.forYouState = const ForYouInitial(),
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppState &&
+          runtimeType == other.runtimeType &&
+          loginState == other.loginState &&
+          dashboardState == other.dashboardState &&
+          withdrawInfoState == other.withdrawInfoState &&
+          withdrawState == other.withdrawState &&
+          withdrawVerifyArguments == other.withdrawVerifyArguments &&
+          withdrawResultArguments == other.withdrawResultArguments &&
+          followingState == other.followingState &&
+          forYouState == other.forYouState;
+
+  @override
+  int get hashCode =>
+      loginState.hashCode ^
+      dashboardState.hashCode ^
+      withdrawInfoState.hashCode ^
+      withdrawState.hashCode ^
+      withdrawVerifyArguments.hashCode ^
+      withdrawResultArguments.hashCode ^
+      followingState.hashCode ^
+      forYouState.hashCode;
 
   AppState copyWith({
     LoginState loginState,
@@ -28,6 +58,8 @@ class AppState {
     WithdrawState withdrawState,
     WithdrawVerifyArguments withdrawVerifyArguments,
     WithdrawResultArguments withdrawResultArguments,
+    FollowingState supplyState,
+    ForYouState forYouState,
   }) {
     if ((loginState == null || identical(loginState, this.loginState)) &&
         (dashboardState == null ||
@@ -39,7 +71,9 @@ class AppState {
         (withdrawVerifyArguments == null ||
             identical(withdrawVerifyArguments, this.withdrawVerifyArguments)) &&
         (withdrawResultArguments == null ||
-            identical(withdrawResultArguments, this.withdrawResultArguments))) {
+            identical(withdrawResultArguments, this.withdrawResultArguments)) &&
+        (supplyState == null || identical(supplyState, this.followingState)) &&
+        (forYouState == null || identical(forYouState, this.forYouState))) {
       return this;
     }
 
@@ -52,27 +86,8 @@ class AppState {
           withdrawVerifyArguments ?? this.withdrawVerifyArguments,
       withdrawResultArguments:
           withdrawResultArguments ?? this.withdrawResultArguments,
+      followingState: supplyState ?? this.followingState,
+      forYouState: forYouState ?? this.forYouState,
     );
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AppState &&
-          runtimeType == other.runtimeType &&
-          loginState == other.loginState &&
-          dashboardState == other.dashboardState &&
-          withdrawInfoState == other.withdrawInfoState &&
-          withdrawState == other.withdrawState &&
-          withdrawVerifyArguments == other.withdrawVerifyArguments &&
-          withdrawResultArguments == other.withdrawResultArguments;
-
-  @override
-  int get hashCode =>
-      loginState.hashCode ^
-      dashboardState.hashCode ^
-      withdrawInfoState.hashCode ^
-      withdrawState.hashCode ^
-      withdrawVerifyArguments.hashCode ^
-      withdrawResultArguments.hashCode;
 }

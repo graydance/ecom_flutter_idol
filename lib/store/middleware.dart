@@ -1,7 +1,9 @@
 import 'package:flustars/flustars.dart';
 import 'package:idol/models/dashboard.dart';
+import 'package:idol/models/product.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/api.dart';
+import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/dashboard.dart';
 import 'package:idol/store/actions/main.dart';
 import 'package:idol/utils/keystore.dart';
@@ -14,6 +16,8 @@ List<Middleware<AppState>> createStoreMiddleware() {
     TypedMiddleware<AppState, DashboardAction>(dashboardMiddleware),
     TypedMiddleware<AppState, WithdrawAction>(withdrawMiddleware),
     TypedMiddleware<AppState, WithdrawInfoAction>(withdrawInfoMiddleware),
+    TypedMiddleware<AppState, FollowingAction>(supplyMiddleware),
+    TypedMiddleware<AppState, ForYouAction>(supplyMiddleware),
   ];
 }
 
@@ -74,15 +78,15 @@ final Middleware<AppState> dashboardMiddleware =
   }
 };
 
-final Middleware<AppState> withdrawInfoMiddleware = (Store<AppState> store, action, NextDispatcher next){
-  if(action is WithdrawInfoAction){
+final Middleware<AppState> withdrawInfoMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is WithdrawInfoAction) {
     DioClient.getInstance()
         .post('/idol/withdrawInfo', baseRequest: action.request)
         .whenComplete(() => null)
-        .then((data){
-          store.dispatch(WithdrawInfoSuccessAction(WithdrawInfo.fromMap(data)));
-        })
-        .catchError((err) {
+        .then((data) {
+      store.dispatch(WithdrawInfoSuccessAction(WithdrawInfo.fromMap(data)));
+    }).catchError((err) {
       print(err.toString());
       store.dispatch(WithdrawInfoFailureAction(err.toString()));
     });
@@ -100,6 +104,27 @@ final Middleware<AppState> withdrawMiddleware =
         .catchError((err) {
       print(err.toString());
       store.dispatch(WithdrawFailureAction(err.toString()));
+    });
+    next(action);
+  }
+};
+
+final Middleware<AppState> supplyMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is FollowingAction || action is ForYouAction) {
+    DioClient.getInstance()
+        .post('/idol/following', baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data) => {
+              store.dispatch(action is FollowingAction
+                  ? FollowingSuccessAction(ProductResponse.fromMap(data))
+                  : ForYouSuccessAction(ProductResponse.fromMap(data)))
+            })
+        .catchError((err) {
+      print(err.toString());
+      store.dispatch(action is FollowingAction
+          ? FollowingFailureAction(err.toString())
+          : ForYouFailureAction(err.toString()));
     });
     next(action);
   }

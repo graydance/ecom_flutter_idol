@@ -11,6 +11,7 @@ class RouterPath {
   static const String dashboard$Withdraw = '/dashboard/withdraw';
   static const String dashboard$VerifyPassword = '/dashboard/verifyPassowrd';
   static const String dashboard$WithdrawResult = '/dashboard/withdrawResult';
+  static const String supply$Search = '/supply/search';
 }
 
 class IdolRoute {
@@ -61,6 +62,10 @@ class IdolRoute {
   }
 
   static Future<Object> startDashboardWithdrawResult(BuildContext context) {
+    return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
+  }
+
+  static Future<Object> startSupplySearch(BuildContext context){
     return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
   }
 }

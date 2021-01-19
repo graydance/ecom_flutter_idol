@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:idol/res/colors.dart';
 
 class StorePage extends StatefulWidget {
   final void Function() onInit;
@@ -19,7 +20,34 @@ class StorePageState extends State<StorePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('StorePage'),
+      color: Color(0xFF3e2833),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              AppBar(
+                backgroundColor: Colours.transparent,
+                actions: [
+                  IconButton(
+                      icon: Icon(
+                        Icons.settings,
+                        color: Colours.white,
+                      ),
+                      onPressed: () => {}),
+                ],
+                elevation: 0,
+              ),
+            ],
+          ),
+          // Expanded(child: Text('data')),
+          Expanded(
+            child: Text('Content'
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

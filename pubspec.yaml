@@ -13,12 +13,14 @@ dependencies:
   redux_logging: ^0.4.0
   logging: ^0.11.4
   flutter_snake_navigationbar: ^0.4.2
-  # flutter_secure_storage: ^3.3.5
   flustars: ^0.3.3
   carousel_slider: ^2.3.1
   animations: ^1.1.2
   pull_to_refresh: ^1.6.3
   flutter_easyloading: ^2.2.2
+  flutter_swiper: ^1.1.6
+  video_player: ^1.0.1
+  flutter_slidable: ^0.5.7
 
   r_dart_library:
     git:
@@ -56,3 +58,5 @@ flutter:
   - assets/images/main/ic_tab_store_selected.png
   - assets/images/main/ic_tab_supply_normal.png
   - assets/images/main/ic_tab_supply_selected.png
+  - assets/images/supply/pause.png
+  - assets/images/supply/play.png
