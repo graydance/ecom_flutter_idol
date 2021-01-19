@@ -182,6 +182,16 @@ class _R_Image_AssetResource {
   final ic_tab_supply_selected = const AssetResource(
       "assets/images/main/ic_tab_supply_selected.png",
       packageName: null);
+
+  /// asset: assets/images/supply/pause.png
+  // ignore: non_constant_identifier_names
+  final pause =
+      const AssetResource("assets/images/supply/pause.png", packageName: null);
+
+  /// asset: assets/images/supply/play.png
+  // ignore: non_constant_identifier_names
+  final play =
+      const AssetResource("assets/images/supply/play.png", packageName: null);
 }
 
 // ignore: camel_case_types
@@ -289,6 +299,18 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_tab_supply_selected() {
     return AssetImage(asset.ic_tab_supply_selected.keyName);
+  }
+
+  /// asset: assets/images/supply/pause.png
+  // ignore: non_constant_identifier_names
+  AssetImage pause() {
+    return AssetImage(asset.pause.keyName);
+  }
+
+  /// asset: assets/images/supply/play.png
+  // ignore: non_constant_identifier_names
+  AssetImage play() {
+    return AssetImage(asset.play.keyName);
   }
 }
 

@@ -13,11 +13,13 @@ import 'package:idol/models/appstate.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() =>_DashboardPageState();
+  State<StatefulWidget> createState() => _DashboardPageState();
 }
 
 class _DashboardPageState extends State<DashboardPage>
-    with AutomaticKeepAliveClientMixin<DashboardPage>, SingleTickerProviderStateMixin{
+    with
+        AutomaticKeepAliveClientMixin<DashboardPage>,
+        SingleTickerProviderStateMixin {
   TabController _tabController;
 
   final List<String> _tabValues = [
@@ -44,23 +46,35 @@ class _DashboardPageState extends State<DashboardPage>
         StoreProvider.of<AppState>(context)
             .dispatch(DashboardAction(BaseRequestImpl()));
       },
+      onWillChange: (oldVM, newVM){
+        _onDashboardStateChanged(newVM == null ? newVM.dashboardState : oldVM.dashboardState);
+      },
       builder: (context, vm) => Container(
-        margin: EdgeInsets.only(top: 30),
-        alignment: Alignment.topCenter,
         color: Colours.color_F8F8F8,
-        child: _createChildWidgetByState(vm.dashboardState),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            AppBar(
+              title: Text('Dashboard'),
+              elevation: 0,
+              primary: true,
+            ),
+            SizedBox(height: 30,),
+            Expanded(child: _createChildWidgetByState(vm.dashboardState)),
+          ],
+        ),
       ),
     );
   }
 
+  void _onDashboardStateChanged(DashboardState state){
+    if(state is DashboardFailure){
+      EasyLoading.showToast((state).message);
+    }
+  }
+
   Widget _createChildWidgetByState(DashboardState state) {
-    if (state is DashboardInitial) {
-      return Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colours.color_EA5228),
-        ),
-      );
-    } else if (state is DashboardSuccess) {
+    if (state is DashboardSuccess) {
       var dashboard = (state).dashboard;
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -70,7 +84,7 @@ class _DashboardPageState extends State<DashboardPage>
           // $1,516.23
           GestureDetector(
             onTap: () => IdolRoute.startDashboardBalance(context).then((value) {
-              if(value != null){
+              if (value != null) {
                 // TODO 切换到选品页
 
               }
@@ -238,7 +252,7 @@ class _DashboardPageState extends State<DashboardPage>
           ),
         ],
       );
-    } else if(state is DashboardFailure){
+    } else if (state is DashboardFailure) {
       // TODO 展示请求错误页面（包含重试按钮），待UI设计
       EasyLoading.showToast((state).message);
       return Center(
@@ -247,10 +261,10 @@ class _DashboardPageState extends State<DashboardPage>
           style: TextStyle(color: Colours.color_ED3544, fontSize: 20),
         ),
       );
-    }else{
+    } else {
       return Center(
-        child: Text(
-          '',
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colours.color_EA5228),
         ),
       );
     }
@@ -265,7 +279,7 @@ class _DashboardPageState extends State<DashboardPage>
   bool get wantKeepAlive => true;
 }
 
-class RewardsTabView extends StatefulWidget{
+class RewardsTabView extends StatefulWidget {
   final List<Reward> list;
 
   const RewardsTabView(this.list);
@@ -274,7 +288,8 @@ class RewardsTabView extends StatefulWidget{
   State<StatefulWidget> createState() => _RewardsTabViewState(list);
 }
 
-class _RewardsTabViewState extends State<RewardsTabView> with AutomaticKeepAliveClientMixin<RewardsTabView> {
+class _RewardsTabViewState extends State<RewardsTabView>
+    with AutomaticKeepAliveClientMixin<RewardsTabView> {
   final List<Reward> list;
 
   _RewardsTabViewState(this.list);
@@ -312,7 +327,7 @@ class RewardsItem extends StatefulWidget {
   State<StatefulWidget> createState() => _RewardsItemState(reward);
 }
 
-class _RewardsItemState extends State<RewardsItem>{
+class _RewardsItemState extends State<RewardsItem> {
   final Reward reward;
 
   _RewardsItemState(this.reward);
@@ -497,7 +512,8 @@ class PastSalesTabView extends StatefulWidget {
   State<StatefulWidget> createState() => _PastSalesTabViewSate(dataList);
 }
 
-class _PastSalesTabViewSate extends State<PastSalesTabView> with AutomaticKeepAliveClientMixin<PastSalesTabView> {
+class _PastSalesTabViewSate extends State<PastSalesTabView>
+    with AutomaticKeepAliveClientMixin<PastSalesTabView> {
   PageController _pageController;
   final List<PastSales> pastSales;
 
@@ -629,7 +645,9 @@ class _PastSalesTabViewSate extends State<PastSalesTabView> with AutomaticKeepAl
                   Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: _isToday(pastSales.date, index) ? Colours.color_10EA5228 : Colours.white,
+                      color: _isToday(pastSales.date, index)
+                          ? Colours.color_10EA5228
+                          : Colours.white,
                       shape: BoxShape.circle,
                     ),
                     child: Column(
