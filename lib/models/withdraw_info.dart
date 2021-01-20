@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 class WithdrawInfo {
   final int availableBalance;
   final int lifetimeEarnings;
-  final String monetaryCountry;
-  final String monetaryUnit;
   final int withdraw;
   final int freeze;
   final String faq;
@@ -22,8 +20,6 @@ class WithdrawInfo {
   const WithdrawInfo({
     this.availableBalance = 0,
     this.lifetimeEarnings = 0,
-    this.monetaryCountry = 'USD',
-    this.monetaryUnit = '\$',
     this.withdraw = 0,
     this.freeze = 0,
     this.faq = '',
@@ -44,9 +40,6 @@ class WithdrawInfo {
             identical(availableBalance, this.availableBalance)) &&
         (lifetimeEarnings == null ||
             identical(lifetimeEarnings, this.lifetimeEarnings)) &&
-        (monetaryCountry == null ||
-            identical(monetaryCountry, this.monetaryCountry)) &&
-        (monetaryUnit == null || identical(monetaryUnit, this.monetaryUnit)) &&
         (withdraw == null || identical(withdraw, this.withdraw)) &&
         (freeze == null || identical(freeze, this.freeze)) &&
         (faq == null || identical(faq, this.faq)) &&
@@ -57,8 +50,6 @@ class WithdrawInfo {
     return WithdrawInfo(
       availableBalance: availableBalance ?? this.availableBalance,
       lifetimeEarnings: lifetimeEarnings ?? this.lifetimeEarnings,
-      monetaryCountry: monetaryCountry ?? this.monetaryCountry,
-      monetaryUnit: monetaryUnit ?? this.monetaryUnit,
       withdraw: withdraw ?? this.withdraw,
       freeze: freeze ?? this.freeze,
       faq: faq ?? this.faq,
@@ -68,7 +59,7 @@ class WithdrawInfo {
 
   @override
   String toString() {
-    return 'WithdrawInfo{availableBalance: $availableBalance, lifetimeEarnings: $lifetimeEarnings, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, withdraw: $withdraw, freeze: $freeze, faq: $faq, withdrawType: $withdrawType}';
+    return 'WithdrawInfo{availableBalance: $availableBalance, lifetimeEarnings: $lifetimeEarnings, withdraw: $withdraw, freeze: $freeze, faq: $faq, withdrawType: $withdrawType}';
   }
 
   @override
@@ -78,8 +69,6 @@ class WithdrawInfo {
           runtimeType == other.runtimeType &&
           availableBalance == other.availableBalance &&
           lifetimeEarnings == other.lifetimeEarnings &&
-          monetaryCountry == other.monetaryCountry &&
-          monetaryUnit == other.monetaryUnit &&
           withdraw == other.withdraw &&
           freeze == other.freeze &&
           faq == other.faq &&
@@ -89,8 +78,6 @@ class WithdrawInfo {
   int get hashCode =>
       availableBalance.hashCode ^
       lifetimeEarnings.hashCode ^
-      monetaryCountry.hashCode ^
-      monetaryUnit.hashCode ^
       withdraw.hashCode ^
       freeze.hashCode ^
       faq.hashCode ^
@@ -105,8 +92,6 @@ class WithdrawInfo {
     return WithdrawInfo(
       availableBalance: map[keyMapper('availableBalance')] ?? 0,
       lifetimeEarnings: map[keyMapper('lifetimeEarnings')] ?? 0,
-      monetaryCountry: map[keyMapper('monetaryCountry')] ?? 'USD',
-      monetaryUnit: map[keyMapper('monetaryUnit')] ?? '\$',
       withdraw: map[keyMapper('withdraw')] ?? 0,
       freeze: map[keyMapper('freeze')] ?? 0,
       faq: map[keyMapper('faq')] ?? '',
@@ -134,8 +119,6 @@ class WithdrawInfo {
     return {
       keyMapper('availableBalance'): this.availableBalance,
       keyMapper('lifetimeEarnings'): this.lifetimeEarnings,
-      keyMapper('monetaryCountry'): this.monetaryCountry,
-      keyMapper('monetaryUnit'): this.monetaryUnit,
       keyMapper('withdraw'): this.withdraw,
       keyMapper('freeze'): this.freeze,
       keyMapper('faq'): this.faq,

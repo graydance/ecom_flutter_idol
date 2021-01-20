@@ -8,7 +8,9 @@ class User {
   final String aboutMe;
   final String bindPhone;
   final int availableBalance;
+  final String availableBalanceStr;
   final int lifetimeEarnings;
+  final String lifetimeEarningsStr;
   final String monetaryCountry;
   final String monetaryUnit;
   final int shopStatus;
@@ -29,7 +31,9 @@ class User {
     this.aboutMe = '',
     this.bindPhone = '',
     this.availableBalance = 0,
+    this.availableBalanceStr = '',
     this.lifetimeEarnings = 0,
+    this.lifetimeEarningsStr = '',
     this.monetaryCountry = 'USD',
     this.monetaryUnit = '\$',
     this.shopStatus = 0,
@@ -43,14 +47,15 @@ class User {
   });
 
   User copyWith({
-    bool isLoaded,
     String nickName,
     String portrait,
     int gender,
     String aboutMe,
     String bindPhone,
     int availableBalance,
+    String availableBalanceStr,
     int lifetimeEarnings,
+    String lifetimeEarningsStr,
     String monetaryCountry,
     String monetaryUnit,
     int shopStatus,
@@ -69,8 +74,12 @@ class User {
         (bindPhone == null || identical(bindPhone, this.bindPhone)) &&
         (availableBalance == null ||
             identical(availableBalance, this.availableBalance)) &&
+        (availableBalanceStr == null ||
+            identical(availableBalanceStr, this.availableBalanceStr)) &&
         (lifetimeEarnings == null ||
             identical(lifetimeEarnings, this.lifetimeEarnings)) &&
+        (lifetimeEarningsStr == null ||
+            identical(lifetimeEarningsStr, this.lifetimeEarningsStr)) &&
         (monetaryCountry == null ||
             identical(monetaryCountry, this.monetaryCountry)) &&
         (monetaryUnit == null || identical(monetaryUnit, this.monetaryUnit)) &&
@@ -92,7 +101,9 @@ class User {
       aboutMe: aboutMe ?? this.aboutMe,
       bindPhone: bindPhone ?? this.bindPhone,
       availableBalance: availableBalance ?? this.availableBalance,
+      availableBalanceStr: availableBalanceStr ?? this.availableBalanceStr,
       lifetimeEarnings: lifetimeEarnings ?? this.lifetimeEarnings,
+      lifetimeEarningsStr: lifetimeEarningsStr ?? this.lifetimeEarningsStr,
       monetaryCountry: monetaryCountry ?? this.monetaryCountry,
       monetaryUnit: monetaryUnit ?? this.monetaryUnit,
       shopStatus: shopStatus ?? this.shopStatus,
@@ -106,15 +117,11 @@ class User {
     );
   }
 
-  @override
-  String toString() {
-    return 'User{nickName: $nickName, portrait: $portrait, gender: $gender, aboutMe: $aboutMe, bindPhone: $bindPhone, availableBalance: $availableBalance, lifetimeEarnings: $lifetimeEarnings, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, shopStatus: $shopStatus, heatRank: $heatRank, bioLink: $bioLink, id: $id, email: $email, updatedAt: $updatedAt, createdAt: $createdAt, token: $token}';
-  }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is User &&
+      other is User &&
           runtimeType == other.runtimeType &&
           nickName == other.nickName &&
           portrait == other.portrait &&
@@ -122,7 +129,9 @@ class User {
           aboutMe == other.aboutMe &&
           bindPhone == other.bindPhone &&
           availableBalance == other.availableBalance &&
+          availableBalanceStr == other.availableBalanceStr &&
           lifetimeEarnings == other.lifetimeEarnings &&
+          lifetimeEarningsStr == other.lifetimeEarningsStr &&
           monetaryCountry == other.monetaryCountry &&
           monetaryUnit == other.monetaryUnit &&
           shopStatus == other.shopStatus &&
@@ -132,7 +141,7 @@ class User {
           email == other.email &&
           updatedAt == other.updatedAt &&
           createdAt == other.createdAt &&
-          token == other.token);
+          token == other.token;
 
   @override
   int get hashCode =>
@@ -142,7 +151,9 @@ class User {
       aboutMe.hashCode ^
       bindPhone.hashCode ^
       availableBalance.hashCode ^
+      availableBalanceStr.hashCode ^
       lifetimeEarnings.hashCode ^
+      lifetimeEarningsStr.hashCode ^
       monetaryCountry.hashCode ^
       monetaryUnit.hashCode ^
       shopStatus.hashCode ^
@@ -167,7 +178,9 @@ class User {
       aboutMe: map[keyMapper('aboutMe')] as String,
       bindPhone: map[keyMapper('bindPhone')] as String,
       availableBalance: map[keyMapper('availableBalance')] as int,
+      availableBalanceStr: map[keyMapper('availableBalanceStr')] as String,
       lifetimeEarnings: map[keyMapper('lifetimeEarnings')] as int,
+      lifetimeEarningsStr: map[keyMapper('lifetimeEarningsStr')] as String,
       monetaryCountry: map[keyMapper('monetaryCountry')] as String,
       monetaryUnit: map[keyMapper('monetaryUnit')] as String,
       shopStatus: map[keyMapper('shopStatus')] as int,
@@ -194,7 +207,9 @@ class User {
       keyMapper('aboutMe'): this.aboutMe,
       keyMapper('bindPhone'): this.bindPhone,
       keyMapper('availableBalance'): this.availableBalance,
+      keyMapper('availableBalanceStr'): this.availableBalanceStr,
       keyMapper('lifetimeEarnings'): this.lifetimeEarnings,
+      keyMapper('lifetimeEarningsStr'): this.lifetimeEarningsStr,
       keyMapper('monetaryCountry'): this.monetaryCountry,
       keyMapper('monetaryUnit'): this.monetaryUnit,
       keyMapper('shopStatus'): this.shopStatus,
@@ -206,6 +221,11 @@ class User {
       keyMapper('createdAt'): this.createdAt,
       keyMapper('token'): this.token,
     } as Map<String, dynamic>;
+  }
+
+  @override
+  String toString() {
+    return 'User{nickName: $nickName, portrait: $portrait, gender: $gender, aboutMe: $aboutMe, bindPhone: $bindPhone, availableBalance: $availableBalance, availableBalanceStr: $availableBalanceStr, lifetimeEarnings: $lifetimeEarnings, lifetimeEarningsStr: $lifetimeEarningsStr, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, shopStatus: $shopStatus, heatRank: $heatRank, bioLink: $bioLink, id: $id, email: $email, updatedAt: $updatedAt, createdAt: $createdAt, token: $token}';
   }
 
 //</editor-fold>

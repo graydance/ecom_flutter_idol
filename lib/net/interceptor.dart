@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
-import 'package:idol/main.dart';
 import 'package:idol/router.dart';
+import 'package:idol/utils/global.dart';
 
 class TokenInterceptors extends InterceptorsWrapper {
   final Dio dio;
@@ -10,7 +10,7 @@ class TokenInterceptors extends InterceptorsWrapper {
 
   @override
   Future onRequest(RequestOptions options) async {
-    logger.fine(
+    Global.logger.fine(
         "TokenInterceptors REQUEST[${options?.method}] => PATH: ${options?.path}");
     // 登录成功后，写入token到headers中
     String token = options.headers['x-token'];
@@ -25,7 +25,7 @@ class TokenInterceptors extends InterceptorsWrapper {
 
   @override
   Future onResponse(Response response) {
-    logger.fine(
+    Global.logger.fine(
         "TokenInterceptors RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
     if (response.data['code'] != 0) {
       int code = response.data['code'];
@@ -44,7 +44,7 @@ class TokenInterceptors extends InterceptorsWrapper {
 
   @override
   Future onError(DioError err) {
-    logger.fine(
+    Global.logger.fine(
         "TokenInterceptors ERROR[${err?.response?.statusCode}] => PATH: ${err?.request?.path}");
     return super.onError(err);
   }

@@ -46,6 +46,7 @@ flutter:
   - assets/images/dashboard/bg_withdraw.webp
   - assets/images/dashboard/bg_withdraw_failure.webp
   - assets/images/dashboard/bg_withdraw_success.webp
+  - assets/images/dashboard/ic_complete_rewards.png
   - assets/images/main/bg_splash.jpg
   - assets/images/main/ic_tab_biolinks_normal.png
   - assets/images/main/ic_tab_biolinks_selected.png

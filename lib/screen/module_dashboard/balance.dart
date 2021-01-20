@@ -41,18 +41,18 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
         },
         distinct: true,
         builder: (context, vm) {
-          WithdrawInfo withdrawInfo;
-          if (vm.withdrawInfoState is WithdrawInfoSuccess) {
-            withdrawInfo =
-                (vm.withdrawInfoState as WithdrawInfoSuccess).withdrawInfo;
-          }
-          return _buildWidget(withdrawInfo);
+          return _buildWidget(vm);
         },
       ),
     );
   }
 
-  Widget _buildWidget(WithdrawInfo withdrawInfo){
+  Widget _buildWidget(_ViewModel _viewModel){
+    WithdrawInfo withdrawInfo;
+    if (_viewModel.withdrawInfoState is WithdrawInfoSuccess) {
+      withdrawInfo =
+          (_viewModel.withdrawInfoState as WithdrawInfoSuccess).withdrawInfo;
+    }
     return Container(
       color: Colours.color_F8F8F8,
       child: Stack(
@@ -82,7 +82,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                 Text(
                   withdrawInfo == null
                       ? '-'
-                      : withdrawInfo.monetaryUnit +
+                      : _viewModel.user.monetaryUnit +
                       TextUtil.formatDoubleComma3(
                           withdrawInfo.availableBalance / 100),
                   style: TextStyle(
@@ -98,7 +98,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                       'Balance(' +
                           (withdrawInfo == null
                               ? "\$"
-                              : withdrawInfo.monetaryUnit) +
+                              : _viewModel.user.monetaryUnit) +
                           ')',
                       style: TextStyle(
                           color: Colours.color_5028292A,
@@ -136,7 +136,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                 'Available(' +
                                     (withdrawInfo == null
                                         ? "\$"
-                                        : withdrawInfo.monetaryUnit) +
+                                        : _viewModel.user.monetaryUnit) +
                                     ')',
                                 style: TextStyle(
                                     color: Colours.color_A9A9A9,
@@ -158,7 +158,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                             child: Text(
                               withdrawInfo == null
                                   ? '-'
-                                  : withdrawInfo.monetaryUnit +
+                                  : _viewModel.user.monetaryUnit +
                                   TextUtil.formatDoubleComma3(
                                       withdrawInfo.withdraw / 100),
                               style: TextStyle(
@@ -187,7 +187,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                     'Unavailable(' +
                                         (withdrawInfo == null
                                             ? "\$"
-                                            : withdrawInfo.monetaryUnit) +
+                                            : _viewModel.user.monetaryUnit) +
                                         ')',
                                     style: TextStyle(
                                         color: Colours.color_A9A9A9,
@@ -209,7 +209,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                 child: Text(
                                   withdrawInfo == null
                                       ? '-'
-                                      : withdrawInfo.monetaryUnit +
+                                      : _viewModel.user.monetaryUnit +
                                       TextUtil.formatDoubleComma3(
                                           withdrawInfo.freeze / 100),
                                   style: TextStyle(
@@ -288,20 +288,11 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
 
 class _ViewModel {
   final WithdrawInfoState withdrawInfoState;
+  final User user;
 
-  _ViewModel(this.withdrawInfoState);
+  _ViewModel(this.withdrawInfoState, this.user);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.withdrawInfoState);
+    return _ViewModel(store.state.withdrawInfoState, (store.state.loginState as LoginSuccess).loginUser);
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ViewModel &&
-          runtimeType == other.runtimeType &&
-          withdrawInfoState == other.withdrawInfoState;
-
-  @override
-  int get hashCode => withdrawInfoState.hashCode;
 }

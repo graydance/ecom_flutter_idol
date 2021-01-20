@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:idol/screen/module_dashboard/withdraw_verify.dart';
 import 'package:idol/screen/screens.dart';
-import 'package:idol/utils/keys.dart';
+import 'package:idol/utils/global.dart';
 
 class RouterPath {
   static const String splash = '/splash';
   static const String signUpOrSignIn = '/signUpOrSignIn';
   static const String home = '/home';
+  static const String dashboard$TaskDetail = '/dashboard/TaskDetail';
   static const String dashboard$Balance = '/dashboard/balance';
   static const String dashboard$Withdraw = '/dashboard/withdraw';
   static const String dashboard$VerifyPassword = '/dashboard/verifyPassowrd';
@@ -38,10 +39,10 @@ class IdolRoute {
   static Future<Object> start(String routePath) {
     if (routePath == RouterPath.signUpOrSignIn ||
         routePath == RouterPath.home) {
-      return Navigator.of(Keys.navigatorKey.currentContext)
+      return Navigator.of(Global.navigatorKey.currentContext)
           .pushReplacementNamed(routePath);
     } else {
-      return Navigator.of(Keys.navigatorKey.currentContext)
+      return Navigator.of(Global.navigatorKey.currentContext)
           .pushNamed(routePath);
     }
   }
@@ -53,6 +54,10 @@ class IdolRoute {
 
   static Future<Object> startHome(BuildContext context) {
     return Navigator.of(context).pushReplacementNamed(RouterPath.home);
+  }
+
+  static Future<Object> startDashboardTaskDetail(BuildContext context){
+    return Navigator.of(context).pushNamed(RouterPath.dashboard$TaskDetail);
   }
 
   static Future<Object> startDashboardBalance(BuildContext context) {

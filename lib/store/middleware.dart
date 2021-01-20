@@ -1,4 +1,3 @@
-import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/product.dart';
@@ -8,7 +7,7 @@ import 'package:idol/net/api_path.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/dashboard.dart';
 import 'package:idol/store/actions/main.dart';
-import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 
@@ -51,10 +50,8 @@ final Middleware<AppState> loginMiddleware =
         .whenComplete(() => null)
         .then((data) {
       // save login user data
-      SpUtil.putString(KeyStore.EMAIL, action.request.email);
-      SpUtil.putString(KeyStore.PASSWORD, action.request.password);
-      SpUtil.putString(KeyStore.TOKEN, User.fromMap(data).token);
-      SpUtil.putString(KeyStore.USER, data.toString());
+      Global.saveUserAccount(action.request.email, action.request.password);
+      Global.saveToken(User.fromMap(data).token);
       debugPrint('Login success, write data to sp >>> email:${action.request.email}, '
               'pwd:${action.request.password}, token:${User.fromMap(data).token}');
       // dispatch

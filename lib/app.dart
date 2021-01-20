@@ -4,7 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'package:idol/utils/keys.dart';
+import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 
 class ReduxApp extends StatelessWidget {
@@ -22,7 +22,7 @@ class ReduxApp extends StatelessWidget {
             errorColor: Colours.color_ED3544,
           ),
           initialRoute: RouterPath.splash,
-          navigatorKey: Keys.navigatorKey,
+          navigatorKey: Global.navigatorKey,
           routes: IdolRoute.routes(),
           builder: EasyLoading.init(),
         ));
