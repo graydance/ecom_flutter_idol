@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/login.dart';
@@ -25,12 +26,12 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
   TextEditingController _passwordController;
   String _emailErrorText = '';
   String _passwordErrorText = '';
+  bool fastMockFlag = Global.isRelease ? false : SpUtil.getBool('fastMockFlag');
 
   @override
   void initState() {
     super.initState();
-    _emailController =
-        TextEditingController(text: 'gaopengfeidev@gmail.com');
+    _emailController = TextEditingController(text: 'gaopengfeidev@gmail.com');
     _passwordController = TextEditingController(text: 'abc123');
     _emailController.addListener(() {
       debugPrint('email => ${_emailController.text}');
@@ -94,86 +95,107 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
               newVM == null ? oldVM.loginState : newVM.loginState);
         },
         converter: _ViewModel.fromStore,
-        builder: (context, vm) => Container(
-          padding: EdgeInsets.only(left: 16, top: 120, right: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Sign Up/Sign In',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              TextField(
-                controller: _emailController,
-                //cursorColor: Colours.color_F68A51,
-                keyboardType: TextInputType.emailAddress,
-                maxLines: 1,
-                //style: TextStyle(color: Colours.color_3B3F42, fontSize: 14),
-                decoration: InputDecoration(
-                  focusColor: Colours.color_B1B2B3,
-                  // errorText: _emailErrorText,
-                  hintText: 'Please input email',
-                  //hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
-                  prefixIcon: Icon(
-                    Icons.email,
-                    color: Colours.color_B1B2B3,
-                  ),
-                  suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.clear,
-                        color: Colours.color_B1B2B3,
-                      ),
-                      onPressed: _clear),
+        builder: (context, vm) => SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(left: 16, top: 120, right: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Sign Up/Sign In',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
-              ),
-              TextField(
-                controller: _passwordController,
-                obscureText: !_passwordVisible,
-                //cursorColor: Colours.color_F68A51,
-                keyboardType: TextInputType.visiblePassword,
-                maxLines: 1,
-                //style: TextStyle(color: Colours.color_3B3F42, fontSize: 14),
-                decoration: InputDecoration(
-                  focusColor: Colours.color_B1B2B3,
-                  //errorText: _passwordErrorText,
-                  hintText: 'Please input password',
-                  //hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
-                  prefixIcon: Icon(
-                    Icons.lock,
-                    color: Colours.color_B1B2B3,
-                  ),
-                  suffixIcon: IconButton(
-                      icon: Icon(
-                        _passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colours.color_B1B2B3,
-                      ),
-                      onPressed: _changePasswordVisibility),
+                SizedBox(
+                  height: 40,
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              IdolButton(
-                'Sign Up/Sign In',
-                status: _buttonStatus,
-                listener: (status) {
-                  if (status == IdolButtonStatus.enable) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    // 发起登录请求
-                    vm._signInOrSignUp(_emailController.text, _passwordController.text);
-                  }
-                },
-              )
-            ],
+                TextField(
+                  controller: _emailController,
+                  //cursorColor: Colours.color_F68A51,
+                  keyboardType: TextInputType.emailAddress,
+                  maxLines: 1,
+                  //style: TextStyle(color: Colours.color_3B3F42, fontSize: 14),
+                  decoration: InputDecoration(
+                    focusColor: Colours.color_B1B2B3,
+                    // errorText: _emailErrorText,
+                    hintText: 'Please input email',
+                    //hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: Colours.color_B1B2B3,
+                    ),
+                    suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colours.color_B1B2B3,
+                        ),
+                        onPressed: _clear),
+                  ),
+                ),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: !_passwordVisible,
+                  //cursorColor: Colours.color_F68A51,
+                  keyboardType: TextInputType.visiblePassword,
+                  maxLines: 1,
+                  //style: TextStyle(color: Colours.color_3B3F42, fontSize: 14),
+                  decoration: InputDecoration(
+                    focusColor: Colours.color_B1B2B3,
+                    //errorText: _passwordErrorText,
+                    hintText: 'Please input password',
+                    //hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Colours.color_B1B2B3,
+                    ),
+                    suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colours.color_B1B2B3,
+                        ),
+                        onPressed: _changePasswordVisibility),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Global.isRelease ? SizedBox() : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text('FastMock：'),
+                    Switch(
+                        value: fastMockFlag,
+                        onChanged: (flag) {
+                          setState(() {
+                            fastMockFlag = flag;
+                          });
+                          SpUtil.putBool('fastMockFlag', fastMockFlag);
+                        })
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                IdolButton(
+                  'Sign Up/Sign In',
+                  status: _buttonStatus,
+                  listener: (status) {
+                    if (status == IdolButtonStatus.enable) {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      // 发起登录请求
+                      vm._signInOrSignUp(
+                          _emailController.text, _passwordController.text);
+                    }
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -184,14 +206,14 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
 class _ViewModel {
   final LoginState loginState;
   final Function(String, String) _signInOrSignUp;
-  _ViewModel(this.loginState,this._signInOrSignUp);
+
+  _ViewModel(this.loginState, this._signInOrSignUp);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    
-    _signInOrSignUp(String email, String password){
+    _signInOrSignUp(String email, String password) {
       store.dispatch(LoginAction(LoginRequest(email, password)));
     }
-    
+
     return _ViewModel(store.state.loginState, _signInOrSignUp);
   }
 

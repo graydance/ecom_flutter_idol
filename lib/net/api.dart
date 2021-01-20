@@ -8,9 +8,11 @@ import 'package:idol/utils/keystore.dart';
 
 class DioClient {
   static DioClient _instance;
+  static final String _fastMock =
+      "https://www.fastmock.site/mock/1b6bacacb1d24a5476d15e12d54a7093/idol";
   Dio _dio;
   BaseOptions _options = BaseOptions(
-    baseUrl: apiEntry,
+    baseUrl: SpUtil.getBool('fastMockFlag') ? _fastMock : apiEntry,
     connectTimeout: 10000,
     receiveTimeout: 10000,
     contentType: "application/json; charset=utf-8",

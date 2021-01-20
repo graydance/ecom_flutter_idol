@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:idol/screen/module_dashboard/withdraw_verify.dart';
 import 'package:idol/screen/screens.dart';
-import 'package:idol/utils/keys.dart';
+import 'package:idol/utils/global.dart';
 
 class RouterPath {
   static const String splash = '/splash';
   static const String signUpOrSignIn = '/signUpOrSignIn';
   static const String home = '/home';
+  static const String dashboard$TaskDetail = '/dashboard/TaskDetail';
   static const String dashboard$Balance = '/dashboard/balance';
   static const String dashboard$Withdraw = '/dashboard/withdraw';
   static const String dashboard$VerifyPassword = '/dashboard/verifyPassowrd';
@@ -15,8 +16,7 @@ class RouterPath {
 }
 
 class IdolRoute {
-
-  static Map<String, WidgetBuilder> routes(){
+  static Map<String, WidgetBuilder> routes() {
     return {
       RouterPath.splash: (context) => SplashScreen(),
       RouterPath.signUpOrSignIn: (context) => SignUpSignInScreen(),
@@ -36,8 +36,15 @@ class IdolRoute {
     Navigator.of(context).pop(-1);
   }
 
-  static Future<Object> start(String routePath){
-    return Navigator.of(Keys.navigatorKey.currentContext).pushNamed(routePath);
+  static Future<Object> start(String routePath) {
+    if (routePath == RouterPath.signUpOrSignIn ||
+        routePath == RouterPath.home) {
+      return Navigator.of(Global.navigatorKey.currentContext)
+          .pushReplacementNamed(routePath);
+    } else {
+      return Navigator.of(Global.navigatorKey.currentContext)
+          .pushNamed(routePath);
+    }
   }
 
   static Future<Object> startSignUpOrSignIn(BuildContext context) {
@@ -49,6 +56,10 @@ class IdolRoute {
     return Navigator.of(context).pushReplacementNamed(RouterPath.home);
   }
 
+  static Future<Object> startDashboardTaskDetail(BuildContext context){
+    return Navigator.of(context).pushNamed(RouterPath.dashboard$TaskDetail);
+  }
+
   static Future<Object> startDashboardBalance(BuildContext context) {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$Balance);
   }
@@ -57,7 +68,8 @@ class IdolRoute {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$Withdraw);
   }
 
-  static Future<Object> startDashboardWithdrawVerifyPassword(BuildContext context) {
+  static Future<Object> startDashboardWithdrawVerifyPassword(
+      BuildContext context) {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$VerifyPassword);
   }
 
@@ -65,7 +77,7 @@ class IdolRoute {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
   }
 
-  static Future<Object> startSupplySearch(BuildContext context){
+  static Future<Object> startSupplySearch(BuildContext context) {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
   }
 }

@@ -21,10 +21,9 @@ dependencies:
   flutter_swiper: ^1.1.6
   video_player: ^1.0.1
   flutter_slidable: ^0.5.7
-
   r_dart_library:
     git:
-      url: https://github.com/YK-Unit/r_dart_library.git
+      url: 'https://github.com/YK-Unit/r_dart_library.git'
       ref: 0.2.1
 dev_dependencies:
   flutter_test:
@@ -47,6 +46,7 @@ flutter:
   - assets/images/dashboard/bg_withdraw.webp
   - assets/images/dashboard/bg_withdraw_failure.webp
   - assets/images/dashboard/bg_withdraw_success.webp
+  - assets/images/dashboard/ic_complete_rewards.png
   - assets/images/main/bg_splash.jpg
   - assets/images/main/ic_tab_biolinks_normal.png
   - assets/images/main/ic_tab_biolinks_selected.png

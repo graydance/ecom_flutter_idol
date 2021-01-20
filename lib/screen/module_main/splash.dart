@@ -49,7 +49,7 @@ class SplashScreenState extends State<SplashScreen> {
             debugPrint(
                 'User is not logged in. will jump to Sign Up/Sign In.');
             // sing up/sign in.
-            Future.delayed(Duration(milliseconds: 3000),
+            Future.delayed(Duration(milliseconds: 2000),
                     () => {IdolRoute.startSignUpOrSignIn(context)});
           }
         },

@@ -118,6 +118,12 @@ class _R_Image_AssetResource {
       "assets/images/dashboard/bg_withdraw_success.webp",
       packageName: null);
 
+  /// asset: assets/images/dashboard/ic_complete_rewards.png
+  // ignore: non_constant_identifier_names
+  final ic_complete_rewards = const AssetResource(
+      "assets/images/dashboard/ic_complete_rewards.png",
+      packageName: null);
+
   /// asset: assets/images/main/bg_splash.jpg
   // ignore: non_constant_identifier_names
   final bg_splash_jpg = const AssetResource("assets/images/main/bg_splash.jpg",
@@ -233,6 +239,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage bg_withdraw_success_webp() {
     return AssetImage(asset.bg_withdraw_success_webp.keyName);
+  }
+
+  /// asset: assets/images/dashboard/ic_complete_rewards.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_complete_rewards() {
+    return AssetImage(asset.ic_complete_rewards.keyName);
   }
 
   /// asset: assets/images/main/bg_splash.jpg

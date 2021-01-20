@@ -8,6 +8,7 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/arguments.dart';
+import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
@@ -77,7 +78,7 @@ class _WithdrawScreenState extends State {
                 double.tryParse(withdrawalAmountString);
             if (withdrawalAmountDouble < 100) {
               _amountTips =
-                  'The minimum withdrawal amount is ${_withdrawInfo.monetaryUnit}100';
+                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
@@ -89,7 +90,7 @@ class _WithdrawScreenState extends State {
             int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
             if (withdrawalAmountInt < 100) {
               _amountTips =
-                  'The minimum withdrawal amount is ${_withdrawInfo.monetaryUnit}100';
+                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
@@ -158,7 +159,7 @@ class _WithdrawScreenState extends State {
             ),
             Padding(
               padding: EdgeInsets.all(10),
-              child: Text(
+              child: Text(Global.getUser(context).monetaryUnit +
                 TextUtil.formatDoubleComma3(
                     vm._withdrawInfo.withdraw / 100),
                 style: TextStyle(
@@ -327,7 +328,7 @@ class _WithdrawScreenState extends State {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Amount(\$)',
+                          'Amount(${Global.getUser(context).monetaryUnit})',
                           style: TextStyle(
                             color: Colours.color_3B3F42,
                             fontSize: 14,
@@ -386,7 +387,7 @@ class _WithdrawScreenState extends State {
                             width: double.infinity,
                           ),
                           Text(
-                            'We will process the withdraw request within 2 working days.\nThe minimum withdrawal amount is \$100',
+                            'We will process the withdraw request within 2 working days.\nThe minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colours.color_B1B2B3,
