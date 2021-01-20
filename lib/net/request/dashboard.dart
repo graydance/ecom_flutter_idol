@@ -1,4 +1,19 @@
 import 'package:idol/net/request/base.dart';
+
+/// 完成任务领取奖励
+class CompleteRewardsRequest implements BaseRequest{
+  final String rewardId;
+
+  CompleteRewardsRequest(this.rewardId);
+
+  @override
+  Map<String, dynamic> toMap({String Function(String key) keyMapper}) {
+    return {
+      keyMapper('rewardId'):this.rewardId,
+    };
+  }
+}
+
 /// 提现
 class WithdrawRequest extends BaseRequest{
   final String withdrawTypeId;

@@ -21,10 +21,9 @@ dependencies:
   flutter_swiper: ^1.1.6
   video_player: ^1.0.1
   flutter_slidable: ^0.5.7
-
   r_dart_library:
     git:
-      url: https://github.com/YK-Unit/r_dart_library.git
+      url: 'https://github.com/YK-Unit/r_dart_library.git'
       ref: 0.2.1
 dev_dependencies:
   flutter_test:

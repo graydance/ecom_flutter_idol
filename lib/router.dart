@@ -15,8 +15,7 @@ class RouterPath {
 }
 
 class IdolRoute {
-
-  static Map<String, WidgetBuilder> routes(){
+  static Map<String, WidgetBuilder> routes() {
     return {
       RouterPath.splash: (context) => SplashScreen(),
       RouterPath.signUpOrSignIn: (context) => SignUpSignInScreen(),
@@ -36,8 +35,15 @@ class IdolRoute {
     Navigator.of(context).pop(-1);
   }
 
-  static Future<Object> start(String routePath){
-    return Navigator.of(Keys.navigatorKey.currentContext).pushNamed(routePath);
+  static Future<Object> start(String routePath) {
+    if (routePath == RouterPath.signUpOrSignIn ||
+        routePath == RouterPath.home) {
+      return Navigator.of(Keys.navigatorKey.currentContext)
+          .pushReplacementNamed(routePath);
+    } else {
+      return Navigator.of(Keys.navigatorKey.currentContext)
+          .pushNamed(routePath);
+    }
   }
 
   static Future<Object> startSignUpOrSignIn(BuildContext context) {
@@ -57,7 +63,8 @@ class IdolRoute {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$Withdraw);
   }
 
-  static Future<Object> startDashboardWithdrawVerifyPassword(BuildContext context) {
+  static Future<Object> startDashboardWithdrawVerifyPassword(
+      BuildContext context) {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$VerifyPassword);
   }
 
@@ -65,7 +72,7 @@ class IdolRoute {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
   }
 
-  static Future<Object> startSupplySearch(BuildContext context){
+  static Future<Object> startSupplySearch(BuildContext context) {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
   }
 }

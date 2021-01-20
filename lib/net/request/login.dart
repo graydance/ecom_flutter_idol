@@ -1,5 +1,6 @@
 import 'package:idol/net/request/base.dart';
 
+/// 登录|注册
 class LoginRequest extends BaseRequest {
   final String email;
   final String password;

@@ -1,5 +1,6 @@
 import 'package:idol/net/request/base.dart';
 
+/// Following && For You
 class FollowingForYouRequest implements BaseRequest {
   // 0:following 1:for you
   final int type;

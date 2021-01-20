@@ -2,7 +2,7 @@ import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/request/base.dart';
-import 'package:idol/net/request/withdraw.dart';
+import 'package:idol/net/request/dashboard.dart';
 
 /// DashboardState
 abstract class DashboardState {}
@@ -115,3 +115,35 @@ class WithdrawFailureAction {
 }
 
 class WithdrawSuccessAction {}
+
+/// CompleteRewardsAction
+abstract class CompleteRewardsState {}
+
+class CompleteRewardsInitial implements CompleteRewardsState {
+  const CompleteRewardsInitial();
+}
+
+class CompleteRewardsLoading implements CompleteRewardsState {}
+
+class CompleteRewardsFailure implements CompleteRewardsState {
+  final String message;
+
+  CompleteRewardsFailure(this.message);
+}
+
+class CompleteRewardsSuccess implements CompleteRewardsState {}
+
+/// WithdrawAction
+class CompleteRewardsAction {
+  final CompleteRewardsRequest request;
+
+  CompleteRewardsAction(this.request);
+}
+
+class CompleteRewardsFailureAction {
+  final String message;
+
+  CompleteRewardsFailureAction(this.message);
+}
+
+class CompleteRewardsSuccessAction {}

@@ -10,6 +10,7 @@ AppState appReducer(AppState state, action) {
     dashboardState: dashboardReducer(state.dashboardState, action),
     withdrawInfoState: withdrawInfoReducer(state.withdrawInfoState, action),
     withdrawState: withdrawReducer(state.withdrawState, action),
+    completeRewardsState: completeRewardsReducer(state.completeRewardsState, action),
     withdrawVerifyArguments: withdrawVerifyArgumentsReducer(state.withdrawVerifyArguments, action),
     withdrawResultArguments: withdrawResultArgumentsReducer(state.withdrawResultArguments, action),
     followingState: followingReducer(state.followingState, action),

@@ -4,7 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/models/models.dart';
-import 'package:idol/net/request/withdraw.dart';
+import 'package:idol/net/request/dashboard.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';

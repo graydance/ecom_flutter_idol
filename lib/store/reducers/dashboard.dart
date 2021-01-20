@@ -66,3 +66,24 @@ WithdrawSuccess _onWithdrawSuccess(WithdrawState state, WithdrawSuccessAction ac
 WithdrawFailure _onWithdrawFailure(WithdrawState state, WithdrawFailureAction action){
   return WithdrawFailure(action.message);
 }
+
+/// WithdrawReducer
+final completeRewardsReducer = combineReducers<CompleteRewardsState>([
+  TypedReducer<CompleteRewardsState, CompleteRewardsAction>(_onCompleteRewards),
+  TypedReducer<CompleteRewardsState, CompleteRewardsSuccessAction>(
+      _onCompleteRewardsSuccess),
+  TypedReducer<CompleteRewardsState, CompleteRewardsFailureAction>(
+      _onCompleteRewardsFailure),
+]);
+
+CompleteRewardsLoading _onCompleteRewards(CompleteRewardsState state, CompleteRewardsAction action){
+  return CompleteRewardsLoading();
+}
+
+CompleteRewardsSuccess _onCompleteRewardsSuccess(CompleteRewardsState state, CompleteRewardsSuccessAction action){
+  return CompleteRewardsSuccess();
+}
+
+CompleteRewardsFailure _onCompleteRewardsFailure(CompleteRewardsState state, CompleteRewardsFailureAction action){
+  return CompleteRewardsFailure(action.message);
+}

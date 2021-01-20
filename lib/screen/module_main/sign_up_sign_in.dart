@@ -25,12 +25,12 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
   TextEditingController _passwordController;
   String _emailErrorText = '';
   String _passwordErrorText = '';
+  bool fastMockFlag = SpUtil.getBool('fastMockFlag');
 
   @override
   void initState() {
     super.initState();
-    _emailController =
-        TextEditingController(text: 'gaopengfeidev@gmail.com');
+    _emailController = TextEditingController(text: 'gaopengfeidev@gmail.com');
     _passwordController = TextEditingController(text: 'abc123');
     _emailController.addListener(() {
       debugPrint('email => ${_emailController.text}');
@@ -162,6 +162,24 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
               SizedBox(
                 height: 20,
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text('FastMock：'),
+                  Switch(
+                      value: fastMockFlag,
+                      onChanged: (flag) {
+                        setState(() {
+                          fastMockFlag = flag;
+                        });
+                        SpUtil.putBool('fastMockFlag', fastMockFlag);
+                      })
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
               IdolButton(
                 'Sign Up/Sign In',
                 status: _buttonStatus,
@@ -169,7 +187,8 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
                   if (status == IdolButtonStatus.enable) {
                     FocusScope.of(context).requestFocus(FocusNode());
                     // 发起登录请求
-                    vm._signInOrSignUp(_emailController.text, _passwordController.text);
+                    vm._signInOrSignUp(
+                        _emailController.text, _passwordController.text);
                   }
                 },
               )
@@ -184,14 +203,14 @@ class _SignUpSignIn extends State<SignUpSignInScreen>
 class _ViewModel {
   final LoginState loginState;
   final Function(String, String) _signInOrSignUp;
-  _ViewModel(this.loginState,this._signInOrSignUp);
+
+  _ViewModel(this.loginState, this._signInOrSignUp);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    
-    _signInOrSignUp(String email, String password){
+    _signInOrSignUp(String email, String password) {
       store.dispatch(LoginAction(LoginRequest(email, password)));
     }
-    
+
     return _ViewModel(store.state.loginState, _signInOrSignUp);
   }
 
