@@ -13,12 +13,12 @@ import 'package:idol/store/actions/main.dart';
 import 'package:idol/widgets/widgets.dart';
 
 /// Sign Up/Sign In
-class SignUpSignInScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _SignUpSignIn();
+  State<StatefulWidget> createState() => _LoginScreenState();
 }
 
-class _SignUpSignIn extends State<SignUpSignInScreen>
+class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   bool _passwordVisible = false;
   IdolButtonStatus _buttonStatus = IdolButtonStatus.normal;

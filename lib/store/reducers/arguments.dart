@@ -1,4 +1,5 @@
 import 'package:idol/models/arguments/arguments.dart';
+import 'package:idol/models/arguments/rewards_detail.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/arguments/base.dart';
 import 'package:idol/models/models.dart';
@@ -25,5 +26,16 @@ final withdrawResultArgumentsReducer = combineReducers<Arguments>([
 
 WithdrawResultArguments _onUpdateWithdrawResultArguments(Arguments arguments,
     UpdateArgumentsAction<WithdrawResultArguments> action) {
+  return action.arguments;
+}
+
+/// 任务详情所需参数
+final rewardsDetailArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<RewardsDetailArguments>>(
+      _onUpdateRewardsDetailArguments),
+]);
+
+RewardsDetailArguments _onUpdateRewardsDetailArguments(Arguments arguments,
+    UpdateArgumentsAction<RewardsDetailArguments> action) {
   return action.arguments;
 }

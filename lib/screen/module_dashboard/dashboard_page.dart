@@ -2,6 +2,7 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/models/arguments/rewards_detail.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/dashboard.dart';
@@ -10,6 +11,7 @@ import 'package:idol/router.dart';
 import 'package:idol/screen/module_dashboard/pastsales_tab_view.dart';
 import 'package:idol/screen/module_dashboard/rewards_tab_view.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/store/actions/arguments.dart';
 import 'package:idol/store/actions/dashboard.dart';
 import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
@@ -77,12 +79,11 @@ class _DashboardPageState extends State<DashboardPage>
     );
   }
 
-  void _onStateChanged(
-      DashboardState state, CompleteRewardsState state2) {
+  void _onStateChanged(DashboardState state, CompleteRewardsState state2) {
     if (state is DashboardFailure) {
       EasyLoading.showToast((state).message);
     }
-    if(state2 is CompleteRewardsFailure){
+    if (state2 is CompleteRewardsFailure) {
       EasyLoading.showToast((state2).message);
     }
   }
@@ -256,7 +257,8 @@ class _DashboardPageState extends State<DashboardPage>
                           dashboard.rewardList,
                           (rewards) {
                             // 任务详情页
-                            IdolRoute.startDashboardTaskDetail(context);
+                            _viewModel._updateRewardsDetailArguments(rewards);
+                            IdolRoute.startDashboardRewardsDetail(context);
                           },
                           (rewards) {
                             // 任务领取
@@ -307,18 +309,25 @@ class _ViewModel {
   final DashboardState _dashboardState;
   final CompleteRewardsState _completeRewardsState;
   final Function(String) _completeRewards;
+  final Function(Reward) _updateRewardsDetailArguments;
 
   _ViewModel(this._dashboardState, this._completeRewardsState,
-      this._completeRewards);
+      this._completeRewards, this._updateRewardsDetailArguments);
 
   static _ViewModel fromStore(Store<AppState> store) {
     _completeRewards(String rewardId) {
       store.dispatch(CompleteRewardsAction(CompleteRewardsRequest(rewardId)));
     }
 
+    _updateRewardsDetailArguments(Reward reward) {
+      store.dispatch(UpdateArgumentsAction<RewardsDetailArguments>(
+          RewardsDetailArguments(reward: reward)));
+    }
+
     return _ViewModel(
         store.state.dashboardState,
         store.state.completeRewardsState,
-        _completeRewards);
+        _completeRewards,
+        _updateRewardsDetailArguments);
   }
 }
