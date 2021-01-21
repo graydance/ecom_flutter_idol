@@ -1,25 +1,24 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flustars/flustars.dart';
+import 'package:flutter/material.dart';
 import 'package:idol/env.dart';
 import 'package:idol/net/interceptor.dart';
 import 'package:idol/net/request/base.dart';
+import 'package:idol/utils/keystore.dart';
 
 class DioClient {
   static DioClient _instance;
+  static final String _fastMock =
+      "https://www.fastmock.site/mock/1b6bacacb1d24a5476d15e12d54a7093/idol";
   Dio _dio;
   BaseOptions _options = BaseOptions(
-    baseUrl: apiEntry,
+    baseUrl: SpUtil.getBool('fastMockFlag') ? _fastMock : apiEntry,
     connectTimeout: 10000,
     receiveTimeout: 10000,
     contentType: "application/json; charset=utf-8",
     responseType: ResponseType.json,
     headers: {
-      HttpHeaders.userAgentHeader: 'flutter-idol-android',
-      'token': '',
-      'domain': '',
-    },
-    extra: {
-      'UserAgent': 'Flutter-Android',
+      'x-token': SpUtil.getString(KeyStore.TOKEN),
     },
   );
 
@@ -49,10 +48,12 @@ class DioClient {
     _dio = io;
   }
 
-  Future<Map<String, dynamic>> dashboard(String path,
+  Future<Map<String, dynamic>> post(String path,
       {BaseRequest baseRequest}) async {
     try {
-      Response rsp = await _dio.get(path);
+      var data = baseRequest.toMap();
+      debugPrint('body=>$data');
+      Response rsp = await _dio.post(path, data: data);
       if (rsp.data['code'] == 0) {
         return rsp.data['data'];
       }

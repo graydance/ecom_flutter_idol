@@ -1,25 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:idol/res/colors.dart';
 
 class InboxPage extends StatefulWidget {
-  final void Function() onInit;
-  InboxPage({this.onInit});
   @override
-  State<StatefulWidget> createState() {
-    return InboxPageState();
-  }
+  State<StatefulWidget> createState() => _InboxPageState();
 }
 
-class InboxPageState extends State<InboxPage> {
+class _InboxPageState extends State<InboxPage> {
   @override
   void initState() {
-    if (widget.onInit != null) widget.onInit();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('StorePage'),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              AppBar(
+                actions: [
+                  IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        color: Colours.color_444648,
+                      ),
+                      onPressed: () => {}),
+                ],
+                elevation: 0,
+                title: Text('InBox'),
+                centerTitle: false,
+              ),
+            ],
+          ),
+          // Expanded(child: Text('data')),
+          Expanded(
+            child: Text('Content'
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -60,8 +60,27 @@ class Colours {
   static const Color color_29292B = Color(0xFF29292B);
   static const Color color_575859 = Color(0xFF575859);
   static const Color color_C3C4C6 = Color(0xFFC3C4C6);
+  static const Color color_444648 = Color(0xFF444648);
+  static const Color color_28292A = Color(0xFF28292A);
+  static const Color color_C3C4C4 = Color(0xFFC3C4C4);
+  static const Color color_3B3F42 = Color(0xFF3B3F42);
+  static const Color color_F4F5F6 = Color(0xFFF4F5F6);
+  static const Color color_FFD457 = Color(0xFFFFD457);
+  static const Color color_A2A2A2 = Color(0xFFA2A2A2);
+  static const Color color_EA4E4E = Color(0xFFEA4E4E);
+  static const Color color_F17F7F = Color(0xFFF17F7F);
+  static const Color color_95EC7E = Color(0xFF95EC7E);
+  static const Color color_5CD548 = Color(0xFF5CD548);
+  static const Color color_4E9AE3 = Color(0xFF4E9AE3);
+  static const Color color_393939 = Color(0xFF393939);
+  static const Color color_FEAC1B = Color(0xFFFEAC1B);
+  static const Color color_D8D8D8 = Color(0xFFD8D8D8);
+  static const Color color_50D8D8D8 = Color(0x80D8D8D8);
+  static const Color color_5028292A = Color(0x8028292A);
+  static const Color color_40A2A2A2 = Color(0x66A2A2A2);
   static const Color color_10777777 = Color(0x1A777777);
   static const Color color_10EA5228 = Color(0x1AEA5228);
+  static const Color color_35444648 = Color(0x59444648);
 
   static const Color color_black100 = Color(0xFF000000);
   static const Color color_black95 = Color(0xF2000000);

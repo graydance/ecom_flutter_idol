@@ -2,20 +2,14 @@ import 'package:flutter/material.dart';
 
 @immutable
 class Dashboard {
-  final bool isLoaded;
   final int availableBalance;
   final int lifetimeEarnings;
-  final String monetaryCountry;
-  final String monetaryUnit;
   final List<Reward> rewardList;
   final List<PastSales> pastSales;
 
   const Dashboard({
-    this.isLoaded = false,
     this.availableBalance = 0,
     this.lifetimeEarnings = 0,
-    this.monetaryCountry = 'USD',
-    this.monetaryUnit = '\$',
     this.rewardList = const [],
     this.pastSales = const [],
   });
@@ -32,9 +26,6 @@ class Dashboard {
             identical(availableBalance, this.availableBalance)) &&
         (lifetimeEarnings == null ||
             identical(lifetimeEarnings, this.lifetimeEarnings)) &&
-        (monetaryCountry == null ||
-            identical(monetaryCountry, this.monetaryCountry)) &&
-        (monetaryUnit == null || identical(monetaryUnit, this.monetaryUnit)) &&
         (rewardList == null || identical(rewardList, this.rewardList)) &&
         (pastSales == null || identical(pastSales, this.pastSales))) {
       return this;
@@ -43,8 +34,6 @@ class Dashboard {
     return Dashboard(
       availableBalance: availableBalance ?? this.availableBalance,
       lifetimeEarnings: lifetimeEarnings ?? this.lifetimeEarnings,
-      monetaryUnit: monetaryUnit ?? this.monetaryUnit,
-      monetaryCountry: monetaryCountry ?? this.monetaryCountry,
       rewardList: rewardList ?? this.rewardList,
       pastSales: pastSales ?? this.pastSales,
     );
@@ -52,7 +41,7 @@ class Dashboard {
 
   @override
   String toString() {
-    return 'Dashboard{availableBalance: $availableBalance, lifetimeEarnings: $lifetimeEarnings, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, rewardList: $rewardList, pastSales: $pastSales}';
+    return 'Dashboard{availableBalance: $availableBalance, lifetimeEarnings: $lifetimeEarnings, rewardList: $rewardList, pastSales: $pastSales}';
   }
 
   @override
@@ -62,8 +51,6 @@ class Dashboard {
           runtimeType == other.runtimeType &&
           availableBalance == other.availableBalance &&
           lifetimeEarnings == other.lifetimeEarnings &&
-          monetaryCountry == other.monetaryCountry &&
-          monetaryUnit == other.monetaryUnit &&
           rewardList == other.rewardList &&
           pastSales == other.pastSales);
 
@@ -71,23 +58,18 @@ class Dashboard {
   int get hashCode =>
       availableBalance.hashCode ^
       lifetimeEarnings.hashCode ^
-      monetaryCountry.hashCode ^
-      monetaryUnit.hashCode ^
       rewardList.hashCode ^
       pastSales.hashCode;
 
-  factory Dashboard.fromJson(Map<String, dynamic> json) {
+  factory Dashboard.fromMap(Map<String, dynamic> map) {
     return Dashboard(
-      isLoaded: true,
-      availableBalance: json['available_balance'] as int,
-      lifetimeEarnings: json['lifetime_earnings'] as int,
-      monetaryCountry: json['monetary_country'] as String,
-      monetaryUnit: json['monetary_unit'] as String,
-      rewardList: json['reward_list'] != null
-          ? _convertRewardListJson(json['reward_list'])
+      availableBalance: map['availableBalance'] ?? 0,
+      lifetimeEarnings: map['lifetimeEarnings'] ?? 0,
+      rewardList: map['rewardList'] != null
+          ? _convertRewardListJson(map['rewardList'])
           : const [],
-      pastSales: json['past_sales'] != null
-          ? _convertPastSalesListJson(json['past_sales'])
+      pastSales: map['pastSales'] != null
+          ? _convertPastSalesListJson(map['pastSales'])
           : const [],
     );
   }
@@ -95,7 +77,7 @@ class Dashboard {
   static List<Reward> _convertRewardListJson(List<dynamic> rewardListJson) {
     List<Reward> rewardList = <Reward>[];
     rewardListJson.forEach((value) {
-      rewardList.add(Reward.fromJson(value));
+      rewardList.add(Reward.fromMap(value));
     });
     return rewardList;
   }
@@ -104,181 +86,222 @@ class Dashboard {
       List<dynamic> pastSalesJson) {
     List<PastSales> pastSales = <PastSales>[];
     pastSalesJson.forEach((value) {
-      pastSales.add(PastSales.fromJson(value));
+      pastSales.add(PastSales.fromMap(value));
     });
     return pastSales;
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['available_balance'] = this.availableBalance;
-    data['lifetime_earnings'] = this.lifetimeEarnings;
-    data['monetary_country'] = this.monetaryCountry;
-    data['monetary_unit'] = this.monetaryUnit;
+    data['availableBalance'] = this.availableBalance;
+    data['lifetimeEarnings'] = this.lifetimeEarnings;
     if (this.rewardList != null) {
-      data['reward_list'] = this.rewardList.map((v) => v.toJson()).toList();
+      data['rewardList'] = this.rewardList.map((v) => v.toMap()).toList();
     }
     if (this.pastSales != null) {
-      data['past_sales'] = this.pastSales.map((v) => v.toJson()).toList();
+      data['pastSales'] = this.pastSales.map((v) => v.toMap()).toList();
     }
-    return data;
-  }
-}
-
-class Reward {
-  final int rewardStatus;
-  final String rewardTitle;
-  final String rewardDescription;
-  final int rewardCoins;
-  final String monetaryCountry;
-  final String monetaryUnit;
-
-  const Reward(
-      {this.rewardStatus = -1,
-      this.rewardTitle = '',
-      this.rewardDescription = '',
-      this.rewardCoins = 0,
-      this.monetaryCountry = 'USD',
-      this.monetaryUnit = '\$'});
-
-  Reward copyWith(
-      {int rewardStatus,
-      String rewardTitle,
-      String rewardDescription,
-      String rewardCoins,
-      String monetaryCountry,
-      String monetaryUnit}) {
-    return Reward(
-      rewardStatus: rewardStatus ?? this.rewardStatus,
-      rewardTitle: rewardTitle ?? this.rewardTitle,
-      rewardDescription: rewardDescription ?? this.rewardDescription,
-      rewardCoins: rewardCoins ?? this.rewardCoins,
-      monetaryCountry: monetaryCountry ?? this.monetaryCountry,
-      monetaryUnit: monetaryUnit ?? this.monetaryUnit,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Reward{rewardStatus: $rewardStatus, rewardTitle: $rewardTitle, rewardDescription: $rewardDescription, rewardCoins: $rewardCoins, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit}';
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Reward &&
-          runtimeType == other.runtimeType &&
-          rewardStatus == other.rewardStatus &&
-          rewardTitle == other.rewardTitle &&
-          rewardDescription == other.rewardDescription &&
-          rewardCoins == other.rewardCoins &&
-          monetaryCountry == other.monetaryCountry &&
-          monetaryUnit == other.monetaryUnit);
-
-  @override
-  int get hashCode =>
-      rewardStatus.hashCode ^
-      rewardTitle.hashCode ^
-      rewardDescription.hashCode ^
-      rewardCoins.hashCode ^
-      monetaryCountry.hashCode ^
-      monetaryUnit.hashCode;
-
-  factory Reward.fromJson(Map<String, dynamic> json) {
-    return Reward(
-      rewardStatus: json['reward_status'],
-      rewardTitle: json['reward_title'],
-      rewardDescription: json['reward_description'],
-      rewardCoins: json['reward_coins'],
-      monetaryCountry: json['monetary_country'],
-      monetaryUnit: json['monetary_unit'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['reward_status'] = this.rewardStatus;
-    data['reward_title'] = this.rewardTitle;
-    data['reward_description'] = this.rewardDescription;
-    data['reward_coins'] = this.rewardCoins;
-    data['monetary_country'] = this.monetaryCountry;
-    data['monetary_unit'] = this.monetaryUnit;
     return data;
   }
 }
 
 @immutable
-class PastSales {
-  final String date;
+class Reward {
+  final String id;
+  final int rewardStatus;
+  final String rewardTitle;
+  final String rewardDescription;
+  final int rewardCoins;
+  final String rewardCoinsStr;
   final String monetaryCountry;
   final String monetaryUnit;
-  final int monthSales;
-  final List<int> dailySales;
 
-  const PastSales({
-    this.date = '',
-    this.monetaryCountry = 'USD',
-    this.monetaryUnit = '\$',
-    this.monthSales = 0,
-    this.dailySales = const [],
-  });
+  const Reward(
+      {this.id,
+        this.rewardStatus = -1,
+      this.rewardTitle = '',
+      this.rewardDescription = '',
+      this.rewardCoins = 0,
+      this.rewardCoinsStr = '',
+      this.monetaryCountry = 'USD',
+      this.monetaryUnit = '\$'});
 
-  PastSales copyWith({
-    String date,
+  Reward copyWith({
+    String id,
+    int rewardStatus,
+    String rewardTitle,
+    String rewardDescription,
+    int rewardCoins,
+    String rewardCoinsStr,
     String monetaryCountry,
     String monetaryUnit,
-    int monthSales,
-    List<int> dailySales,
   }) {
-    return PastSales(
-      date: date ?? this.date,
+    if ((id == null || identical(id, this.id)) &&
+        (rewardStatus == null || identical(rewardStatus, this.rewardStatus)) &&
+        (rewardTitle == null || identical(rewardTitle, this.rewardTitle)) &&
+        (rewardDescription == null ||
+            identical(rewardDescription, this.rewardDescription)) &&
+        (rewardCoins == null || identical(rewardCoins, this.rewardCoins)) &&
+        (rewardCoinsStr == null ||
+            identical(rewardCoinsStr, this.rewardCoinsStr)) &&
+        (monetaryCountry == null ||
+            identical(monetaryCountry, this.monetaryCountry)) &&
+        (monetaryUnit == null || identical(monetaryUnit, this.monetaryUnit))) {
+      return this;
+    }
+
+    return Reward(
+      id: id ?? this.id,
+      rewardStatus: rewardStatus ?? this.rewardStatus,
+      rewardTitle: rewardTitle ?? this.rewardTitle,
+      rewardDescription: rewardDescription ?? this.rewardDescription,
+      rewardCoins: rewardCoins ?? this.rewardCoins,
+      rewardCoinsStr: rewardCoinsStr ?? this.rewardCoinsStr,
       monetaryCountry: monetaryCountry ?? this.monetaryCountry,
       monetaryUnit: monetaryUnit ?? this.monetaryUnit,
-      monthSales: monthSales ?? this.monthSales,
-      dailySales: dailySales ?? this.dailySales,
     );
   }
 
-  @override
-  String toString() {
-    return 'PastSales{date: $date, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, monthSales: $monthSales, dailySales: $dailySales}';
+  factory Reward.fromMap(
+    Map<String, dynamic> map, {
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+    return Reward(
+      id: map[keyMapper('id')] as String,
+      rewardStatus: map[keyMapper('rewardStatus')] as int,
+      rewardTitle: map[keyMapper('rewardTitle')] as String,
+      rewardDescription: map[keyMapper('rewardDescription')] as String,
+      rewardCoins: map[keyMapper('rewardCoins')] as int,
+      rewardCoinsStr: map[keyMapper('rewardCoinsStr')] as String,
+      monetaryCountry: map[keyMapper('monetaryCountry')] as String,
+      monetaryUnit: map[keyMapper('monetaryUnit')] as String,
+    );
+  }
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+// ignore: unnecessary_cast
+    return {
+      keyMapper('id'): this.id,
+      keyMapper('rewardStatus'): this.rewardStatus,
+      keyMapper('rewardTitle'): this.rewardTitle,
+      keyMapper('rewardDescription'): this.rewardDescription,
+      keyMapper('rewardCoins'): this.rewardCoins,
+      keyMapper('rewardCoinsStr'): this.rewardCoinsStr,
+      keyMapper('monetaryCountry'): this.monetaryCountry,
+      keyMapper('monetaryUnit'): this.monetaryUnit,
+    } as Map<String, dynamic>;
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is PastSales &&
+      other is Reward &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          rewardStatus == other.rewardStatus &&
+          rewardTitle == other.rewardTitle &&
+          rewardDescription == other.rewardDescription &&
+          rewardCoins == other.rewardCoins &&
+          rewardCoinsStr == other.rewardCoinsStr &&
+          monetaryCountry == other.monetaryCountry &&
+          monetaryUnit == other.monetaryUnit;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      rewardStatus.hashCode ^
+      rewardTitle.hashCode ^
+      rewardDescription.hashCode ^
+      rewardCoins.hashCode ^
+      rewardCoinsStr.hashCode ^
+      monetaryCountry.hashCode ^
+      monetaryUnit.hashCode;
+}
+
+@immutable
+class PastSales {
+  final String date;
+  final int monthSales;
+  final String monthSalesStr;
+  final List<String> dailySales;
+
+  const PastSales({
+    this.date = '',
+    this.monthSales = 0,
+    this.monthSalesStr,
+    this.dailySales = const [],
+  });
+
+  PastSales copyWith({
+    String date,
+    int monthSales,
+    String monthSalesStr,
+    List<String> dailySales,
+  }) {
+    if ((date == null || identical(date, this.date)) &&
+        (monthSales == null || identical(monthSales, this.monthSales)) &&
+        (monthSalesStr == null ||
+            identical(monthSalesStr, this.monthSalesStr)) &&
+        (dailySales == null || identical(dailySales, this.dailySales))) {
+      return this;
+    }
+
+    return PastSales(
+      date: date ?? this.date,
+      monthSales: monthSales ?? this.monthSales,
+      monthSalesStr: monthSalesStr ?? this.monthSalesStr,
+      dailySales: dailySales ?? this.dailySales,
+    );
+  }
+
+  factory PastSales.fromMap(
+    Map<String, dynamic> map, {
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+    return PastSales(
+      date: map[keyMapper('date')] as String,
+      monthSales: map[keyMapper('monthSales')] as int,
+      monthSalesStr: map[keyMapper('monthSalesStr')] as String,
+      dailySales: map['dailySales'] == null ? const [] : map['dailySales'].cast<String>(),
+    );
+  }
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+// ignore: unnecessary_cast
+    return {
+      keyMapper('date'): this.date,
+      keyMapper('monthSales'): this.monthSales,
+      keyMapper('monthSalesStr'): this.monthSalesStr,
+      keyMapper('dailySales'): this.dailySales,
+    } as Map<String, dynamic>;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PastSales &&
           runtimeType == other.runtimeType &&
           date == other.date &&
-          monetaryCountry == other.monetaryCountry &&
-          monetaryUnit == other.monetaryUnit &&
           monthSales == other.monthSales &&
-          dailySales == other.dailySales);
+          monthSalesStr == other.monthSalesStr &&
+          dailySales == other.dailySales;
 
   @override
   int get hashCode =>
       date.hashCode ^
-      monetaryCountry.hashCode ^
-      monetaryUnit.hashCode ^
       monthSales.hashCode ^
+      monthSalesStr.hashCode ^
       dailySales.hashCode;
-
-  factory PastSales.fromJson(Map<String, dynamic> json) {
-    return PastSales(
-        date: json['date'],
-        monetaryCountry: json['monetary_country'],
-        monetaryUnit: json['monetary_unit'],
-        monthSales: json['month_sales'],
-        dailySales: json['daily_sales'].cast<int>());
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['date'] = this.date;
-    data['monetary_country'] = this.monetaryCountry;
-    data['monetary_unit'] = this.monetaryUnit;
-    data['month_sales'] = this.monthSales;
-    data['daily_sales'] = this.dailySales;
-    return data;
-  }
 }
