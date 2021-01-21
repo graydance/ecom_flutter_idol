@@ -1,3 +1,4 @@
+import 'package:idol/models/arguments/rewards_detail.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/main.dart';
@@ -13,6 +14,7 @@ class AppState {
   final CompleteRewardsState completeRewardsState;
   final WithdrawVerifyArguments withdrawVerifyArguments;
   final WithdrawResultArguments withdrawResultArguments;
+  final RewardsDetailArguments rewardsDetailArguments;
   final FollowingState followingState;
   final ForYouState forYouState;
 
@@ -24,6 +26,7 @@ class AppState {
     this.completeRewardsState = const CompleteRewardsInitial(),
     this.withdrawVerifyArguments = const WithdrawVerifyArguments(),
     this.withdrawResultArguments = const WithdrawResultArguments(),
+    this.rewardsDetailArguments = const RewardsDetailArguments(),
     this.followingState = const FollowingInitial(),
     this.forYouState = const ForYouInitial(),
   });
@@ -36,6 +39,7 @@ class AppState {
     CompleteRewardsState completeRewardsState,
     WithdrawVerifyArguments withdrawVerifyArguments,
     WithdrawResultArguments withdrawResultArguments,
+    RewardsDetailArguments rewardsDetailArguments,
     FollowingState followingState,
     ForYouState forYouState,
   }) {
@@ -52,6 +56,8 @@ class AppState {
             identical(withdrawVerifyArguments, this.withdrawVerifyArguments)) &&
         (withdrawResultArguments == null ||
             identical(withdrawResultArguments, this.withdrawResultArguments)) &&
+        (rewardsDetailArguments == null ||
+            identical(rewardsDetailArguments, this.rewardsDetailArguments)) &&
         (followingState == null ||
             identical(followingState, this.followingState)) &&
         (forYouState == null || identical(forYouState, this.forYouState))) {
@@ -68,6 +74,8 @@ class AppState {
           withdrawVerifyArguments ?? this.withdrawVerifyArguments,
       withdrawResultArguments:
           withdrawResultArguments ?? this.withdrawResultArguments,
+      rewardsDetailArguments:
+          rewardsDetailArguments ?? this.rewardsDetailArguments,
       followingState: followingState ?? this.followingState,
       forYouState: forYouState ?? this.forYouState,
     );
@@ -85,6 +93,7 @@ class AppState {
           completeRewardsState == other.completeRewardsState &&
           withdrawVerifyArguments == other.withdrawVerifyArguments &&
           withdrawResultArguments == other.withdrawResultArguments &&
+          rewardsDetailArguments == other.rewardsDetailArguments &&
           followingState == other.followingState &&
           forYouState == other.forYouState;
 
@@ -97,6 +106,7 @@ class AppState {
       completeRewardsState.hashCode ^
       withdrawVerifyArguments.hashCode ^
       withdrawResultArguments.hashCode ^
+      rewardsDetailArguments.hashCode ^
       followingState.hashCode ^
       forYouState.hashCode;
 }

@@ -7,10 +7,10 @@ class RouterPath {
   static const String splash = '/splash';
   static const String signUpOrSignIn = '/signUpOrSignIn';
   static const String home = '/home';
-  static const String dashboard$TaskDetail = '/dashboard/TaskDetail';
+  static const String dashboard$RewardsDetail = '/dashboard/RewardsDetail';
   static const String dashboard$Balance = '/dashboard/balance';
   static const String dashboard$Withdraw = '/dashboard/withdraw';
-  static const String dashboard$VerifyPassword = '/dashboard/verifyPassowrd';
+  static const String dashboard$VerifyPassword = '/dashboard/verifyPassword';
   static const String dashboard$WithdrawResult = '/dashboard/withdrawResult';
   static const String supply$Search = '/supply/search';
 }
@@ -21,6 +21,7 @@ class IdolRoute {
       RouterPath.splash: (context) => SplashScreen(),
       RouterPath.signUpOrSignIn: (context) => SignUpSignInScreen(),
       RouterPath.home: (context) => HomeScreen(),
+      RouterPath.dashboard$RewardsDetail: (context) => RewardsDetailScreen(),
       RouterPath.dashboard$Balance: (context) => BalanceScreen(),
       RouterPath.dashboard$Withdraw: (context) => WithdrawScreen(),
       RouterPath.dashboard$VerifyPassword: (context) => VerifyPasswordScreen(),
@@ -56,8 +57,8 @@ class IdolRoute {
     return Navigator.of(context).pushReplacementNamed(RouterPath.home);
   }
 
-  static Future<Object> startDashboardTaskDetail(BuildContext context){
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$TaskDetail);
+  static Future<Object> startDashboardRewardsDetail(BuildContext context){
+    return Navigator.of(context).pushNamed(RouterPath.dashboard$RewardsDetail);
   }
 
   static Future<Object> startDashboardBalance(BuildContext context) {
