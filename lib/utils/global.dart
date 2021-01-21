@@ -33,8 +33,6 @@ class Global {
 
   static String get token => SpUtil.getString(KeyStore.TOKEN);
 
-  static bool get isRelease => bool.fromEnvironment('dart.vm.product');
-
   static void _configLogging() {
     Logger.root.onRecord.listen((LogRecord r) {
       print('${r.time}\t${r.loggerName}\t[${r.level.name}]:\t${r.message}');

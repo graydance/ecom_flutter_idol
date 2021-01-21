@@ -4,7 +4,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/login.dart';
@@ -26,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen>
   TextEditingController _passwordController;
   String _emailErrorText = '';
   String _passwordErrorText = '';
-  bool fastMockFlag = Global.isRelease ? false : SpUtil.getBool('fastMockFlag');
+  bool fastMockFlag = SpUtil.getBool('fastMockFlag');
 
   @override
   void initState() {
@@ -164,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen>
                 SizedBox(
                   height: 20,
                 ),
-                Global.isRelease ? SizedBox() : Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
