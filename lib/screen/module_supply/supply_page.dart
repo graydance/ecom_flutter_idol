@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';

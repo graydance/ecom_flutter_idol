@@ -13,6 +13,7 @@ AppState appReducer(AppState state, action) {
     completeRewardsState: completeRewardsReducer(state.completeRewardsState, action),
     withdrawVerifyArguments: withdrawVerifyArgumentsReducer(state.withdrawVerifyArguments, action),
     withdrawResultArguments: withdrawResultArgumentsReducer(state.withdrawResultArguments, action),
+    rewardsDetailArguments: rewardsDetailArgumentsReducer(state.rewardsDetailArguments, action),
     followingState: followingReducer(state.followingState, action),
     forYouState: forYouReducer(state.forYouState, action),
   );
