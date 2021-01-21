@@ -14,6 +14,8 @@ class Global {
   static final GlobalKey<NavigatorState> navigatorKey =
       new GlobalKey<NavigatorState>();
 
+  static final isRelease = const bool.fromEnvironment('dart.vm.product');
+
   static Future init() async {
     SpUtil.getInstance();
     _configLogging();
