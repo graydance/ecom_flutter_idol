@@ -14,6 +14,8 @@ class Global {
   static final GlobalKey<NavigatorState> navigatorKey =
       new GlobalKey<NavigatorState>();
 
+  static final isRelease = const bool.fromEnvironment('dart.vm.product');
+
   static Future init() async {
     SpUtil.getInstance();
     _configLogging();
@@ -32,8 +34,6 @@ class Global {
   static saveToken(String token) => SpUtil.putString(KeyStore.TOKEN, token);
 
   static String get token => SpUtil.getString(KeyStore.TOKEN);
-
-  static bool get isRelease => bool.fromEnvironment('dart.vm.product');
 
   static void _configLogging() {
     Logger.root.onRecord.listen((LogRecord r) {
