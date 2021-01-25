@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
 @immutable
-class ProductResponse {
+class Supply {
   final int totalPage;
   final int currentPage;
   final List<Product> list;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
-  const ProductResponse({
+  const Supply({
     this.totalPage,
     this.currentPage,
     this.list,
   });
 
-  ProductResponse copyWith({
+  Supply copyWith({
     int totalPage,
     int currentPage,
     List<Product> list,
@@ -25,7 +25,7 @@ class ProductResponse {
       return this;
     }
 
-    return ProductResponse(
+    return Supply(
       totalPage: totalPage ?? this.totalPage,
       currentPage: currentPage ?? this.currentPage,
       list: list ?? this.list,
@@ -40,7 +40,7 @@ class ProductResponse {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ProductResponse &&
+      (other is Supply &&
           runtimeType == other.runtimeType &&
           totalPage == other.totalPage &&
           currentPage == other.currentPage &&
@@ -49,13 +49,13 @@ class ProductResponse {
   @override
   int get hashCode => totalPage.hashCode ^ currentPage.hashCode ^ list.hashCode;
 
-  factory ProductResponse.fromMap(
+  factory Supply.fromMap(
     Map<String, dynamic> map, {
     String keyMapper(String key),
   }) {
     keyMapper ??= (key) => key;
 
-    return ProductResponse(
+    return Supply(
       totalPage: map[keyMapper('totalPage')] as int,
       currentPage: map[keyMapper('currentPage')] as int,
       list: map[keyMapper('list')] != null

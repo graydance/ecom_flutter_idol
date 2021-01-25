@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/product.dart';
+import 'package:idol/models/supply.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/store/actions/supply.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -77,14 +77,14 @@ class _ForYouTabViewState extends State<ForYouTabView>
       _refreshController.requestRefresh();
     }else if (state is ForYouSuccess) {
       setState(() {
-        if ((state).productResponse.currentPage == 1) {
-          products = (state).productResponse.list;
+        if ((state).supply.currentPage == 1) {
+          products = (state).supply.list;
         } else {
-          products.addAll((state).productResponse.list);
+          products.addAll((state).supply.list);
         }
-        currentPage = (state).productResponse.currentPage;
-        enablePullUp = (state).productResponse.currentPage !=
-            (state).productResponse.totalPage;
+        currentPage = (state).supply.currentPage;
+        enablePullUp = (state).supply.currentPage !=
+            (state).supply.totalPage;
       });
       _refreshController.refreshCompleted();
     } else if (state is ForYouFailure) {

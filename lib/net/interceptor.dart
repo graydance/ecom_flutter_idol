@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
+import 'package:idol/net/api_path.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
 
@@ -19,6 +20,11 @@ class TokenInterceptors extends InterceptorsWrapper {
       if (cacheToken.isNotEmpty) {
         options.headers['x-token'] = cacheToken;
       }
+    }
+    if(options.path == ApiPath.upload){
+      options.headers[Headers.contentTypeHeader] = 'multipart/form-data';
+    }else{
+      options.headers[Headers.contentTypeHeader] = 'application/json; charset=utf-8';
     }
     return super.onRequest(options);
   }

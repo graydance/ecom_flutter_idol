@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/product.dart';
+import 'package:idol/models/supply.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/screen/module_supply/product_item.dart';
 import 'package:idol/store/actions/supply.dart';
@@ -39,7 +39,7 @@ class _FollowingTabViewState extends State<FollowingTabView>
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       onInit: (store) {
-        if(store.state.followingState is FollowingInitial){
+        if (store.state.followingState is FollowingInitial) {
           store.dispatch(FollowingAction(FollowingForYouRequest(0, 1)));
         }
       },
@@ -63,8 +63,13 @@ class _FollowingTabViewState extends State<FollowingTabView>
                 );
               },
               itemCount: products.length,
-              itemBuilder: (context, index) =>
-                  ProductItemWidget(product: products[index]),
+              itemBuilder: (context, index) => ProductItemWidget(
+                product: products[index],
+                onProductAddedStoreListener: (product) {
+                  products.remove(product);
+                  setState(() {});
+                },
+              ),
             ),
             onRefresh: () => vm._load(1),
             onLoading: () => vm._load(currentPage + 1),
@@ -76,18 +81,17 @@ class _FollowingTabViewState extends State<FollowingTabView>
   }
 
   void _onFollowingStateChanged(FollowingState state) {
-    if(state is FollowingLoading){
+    if (state is FollowingLoading) {
       _refreshController.requestRefresh();
-    }else if (state is FollowingSuccess) {
+    } else if (state is FollowingSuccess) {
       setState(() {
-        if ((state).productResponse.currentPage == 1) {
-          products = (state).productResponse.list;
+        if ((state).supply.currentPage == 1) {
+          products = (state).supply.list;
         } else {
-          products.addAll((state).productResponse.list);
+          products.addAll((state).supply.list);
         }
-        currentPage = (state).productResponse.currentPage;
-        enablePullUp = (state).productResponse.currentPage !=
-            (state).productResponse.totalPage;
+        currentPage = (state).supply.currentPage;
+        enablePullUp = (state).supply.currentPage != (state).supply.totalPage;
       });
       _refreshController.refreshCompleted();
     } else if (state is FollowingFailure) {

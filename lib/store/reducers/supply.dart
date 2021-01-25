@@ -14,7 +14,7 @@ FollowingLoading _onFollowing(FollowingState state, FollowingAction action) {
 
 FollowingSuccess _onFollowingSuccess(
     FollowingState state, FollowingSuccessAction action) {
-  return FollowingSuccess(action.productResponse);
+  return FollowingSuccess(action.supply);
 }
 
 FollowingFailure _onFollowingFailure(
@@ -35,7 +35,7 @@ ForYouLoading _onForYou(ForYouState state, ForYouAction action) {
 
 ForYouSuccess _onForYouSuccess(
     ForYouState state, ForYouSuccessAction action) {
-  return ForYouSuccess(action.productResponse);
+  return ForYouSuccess(action.supply);
 }
 
 ForYouFailure _onForYouFailure(

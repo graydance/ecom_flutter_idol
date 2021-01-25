@@ -115,16 +115,19 @@ class Reward {
   final String rewardCoinsStr;
   final String monetaryCountry;
   final String monetaryUnit;
+  final String progress;
 
+//<editor-fold desc="Data Methods" defaultstate="collapsed">
   const Reward(
       {this.id,
-        this.rewardStatus = -1,
+      this.rewardStatus = -1,
       this.rewardTitle = '',
       this.rewardDescription = '',
       this.rewardCoins = 0,
       this.rewardCoinsStr = '',
       this.monetaryCountry = 'USD',
-      this.monetaryUnit = '\$'});
+      this.monetaryUnit = '\$',
+      this.progress = ''});
 
   Reward copyWith({
     String id,
@@ -135,6 +138,7 @@ class Reward {
     String rewardCoinsStr,
     String monetaryCountry,
     String monetaryUnit,
+    String progress,
   }) {
     if ((id == null || identical(id, this.id)) &&
         (rewardStatus == null || identical(rewardStatus, this.rewardStatus)) &&
@@ -146,7 +150,8 @@ class Reward {
             identical(rewardCoinsStr, this.rewardCoinsStr)) &&
         (monetaryCountry == null ||
             identical(monetaryCountry, this.monetaryCountry)) &&
-        (monetaryUnit == null || identical(monetaryUnit, this.monetaryUnit))) {
+        (monetaryUnit == null || identical(monetaryUnit, this.monetaryUnit)) &&
+        (progress == null || identical(progress, this.progress))) {
       return this;
     }
 
@@ -159,8 +164,41 @@ class Reward {
       rewardCoinsStr: rewardCoinsStr ?? this.rewardCoinsStr,
       monetaryCountry: monetaryCountry ?? this.monetaryCountry,
       monetaryUnit: monetaryUnit ?? this.monetaryUnit,
+      progress: progress ?? this.progress,
     );
   }
+
+  @override
+  String toString() {
+    return 'Reward{id: $id, rewardStatus: $rewardStatus, rewardTitle: $rewardTitle, rewardDescription: $rewardDescription, rewardCoins: $rewardCoins, rewardCoinsStr: $rewardCoinsStr, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, progress: $progress}';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Reward &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          rewardStatus == other.rewardStatus &&
+          rewardTitle == other.rewardTitle &&
+          rewardDescription == other.rewardDescription &&
+          rewardCoins == other.rewardCoins &&
+          rewardCoinsStr == other.rewardCoinsStr &&
+          monetaryCountry == other.monetaryCountry &&
+          monetaryUnit == other.monetaryUnit &&
+          progress == other.progress);
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      rewardStatus.hashCode ^
+      rewardTitle.hashCode ^
+      rewardDescription.hashCode ^
+      rewardCoins.hashCode ^
+      rewardCoinsStr.hashCode ^
+      monetaryCountry.hashCode ^
+      monetaryUnit.hashCode ^
+      progress.hashCode;
 
   factory Reward.fromMap(
     Map<String, dynamic> map, {
@@ -177,6 +215,7 @@ class Reward {
       rewardCoinsStr: map[keyMapper('rewardCoinsStr')] as String,
       monetaryCountry: map[keyMapper('monetaryCountry')] as String,
       monetaryUnit: map[keyMapper('monetaryUnit')] as String,
+      progress: map[keyMapper('progress')] as String,
     );
   }
 
@@ -195,33 +234,12 @@ class Reward {
       keyMapper('rewardCoinsStr'): this.rewardCoinsStr,
       keyMapper('monetaryCountry'): this.monetaryCountry,
       keyMapper('monetaryUnit'): this.monetaryUnit,
+      keyMapper('progress'): this.progress,
     } as Map<String, dynamic>;
   }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Reward &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          rewardStatus == other.rewardStatus &&
-          rewardTitle == other.rewardTitle &&
-          rewardDescription == other.rewardDescription &&
-          rewardCoins == other.rewardCoins &&
-          rewardCoinsStr == other.rewardCoinsStr &&
-          monetaryCountry == other.monetaryCountry &&
-          monetaryUnit == other.monetaryUnit;
+//</editor-fold>
 
-  @override
-  int get hashCode =>
-      id.hashCode ^
-      rewardStatus.hashCode ^
-      rewardTitle.hashCode ^
-      rewardDescription.hashCode ^
-      rewardCoins.hashCode ^
-      rewardCoinsStr.hashCode ^
-      monetaryCountry.hashCode ^
-      monetaryUnit.hashCode;
 }
 
 @immutable
@@ -270,7 +288,9 @@ class PastSales {
       date: map[keyMapper('date')] as String,
       monthSales: map[keyMapper('monthSales')] as int,
       monthSalesStr: map[keyMapper('monthSalesStr')] as String,
-      dailySales: map['dailySales'] == null ? const [] : map['dailySales'].cast<String>(),
+      dailySales: map['dailySales'] == null
+          ? const []
+          : map['dailySales'].cast<String>(),
     );
   }
 
