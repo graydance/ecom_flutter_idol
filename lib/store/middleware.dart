@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idol/models/dashboard.dart';
-import 'package:idol/models/product.dart';
+import 'package:idol/models/goods_list.dart';
+import 'package:idol/models/supply.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
@@ -20,6 +21,10 @@ List<Middleware<AppState>> createStoreMiddleware() {
     TypedMiddleware<AppState, CompleteRewardsAction>(completeRewardsMiddleware),
     TypedMiddleware<AppState, FollowingAction>(supplyMiddleware),
     TypedMiddleware<AppState, ForYouAction>(supplyMiddleware),
+    TypedMiddleware<AppState, MyInfoAction>(myInfoMiddleware),
+    TypedMiddleware<AppState, EditStoreAction>(editStoreMiddleware),
+    TypedMiddleware<AppState, MyInfoGoodsListAction>(goodsListMiddleware),
+    TypedMiddleware<AppState, MyInfoGoodsCategoryListAction>(goodsListMiddleware),
   ];
 }
 
@@ -134,14 +139,69 @@ final Middleware<AppState> supplyMiddleware =
         .whenComplete(() => null)
         .then((data) => {
               store.dispatch(action is FollowingAction
-                  ? FollowingSuccessAction(ProductResponse.fromMap(data))
-                  : ForYouSuccessAction(ProductResponse.fromMap(data)))
+                  ? FollowingSuccessAction(Supply.fromMap(data))
+                  : ForYouSuccessAction(Supply.fromMap(data)))
             })
         .catchError((err) {
       print(err.toString());
       store.dispatch(action is FollowingAction
           ? FollowingFailureAction(err.toString())
           : ForYouFailureAction(err.toString()));
+    });
+    next(action);
+  }
+};
+
+final Middleware<AppState> myInfoMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is MyInfoAction) {
+    DioClient.getInstance()
+        .post(ApiPath.myInfo, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data) {
+      // dispatch
+      store.dispatch(MyInfoSuccessAction(User.fromMap(data)));
+    }).catchError((err) {
+      print(err.toString());
+      store.dispatch(MyInfoFailureAction(err.toString()));
+    });
+    next(action);
+  }
+};
+
+final Middleware<AppState> editStoreMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is EditStoreAction) {
+    DioClient.getInstance()
+        .post(ApiPath.editStore, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data) {
+      // dispatch
+      store.dispatch(EditStoreSuccessAction());
+    }).catchError((err) {
+      print(err.toString());
+      store.dispatch(EditStoreFailureAction(err.toString()));
+    });
+    next(action);
+  }
+};
+
+final Middleware<AppState> goodsListMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is MyInfoGoodsListAction || action is MyInfoGoodsCategoryListAction) {
+    DioClient.getInstance()
+        .post(ApiPath.goodsList, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data) => {
+      store.dispatch(action is MyInfoGoodsListAction
+          ? MyInfoGoodsListSuccessAction(GoodsList.fromMap(data))
+          : MyInfoGoodsCategoryListSuccessAction(GoodsList.fromMap(data)))
+    })
+        .catchError((err) {
+      print(err.toString());
+      store.dispatch(action is FollowingAction
+          ? MyInfoGoodsListFailureAction(err.toString())
+          : MyInfoGoodsCategoryListFailureAction(err.toString()));
     });
     next(action);
   }

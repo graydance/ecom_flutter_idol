@@ -13,6 +13,8 @@ class RouterPath {
   static const String dashboard$VerifyPassword = '/dashboard/verify_password';
   static const String dashboard$WithdrawResult = '/dashboard/withdraw_result';
   static const String supply$Search = '/supply/search';
+  static const String settings = '/settings';
+  static const String store$EditStore = '/store/edit_store';
 }
 
 class IdolRoute {
@@ -26,6 +28,8 @@ class IdolRoute {
       RouterPath.dashboard$Withdraw: (context) => WithdrawScreen(),
       RouterPath.dashboard$VerifyPassword: (context) => VerifyPasswordScreen(),
       RouterPath.dashboard$WithdrawResult: (context) => WithdrawResultScreen(),
+      RouterPath.settings: (context) => SettingsScreen(),
+      RouterPath.store$EditStore: (context) => EditStoreScreen(),
     };
   }
 
@@ -57,6 +61,10 @@ class IdolRoute {
     return Navigator.of(context).pushReplacementNamed(RouterPath.home);
   }
 
+  static Future<Object> startSettings(BuildContext context) {
+    return Navigator.of(context).pushReplacementNamed(RouterPath.settings);
+  }
+
   static Future<Object> startDashboardRewardsDetail(BuildContext context){
     return Navigator.of(context).pushNamed(RouterPath.dashboard$RewardsDetail);
   }
@@ -80,5 +88,8 @@ class IdolRoute {
 
   static Future<Object> startSupplySearch(BuildContext context) {
     return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
+  }
+  static Future<Object> startStoreEditStore(BuildContext context) {
+    return Navigator.of(context).pushNamed(RouterPath.store$EditStore);
   }
 }

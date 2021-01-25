@@ -6,7 +6,7 @@ import 'package:idol/router.dart';
 import 'package:idol/widgets/rating_widget.dart';
 
 class IdolUI {
-  static AppBar appBar(BuildContext context, String title) {
+  static AppBar appBar(BuildContext context, String title,{bool centerTitle = false}) {
     return AppBar(
       elevation: 0,
       titleSpacing: 0,
@@ -14,6 +14,7 @@ class IdolUI {
         title,
         style: TextStyle(fontSize: 16, color: Colours.color_29292B),
       ),
+      centerTitle: centerTitle,
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back_ios,

@@ -189,6 +189,41 @@ class _R_Image_AssetResource {
       "assets/images/main/ic_tab_supply_selected.png",
       packageName: null);
 
+  /// asset: assets/images/store/bg_header.png
+  // ignore: non_constant_identifier_names
+  final bg_header = const AssetResource("assets/images/store/bg_header.png",
+      packageName: null);
+
+  /// asset: assets/images/store/default_portrait.png
+  // ignore: non_constant_identifier_names
+  final default_portrait = const AssetResource(
+      "assets/images/store/default_portrait.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_tab_category_selected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_category_selected = const AssetResource(
+      "assets/images/store/ic_tab_category_selected.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_tab_category_unselected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_category_unselected = const AssetResource(
+      "assets/images/store/ic_tab_category_unselected.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_tab_product_selected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_product_selected = const AssetResource(
+      "assets/images/store/ic_tab_product_selected.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_tab_product_unselected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_product_unselected = const AssetResource(
+      "assets/images/store/ic_tab_product_unselected.png",
+      packageName: null);
+
   /// asset: assets/images/supply/pause.png
   // ignore: non_constant_identifier_names
   final pause =
@@ -311,6 +346,42 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_tab_supply_selected() {
     return AssetImage(asset.ic_tab_supply_selected.keyName);
+  }
+
+  /// asset: assets/images/store/bg_header.png
+  // ignore: non_constant_identifier_names
+  AssetImage bg_header() {
+    return AssetImage(asset.bg_header.keyName);
+  }
+
+  /// asset: assets/images/store/default_portrait.png
+  // ignore: non_constant_identifier_names
+  AssetImage default_portrait() {
+    return AssetImage(asset.default_portrait.keyName);
+  }
+
+  /// asset: assets/images/store/ic_tab_category_selected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_category_selected() {
+    return AssetImage(asset.ic_tab_category_selected.keyName);
+  }
+
+  /// asset: assets/images/store/ic_tab_category_unselected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_category_unselected() {
+    return AssetImage(asset.ic_tab_category_unselected.keyName);
+  }
+
+  /// asset: assets/images/store/ic_tab_product_selected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_product_selected() {
+    return AssetImage(asset.ic_tab_product_selected.keyName);
+  }
+
+  /// asset: assets/images/store/ic_tab_product_unselected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_product_unselected() {
+    return AssetImage(asset.ic_tab_product_unselected.keyName);
   }
 
   /// asset: assets/images/supply/pause.png

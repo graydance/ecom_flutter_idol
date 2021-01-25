@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 @immutable
 class User {
-  final String nickName;
+  final String storeName;
+  final String storePicture;
   final String portrait;
   final int gender;
   final String aboutMe;
@@ -21,33 +22,48 @@ class User {
   final String updatedAt;
   final String createdAt;
   final String token;
+  final int followers;
+  final int followings;
+  final int products;
+  // 当前用户是否关注 1关注 0未关注
+  final int followStatus;
+  final int isOfficial;
+  final String userName;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const User({
-    this.nickName = '',
-    this.portrait = '',
+    this.storeName = "",
+    this.storePicture = "",
+    this.portrait = "",
     this.gender = 0,
-    this.aboutMe = '',
-    this.bindPhone = '',
+    this.aboutMe = "",
+    this.bindPhone = "",
     this.availableBalance = 0,
-    this.availableBalanceStr = '',
+    this.availableBalanceStr = "0.00",
     this.lifetimeEarnings = 0,
-    this.lifetimeEarningsStr = '',
-    this.monetaryCountry = 'USD',
-    this.monetaryUnit = '\$',
+    this.lifetimeEarningsStr = "0.00",
+    this.monetaryCountry = "USD",
+    this.monetaryUnit = "\$",
     this.shopStatus = 0,
     this.heatRank = 0,
-    this.bioLink = '',
-    this.id = '',
-    this.email = '',
-    this.updatedAt = '',
-    this.createdAt = '',
-    this.token = '',
+    this.bioLink = "",
+    this.id = "",
+    this.email = "",
+    this.updatedAt ="",
+    this.createdAt = "",
+    this.token = "",
+    this.followers = 0,
+    this.followings = 0,
+    this.products = 0,
+    this.followStatus = 0,
+    this.isOfficial = 0,
+    this.userName = "",
   });
 
   User copyWith({
-    String nickName,
+    String storeName,
+    String storePicture,
     String portrait,
     int gender,
     String aboutMe,
@@ -66,8 +82,15 @@ class User {
     String updatedAt,
     String createdAt,
     String token,
+    int followers,
+    int followings,
+    int products,
+    int followStatus,
+    int isOfficial,
+    String userName,
   }) {
-    if ((nickName == null || identical(nickName, this.nickName)) &&
+    if ((storeName == null || identical(storeName, this.storeName)) &&
+        (storePicture == null || identical(storePicture, this.storePicture)) &&
         (portrait == null || identical(portrait, this.portrait)) &&
         (gender == null || identical(gender, this.gender)) &&
         (aboutMe == null || identical(aboutMe, this.aboutMe)) &&
@@ -90,12 +113,19 @@ class User {
         (email == null || identical(email, this.email)) &&
         (updatedAt == null || identical(updatedAt, this.updatedAt)) &&
         (createdAt == null || identical(createdAt, this.createdAt)) &&
-        (token == null || identical(token, this.token))) {
+        (token == null || identical(token, this.token)) &&
+        (followers == null || identical(followers, this.followers)) &&
+        (followings == null || identical(followings, this.followings)) &&
+        (products == null || identical(products, this.products)) &&
+        (followStatus == null || identical(followStatus, this.followStatus)) &&
+        (isOfficial == null || identical(isOfficial, this.isOfficial)) &&
+        (userName == null || identical(userName, this.userName))) {
       return this;
     }
 
     return User(
-      nickName: nickName ?? this.nickName,
+      storeName: storeName ?? this.storeName,
+      storePicture: storePicture ?? this.storePicture,
       portrait: portrait ?? this.portrait,
       gender: gender ?? this.gender,
       aboutMe: aboutMe ?? this.aboutMe,
@@ -114,56 +144,14 @@ class User {
       updatedAt: updatedAt ?? this.updatedAt,
       createdAt: createdAt ?? this.createdAt,
       token: token ?? this.token,
+      followers: followers ?? this.followers,
+      followings: followings ?? this.followings,
+      products: products ?? this.products,
+      followStatus: followStatus ?? this.followStatus,
+      isOfficial: isOfficial ?? this.isOfficial,
+      userName: userName ?? this.userName,
     );
   }
-
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is User &&
-          runtimeType == other.runtimeType &&
-          nickName == other.nickName &&
-          portrait == other.portrait &&
-          gender == other.gender &&
-          aboutMe == other.aboutMe &&
-          bindPhone == other.bindPhone &&
-          availableBalance == other.availableBalance &&
-          availableBalanceStr == other.availableBalanceStr &&
-          lifetimeEarnings == other.lifetimeEarnings &&
-          lifetimeEarningsStr == other.lifetimeEarningsStr &&
-          monetaryCountry == other.monetaryCountry &&
-          monetaryUnit == other.monetaryUnit &&
-          shopStatus == other.shopStatus &&
-          heatRank == other.heatRank &&
-          bioLink == other.bioLink &&
-          id == other.id &&
-          email == other.email &&
-          updatedAt == other.updatedAt &&
-          createdAt == other.createdAt &&
-          token == other.token;
-
-  @override
-  int get hashCode =>
-      nickName.hashCode ^
-      portrait.hashCode ^
-      gender.hashCode ^
-      aboutMe.hashCode ^
-      bindPhone.hashCode ^
-      availableBalance.hashCode ^
-      availableBalanceStr.hashCode ^
-      lifetimeEarnings.hashCode ^
-      lifetimeEarningsStr.hashCode ^
-      monetaryCountry.hashCode ^
-      monetaryUnit.hashCode ^
-      shopStatus.hashCode ^
-      heatRank.hashCode ^
-      bioLink.hashCode ^
-      id.hashCode ^
-      email.hashCode ^
-      updatedAt.hashCode ^
-      createdAt.hashCode ^
-      token.hashCode;
 
   factory User.fromMap(
     Map<String, dynamic> map, {
@@ -172,7 +160,8 @@ class User {
     keyMapper ??= (key) => key;
 
     return User(
-      nickName: map[keyMapper('nickName')] as String,
+      storeName: map[keyMapper('storeName')] as String,
+      storePicture: map[keyMapper('storePicture')] as String,
       portrait: map[keyMapper('portrait')] as String,
       gender: map[keyMapper('gender')] as int,
       aboutMe: map[keyMapper('aboutMe')] as String,
@@ -191,6 +180,12 @@ class User {
       updatedAt: map[keyMapper('updatedAt')] as String,
       createdAt: map[keyMapper('createdAt')] as String,
       token: map[keyMapper('token')] as String,
+      followers: map[keyMapper('followers')] as int,
+      followings: map[keyMapper('followings')] as int,
+      products: map[keyMapper('products')] as int,
+      followStatus: map[keyMapper('followStatus')] as int,
+      isOfficial: map[keyMapper('isOfficial')] as int,
+      userName: map[keyMapper('userName')] as String,
     );
   }
 
@@ -201,7 +196,8 @@ class User {
 
 // ignore: unnecessary_cast
     return {
-      keyMapper('nickName'): this.nickName,
+      keyMapper('storeName'): this.storeName,
+      keyMapper('storePicture'): this.storePicture,
       keyMapper('portrait'): this.portrait,
       keyMapper('gender'): this.gender,
       keyMapper('aboutMe'): this.aboutMe,
@@ -220,14 +216,12 @@ class User {
       keyMapper('updatedAt'): this.updatedAt,
       keyMapper('createdAt'): this.createdAt,
       keyMapper('token'): this.token,
+      keyMapper('followers'): this.followers,
+      keyMapper('followings'): this.followings,
+      keyMapper('products'): this.products,
+      keyMapper('followStatus'): this.followStatus,
+      keyMapper('isOfficial'): this.isOfficial,
+      keyMapper('userName'): this.userName,
     } as Map<String, dynamic>;
   }
-
-  @override
-  String toString() {
-    return 'User{nickName: $nickName, portrait: $portrait, gender: $gender, aboutMe: $aboutMe, bindPhone: $bindPhone, availableBalance: $availableBalance, availableBalanceStr: $availableBalanceStr, lifetimeEarnings: $lifetimeEarnings, lifetimeEarningsStr: $lifetimeEarningsStr, monetaryCountry: $monetaryCountry, monetaryUnit: $monetaryUnit, shopStatus: $shopStatus, heatRank: $heatRank, bioLink: $bioLink, id: $id, email: $email, updatedAt: $updatedAt, createdAt: $createdAt, token: $token}';
-  }
-
-//</editor-fold>
-
 }

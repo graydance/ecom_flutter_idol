@@ -21,9 +21,11 @@ dependencies:
   flutter_swiper: ^1.1.6
   video_player: ^1.0.1
   flutter_slidable: ^0.5.7
+  image_picker: ^0.6.7+21
+  image_cropper: ^1.3.1
   r_dart_library:
     git:
-      url: 'https://github.com/YK-Unit/r_dart_library.git'
+      url: https://github.com/YK-Unit/r_dart_library.git
       ref: 0.2.1
 dev_dependencies:
   flutter_test:
@@ -58,5 +60,11 @@ flutter:
   - assets/images/main/ic_tab_store_selected.png
   - assets/images/main/ic_tab_supply_normal.png
   - assets/images/main/ic_tab_supply_selected.png
+  - assets/images/store/bg_header.png
+  - assets/images/store/default_portrait.png
+  - assets/images/store/ic_tab_category_selected.png
+  - assets/images/store/ic_tab_category_unselected.png
+  - assets/images/store/ic_tab_product_selected.png
+  - assets/images/store/ic_tab_product_unselected.png
   - assets/images/supply/pause.png
   - assets/images/supply/play.png

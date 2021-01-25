@@ -87,9 +87,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // 禁止延伸body至顶部
       extendBody: true,
-      // 延伸body至底部
       body: _createBody(),
       bottomNavigationBar: _createBottomNavigationBar(),
     );

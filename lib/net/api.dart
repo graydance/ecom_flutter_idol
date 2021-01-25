@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,23 @@ class DioClient {
       var data = baseRequest.toMap();
       debugPrint('body=>$data');
       Response rsp = await _dio.post(path, data: data);
+      if (rsp.data['code'] == 0) {
+        return rsp.data['data'];
+      }
+      throw rsp.data['msg'];
+    } on DioError catch (e) {
+      print(e.message);
+      throw e.message;
+    }
+  }
+
+  Future<Map<String, dynamic>> upload(String path, File file, {ProgressCallback onSendProgress}) async {
+    try {
+      _dio.options.headers[Headers.contentLengthHeader] = file.lengthSync();
+      FormData formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path),
+      });
+      Response rsp = await _dio.post(path, data: formData, onSendProgress: onSendProgress);
       if (rsp.data['code'] == 0) {
         return rsp.data['data'];
       }
