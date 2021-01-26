@@ -2,6 +2,8 @@ abstract class BaseRequest {
   Map<String, dynamic> toMap({
     String keyMapper(String key),
   });
+
+
 }
 
 class BaseRequestImpl extends BaseRequest{

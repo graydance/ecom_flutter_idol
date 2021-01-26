@@ -51,7 +51,7 @@ class EditStoreRequest implements BaseRequest {
       keyMapper('aboutMe'): this.aboutMe,
       keyMapper('storePicture'): this.storePicture,
       keyMapper('portrait'): this.portrait,
-    } as Map<String, dynamic>;
+    };
   }
 }
 
@@ -62,11 +62,14 @@ class CheckNameRequest implements BaseRequest{
 
   CheckNameRequest({this.storeName = '', this.userName = ''});
 
-  @override
-  Map<String, dynamic> toMap({String Function(String key) keyMapper}) {
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
     return {
       keyMapper('storeName'): this.storeName,
       keyMapper('userName'): this.userName,
-    }as Map<String, dynamic>;
+    };
   }
 }

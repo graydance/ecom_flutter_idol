@@ -21,6 +21,7 @@ class AppState {
   final EditStoreState editStoreState;
   final MyInfoGoodsListState myInfoGoodsListState;
   final MyInfoGoodsCategoryListState myInfoGoodsCategoryListState;
+  final ImageCropArguments imageCropArguments;
 
   AppState({
     this.dashboardState = const DashboardInitial(),
@@ -37,6 +38,7 @@ class AppState {
     this.editStoreState = const EditStoreInitial(),
     this.myInfoGoodsListState = const MyInfoGoodsListInitial(),
     this.myInfoGoodsCategoryListState = const MyInfoGoodsCategoryListInitial(),
+    this.imageCropArguments = const ImageCropArguments(''),
   });
 
   AppState copyWith({
@@ -52,10 +54,9 @@ class AppState {
     ForYouState forYouState,
     MyInfoState myInfoState,
     EditStoreState editStoreState,
-    CheckNameState checkStoreNameState,
-    CheckNameState checkUserNameState,
     MyInfoGoodsListState myInfoGoodsListState,
     MyInfoGoodsCategoryListState myInfoGoodsCategoryListState,
+    ImageCropArguments imageCropArguments,
   }) {
     if ((loginState == null || identical(loginState, this.loginState)) &&
         (dashboardState == null ||
@@ -82,7 +83,9 @@ class AppState {
             identical(myInfoGoodsListState, this.myInfoGoodsListState)) &&
         (myInfoGoodsCategoryListState == null ||
             identical(myInfoGoodsCategoryListState,
-                this.myInfoGoodsCategoryListState))) {
+                this.myInfoGoodsCategoryListState)) &&
+        (imageCropArguments == null ||
+            identical(imageCropArguments, this.imageCropArguments))) {
       return this;
     }
 
@@ -105,6 +108,7 @@ class AppState {
       myInfoGoodsListState: myInfoGoodsListState ?? this.myInfoGoodsListState,
       myInfoGoodsCategoryListState:
           myInfoGoodsCategoryListState ?? this.myInfoGoodsCategoryListState,
+      imageCropArguments: imageCropArguments ?? this.imageCropArguments,
     );
   }
 
@@ -126,7 +130,8 @@ class AppState {
           myInfoState == other.myInfoState &&
           editStoreState == other.editStoreState &&
           myInfoGoodsListState == other.myInfoGoodsListState &&
-          myInfoGoodsCategoryListState == other.myInfoGoodsCategoryListState;
+          myInfoGoodsCategoryListState == other.myInfoGoodsCategoryListState &&
+          imageCropArguments == other.imageCropArguments;
 
   @override
   int get hashCode =>
@@ -143,5 +148,8 @@ class AppState {
       myInfoState.hashCode ^
       editStoreState.hashCode ^
       myInfoGoodsListState.hashCode ^
-      myInfoGoodsCategoryListState.hashCode;
+      myInfoGoodsCategoryListState.hashCode ^
+      imageCropArguments.hashCode;
+
+
 }

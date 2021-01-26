@@ -39,3 +39,14 @@ RewardsDetailArguments _onUpdateRewardsDetailArguments(Arguments arguments,
     UpdateArgumentsAction<RewardsDetailArguments> action) {
   return action.arguments;
 }
+
+/// 任务详情所需参数
+final imageCropArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<ImageCropArguments>>(
+      _onUpdateImageCropArguments),
+]);
+
+ImageCropArguments _onUpdateImageCropArguments(Arguments arguments,
+    UpdateArgumentsAction<ImageCropArguments> action) {
+  return action.arguments;
+}

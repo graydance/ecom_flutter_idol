@@ -8,7 +8,6 @@ import 'package:idol/net/request/dashboard.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/store/actions/arguments.dart';
 import 'package:idol/widgets/widgets.dart';
 import 'package:redux/redux.dart';
 
@@ -155,10 +154,8 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
       EasyLoading.show(status: 'Submitting...');
     } else if (state is WithdrawSuccess) {
       EasyLoading.dismiss();
-      StoreProvider.of<AppState>(context).dispatch(
-          UpdateArgumentsAction<WithdrawResultArguments>(
-              WithdrawResultArguments(withdrawStatus: 0)));
-      IdolRoute.startDashboardWithdrawResult(context)
+      IdolRoute.startDashboardWithdrawResult(context,
+          WithdrawResultArguments(withdrawStatus: 0))
           .then((value) => IdolRoute.popAndResult(context));
     } else if (state is WithdrawFailure) {
       EasyLoading.showToast(state.message);
