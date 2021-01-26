@@ -18,16 +18,18 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
 
   bool _isUserLoggedIn() {
-    return SpUtil.getString(KeyStore.TOKEN).isNotEmpty;
+    return SpUtil
+        .getString(KeyStore.TOKEN)
+        .isNotEmpty;
   }
 
   void _onLoginStateChange(LoginState state) {
     if (state is LoginSuccess) {
-      Future.delayed(
-          Duration(milliseconds: 3000), () => {IdolRoute.startHome(context)});
+      debugPrint('state is LoginSuccess, startHome...');
+      IdolRoute.startHome(context);
     } else if (state is LoginFailure) {
-      Future.delayed(Duration(milliseconds: 3000),
-          () => {IdolRoute.startSignUpOrSignIn(context)});
+      debugPrint('state is LoginFailure, ${state.message})...');
+      IdolRoute.startSignUpOrSignIn(context);
     }
   }
 
@@ -36,32 +38,37 @@ class SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
         distinct: true,
-        onInit: (store){
+        onInit: (store) {
           if (_isUserLoggedIn()) {
             // auto login
             debugPrint(
                 'User is logged in. will running auto login.');
-            String email = SpUtil.getString(KeyStore.EMAIL);
-            String password = SpUtil.getString(KeyStore.PASSWORD);
-            StoreProvider.of<AppState>(context)
-                .dispatch(LoginAction(LoginRequest(email, password)));
+            Future.delayed(Duration(seconds: 2), () {
+              String email = SpUtil.getString(KeyStore.EMAIL);
+              String password = SpUtil.getString(KeyStore.PASSWORD);
+              StoreProvider.of<AppState>(context)
+                  .dispatch(LoginAction(LoginRequest(email, password)));
+            });
           } else {
             debugPrint(
                 'User is not logged in. will jump to Sign Up/Sign In.');
             // sing up/sign in.
-            Future.delayed(Duration(milliseconds: 2000),
+            Future.delayed(Duration(seconds: 2),
                     () => {IdolRoute.startSignUpOrSignIn(context)});
           }
         },
-        onWillChange: (oldVM, newVM) =>
-            {_onLoginStateChange(newVM == null ? oldVM.loginState : newVM)},
+        onWillChange: (oldVM, newVM) {
+          _onLoginStateChange(newVM == null ? oldVM.loginState : newVM.loginState);
+        },
         converter: _ViewModel.fromStore,
-        builder: (context, vm) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: R.image.bg_splash_jpg(), fit: BoxFit.cover),
-          ),
-        ),
+        builder: (context, vm) {
+          return Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: R.image.launch_background_webp(), fit: BoxFit.cover),
+            ),
+          );
+        }
       ),
     );
   }
@@ -69,19 +76,10 @@ class SplashScreenState extends State<SplashScreen> {
 
 class _ViewModel {
   final LoginState loginState;
+
   _ViewModel(this.loginState);
 
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(store.state.loginState);
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ViewModel &&
-          runtimeType == other.runtimeType &&
-          loginState == other.loginState;
-
-  @override
-  int get hashCode => loginState.hashCode;
 }

@@ -124,11 +124,6 @@ class _R_Image_AssetResource {
       "assets/images/dashboard/ic_complete_rewards.png",
       packageName: null);
 
-  /// asset: assets/images/main/bg_splash.jpg
-  // ignore: non_constant_identifier_names
-  final bg_splash_jpg = const AssetResource("assets/images/main/bg_splash.jpg",
-      packageName: null);
-
   /// asset: assets/images/main/ic_tab_biolinks_normal.png
   // ignore: non_constant_identifier_names
   final ic_tab_biolinks_normal = const AssetResource(
@@ -187,6 +182,12 @@ class _R_Image_AssetResource {
   // ignore: non_constant_identifier_names
   final ic_tab_supply_selected = const AssetResource(
       "assets/images/main/ic_tab_supply_selected.png",
+      packageName: null);
+
+  /// asset: assets/images/main/launch_background.webp
+  // ignore: non_constant_identifier_names
+  final launch_background_webp = const AssetResource(
+      "assets/images/main/launch_background.webp",
       packageName: null);
 
   /// asset: assets/images/store/bg_header.png
@@ -282,12 +283,6 @@ class _R_Image {
     return AssetImage(asset.ic_complete_rewards.keyName);
   }
 
-  /// asset: assets/images/main/bg_splash.jpg
-  // ignore: non_constant_identifier_names
-  AssetImage bg_splash_jpg() {
-    return AssetImage(asset.bg_splash_jpg.keyName);
-  }
-
   /// asset: assets/images/main/ic_tab_biolinks_normal.png
   // ignore: non_constant_identifier_names
   AssetImage ic_tab_biolinks_normal() {
@@ -346,6 +341,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_tab_supply_selected() {
     return AssetImage(asset.ic_tab_supply_selected.keyName);
+  }
+
+  /// asset: assets/images/main/launch_background.webp
+  // ignore: non_constant_identifier_names
+  AssetImage launch_background_webp() {
+    return AssetImage(asset.launch_background_webp.keyName);
   }
 
   /// asset: assets/images/store/bg_header.png
