@@ -32,7 +32,7 @@ class _WithdrawResultScreenState extends State {
           Duration(milliseconds: 1000), () => {_showRateDialog(context)});
       }
     }else{
-      IdolRoute.popAndResult(context);
+      IdolRoute.popAndExit(context);
     }
   }
 
@@ -92,7 +92,7 @@ class _WithdrawResultScreenState extends State {
                     : [Colours.color_F17F7F, Colours.color_EA4E4E],
                 linearGradientBegin: Alignment.topCenter,
                 linearGradientEnd: Alignment.bottomCenter,
-                listener: (status) => {IdolRoute.popAndResult(context)},
+                listener: (status) => {IdolRoute.popAndExit(context)},
               ),
             ],
           ),

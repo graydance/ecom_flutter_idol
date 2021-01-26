@@ -253,7 +253,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
             .then((value){
               if(value != null){
                 // 通知上层跳转到选品页
-                IdolRoute.popAndResult(context);
+                IdolRoute.popAndExit(context);
               }
         });
       }

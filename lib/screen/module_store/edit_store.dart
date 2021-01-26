@@ -9,7 +9,6 @@ import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
-import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/store.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
@@ -45,16 +44,21 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
   String _storeDescErrorText = '';
   bool _storeNameValid = false;
   bool _userNameValid = false;
+  bool _updating = false;
 
   @override
   void setState(fn) {
     super.setState(fn);
+  }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _storeNameController =
         TextEditingController(text: Global.getUser(context).storeName ?? '');
-    _storeNameFocusNode = FocusNode();
+    _storeNameFocusNode = FocusNode(debugLabel: '_storeNameFocusNode');
     _storeNameFocusNode.addListener(() {
-      if (!_storeNameFocusNode.hasFocus) {
+      if (!_storeNameFocusNode.hasFocus && !_updating) {
         // checkName
         if (_storeNameController.text == null ||
             _storeNameController.text.isEmpty) {
@@ -65,9 +69,9 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
     });
     _userNameController =
         TextEditingController(text: Global.getUser(context).userName ?? '');
-    _userNameFocusNode = FocusNode();
+    _userNameFocusNode = FocusNode(debugLabel: '_userNameFocusNode');
     _userNameFocusNode.addListener(() {
-      if (!_storeNameFocusNode.hasFocus) {
+      if (!_storeNameFocusNode.hasFocus && !_updating) {
         if (_userNameController.text == null ||
             _userNameController.text.isEmpty) {
           return;
@@ -78,7 +82,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
     });
     _storeDescController =
         TextEditingController(text: Global.getUser(context).aboutMe ?? '');
-    _storeDescFocusNode = FocusNode();
+    _storeDescFocusNode = FocusNode(debugLabel: '_storeDescFocusNode');
     _storeDescFocusNode.addListener(() {
       if (!_storeDescFocusNode.hasFocus) {
         _changeSaveButtonStatus();
@@ -102,12 +106,14 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
       });
     }).catchError((err) {
       print(err.toString());
-      if (checkNameRequest.storeName != null &&
-          checkNameRequest.storeName.isNotEmpty) {
-        _storeNameErrorText = 'This name has already been taken.';
-      } else {
-        _userNameErrorText = 'This name has already been taken.';
-      }
+      setState(() {
+        if (checkNameRequest.storeName != null &&
+            checkNameRequest.storeName.isNotEmpty) {
+          _storeNameErrorText = 'This name has already been taken.';
+        } else {
+          _userNameErrorText = 'This name has already been taken.';
+        }
+      });
     });
   }
 
@@ -139,6 +145,8 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
               _myInfo.storeName != null && _myInfo.storeName.isNotEmpty;
           _userNameValid =
               _myInfo.userName != null && _myInfo.userName.isNotEmpty;
+          _storeBackground = _myInfo.storePicture;
+          _portrait = _myInfo.portrait;
         }
         return Scaffold(
           //backgroundColor: Colours.white,
@@ -205,6 +213,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
                             ),
                             TextField(
                               controller: _storeNameController,
+                              focusNode: _storeNameFocusNode,
                               inputFormatters: [
                                 WhitelistingTextInputFormatter(
                                     RegExp(r"[a-zA-Z0-9]+|\s+|_")),
@@ -231,6 +240,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
                             ),
                             TextField(
                               controller: _userNameController,
+                              focusNode: _userNameFocusNode,
                               maxLength: 128,
                               inputFormatters: [
                                 WhitelistingTextInputFormatter(
@@ -273,6 +283,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
                             ),
                             TextField(
                               controller: _storeDescController,
+                              focusNode: _storeDescFocusNode,
                               maxLength: 512,
                               cursorColor: Colours.color_EA5228,
                               decoration: InputDecoration(
@@ -295,6 +306,8 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
                               status: _saveButtonStatus,
                               listener: (status) {
                                 if (status == IdolButtonStatus.enable) {
+                                _updating = true;
+                                  _clearFocus();
                                   vm._editStore(
                                       _storeNameController.text,
                                       _userNameController.text,
@@ -380,16 +393,16 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
       EasyLoading.show(status: 'Updating...');
     } else if (state is EditStoreSuccess) {
       EasyLoading.showToast('Update successfully');
-      StoreProvider.of<AppState>(context)
-          .dispatch(MyInfoAction(BaseRequestImpl()));
-      IdolRoute.pop(context);
+      IdolRoute.popWithCommand(context, Command.refreshMyInfo);
     } else if (state is EditStoreFailure) {
       EasyLoading.showError((state).message);
+      _updating = false;
     }
   }
 
   // 选择拍照/相册 type：0-店铺背景 1-头像
   void _showImagePickerDialog(int type) {
+    _clearFocus();
     showDialog(
         context: context,
         builder: (context) {
@@ -432,41 +445,56 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
         await _picker.getImage(source: imageSource, imageQuality: 100);
     if (pickedFile != null) {
       debugPrint('select image path => ${pickedFile.path}');
-      _cropImageAndUpload(pickedFile.path, type);
+      // 获取裁剪结果
+      final result = await IdolRoute.startImageCrop(
+          context,
+          ImageCropArguments(pickedFile.path,
+              cropType:
+                  type == 0 ? CropType.storeBackground : CropType.avatar));
+      if (result != null && result is Map) {
+        if ((result)['isSuccess'] == true && (result)['filePath'] != null) {
+          // File croppedFile = File( (result)['filePath']); Android7.0文件权限问题，会导致无法找到文件
+          File croppedFile = File.fromUri(Uri.tryParse((result)['filePath']));
+          _upload(croppedFile, type);
+          // _upload2(croppedFile, type);
+        }
+      }
     } else {
       EasyLoading.show(status: 'No image selected.');
     }
   }
 
-  void _cropImageAndUpload(String originalPath, int type) {
-    IdolRoute.startImageCrop(context, ImageCropArguments(originalPath, cropType:
-                    type == 0 ? CropType.storeBackground : CropType.avatar))
-        .then((result) {
-      // {filePath: file:///storage/emulated/0/idol/1611651297367.jpg, errorMessage: null, isSuccess: true}
-      debugPrint('_cropImage >>> $result');
-      if (result != null && result is Map) {
-        if ((result)['isSuccess'] == true && (result)['filePath'] != null) {
-          File croppedFile = File((result)['filePath']);
-          _upload(croppedFile, type);
+  void _upload2(File croppedFile, int type) async {
+    var response = await DioClient.getInstance().upload(
+        ApiPath.upload, File(croppedFile.path), onSendProgress: (send, total) {
+      EasyLoading.showProgress(send / total, status: 'Uploading...');
+    });
+    debugPrint(response.toString());
+    Upload upload = Upload.fromMap(response);
+    if (upload != null && upload.list != null && upload.list.isNotEmpty) {
+      EasyLoading.dismiss();
+      // 上传成功...
+      setState(() {
+        debugPrint('setState refresh picture.');
+        if (type == 0) {
+          _storeBackground = upload.list[0].url;
+          _storeBackgroundFile = croppedFile;
+        } else {
+          _portrait = upload.list[0].url;
+          _portraitFile = croppedFile;
         }
-      }
-    }).catchError((error){
-      debugPrint(error);
-    }).whenComplete(() => null);
+      });
+    }
   }
 
-  void _upload(File croppedFile, int type){
-    DioClient.getInstance()
-        .upload(ApiPath.upload, File(croppedFile.path),
+  void _upload(File croppedFile, int type) {
+    DioClient.getInstance().upload(ApiPath.upload, File(croppedFile.path),
         onSendProgress: (send, total) {
-          EasyLoading.showProgress(send / total, status: 'Uploading...');
-        })
-        .then((data) {
+      EasyLoading.showProgress(send / total, status: 'Uploading...');
+    }).then((data) {
       debugPrint('upload success >>> $data');
       Upload upload = Upload.fromMap(data);
-      if (upload != null &&
-          upload.list != null &&
-          upload.list.isNotEmpty) {
+      if (upload != null && upload.list != null && upload.list.isNotEmpty) {
         // 上传成功...
         setState(() {
           debugPrint('setState refresh picture.');
@@ -479,9 +507,33 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
           }
         });
       }
-    })
-        .catchError((err) => EasyLoading.showError(err.toString()))
-        .whenComplete(() => EasyLoading.dismiss());
+    }).catchError((err) {
+      // then | catchError | whenComplete 期待的函数返回类型是Future<Null>
+      // 如果使用单行写法会有隐式return 关键字，如果在执行代码期间出现异常，具体异常不会抛出
+      // 反而会抛出 Unhandled Exception: type 'Future<void>' is not a subtype of type 'Future<Null>?'
+      // 禁止使用 => 后，具体异常便可以抛出。
+      EasyLoading.showError(err.toString());
+    }).whenComplete(() {
+      EasyLoading.dismiss();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _clearFocus();
+    _storeNameFocusNode.dispose();
+    _userNameFocusNode.dispose();
+    _storeDescFocusNode.dispose();
+    _storeNameController.dispose();
+    _storeDescController.dispose();
+    _userNameController.dispose();
+  }
+
+  void _clearFocus() {
+    _storeNameFocusNode.unfocus();
+    _userNameFocusNode.unfocus();
+    _storeDescFocusNode.unfocus();
   }
 }
 
