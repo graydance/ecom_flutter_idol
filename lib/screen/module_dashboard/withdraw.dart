@@ -40,6 +40,11 @@ class _WithdrawScreenState extends State {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _accountController = TextEditingController();
     _accountController.addListener(() => _changeWithdrawButtonStatus());
     _amountFocusNode.addListener(() {
@@ -58,8 +63,8 @@ class _WithdrawScreenState extends State {
         debugPrint('Confirm Account TextField lose focus.');
         setState(() {
           _confirmAccountTips = _accountController.text.isNotEmpty &&
-                  _confirmAccountController.text.isNotEmpty &&
-                  _confirmAccountController.text == _accountController.text
+              _confirmAccountController.text.isNotEmpty &&
+              _confirmAccountController.text == _accountController.text
               ? ''
               : 'Account not match';
         });
@@ -74,14 +79,14 @@ class _WithdrawScreenState extends State {
         if (withdrawalAmountString.isNotEmpty) {
           if (withdrawalAmountString.contains('.')) {
             double withdrawalAmountDouble =
-                double.tryParse(withdrawalAmountString);
+            double.tryParse(withdrawalAmountString);
             if (withdrawalAmountDouble < 100) {
               _amountTips =
-                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
+              'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
-                      _withdrawInfo.withdraw
+                  _withdrawInfo.withdraw
                   ? ''
                   : 'Not sufficient funds';
             }
@@ -89,11 +94,11 @@ class _WithdrawScreenState extends State {
             int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
             if (withdrawalAmountInt < 100) {
               _amountTips =
-                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
+              'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
-                      _withdrawInfo.withdraw
+                  _withdrawInfo.withdraw
                   ? ''
                   : 'Not sufficient funds';
             }
@@ -455,7 +460,7 @@ class _WithdrawScreenState extends State {
                 amount: amount))
         .then((value) {
       if (value != null) {
-        IdolRoute.popAndResult(context);
+        IdolRoute.popAndExit(context);
       }
     });
   }
@@ -466,6 +471,12 @@ class _WithdrawScreenState extends State {
     _accountFocusNode.unfocus();
     _confirmAccountFocusNode.unfocus();
     _amountFocusNode.unfocus();
+    _accountFocusNode.dispose();
+    _accountController.dispose();
+    _confirmAccountFocusNode.dispose();
+    _confirmAccountController.dispose();
+    _amountFocusNode.dispose();
+    _amountController.dispose();
   }
 }
 

@@ -156,7 +156,7 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
       EasyLoading.dismiss();
       IdolRoute.startDashboardWithdrawResult(context,
           WithdrawResultArguments(withdrawStatus: 0))
-          .then((value) => IdolRoute.popAndResult(context));
+          .then((value) => IdolRoute.popAndExit(context));
     } else if (state is WithdrawFailure) {
       EasyLoading.showToast(state.message);
     }

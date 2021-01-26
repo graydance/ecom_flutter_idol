@@ -21,6 +21,11 @@ class RouterPath {
   static const String store$EditStore = '/store/edit_store';
 }
 
+enum Command{
+  pop,
+  refreshMyInfo,
+}
+
 class IdolRoute {
   static Map<String, WidgetBuilder> routes() {
     return {
@@ -42,8 +47,12 @@ class IdolRoute {
     Navigator.of(context).pop();
   }
 
-  static void popAndResult(BuildContext context) {
-    Navigator.of(context).pop(-1);
+  static void popAndExit(BuildContext context) {
+    Navigator.of(context).pop(Command.pop);
+  }
+
+  static void popWithCommand(BuildContext context, Command command){
+    Navigator.of(context).pop(command);
   }
 
   static Future<Object> start(String routePath) {
