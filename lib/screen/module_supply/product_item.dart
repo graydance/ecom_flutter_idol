@@ -9,7 +9,6 @@ import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 import 'package:idol/widgets/widgets.dart';
-import 'package:video_player/video_player.dart';
 
 class ProductItemWidget extends StatefulWidget {
   final Product product;
@@ -280,6 +279,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
         widget.onProductAddedStoreListener(product);
       }
     }).catchError((err) {
+      debugPrint(err.toString());
       EasyLoading.showError(err.toString());
     });
   }

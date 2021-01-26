@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
+import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';
 import 'package:idol/net/api.dart';
@@ -11,8 +12,8 @@ import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/store.dart';
 import 'package:idol/router.dart';
+import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/utils/global.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/r.g.dart';
@@ -397,7 +398,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
             children: [
               SimpleDialogOption(
                 onPressed: () {
-                  _getImageAndUpload(ImageSource.camera, type);
+                  _getImage(ImageSource.camera, type);
                   IdolRoute.pop(context);
                 },
                 child: Padding(
@@ -410,7 +411,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  _getImageAndUpload(ImageSource.gallery, type);
+                  _getImage(ImageSource.gallery, type);
                   IdolRoute.pop(context);
                 },
                 child: Padding(
@@ -426,74 +427,61 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
         });
   }
 
-  Future _getImageAndUpload(ImageSource imageSource, int type) async {
-    final pickedFile = await _picker.getImage(source: imageSource);
+  Future<Null> _getImage(ImageSource imageSource, int type) async {
+    final pickedFile =
+        await _picker.getImage(source: imageSource, imageQuality: 100);
     if (pickedFile != null) {
       debugPrint('select image path => ${pickedFile.path}');
-      _cropImage(pickedFile.path, type);
+      _cropImageAndUpload(pickedFile.path, type);
     } else {
       EasyLoading.show(status: 'No image selected.');
     }
   }
 
-  Future<Null> _cropImage(String originalPath, int type) async {
-    File croppedFile = await ImageCropper.cropImage(
-        sourcePath: originalPath,
-        aspectRatioPresets: Platform.isAndroid
-            ? [
-                CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio3x2,
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio16x9
-              ]
-            : [
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio3x2,
-                CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio5x3,
-                CropAspectRatioPreset.ratio5x4,
-                CropAspectRatioPreset.ratio7x5,
-                CropAspectRatioPreset.ratio16x9
-              ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.white,
-            toolbarWidgetColor: Colors.black,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          title: 'Cropper',
-        ));
-    if (croppedFile != null) {
-      DioClient.getInstance()
-          .upload(ApiPath.upload, File(croppedFile.path),
-              onSendProgress: (send, total) {
-            EasyLoading.showProgress(send / total, status: 'Uploading...');
-          })
-          .then((data) {
-            debugPrint('upload success >>> $data');
-            Upload upload = Upload.fromMap(data);
-            if (upload != null &&
-                upload.list != null &&
-                upload.list.isNotEmpty) {
-              // 上传成功...
-              setState(() {
-                debugPrint('setState refresh picture.');
-                if (type == 0) {
-                  _storeBackground = upload.list[0].url;
-                  _storeBackgroundFile = croppedFile;
-                } else {
-                  _portrait = upload.list[0].url;
-                  _portraitFile = croppedFile;
-                }
-              });
-            }
-          })
-          .catchError((err) => EasyLoading.showError(err.toString()))
-          .whenComplete(() => EasyLoading.dismiss());
-    }
+  void _cropImageAndUpload(String originalPath, int type) {
+    IdolRoute.startImageCrop(context, ImageCropArguments(originalPath, cropType:
+                    type == 0 ? CropType.storeBackground : CropType.avatar))
+        .then((result) {
+      // {filePath: file:///storage/emulated/0/idol/1611651297367.jpg, errorMessage: null, isSuccess: true}
+      debugPrint('_cropImage >>> $result');
+      if (result != null && result is Map) {
+        if ((result)['isSuccess'] == true && (result)['filePath'] != null) {
+          File croppedFile = File((result)['filePath']);
+          _upload(croppedFile, type);
+        }
+      }
+    }).catchError((error){
+      debugPrint(error);
+    }).whenComplete(() => null);
+  }
+
+  void _upload(File croppedFile, int type){
+    DioClient.getInstance()
+        .upload(ApiPath.upload, File(croppedFile.path),
+        onSendProgress: (send, total) {
+          EasyLoading.showProgress(send / total, status: 'Uploading...');
+        })
+        .then((data) {
+      debugPrint('upload success >>> $data');
+      Upload upload = Upload.fromMap(data);
+      if (upload != null &&
+          upload.list != null &&
+          upload.list.isNotEmpty) {
+        // 上传成功...
+        setState(() {
+          debugPrint('setState refresh picture.');
+          if (type == 0) {
+            _storeBackground = upload.list[0].url;
+            _storeBackgroundFile = croppedFile;
+          } else {
+            _portrait = upload.list[0].url;
+            _portraitFile = croppedFile;
+          }
+        });
+      }
+    })
+        .catchError((err) => EasyLoading.showError(err.toString()))
+        .whenComplete(() => EasyLoading.dismiss());
   }
 }
 

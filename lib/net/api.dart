@@ -53,7 +53,7 @@ class DioClient {
       {BaseRequest baseRequest}) async {
     try {
       var data = baseRequest.toMap();
-      debugPrint('body=>$data');
+      debugPrint('api post body => $data');
       Response rsp = await _dio.post(path, data: data);
       if (rsp.data['code'] == 0) {
         return rsp.data['data'];
