@@ -22,3 +22,18 @@ class FollowingForYouRequest implements BaseRequest {
     };
   }
 }
+
+/// Following && Foy You Add to my store.
+class AddStoreRequest implements BaseRequest{
+  final String goodsId;
+
+  const AddStoreRequest(this.goodsId);
+
+  @override
+  Map<String, dynamic> toMap({String Function(String key) keyMapper}) {
+    keyMapper ??= (key) => key;
+    return {
+      keyMapper('goodsId'):this.goodsId,
+    };
+  }
+}

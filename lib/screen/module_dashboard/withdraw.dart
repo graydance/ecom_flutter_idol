@@ -7,7 +7,6 @@ import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/store/actions/arguments.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/widgets.dart';
 import 'package:redux/redux.dart';
@@ -41,6 +40,11 @@ class _WithdrawScreenState extends State {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _accountController = TextEditingController();
     _accountController.addListener(() => _changeWithdrawButtonStatus());
     _amountFocusNode.addListener(() {
@@ -59,8 +63,8 @@ class _WithdrawScreenState extends State {
         debugPrint('Confirm Account TextField lose focus.');
         setState(() {
           _confirmAccountTips = _accountController.text.isNotEmpty &&
-                  _confirmAccountController.text.isNotEmpty &&
-                  _confirmAccountController.text == _accountController.text
+              _confirmAccountController.text.isNotEmpty &&
+              _confirmAccountController.text == _accountController.text
               ? ''
               : 'Account not match';
         });
@@ -75,14 +79,14 @@ class _WithdrawScreenState extends State {
         if (withdrawalAmountString.isNotEmpty) {
           if (withdrawalAmountString.contains('.')) {
             double withdrawalAmountDouble =
-                double.tryParse(withdrawalAmountString);
+            double.tryParse(withdrawalAmountString);
             if (withdrawalAmountDouble < 100) {
               _amountTips =
-                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
+              'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
-                      _withdrawInfo.withdraw
+                  _withdrawInfo.withdraw
                   ? ''
                   : 'Not sufficient funds';
             }
@@ -90,11 +94,11 @@ class _WithdrawScreenState extends State {
             int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
             if (withdrawalAmountInt < 100) {
               _amountTips =
-                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
+              'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
-                      _withdrawInfo.withdraw
+                  _withdrawInfo.withdraw
                   ? ''
                   : 'Not sufficient funds';
             }
@@ -139,7 +143,7 @@ class _WithdrawScreenState extends State {
     );
   }
 
-  Widget _buildWidget(_ViewModel vm){
+  Widget _buildWidget(_ViewModel vm) {
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.only(left: 15, right: 15, top: 40),
@@ -151,17 +155,17 @@ class _WithdrawScreenState extends State {
                 children: [
                   Text(
                     'Available',
-                    style: TextStyle(
-                        fontSize: 16, color: Colours.color_A9A9A9),
+                    style: TextStyle(fontSize: 16, color: Colours.color_A9A9A9),
                   ),
                 ],
               ),
             ),
             Padding(
               padding: EdgeInsets.all(10),
-              child: Text(Global.getUser(context).monetaryUnit +
-                TextUtil.formatDoubleComma3(
-                    vm._withdrawInfo.withdraw / 100),
+              child: Text(
+                Global.getUser(context).monetaryUnit +
+                    TextUtil.formatDoubleComma3(
+                        vm._withdrawInfo.withdraw / 100),
                 style: TextStyle(
                     fontSize: 35,
                     color: Colours.color_EA5228,
@@ -199,8 +203,7 @@ class _WithdrawScreenState extends State {
                               Text(
                                 _withdrawTypeName,
                                 style: TextStyle(
-                                    color: Colours.color_B1B2B3,
-                                    fontSize: 14),
+                                    color: Colours.color_B1B2B3, fontSize: 14),
                               ),
                               Icon(
                                 Icons.chevron_right,
@@ -234,8 +237,7 @@ class _WithdrawScreenState extends State {
                             controller: _accountController,
                             focusNode: _accountFocusNode,
                             style: TextStyle(
-                                color: Colours.color_B1B2B3,
-                                fontSize: 14),
+                                color: Colours.color_B1B2B3, fontSize: 14),
                             textAlign: TextAlign.end,
                             maxLines: 1,
                             //maxLength: 254,
@@ -245,7 +247,7 @@ class _WithdrawScreenState extends State {
                                 border: InputBorder.none,
                                 isCollapsed: true,
                                 contentPadding:
-                                EdgeInsets.symmetric(vertical: 1.0)),
+                                    EdgeInsets.symmetric(vertical: 1.0)),
                           ),
                         )
                       ],
@@ -269,8 +271,8 @@ class _WithdrawScreenState extends State {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                        left: 15, top: 6, right: 15, bottom: 5),
+                    padding:
+                        EdgeInsets.only(left: 15, top: 6, right: 15, bottom: 5),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -288,8 +290,7 @@ class _WithdrawScreenState extends State {
                             textAlign: TextAlign.end,
                             focusNode: _confirmAccountFocusNode,
                             style: TextStyle(
-                                color: Colours.color_B1B2B3,
-                                fontSize: 14),
+                                color: Colours.color_B1B2B3, fontSize: 14),
                             maxLines: 1,
                             //maxLength: 254,
                             keyboardType: TextInputType.emailAddress,
@@ -297,7 +298,7 @@ class _WithdrawScreenState extends State {
                                 border: InputBorder.none,
                                 isCollapsed: true,
                                 contentPadding:
-                                EdgeInsets.symmetric(vertical: 1.0)),
+                                    EdgeInsets.symmetric(vertical: 1.0)),
                           ),
                         )
                       ],
@@ -321,8 +322,8 @@ class _WithdrawScreenState extends State {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                        left: 15, top: 6, right: 15, bottom: 5),
+                    padding:
+                        EdgeInsets.only(left: 15, top: 6, right: 15, bottom: 5),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -339,8 +340,7 @@ class _WithdrawScreenState extends State {
                             controller: _amountController,
                             focusNode: _amountFocusNode,
                             style: TextStyle(
-                                color: Colours.color_B1B2B3,
-                                fontSize: 14),
+                                color: Colours.color_B1B2B3, fontSize: 14),
                             textAlign: TextAlign.end,
                             maxLines: 1,
                             keyboardType: TextInputType.number,
@@ -348,7 +348,7 @@ class _WithdrawScreenState extends State {
                                 border: InputBorder.none,
                                 isCollapsed: true,
                                 contentPadding:
-                                EdgeInsets.symmetric(vertical: 1.0)),
+                                    EdgeInsets.symmetric(vertical: 1.0)),
                           ),
                         )
                       ],
@@ -379,8 +379,7 @@ class _WithdrawScreenState extends State {
                           Text(
                             'Notice',
                             style: TextStyle(
-                                fontSize: 14,
-                                color: Colours.color_3B3F42),
+                                fontSize: 14, color: Colours.color_3B3F42),
                           ),
                           SizedBox(
                             height: 7,
@@ -403,8 +402,7 @@ class _WithdrawScreenState extends State {
                       'Withdraw',
                       status: withdrawButtonStatus,
                       listener: (status) => {
-                        if (status == IdolButtonStatus.enable)
-                          {_withdraw(vm)}
+                        if (status == IdolButtonStatus.enable) {_withdraw(vm)}
                       },
                     ),
                   ),
@@ -456,10 +454,13 @@ class _WithdrawScreenState extends State {
     }
 
     // 缓存下级页面所需参数信息到AppStore
-    vm._updateArguments(_withdrawTypeId, _accountController.text, amount);
-    IdolRoute.startDashboardWithdrawVerifyPassword(context).then((value) {
+    IdolRoute.startDashboardWithdrawVerifyPassword(context, WithdrawVerifyArguments(
+                withdrawTypeId: _withdrawTypeId,
+                account: _accountController.text,
+                amount: amount))
+        .then((value) {
       if (value != null) {
-        IdolRoute.popAndResult(context);
+        IdolRoute.popAndExit(context);
       }
     });
   }
@@ -470,28 +471,26 @@ class _WithdrawScreenState extends State {
     _accountFocusNode.unfocus();
     _confirmAccountFocusNode.unfocus();
     _amountFocusNode.unfocus();
+    _accountFocusNode.dispose();
+    _accountController.dispose();
+    _confirmAccountFocusNode.dispose();
+    _confirmAccountController.dispose();
+    _amountFocusNode.dispose();
+    _amountController.dispose();
   }
 }
 
 class _ViewModel {
   final WithdrawInfo _withdrawInfo;
-  final Function(String, String, int) _updateArguments;
 
-  _ViewModel(this._withdrawInfo, this._updateArguments);
+  _ViewModel(this._withdrawInfo);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    _updateArguments(String withdrawTypeId, String account, int amount) {
-      store.dispatch(UpdateArgumentsAction<WithdrawVerifyArguments>(
-          WithdrawVerifyArguments(
-              withdrawTypeId: withdrawTypeId,
-              account: account,
-              amount: amount)));
-    }
 
     WithdrawInfo withdrawInfo = store.state.withdrawInfoState
             is WithdrawInfoSuccess
         ? (store.state.withdrawInfoState as WithdrawInfoSuccess).withdrawInfo
         : WithdrawInfo();
-    return _ViewModel(withdrawInfo, _updateArguments);
+    return _ViewModel(withdrawInfo);
   }
 }

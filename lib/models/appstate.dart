@@ -17,6 +17,11 @@ class AppState {
   final RewardsDetailArguments rewardsDetailArguments;
   final FollowingState followingState;
   final ForYouState forYouState;
+  final MyInfoState myInfoState;
+  final EditStoreState editStoreState;
+  final MyInfoGoodsListState myInfoGoodsListState;
+  final MyInfoGoodsCategoryListState myInfoGoodsCategoryListState;
+  final ImageCropArguments imageCropArguments;
 
   AppState({
     this.dashboardState = const DashboardInitial(),
@@ -29,6 +34,11 @@ class AppState {
     this.rewardsDetailArguments = const RewardsDetailArguments(),
     this.followingState = const FollowingInitial(),
     this.forYouState = const ForYouInitial(),
+    this.myInfoState = const MyInfoInitial(),
+    this.editStoreState = const EditStoreInitial(),
+    this.myInfoGoodsListState = const MyInfoGoodsListInitial(),
+    this.myInfoGoodsCategoryListState = const MyInfoGoodsCategoryListInitial(),
+    this.imageCropArguments = const ImageCropArguments(''),
   });
 
   AppState copyWith({
@@ -42,6 +52,11 @@ class AppState {
     RewardsDetailArguments rewardsDetailArguments,
     FollowingState followingState,
     ForYouState forYouState,
+    MyInfoState myInfoState,
+    EditStoreState editStoreState,
+    MyInfoGoodsListState myInfoGoodsListState,
+    MyInfoGoodsCategoryListState myInfoGoodsCategoryListState,
+    ImageCropArguments imageCropArguments,
   }) {
     if ((loginState == null || identical(loginState, this.loginState)) &&
         (dashboardState == null ||
@@ -60,7 +75,17 @@ class AppState {
             identical(rewardsDetailArguments, this.rewardsDetailArguments)) &&
         (followingState == null ||
             identical(followingState, this.followingState)) &&
-        (forYouState == null || identical(forYouState, this.forYouState))) {
+        (forYouState == null || identical(forYouState, this.forYouState)) &&
+        (myInfoState == null || identical(myInfoState, this.myInfoState)) &&
+        (editStoreState == null ||
+            identical(editStoreState, this.editStoreState)) &&
+        (myInfoGoodsListState == null ||
+            identical(myInfoGoodsListState, this.myInfoGoodsListState)) &&
+        (myInfoGoodsCategoryListState == null ||
+            identical(myInfoGoodsCategoryListState,
+                this.myInfoGoodsCategoryListState)) &&
+        (imageCropArguments == null ||
+            identical(imageCropArguments, this.imageCropArguments))) {
       return this;
     }
 
@@ -78,6 +103,12 @@ class AppState {
           rewardsDetailArguments ?? this.rewardsDetailArguments,
       followingState: followingState ?? this.followingState,
       forYouState: forYouState ?? this.forYouState,
+      myInfoState: myInfoState ?? this.myInfoState,
+      editStoreState: editStoreState ?? this.editStoreState,
+      myInfoGoodsListState: myInfoGoodsListState ?? this.myInfoGoodsListState,
+      myInfoGoodsCategoryListState:
+          myInfoGoodsCategoryListState ?? this.myInfoGoodsCategoryListState,
+      imageCropArguments: imageCropArguments ?? this.imageCropArguments,
     );
   }
 
@@ -95,7 +126,12 @@ class AppState {
           withdrawResultArguments == other.withdrawResultArguments &&
           rewardsDetailArguments == other.rewardsDetailArguments &&
           followingState == other.followingState &&
-          forYouState == other.forYouState;
+          forYouState == other.forYouState &&
+          myInfoState == other.myInfoState &&
+          editStoreState == other.editStoreState &&
+          myInfoGoodsListState == other.myInfoGoodsListState &&
+          myInfoGoodsCategoryListState == other.myInfoGoodsCategoryListState &&
+          imageCropArguments == other.imageCropArguments;
 
   @override
   int get hashCode =>
@@ -108,5 +144,12 @@ class AppState {
       withdrawResultArguments.hashCode ^
       rewardsDetailArguments.hashCode ^
       followingState.hashCode ^
-      forYouState.hashCode;
+      forYouState.hashCode ^
+      myInfoState.hashCode ^
+      editStoreState.hashCode ^
+      myInfoGoodsListState.hashCode ^
+      myInfoGoodsCategoryListState.hashCode ^
+      imageCropArguments.hashCode;
+
+
 }

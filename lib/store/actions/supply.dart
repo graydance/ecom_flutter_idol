@@ -1,4 +1,4 @@
-import 'package:idol/models/product.dart';
+import 'package:idol/models/supply.dart';
 import 'package:idol/net/request/supply.dart';
 
 /// Following
@@ -11,9 +11,9 @@ class FollowingInitial implements FollowingState {
 class FollowingLoading implements FollowingState {}
 
 class FollowingSuccess implements FollowingState {
-  final ProductResponse productResponse;
+  final Supply supply;
 
-  FollowingSuccess(this.productResponse);
+  FollowingSuccess(this.supply);
 }
 
 class FollowingFailure implements FollowingState {
@@ -29,8 +29,8 @@ class FollowingAction {
 }
 
 class FollowingSuccessAction {
-  final ProductResponse productResponse;
-  FollowingSuccessAction(this.productResponse);
+  final Supply supply;
+  FollowingSuccessAction(this.supply);
 }
 
 class FollowingFailureAction {
@@ -49,9 +49,9 @@ class ForYouInitial implements ForYouState {
 class ForYouLoading implements ForYouState {}
 
 class ForYouSuccess implements ForYouState {
-  final ProductResponse productResponse;
+  final Supply supply;
 
-  ForYouSuccess(this.productResponse);
+  ForYouSuccess(this.supply);
 }
 
 class ForYouFailure implements ForYouState {
@@ -67,9 +67,9 @@ class ForYouAction {
 }
 
 class ForYouSuccessAction {
-  final ProductResponse productResponse;
+  final Supply supply;
 
-  ForYouSuccessAction(this.productResponse);
+  ForYouSuccessAction(this.supply);
 }
 
 class ForYouFailureAction {

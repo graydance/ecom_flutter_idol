@@ -1,15 +1,16 @@
-import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/utils/global.dart';
 
 class RewardsTabView extends StatefulWidget {
   final List<Reward> list;
   final ItemClickCallback onItemClick;
   final ItemClickCallback onCompleteRewardsClick;
 
-  const RewardsTabView(this.list, this.onItemClick, this.onCompleteRewardsClick);
+  const RewardsTabView(
+      this.list, this.onItemClick, this.onCompleteRewardsClick);
 
   @override
   State<StatefulWidget> createState() => _RewardsTabViewState(list);
@@ -36,7 +37,8 @@ class _RewardsTabViewState extends State<RewardsTabView>
           },
           itemCount: list.length,
           itemBuilder: (context, index) {
-            return RewardsItem(list[index], widget.onItemClick, widget.onCompleteRewardsClick);
+            return RewardsItem(
+                list[index], widget.onItemClick, widget.onCompleteRewardsClick);
           },
         ));
   }
@@ -45,7 +47,7 @@ class _RewardsTabViewState extends State<RewardsTabView>
   bool get wantKeepAlive => true;
 }
 
-typedef ItemClickCallback =  Function(Reward reward);
+typedef ItemClickCallback = Function(Reward reward);
 
 class RewardsItem extends StatefulWidget {
   final Reward reward;
@@ -128,16 +130,16 @@ class _RewardsItemState extends State<RewardsItem> {
           children: [
             Container(
               padding:
-              EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 10),
+                  EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 10),
               child: Row(
                 children: [
                   ..._clickable()
                       ? [
-                    Container(
-                      margin: EdgeInsets.only(right: 10),
-                      child: Image(image: R.image.ic_complete_rewards()),
-                    ),
-                  ]
+                          Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: Image(image: R.image.ic_complete_rewards()),
+                          ),
+                        ]
                       : [],
                   Expanded(
                     child: Column(
@@ -154,14 +156,25 @@ class _RewardsItemState extends State<RewardsItem> {
                             color: Colours.color_555764,
                           ),
                         ),
-                        Text(
-                          reward.rewardDescription,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colours.color_979AA9,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                reward.rewardDescription ?? '',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colours.color_979AA9,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              reward.progress??'',
+                              style: TextStyle(
+                                  color: Colours.color_EA5228, fontSize: 14),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -175,17 +188,14 @@ class _RewardsItemState extends State<RewardsItem> {
                     margin: EdgeInsets.only(left: 36),
                   ),
                   GestureDetector(
-                    onTap: (){
-                      if(_clickable()){
+                    onTap: () {
+                      if (_clickable()) {
                         widget.onCompleteRewardsClick(reward);
                       }
                     },
                     child: Container(
                       child: Text(
-                        reward.monetaryUnit +
-                            TextUtil.formatDoubleComma3(
-                                reward.rewardCoins / 100)
-                                .replaceAll(".0", ""),
+                        Global.getUser(context).monetaryUnit + reward.rewardCoinsStr,
                         style: TextStyle(
                           color: _buttonTextColor(),
                           fontSize: 14,
@@ -210,28 +220,28 @@ class _RewardsItemState extends State<RewardsItem> {
             // 设置左上角Label
             ..._clickable()
                 ? [
-              Container(
-                padding: EdgeInsets.only(
-                    left: 10, top: 5, right: 10, bottom: 5),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colours.color_F68A51,
-                      Colours.color_EA5228,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(100)),
-                ),
-                child: Text(
-                  'COLLECT',
-                  style: TextStyle(color: Colors.white, fontSize: 8),
-                ),
-              ),
-            ]
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 10, top: 5, right: 10, bottom: 5),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colours.color_F68A51,
+                            Colours.color_EA5228,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(100)),
+                      ),
+                      child: Text(
+                        'COLLECT',
+                        style: TextStyle(color: Colors.white, fontSize: 8),
+                      ),
+                    ),
+                  ]
                 : [],
           ],
         ),

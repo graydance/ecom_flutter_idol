@@ -7,3 +7,8 @@ export './module_dashboard/withdraw.dart';
 export './module_dashboard/rewards_detail.dart';
 export './module_dashboard/withdraw_result.dart';
 export './module_supply/supply_page.dart';
+export './module_store/settings.dart';
+export './module_store/store_page.dart';
+export './module_store/edit_store.dart';
+export './module_dashboard/withdraw_verify.dart';
+export './module_store/image_crop.dart';

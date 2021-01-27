@@ -124,11 +124,6 @@ class _R_Image_AssetResource {
       "assets/images/dashboard/ic_complete_rewards.png",
       packageName: null);
 
-  /// asset: assets/images/main/bg_splash.jpg
-  // ignore: non_constant_identifier_names
-  final bg_splash_jpg = const AssetResource("assets/images/main/bg_splash.jpg",
-      packageName: null);
-
   /// asset: assets/images/main/ic_tab_biolinks_normal.png
   // ignore: non_constant_identifier_names
   final ic_tab_biolinks_normal = const AssetResource(
@@ -189,6 +184,47 @@ class _R_Image_AssetResource {
       "assets/images/main/ic_tab_supply_selected.png",
       packageName: null);
 
+  /// asset: assets/images/main/launch_background.webp
+  // ignore: non_constant_identifier_names
+  final launch_background_webp = const AssetResource(
+      "assets/images/main/launch_background.webp",
+      packageName: null);
+
+  /// asset: assets/images/store/bg_header.png
+  // ignore: non_constant_identifier_names
+  final bg_header = const AssetResource("assets/images/store/bg_header.png",
+      packageName: null);
+
+  /// asset: assets/images/store/default_portrait.png
+  // ignore: non_constant_identifier_names
+  final default_portrait = const AssetResource(
+      "assets/images/store/default_portrait.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_tab_category_selected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_category_selected = const AssetResource(
+      "assets/images/store/ic_tab_category_selected.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_tab_category_unselected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_category_unselected = const AssetResource(
+      "assets/images/store/ic_tab_category_unselected.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_tab_product_selected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_product_selected = const AssetResource(
+      "assets/images/store/ic_tab_product_selected.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_tab_product_unselected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_product_unselected = const AssetResource(
+      "assets/images/store/ic_tab_product_unselected.png",
+      packageName: null);
+
   /// asset: assets/images/supply/pause.png
   // ignore: non_constant_identifier_names
   final pause =
@@ -245,12 +281,6 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_complete_rewards() {
     return AssetImage(asset.ic_complete_rewards.keyName);
-  }
-
-  /// asset: assets/images/main/bg_splash.jpg
-  // ignore: non_constant_identifier_names
-  AssetImage bg_splash_jpg() {
-    return AssetImage(asset.bg_splash_jpg.keyName);
   }
 
   /// asset: assets/images/main/ic_tab_biolinks_normal.png
@@ -311,6 +341,48 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_tab_supply_selected() {
     return AssetImage(asset.ic_tab_supply_selected.keyName);
+  }
+
+  /// asset: assets/images/main/launch_background.webp
+  // ignore: non_constant_identifier_names
+  AssetImage launch_background_webp() {
+    return AssetImage(asset.launch_background_webp.keyName);
+  }
+
+  /// asset: assets/images/store/bg_header.png
+  // ignore: non_constant_identifier_names
+  AssetImage bg_header() {
+    return AssetImage(asset.bg_header.keyName);
+  }
+
+  /// asset: assets/images/store/default_portrait.png
+  // ignore: non_constant_identifier_names
+  AssetImage default_portrait() {
+    return AssetImage(asset.default_portrait.keyName);
+  }
+
+  /// asset: assets/images/store/ic_tab_category_selected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_category_selected() {
+    return AssetImage(asset.ic_tab_category_selected.keyName);
+  }
+
+  /// asset: assets/images/store/ic_tab_category_unselected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_category_unselected() {
+    return AssetImage(asset.ic_tab_category_unselected.keyName);
+  }
+
+  /// asset: assets/images/store/ic_tab_product_selected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_product_selected() {
+    return AssetImage(asset.ic_tab_product_selected.keyName);
+  }
+
+  /// asset: assets/images/store/ic_tab_product_unselected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_product_unselected() {
+    return AssetImage(asset.ic_tab_product_unselected.keyName);
   }
 
   /// asset: assets/images/supply/pause.png

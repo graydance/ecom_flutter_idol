@@ -2,23 +2,33 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:idol/models/product.dart';
+import 'package:idol/models/supply.dart';
+import 'package:idol/net/api.dart';
+import 'package:idol/net/api_path.dart';
+import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 import 'package:idol/widgets/widgets.dart';
-import 'package:video_player/video_player.dart';
 
 class ProductItemWidget extends StatefulWidget {
   final Product product;
+  final OnProductAddedStoreListener onProductAddedStoreListener;
 
-  const ProductItemWidget({Key key, this.product = const Product()})
+  const ProductItemWidget(
+      {Key key,
+      this.product = const Product(),
+      this.onProductAddedStoreListener})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ProductItemWidgetState();
 }
 
+typedef OnProductAddedStoreListener = Function(Product product);
+
 class _ProductItemWidgetState extends State<ProductItemWidget> {
+  String buttonText = 'Add to my store';
+
   @override
   Widget build(BuildContext context) {
     debugPrint('ProductItemWidget >>> ' + widget.product.toString());
@@ -102,9 +112,8 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            // TODO
-                          },
+                          onTap: () => EasyLoading.show(
+                              status: '${widget.product.collectNum} Liked'),
                           child: Container(
                             width: 40,
                             height: 40,
@@ -135,9 +144,8 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                           height: 16,
                         ),
                         GestureDetector(
-                          onTap: () {
-                            // TODO
-                          },
+                          onTap: () => EasyLoading.show(
+                              status: '${widget.product.shoppingCar} Sold'),
                           child: Container(
                             width: 40,
                             height: 40,
@@ -252,15 +260,28 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
           ),
           // Add to my store.
           IdolButton(
-            'Add to my store',
+            buttonText,
             status: IdolButtonStatus.enable,
             listener: (status) {
-              // TODO onTap()
+              _addProductToMyStore(widget.product);
             },
           ),
         ],
       ),
     );
+  }
+
+  void _addProductToMyStore(Product product) {
+    DioClient.getInstance()
+        .post(ApiPath.addStore, baseRequest: AddStoreRequest(product.id))
+        .then((data) {
+      if (widget.onProductAddedStoreListener != null) {
+        widget.onProductAddedStoreListener(product);
+      }
+    }).catchError((err) {
+      debugPrint(err.toString());
+      EasyLoading.showError(err.toString());
+    });
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {
