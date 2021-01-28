@@ -54,10 +54,11 @@ class SplashScreenState extends State<SplashScreen> {
                 'User is not logged in. will jump to Sign Up/Sign In.');
             // sing up/sign in.
             Future.delayed(Duration(seconds: 2),
-                    () => {IdolRoute.startSignUpOrSignIn(context)});
+                    (){IdolRoute.startSignUpOrSignIn(context);});
           }
         },
         onWillChange: (oldVM, newVM) {
+          debugPrint('onWillChange...');
           _onLoginStateChange(newVM == null ? oldVM.loginState : newVM.loginState);
         },
         converter: _ViewModel.fromStore,
@@ -82,4 +83,14 @@ class _ViewModel {
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(store.state.loginState);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          loginState == other.loginState;
+
+  @override
+  int get hashCode => loginState.hashCode;
 }
