@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/goods_list.dart';
+import 'package:idol/models/goods.dart';
 import 'package:idol/net/request/store.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';

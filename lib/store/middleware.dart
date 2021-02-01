@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idol/models/dashboard.dart';
+import 'package:idol/models/goods_detail.dart';
 import 'package:idol/models/goods_list.dart';
-import 'package:idol/models/supply.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
@@ -19,12 +19,16 @@ List<Middleware<AppState>> createStoreMiddleware() {
     TypedMiddleware<AppState, WithdrawAction>(withdrawMiddleware),
     TypedMiddleware<AppState, WithdrawInfoAction>(withdrawInfoMiddleware),
     TypedMiddleware<AppState, CompleteRewardsAction>(completeRewardsMiddleware),
-    TypedMiddleware<AppState, FollowingAction>(supplyMiddleware),
-    TypedMiddleware<AppState, ForYouAction>(supplyMiddleware),
+    TypedMiddleware<AppState, FollowingAction>(supplyGoodsListMiddleware),
+    TypedMiddleware<AppState, ForYouAction>(supplyGoodsListMiddleware),
     TypedMiddleware<AppState, MyInfoAction>(myInfoMiddleware),
     TypedMiddleware<AppState, EditStoreAction>(editStoreMiddleware),
-    TypedMiddleware<AppState, MyInfoGoodsListAction>(goodsListMiddleware),
-    TypedMiddleware<AppState, MyInfoGoodsCategoryListAction>(goodsListMiddleware),
+    TypedMiddleware<AppState, MyInfoGoodsListAction>(storeGoodsListMiddleware),
+    TypedMiddleware<AppState, MyInfoGoodsCategoryListAction>(storeGoodsListMiddleware),
+    TypedMiddleware<AppState, SupplierInfoAction>(supplierInfoMiddleware),
+    TypedMiddleware<AppState, SupplierHotGoodsListAction>(supplierGoodsListMiddleware),
+    TypedMiddleware<AppState, SupplierNewGoodsListAction>(supplierGoodsListMiddleware),
+    TypedMiddleware<AppState, GoodsDetailAction>(goodsDetailMiddleware),
   ];
 }
 
@@ -131,16 +135,16 @@ final Middleware<AppState> completeRewardsMiddleware =
   }
 };
 
-final Middleware<AppState> supplyMiddleware =
+final Middleware<AppState> supplyGoodsListMiddleware =
     (Store<AppState> store, action, NextDispatcher next) {
   if (action is FollowingAction || action is ForYouAction) {
     DioClient.getInstance()
-        .post(ApiPath.following, baseRequest: action.request)
+        .post(ApiPath.supplyGoodsList, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) => {
               store.dispatch(action is FollowingAction
-                  ? FollowingSuccessAction(Supply.fromMap(data))
-                  : ForYouSuccessAction(Supply.fromMap(data)))
+                  ? FollowingSuccessAction(GoodsDetailList.fromMap(data))
+                  : ForYouSuccessAction(GoodsDetailList.fromMap(data)))
             })
         .catchError((err) {
       print(err.toString());
@@ -186,11 +190,11 @@ final Middleware<AppState> editStoreMiddleware =
   }
 };
 
-final Middleware<AppState> goodsListMiddleware =
+final Middleware<AppState> storeGoodsListMiddleware =
     (Store<AppState> store, action, NextDispatcher next) {
   if (action is MyInfoGoodsListAction || action is MyInfoGoodsCategoryListAction) {
     DioClient.getInstance()
-        .post(ApiPath.goodsList, baseRequest: action.request)
+        .post(ApiPath.storeGoodsList, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) => {
       store.dispatch(action is MyInfoGoodsListAction
@@ -202,6 +206,63 @@ final Middleware<AppState> goodsListMiddleware =
       store.dispatch(action is FollowingAction
           ? MyInfoGoodsListFailureAction(err.toString())
           : MyInfoGoodsCategoryListFailureAction(err.toString()));
+    });
+    next(action);
+  }
+};
+
+final Middleware<AppState> supplierInfoMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is SupplierInfoAction) {
+    DioClient.getInstance()
+        .post(ApiPath.supplierInfo, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data){
+      store.dispatch(SupplierInfoSuccessAction(Supplier.fromMap(data)));
+    })
+        .catchError((err) {
+      print(err.toString());
+      store.dispatch(SupplierInfoFailure(err.toString()));
+    });
+    next(action);
+  }
+};
+
+
+final Middleware<AppState> supplierGoodsListMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is SupplierHotGoodsListAction || action is SupplierNewGoodsListAction) {
+    DioClient.getInstance()
+        .post(ApiPath.supplierGoodsList, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data) => {
+      store.dispatch(action is SupplierHotGoodsListAction
+          ? SupplierHotGoodsListSuccessAction(GoodsList.fromMap(data), 0)
+          : SupplierNewGoodsListSuccessAction(GoodsList.fromMap(data), 1))
+    })
+        .catchError((err) {
+      print(err.toString());
+      store.dispatch(action is SupplierHotGoodsListAction
+          ? SupplierHotGoodsListFailureAction(err.toString())
+          : SupplierNewGoodsListFailureAction(err.toString()));
+    });
+    next(action);
+  }
+};
+
+//GoodsDetail
+final Middleware<AppState> goodsDetailMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is GoodsDetailAction) {
+    DioClient.getInstance()
+        .post(ApiPath.goodsDetail, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data){
+      store.dispatch(GoodsDetailSuccessAction(GoodsDetail.fromMap(data)));
+    })
+        .catchError((err) {
+      print(err.toString());
+      store.dispatch(GoodsDetailFailure(err.toString()));
     });
     next(action);
   }

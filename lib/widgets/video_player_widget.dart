@@ -44,7 +44,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             alignment: Alignment.center,
             children: [
               AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,//345 / 376,//_controller.value.aspectRatio,
+                aspectRatio: _controller.value.aspectRatio,
+                //345 / 376,//_controller.value.aspectRatio,
                 // Use the VideoPlayer widget to display the video.
                 child: VideoPlayer(_controller),
               ),
@@ -54,10 +55,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               Positioned(
                 top: 15,
                 right: 15,
-                child: GestureDetector(
-                  child:
-            IconButton(icon: Icon(_controller.value.volume == 0 ? Icons.volume_off : Icons.volume_up, color: Colours.white),),
-                  onTap: () {
+                child: IconButton(
+                  onPressed: () {
                     var currentVolume = _controller.value.volume;
                     if (currentVolume == 0) {
                       _controller.setVolume(initialVolume);
@@ -65,6 +64,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                       _controller.setVolume(0);
                     }
                   },
+                  icon: Icon(
+                      _controller.value.volume == 0
+                          ? Icons.volume_off
+                          : Icons.volume_up,
+                      color: Colours.white),
                 ),
               ),
             ],
@@ -100,10 +104,10 @@ class _PlayPauseOverlay extends StatelessWidget {
           child: controller.value.isPlaying
               ? SizedBox.shrink()
               : Center(
-            child: Image(
-              image: R.image.play(),
-            ),
-          ),
+                  child: Image(
+                    image: R.image.play(),
+                  ),
+                ),
         ),
         GestureDetector(
           onTap: () {

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/supply.dart';
+import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/request/supply.dart';
-import 'package:idol/screen/module_supply/product_item.dart';
+import 'package:idol/screen/module_supply/supply_goods_list_item.dart';
 import 'package:idol/store/actions/supply.dart';
+import 'package:idol/widgets/error.dart';
+import 'package:idol/widgets/screen_loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
 
@@ -16,7 +18,7 @@ class FollowingTabView extends StatefulWidget {
 
 class _FollowingTabViewState extends State<FollowingTabView>
     with AutomaticKeepAliveClientMixin<FollowingTabView> {
-  List<Product> products = const [];
+  List<GoodsDetail> goodsDetail = const [];
   RefreshController _refreshController;
   bool enablePullUp = false;
   int currentPage = 1;
@@ -49,35 +51,47 @@ class _FollowingTabViewState extends State<FollowingTabView>
             newVM == null ? oldVM._followingState : newVM._followingState);
       },
       builder: (context, vm) {
-        return Container(
-          child: SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: enablePullUp,
-            header: WaterDropHeader(),
-            child: ListView.separated(
-              scrollDirection: Axis.vertical,
-              separatorBuilder: (context, index) {
-                return Divider(
-                  height: 10,
-                  color: Colors.transparent,
-                );
-              },
-              itemCount: products.length,
-              itemBuilder: (context, index) => ProductItemWidget(
-                product: products[index],
-                onProductAddedStoreListener: (product) {
-                  products.remove(product);
-                  setState(() {});
-                },
-              ),
-            ),
-            onRefresh: () => vm._load(1),
-            onLoading: () => vm._load(currentPage + 1),
-            controller: _refreshController,
-          ),
-        );
+        return _buildWidget(vm);
       },
     );
+  }
+
+  Widget _buildWidget(_ViewModel vm){
+    if(vm._followingState is FollowingInitial || vm._followingState is FollowingLoading){
+      return ScreenLoadingWidget();
+    }else if(vm._followingState is FollowingSuccess){
+      return Container(
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: enablePullUp,
+          header: WaterDropHeader(),
+          child: ListView.separated(
+            scrollDirection: Axis.vertical,
+            separatorBuilder: (context, index) {
+              return Divider(
+                height: 10,
+                color: Colors.transparent,
+              );
+            },
+            itemCount: goodsDetail.length,
+            itemBuilder: (context, index) => FollowingGoodsListItem(
+              goodsDetail: goodsDetail[index],
+              onProductAddedStoreListener: (product) {
+                goodsDetail.remove(product);
+                setState(() {});
+              },
+            ),
+          ),
+          onRefresh: () => vm._load(1),
+          onLoading: () => vm._load(currentPage + 1),
+          controller: _refreshController,
+        ),
+      );
+    }else {
+      return IdolErrorWidget((){
+        vm._load(1);
+      });
+    }
   }
 
   void _onFollowingStateChanged(FollowingState state) {
@@ -85,13 +99,13 @@ class _FollowingTabViewState extends State<FollowingTabView>
       _refreshController.requestRefresh();
     } else if (state is FollowingSuccess) {
       setState(() {
-        if ((state).supply.currentPage == 1) {
-          products = (state).supply.list;
+        if ((state).goodsDetailList.currentPage == 1) {
+          goodsDetail = (state).goodsDetailList.list;
         } else {
-          products.addAll((state).supply.list);
+          goodsDetail.addAll((state).goodsDetailList.list);
         }
-        currentPage = (state).supply.currentPage;
-        enablePullUp = (state).supply.currentPage != (state).supply.totalPage;
+        currentPage = (state).goodsDetailList.currentPage;
+        enablePullUp = (state).goodsDetailList.currentPage != (state).goodsDetailList.totalPage;
       });
       _refreshController.refreshCompleted();
     } else if (state is FollowingFailure) {
