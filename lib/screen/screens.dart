@@ -12,3 +12,5 @@ export './module_store/store_page.dart';
 export './module_store/edit_store.dart';
 export './module_dashboard/withdraw_verify.dart';
 export './module_store/image_crop.dart';
+export './module_supply/goods_detail.dart';
+export './module_supply/supplier_detail.dart';

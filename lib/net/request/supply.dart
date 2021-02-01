@@ -37,3 +37,69 @@ class AddStoreRequest implements BaseRequest{
     };
   }
 }
+
+class GoodsDetailRequest implements BaseRequest{
+  final String goodsId;
+
+  GoodsDetailRequest(this.goodsId);
+
+  @override
+  Map<String, dynamic> toMap({String Function(String key) keyMapper}) {
+    keyMapper ??= (key) => key;
+    return {
+      keyMapper('goodsId'):this.goodsId,
+    };
+  }
+}
+
+class SupplierInfoRequest implements BaseRequest{
+  final String supplierId;
+
+  SupplierInfoRequest(this.supplierId);
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+    return {
+      keyMapper('supplierId'): this.supplierId,
+    };
+  }
+}
+
+class SupplierGoodsListRequest implements BaseRequest{
+  final String supplierId;
+  final int type;
+  final int page;
+  final int limit;
+
+  SupplierGoodsListRequest(this.supplierId, this.type, this.page, {this.limit = 20});
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+    return {
+      keyMapper('supplierId'): this.supplierId,
+      keyMapper('type'): this.type,
+      keyMapper('page'): this.page,
+      keyMapper('limit'): this.limit,
+    };
+  }
+}
+
+class FollowRequest implements BaseRequest{
+  final String supplierId;
+
+  FollowRequest(this.supplierId);
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+    return {
+      keyMapper('supplierId'): this.supplierId,
+    };
+  }
+}

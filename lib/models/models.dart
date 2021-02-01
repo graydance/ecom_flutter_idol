@@ -1,5 +1,11 @@
-export './dashboard.dart';
-export './appstate.dart';
-export './user.dart';
-export './withdraw_info.dart';
-export 'arguments/withdraw_verify.dart';
+export 'dashboard.dart';
+export 'appstate.dart';
+export 'user.dart';
+export 'withdraw_info.dart';
+export 'arguments/arguments.dart';
+export 'supplier.dart';
+export 'tag.dart';
+export 'goods.dart';
+export 'goods_list.dart';
+export 'goods_detail.dart';
+export 'goods_detail_list.dart';

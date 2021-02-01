@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/models/arguments/supplier_detail.dart';
 import 'package:idol/store/actions/arguments.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/screen/screens.dart';
@@ -16,6 +17,8 @@ class RouterPath {
   static const String dashboard$Withdraw = '/dashboard/withdraw';
   static const String dashboard$VerifyPassword = '/dashboard/verify_password';
   static const String dashboard$WithdrawResult = '/dashboard/withdraw_result';
+  static const String supply$SupplierDetail = '/supply/supplier_detail';
+  static const String goodsDetail = '/goods_detail';
   static const String supply$Search = '/supply/search';
   static const String settings = '/settings';
   static const String store$EditStore = '/store/edit_store';
@@ -40,6 +43,8 @@ class IdolRoute {
       RouterPath.dashboard$WithdrawResult: (context) => WithdrawResultScreen(),
       RouterPath.settings: (context) => SettingsScreen(),
       RouterPath.store$EditStore: (context) => EditStoreScreen(),
+      RouterPath.supply$SupplierDetail: (context) => SupplierDetailScreen(),
+      RouterPath.goodsDetail: (context) => GoodsDetailScreen(),
     };
   }
 
@@ -102,6 +107,18 @@ class IdolRoute {
     StoreProvider.of<AppState>(context).dispatch(
         UpdateArgumentsAction<WithdrawResultArguments>(arguments));
     return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
+  }
+
+  static Future<Object> startSupplySupplierDetail(BuildContext context, String supplierId, String supplierName){
+    StoreProvider.of<AppState>(context)
+        .dispatch(UpdateArgumentsAction<SupplierDetailArguments>(SupplierDetailArguments(supplierId, supplierName)));
+    return Navigator.of(context).pushNamed(RouterPath.supply$SupplierDetail);
+  }
+
+  static Future<Object> startGoodsDetail(BuildContext context, String goodsId){
+    StoreProvider.of<AppState>(context)
+        .dispatch(UpdateArgumentsAction<GoodsDetailArguments>(GoodsDetailArguments(goodsId)));
+    return Navigator.of(context).pushNamed(RouterPath.goodsDetail);
   }
 
   static Future<Object> startSupplySearch(BuildContext context) {

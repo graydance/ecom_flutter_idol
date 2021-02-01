@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/supply.dart';
+import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/store/actions/supply.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
-import 'package:idol/screen/module_supply/product_item.dart';
+import 'package:idol/screen/module_supply/supply_goods_list_item.dart';
 
 class ForYouTabView extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class ForYouTabView extends StatefulWidget {
 
 class _ForYouTabViewState extends State<ForYouTabView>
     with AutomaticKeepAliveClientMixin<ForYouTabView> {
-  List<Product> products = const [];
+  List<GoodsDetail> goodsDetail = const [];
   RefreshController _refreshController;
   bool enablePullUp = false;
   int currentPage = 1;
@@ -59,9 +59,9 @@ class _ForYouTabViewState extends State<ForYouTabView>
                   color: Colors.transparent,
                 );
               },
-              itemCount: products.length,
+              itemCount: goodsDetail.length,
               itemBuilder: (context, index) =>
-                  ProductItemWidget(product: products[index]),
+                  FollowingGoodsListItem(goodsDetail: goodsDetail[index]),
             ),
             onRefresh: () => vm._load(1),
             onLoading: () => vm._load(currentPage + 1),
@@ -77,14 +77,14 @@ class _ForYouTabViewState extends State<ForYouTabView>
       _refreshController.requestRefresh();
     }else if (state is ForYouSuccess) {
       setState(() {
-        if ((state).supply.currentPage == 1) {
-          products = (state).supply.list;
+        if ((state).goodsDetailList.currentPage == 1) {
+          goodsDetail = (state).goodsDetailList.list;
         } else {
-          products.addAll((state).supply.list);
+          goodsDetail.addAll((state).goodsDetailList.list);
         }
-        currentPage = (state).supply.currentPage;
-        enablePullUp = (state).supply.currentPage !=
-            (state).supply.totalPage;
+        currentPage = (state).goodsDetailList.currentPage;
+        enablePullUp = (state).goodsDetailList.currentPage !=
+            (state).goodsDetailList.totalPage;
       });
       _refreshController.refreshCompleted();
     } else if (state is ForYouFailure) {

@@ -13,12 +13,12 @@ import 'package:idol/net/request/store.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/widgets/button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/widgets/widgets.dart';
 
 class EditStoreScreen extends StatefulWidget {
   @override

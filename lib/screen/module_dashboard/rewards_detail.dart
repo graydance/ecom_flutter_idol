@@ -3,7 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/rewards_detail.dart';
 import 'package:idol/res/colors.dart';
-import 'package:idol/widgets/widgets.dart';
+import 'package:idol/widgets/ui.dart';
 
 /// 任务详情
 class RewardsDetailScreen extends StatefulWidget {
