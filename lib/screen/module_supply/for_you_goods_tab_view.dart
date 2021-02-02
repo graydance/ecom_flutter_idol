@@ -4,7 +4,10 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/request/supply.dart';
+import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/supply.dart';
+import 'package:idol/widgets/error.dart';
+import 'package:idol/widgets/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/screen/module_supply/supply_goods_list_item.dart';
@@ -16,10 +19,10 @@ class ForYouTabView extends StatefulWidget {
 
 class _ForYouTabViewState extends State<ForYouTabView>
     with AutomaticKeepAliveClientMixin<ForYouTabView> {
-  List<GoodsDetail> goodsDetail = const [];
+  List<GoodsDetail> _goodsDetail = const [];
   RefreshController _refreshController;
-  bool enablePullUp = false;
-  int currentPage = 1;
+  int _currentPage = 1;
+  bool _enablePullUp = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -36,9 +39,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       onInit: (store) {
-        if (store.state.forYouState is ForYouInitial) {
-          store.dispatch(FollowingAction(FollowingForYouRequest(1, 1)));
-        }
+        store.dispatch(ForYouAction(FollowingForYouRequest(1, 1)));
       },
       distinct: true,
       onWillChange: (oldVM, newVM) {
@@ -46,49 +47,76 @@ class _ForYouTabViewState extends State<ForYouTabView>
             newVM == null ? oldVM._forYouState : newVM._forYouState);
       },
       builder: (context, vm) {
-        return Container(
-          child: SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: enablePullUp,
-            header: WaterDropHeader(),
-            child: ListView.separated(
-              scrollDirection: Axis.vertical,
-              separatorBuilder: (context, index) {
-                return Divider(
-                  height: 10,
-                  color: Colors.transparent,
-                );
-              },
-              itemCount: goodsDetail.length,
-              itemBuilder: (context, index) =>
-                  FollowingGoodsListItem(goodsDetail: goodsDetail[index]),
-            ),
-            onRefresh: () => vm._load(1),
-            onLoading: () => vm._load(currentPage + 1),
-            controller: _refreshController,
-          ),
-        );
+        return _buildWidget(vm);
       },
     );
   }
 
+  Widget _buildWidget(_ViewModel vm) {
+    if (vm._forYouState is ForYouInitial || vm._forYouState is ForYouLoading) {
+      return IdolLoadingWidget();
+    } else if (vm._forYouState is ForYouFailure) {
+      return IdolErrorWidget(() {
+        vm._load(1);
+      });
+    } else {
+      return Container(
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: _enablePullUp,
+          header: MaterialClassicHeader(color: Colours.color_EA5228,),
+          child: ListView.separated(
+            scrollDirection: Axis.vertical,
+            separatorBuilder: (context, index) {
+              return Divider(
+                height: 10,
+                color: Colors.transparent,
+              );
+            },
+            itemCount: _goodsDetail.length,
+            itemBuilder: (context, index) =>
+                FollowingGoodsListItem(goodsDetail: _goodsDetail[index]),
+          ),
+          onRefresh: () async {
+            await Future(() {
+              vm._load(1);
+            });
+          },
+          onLoading: () async {
+            await Future(() {
+              vm._load(_currentPage + 1);
+            });
+          },
+          controller: _refreshController,
+        ),
+      );
+    }
+  }
+
   void _onFollowingStateChanged(ForYouState state) {
-    if(state is ForYouInitial){
-      _refreshController.requestRefresh();
-    }else if (state is ForYouSuccess) {
+    if (state is ForYouSuccess) {
       setState(() {
         if ((state).goodsDetailList.currentPage == 1) {
-          goodsDetail = (state).goodsDetailList.list;
+          _goodsDetail = (state).goodsDetailList.list;
         } else {
-          goodsDetail.addAll((state).goodsDetailList.list);
+          _goodsDetail.addAll((state).goodsDetailList.list);
         }
-        currentPage = (state).goodsDetailList.currentPage;
-        enablePullUp = (state).goodsDetailList.currentPage !=
-            (state).goodsDetailList.totalPage;
+        _currentPage = (state).goodsDetailList.currentPage;
+        _enablePullUp = (state).goodsDetailList.currentPage !=
+                (state).goodsDetailList.totalPage &&
+            (state).goodsDetailList.totalPage != 0;
+        if (_currentPage == 1) {
+          _refreshController.refreshCompleted(resetFooterState: true);
+        } else {
+          _refreshController.loadComplete();
+        }
       });
-      _refreshController.refreshCompleted();
     } else if (state is ForYouFailure) {
-      _refreshController.refreshCompleted();
+      if (_currentPage == 1) {
+        _refreshController.refreshCompleted(resetFooterState: true);
+      } else {
+        _refreshController.loadComplete();
+      }
       EasyLoading.showToast((state).message);
     }
   }
@@ -107,4 +135,14 @@ class _ViewModel {
 
     return _ViewModel(store.state.forYouState, _load);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          _forYouState == other._forYouState;
+
+  @override
+  int get hashCode => _forYouState.hashCode;
 }

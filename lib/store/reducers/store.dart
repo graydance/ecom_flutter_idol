@@ -35,7 +35,7 @@ MyInfoGoodsListLoading _onMyInfoGoodsList(MyInfoGoodsListState state, MyInfoGood
 
 MyInfoGoodsListSuccess _onMyInfoGoodsListSuccess(
     MyInfoGoodsListState state, MyInfoGoodsListSuccessAction action) {
-  return MyInfoGoodsListSuccess(action.goodsList);
+  return MyInfoGoodsListSuccess(action.storeGoodsList);
 }
 
 MyInfoGoodsListFailure _onMyInfoGoodsListFailure(
@@ -56,7 +56,7 @@ MyInfoGoodsCategoryListLoading _onMyInfoGoodsCategoryList(MyInfoGoodsCategoryLis
 
 MyInfoGoodsCategoryListSuccess _onMyInfoGoodsCategoryListSuccess(
     MyInfoGoodsCategoryListState state, MyInfoGoodsCategoryListSuccessAction action) {
-  return MyInfoGoodsCategoryListSuccess(action.goodsList);
+  return MyInfoGoodsCategoryListSuccess(action.storeGoodsList);
 }
 
 MyInfoGoodsCategoryListFailure _onMyInfoGoodsCategoryListFailure(

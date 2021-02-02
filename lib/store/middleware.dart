@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:idol/models/dashboard.dart';
-import 'package:idol/models/goods_detail.dart';
-import 'package:idol/models/goods_list.dart';
-import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/store/actions/dashboard.dart';
-import 'package:idol/store/actions/main.dart';
 import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
@@ -196,10 +190,10 @@ final Middleware<AppState> storeGoodsListMiddleware =
     DioClient.getInstance()
         .post(ApiPath.storeGoodsList, baseRequest: action.request)
         .whenComplete(() => null)
-        .then((data) => {
+        .then((data) {
       store.dispatch(action is MyInfoGoodsListAction
-          ? MyInfoGoodsListSuccessAction(GoodsList.fromMap(data))
-          : MyInfoGoodsCategoryListSuccessAction(GoodsList.fromMap(data)))
+          ? MyInfoGoodsListSuccessAction(StoreGoodsList.fromMap(data))
+          : MyInfoGoodsCategoryListSuccessAction(StoreGoodsList.fromMap(data)));
     })
         .catchError((err) {
       print(err.toString());

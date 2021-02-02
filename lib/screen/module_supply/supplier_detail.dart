@@ -13,7 +13,7 @@ import 'package:redux/redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/widgets/screen_loading.dart';
+import 'package:idol/widgets/loading.dart';
 
 /// 供应商详情页
 class SupplierDetailScreen extends StatefulWidget {
@@ -106,7 +106,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen>
           alignment: Alignment.center,
           children: [
             _copyFlexibleSpaceWidget(),
-            ScreenLoadingWidget(),
+            IdolLoadingWidget(),
           ],
         ),
       );
@@ -365,9 +365,8 @@ class _ViewModel {
       identical(this, other) ||
       other is _ViewModel &&
           runtimeType == other.runtimeType &&
-          _supplierInfoState == other._supplierInfoState &&
-          _supplierInfo == other._supplierInfo;
+          _supplierInfoState == other._supplierInfoState;
 
   @override
-  int get hashCode => _supplierInfoState.hashCode ^ _supplierInfo.hashCode;
+  int get hashCode => _supplierInfoState.hashCode;
 }

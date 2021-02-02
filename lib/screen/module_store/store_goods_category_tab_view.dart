@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/goods.dart';
+import 'package:idol/models/store_goods_list.dart';
 import 'package:idol/net/request/store.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/store/actions/supply.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/widgets/error.dart';
+import 'package:idol/widgets/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
 
@@ -18,10 +19,10 @@ class GoodsCategoryTabView extends StatefulWidget {
 
 class _GoodsCategoryTabViewState extends State<GoodsCategoryTabView>
     with AutomaticKeepAliveClientMixin<GoodsCategoryTabView> {
-  List<Goods> goodsCategoryList = const [];
+  List<StoreGoods> storeGoodsList = const [];
   RefreshController _refreshController;
-  bool enablePullUp = false;
-  int currentPage = 1;
+  int _currentPage = 1;
+  bool _enablePullUp = false;
 
   @override
   void initState() {
@@ -38,114 +39,141 @@ class _GoodsCategoryTabViewState extends State<GoodsCategoryTabView>
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       onInit: (store) {
-        if (store.state.myInfoGoodsCategoryListState
-            is MyInfoGoodsCategoryListInitial) {
-          store.dispatch(MyInfoGoodsCategoryListAction(
-              MyInfoGoodsListRequest(Global.getUser(context).id, 1, 1)));
-        }
+        store.dispatch(MyInfoGoodsCategoryListAction(
+            MyInfoGoodsListRequest(Global.getUser(context).id, 1, 1)));
       },
       distinct: true,
       onWillChange: (oldVM, newVM) {
         _onMyInfoGoodsCategoryListStateChanged(newVM == null
-            ? oldVM._userDetailGoodsCategoryListState
-            : newVM._userDetailGoodsCategoryListState);
+            ? oldVM._myInfoGoodsCategoryListState
+            : newVM._myInfoGoodsCategoryListState);
       },
       builder: (context, vm) {
-        return Container(
-          padding: EdgeInsets.only(left: 15, right: 15, bottom: 65),
-          color: Colours.color_F8F8F8,
-          child: SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: enablePullUp,
-            header: WaterDropHeader(),
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 20.0,
-              mainAxisSpacing: 20.0,
-              childAspectRatio: 144.0 / 174.0,
-              physics: NeverScrollableScrollPhysics(),
-              children: goodsCategoryList
-                  .asMap()
-                  .map((index, goods) {
-                    return MapEntry(
-                      index,
-                      GestureDetector(
-                        onTap: () => _goodsCategory(goods),
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4)),
-                              child: Container(
-                                margin: EdgeInsets.only(left: 8),
-                                color: Colours.color_EDEEF0,
-                                constraints: BoxConstraints(
-                                    maxHeight: 144, maxWidth: 144),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(right: 8, top: 8),
-                              child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image(image: NetworkImage(goods.picture)),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text(
-                                      goods.interestName ?? '',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colours.color_0F1015),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  })
-                  .values
-                  .toList(),
-            ),
-            onRefresh: () => vm._load(Global.getUser(context).id, 1),
-            onLoading: () =>
-                vm._load(Global.getUser(context).id, currentPage + 1),
-            controller: _refreshController,
-          ),
-        );
+        return _buildWidget(vm);
       },
     );
   }
 
-  void _goodsCategory(Goods goods) {
+  Widget _buildWidget(_ViewModel vm) {
+    if (vm._myInfoGoodsCategoryListState is MyInfoGoodsCategoryListInitial ||
+        vm._myInfoGoodsCategoryListState is MyInfoGoodsCategoryListLoading) {
+      return IdolLoadingWidget();
+    } else if (vm._myInfoGoodsCategoryListState
+        is MyInfoGoodsCategoryListFailure) {
+      return IdolErrorWidget(() {
+        vm._load(Global.getUser(context).id, 1);
+      });
+    } else {
+      return Container(
+        padding: EdgeInsets.only(left: 15, right: 15, bottom: 65),
+        color: Colours.color_F8F8F8,
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: _enablePullUp,
+          header: MaterialClassicHeader(
+            color: Colours.color_EA5228,
+          ),
+          child: GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20.0,
+            mainAxisSpacing: 20.0,
+            childAspectRatio: 144.0 / 174.0,
+            physics: NeverScrollableScrollPhysics(),
+            children: storeGoodsList
+                .asMap()
+                .map((index, goods) {
+                  return MapEntry(
+                    index,
+                    GestureDetector(
+                      onTap: () => _goodsCategory(goods),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            child: Container(
+                              margin: EdgeInsets.only(left: 8),
+                              color: Colours.color_EDEEF0,
+                              constraints:
+                                  BoxConstraints(maxHeight: 144, maxWidth: 144),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(right: 8, top: 8),
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4)),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image(image: NetworkImage(goods.picture)),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    goods.interestName ?? '',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colours.color_0F1015),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                })
+                .values
+                .toList(),
+          ),
+          onRefresh: () async {
+            await Future(() {
+              vm._load(Global.getUser(context).id, 1);
+            });
+          },
+          onLoading: () async {
+            await Future(() {
+              vm._load(Global.getUser(context).id, _currentPage + 1);
+            });
+          },
+          controller: _refreshController,
+        ),
+      );
+    }
+  }
+
+  void _goodsCategory(StoreGoods storeGoods) {
     // TODO
+    EasyLoading.showToast('查看该Tag下的所有商品');
   }
 
   void _onMyInfoGoodsCategoryListStateChanged(
       MyInfoGoodsCategoryListState state) {
-    if (state is FollowingLoading) {
-      _refreshController.requestRefresh();
-    } else if (state is MyInfoGoodsCategoryListSuccess) {
+    if (state is MyInfoGoodsCategoryListSuccess) {
       setState(() {
-        if ((state).goodsList.currentPage == 1) {
-          goodsCategoryList = (state).goodsList.list;
+        if ((state).storeGoodsList.currentPage == 1) {
+          storeGoodsList = (state).storeGoodsList.list;
         } else {
-          goodsCategoryList.addAll((state).goodsList.list);
+          storeGoodsList.addAll((state).storeGoodsList.list);
         }
-        currentPage = (state).goodsList.currentPage;
-        enablePullUp =
-            (state).goodsList.currentPage != (state).goodsList.totalPage && (state).goodsList.totalPage != 0;
+        _currentPage = (state).storeGoodsList.currentPage;
+        _enablePullUp = (state).storeGoodsList.currentPage !=
+                (state).storeGoodsList.totalPage &&
+            (state).storeGoodsList.totalPage != 0;
       });
-      _refreshController.refreshCompleted();
+      if (_currentPage == 1) {
+        _refreshController.refreshCompleted(resetFooterState: true);
+      } else {
+        _refreshController.loadComplete();
+      }
     } else if (state is MyInfoGoodsCategoryListFailure) {
-      _refreshController.refreshCompleted();
+      if (_currentPage == 1) {
+        _refreshController.refreshCompleted(resetFooterState: true);
+      } else {
+        _refreshController.loadComplete();
+      }
       EasyLoading.showToast((state).message);
     }
   }
@@ -155,17 +183,27 @@ class _GoodsCategoryTabViewState extends State<GoodsCategoryTabView>
 }
 
 class _ViewModel {
-  final MyInfoGoodsCategoryListState _userDetailGoodsCategoryListState;
+  final MyInfoGoodsCategoryListState _myInfoGoodsCategoryListState;
   final Function(String, int) _load;
 
-  _ViewModel(this._userDetailGoodsCategoryListState, this._load);
+  _ViewModel(this._myInfoGoodsCategoryListState, this._load);
 
   static _ViewModel fromStore(Store<AppState> store) {
     void _load(String userId, int page) {
       store.dispatch(
-          MyInfoGoodsListAction(MyInfoGoodsListRequest(userId, 1, page)));
+          MyInfoGoodsCategoryListAction(MyInfoGoodsListRequest(userId, 1, page)));
     }
 
     return _ViewModel(store.state.myInfoGoodsCategoryListState, _load);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          _myInfoGoodsCategoryListState == other._myInfoGoodsCategoryListState;
+
+  @override
+  int get hashCode => _myInfoGoodsCategoryListState.hashCode;
 }

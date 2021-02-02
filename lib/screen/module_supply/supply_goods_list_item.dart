@@ -36,7 +36,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
     return GestureDetector(
       onTap: () {
         // GoodsDetail
-        IdolRoute.startGoodsDetail(context, widget.goodsDetail.id);
+        IdolRoute.startGoodsDetail(context, widget.goodsDetail.supplierId, widget.goodsDetail.id);
       },
       child: Container(
         padding: EdgeInsets.all(15),
