@@ -9,3 +9,4 @@ export 'goods.dart';
 export 'goods_list.dart';
 export 'goods_detail.dart';
 export 'goods_detail_list.dart';
+export 'store_goods_list.dart';

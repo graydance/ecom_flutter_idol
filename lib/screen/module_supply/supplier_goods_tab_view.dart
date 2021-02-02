@@ -5,9 +5,12 @@ import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
 import 'package:idol/screen/module_supply/supplier_goods_list_item.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/widgets/error.dart';
+import 'package:idol/widgets/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -26,10 +29,10 @@ class SupplierGoodsTabView extends StatefulWidget {
 
 class _SupplierGoodsTabViewState extends State<SupplierGoodsTabView>
     with AutomaticKeepAliveClientMixin<SupplierGoodsTabView> {
-  List<Goods> goodsList = const [];
+  List<Goods> _goodsList = const [];
   RefreshController _refreshController;
-  bool enablePullUp = false;
-  int currentPage = 1;
+  int _currentPage = 1;
+  bool _enablePullUp = false;
 
   @override
   void initState() {
@@ -46,11 +49,8 @@ class _SupplierGoodsTabViewState extends State<SupplierGoodsTabView>
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       onInit: (store) {
-        if (store.state.supplierHotGoodsListState
-            is SupplierHotGoodsListInitial) {
-          store.dispatch(SupplierHotGoodsListAction(
-              SupplierGoodsListRequest(widget.supplier, 0, 1)));
-        }
+        store.dispatch(SupplierHotGoodsListAction(
+            SupplierGoodsListRequest(widget.supplier, 0, 1)));
       },
       distinct: true,
       onWillChange: (oldVM, newVM) {
@@ -63,16 +63,38 @@ class _SupplierGoodsTabViewState extends State<SupplierGoodsTabView>
                 : newVM._supplierNewGoodsListState));
       },
       builder: (context, vm) {
-        return Container(
-          //padding: EdgeInsets.only(left: 15, right: 15, bottom: 65),
-          color: Colours.color_F8F8F8,
-          child: SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: enablePullUp,
-            header: WaterDropHeader(),
-            child: StaggeredGridView.countBuilder(
+        return _buildWidget(vm);
+      },
+    );
+  }
+
+  Widget _buildWidget(_ViewModel vm) {
+    var state = widget.type == 0
+        ? vm._supplierHotGoodsListState
+        : vm._supplierNewGoodsListState;
+    if (state is SupplierHotGoodsListInitial ||
+        state is SupplierNewGoodsListInitial ||
+        state is SupplierHotGoodsListLoading ||
+        state is SupplierNewGoodsListLoading) {
+      return IdolLoadingWidget();
+    } else if (state is SupplierHotGoodsListFailure ||
+        state is SupplierNewGoodsListFailure) {
+      return IdolErrorWidget(() {
+        vm._load(widget.type, Global.getUser(context).id, 1);
+      });
+    } else {
+      return Container(
+        //padding: EdgeInsets.only(left: 15, right: 15, bottom: 65),
+        color: Colours.color_F8F8F8,
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: _enablePullUp,
+          header: MaterialClassicHeader(
+            color: Colours.color_EA5228,
+          ),
+          child: StaggeredGridView.countBuilder(
               padding: EdgeInsets.all(15),
-              itemCount: goodsList.length,
+              itemCount: _goodsList.length,
               crossAxisCount: 2,
               crossAxisSpacing: 15.0,
               mainAxisSpacing: 15.0,
@@ -83,48 +105,59 @@ class _SupplierGoodsTabViewState extends State<SupplierGoodsTabView>
               // physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return SupplierGoodsListItem(
-                  goodsList[index],
+                  _goodsList[index],
                   onItemClickCallback: () {
-                    // TODO goods detail
+                    // goods detail
+                    IdolRoute.startGoodsDetail(context, widget.supplier,_goodsList[index].id);
                   },
                   onItemShareClickCallback: () {
                     // TODO share
                   },
                 );
-              }
-            ),
-            onRefresh: () =>
-                vm._load(widget.type, Global.getUser(context).id, 1),
-            onLoading: () => vm._load(
-                widget.type, Global.getUser(context).id, currentPage + 1),
-            controller: _refreshController,
-          ),
-        );
-      },
-    );
+              }),
+          onRefresh: () async {
+            await Future(() {
+              vm._load(widget.type, Global.getUser(context).id, 1);
+            });
+          },
+          onLoading: () async {
+            await Future(() {
+              vm._load(
+                  widget.type, Global.getUser(context).id, _currentPage + 1);
+            });
+          },
+          controller: _refreshController,
+        ),
+      );
+    }
   }
 
   void _onSupplierGoodsListStateChanged(dynamic state) {
-    if (state is SupplierNewGoodsListLoading ||
-        state is SupplierHotGoodsListLoading) {
-      _refreshController.requestRefresh();
-    } else if (state is SupplierNewGoodsListSuccess ||
+    if (state is SupplierNewGoodsListSuccess ||
         state is SupplierHotGoodsListSuccess) {
       setState(() {
-        if ((state).goodsList.currentPage == 1) {
-          goodsList = (state).goodsList.list;
+        if ((state).storeGoodsList.currentPage == 1) {
+          _goodsList = (state).storeGoodsList.list;
         } else {
-          goodsList.addAll((state).goodsList.list);
+          _goodsList.addAll((state).storeGoodsList.list);
         }
-        currentPage = (state).goodsList.currentPage;
-        enablePullUp =
-            (state).goodsList.currentPage != (state).goodsList.totalPage &&
-                (state).goodsList.totalPage != 0;
+        _currentPage = (state).storeGoodsList.currentPage;
+        _enablePullUp = (state).storeGoodsList.currentPage !=
+                (state).storeGoodsList.totalPage &&
+            (state).storeGoodsList.totalPage != 0;
       });
-      _refreshController.refreshCompleted();
+      if (_currentPage == 1) {
+        _refreshController.refreshCompleted(resetFooterState: true);
+      } else {
+        _refreshController.loadComplete();
+      }
     } else if (state is SupplierHotGoodsListFailure ||
         state is SupplierNewGoodsListFailure) {
-      _refreshController.refreshCompleted();
+      if (_currentPage == 1) {
+        _refreshController.refreshCompleted(resetFooterState: true);
+      } else {
+        _refreshController.loadComplete();
+      }
       EasyLoading.showToast((state).message);
     }
   }
@@ -156,4 +189,16 @@ class _ViewModel {
     return _ViewModel(store.state.supplierHotGoodsListState,
         store.state.supplierNewGoodsListState, _load);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          _supplierHotGoodsListState == other._supplierHotGoodsListState &&
+          _supplierNewGoodsListState == other._supplierNewGoodsListState;
+
+  @override
+  int get hashCode =>
+      _supplierHotGoodsListState.hashCode ^ _supplierNewGoodsListState.hashCode;
 }

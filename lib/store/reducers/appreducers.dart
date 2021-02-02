@@ -19,8 +19,10 @@ AppState appReducer(AppState state, action) {
     myInfoGoodsListState: userDetailGoodsListReducer(state.myInfoGoodsListState, action),
     myInfoGoodsCategoryListState: userDetailGoodsCategoryListReducer(state.myInfoGoodsCategoryListState, action),
     supplierInfoState: supplierInfoReducer(state.supplierInfoState, action),
+    supplierDetailArguments: supplierDetailArgumentsReducer(state.supplierDetailArguments, action),
     supplierHotGoodsListState: supplierHotGoodsListReducer(state.supplierHotGoodsListState, action),
     supplierNewGoodsListState: supplierNewGoodsListReducer(state.supplierNewGoodsListState, action),
     goodsDetailState: goodsDetailReducer(state.goodsDetailState, action),
+    goodsDetailArguments: goodsDetailArgumentsReducer(state.goodsDetailArguments, action),
   );
 }

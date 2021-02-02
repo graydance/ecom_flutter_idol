@@ -51,7 +51,7 @@ class AppState {
     this.supplierHotGoodsListState = const SupplierHotGoodsListInitial(),
     this.supplierNewGoodsListState = const SupplierNewGoodsListInitial(),
     this.goodsDetailState = const GoodsDetailInitial(),
-    this.goodsDetailArguments = const GoodsDetailArguments(''),
+    this.goodsDetailArguments = const GoodsDetailArguments('', ''),
   });
 
   AppState copyWith({

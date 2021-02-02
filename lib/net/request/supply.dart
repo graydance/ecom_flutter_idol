@@ -39,14 +39,16 @@ class AddStoreRequest implements BaseRequest{
 }
 
 class GoodsDetailRequest implements BaseRequest{
+  final String supplierId;
   final String goodsId;
 
-  GoodsDetailRequest(this.goodsId);
+  GoodsDetailRequest(this.supplierId, this.goodsId);
 
   @override
   Map<String, dynamic> toMap({String Function(String key) keyMapper}) {
     keyMapper ??= (key) => key;
     return {
+      keyMapper('supplierId'):this.supplierId,
       keyMapper('goodsId'):this.goodsId,
     };
   }

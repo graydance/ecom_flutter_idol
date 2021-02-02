@@ -51,38 +51,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ),
   ];
 
+  static const TextStyle titleTextStyle = TextStyle(color: Colours.black, fontSize: 16);
+
   List<Widget> _titles = <Widget>[
     Text(
       'Invite friends for extra earnings!',
-      style: TextStyle(color: Colours.black, fontSize: 16),
+      style: titleTextStyle,
     ),
     Text(
       'Customer Success Manager',
-      style: TextStyle(color: Colours.black, fontSize: 16),
+      style: titleTextStyle,
     ),
     Text(
       'Set Email',
-      style: TextStyle(color: Colours.black, fontSize: 16),
+      style: titleTextStyle,
     ),
     Text(
       'Password',
-      style: TextStyle(color: Colours.black, fontSize: 16),
+      style: titleTextStyle,
     ),
     Text(
       'Contact Us',
-      style: TextStyle(color: Colours.black, fontSize: 16),
+      style: titleTextStyle,
     ),
     Text(
       'Rate Us',
-      style: TextStyle(color: Colours.black, fontSize: 16),
+      style: titleTextStyle,
     ),
     Text(
       'FAQ',
-      style: TextStyle(color: Colours.black, fontSize: 16),
+      style: titleTextStyle,
     ),
     Text(
       'Privacy Settings',
-      style: TextStyle(color: Colours.black, fontSize: 16),
+      style: titleTextStyle,
     )
   ];
 
@@ -130,27 +132,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _onTap(int index) {
     switch (index) {
       case 0:
-        break;
 
+        break;
       case 1:
-        break;
 
+        break;
       case 2:
-        break;
 
+        break;
       case 3:
-        break;
 
+        break;
       case 4:
-        break;
 
+        break;
       case 5:
-        break;
 
+        break;
       case 6:
-        break;
 
+        break;
       case 7:
+
         break;
     }
   }

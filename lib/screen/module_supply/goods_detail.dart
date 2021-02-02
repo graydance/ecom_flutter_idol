@@ -14,7 +14,7 @@ import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 import 'package:redux/redux.dart';
-import 'package:idol/widgets/screen_loading.dart';
+import 'package:idol/widgets/loading.dart';
 
 /// 产品详情页
 class GoodsDetailScreen extends StatefulWidget {
@@ -45,7 +45,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
           IdolRoute.pop(context);
         } else {
           _goodsId = arguments.goodsId;
-          store.dispatch(GoodsDetailAction(GoodsDetailRequest(_goodsId)));
+          _supplierId = arguments.supplierId;
+          store.dispatch(GoodsDetailAction(GoodsDetailRequest(_supplierId, _goodsId)));
         }
       },
       distinct: true,
@@ -119,13 +120,12 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   }
 
   Widget _buildBodyWidget(_ViewModel vm) {
-    if (vm._goodsDetailState is GoodsDetailInitial ||
-        vm._goodsDetailState is GoodsDetailLoading) {
-      return ScreenLoadingWidget();
+    if (vm._goodsDetailState is GoodsDetailInitial || vm._goodsDetailState is GoodsDetailLoading) {
+      return IdolLoadingWidget();
     } else if (vm._goodsDetailState is GoodsDetailFailure) {
       return IdolErrorWidget(() {
         // Retry supplierInfo.
-        vm._goodsDetail(_goodsId);
+        vm._goodsDetail(_supplierId, _goodsId);
       });
     } else {
       GoodsDetail goodsDetail =
@@ -409,18 +409,28 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
 class _ViewModel {
   final GoodsDetailState _goodsDetailState;
-  final Function(String) _goodsDetail;
+  final Function(String, String) _goodsDetail;
   final Function(String) _addToMyStore;
 
   _ViewModel(this._goodsDetailState, this._goodsDetail, this._addToMyStore);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    void _goodsDetail(String goodsId) {
-      store.dispatch(GoodsDetailAction(GoodsDetailRequest(goodsId)));
+    void _goodsDetail(String supplierId, String goodsId) {
+      store.dispatch(GoodsDetailAction(GoodsDetailRequest(supplierId, goodsId)));
     }
     void _addToMyStore(String goodsId){
       store.dispatch(AddStoreRequest(goodsId));
     }
     return _ViewModel(store.state.goodsDetailState, _goodsDetail, _addToMyStore);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          _goodsDetailState == other._goodsDetailState;
+
+  @override
+  int get hashCode => _goodsDetailState.hashCode;
 }

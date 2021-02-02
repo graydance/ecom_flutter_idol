@@ -115,9 +115,9 @@ class IdolRoute {
     return Navigator.of(context).pushNamed(RouterPath.supply$SupplierDetail);
   }
 
-  static Future<Object> startGoodsDetail(BuildContext context, String goodsId){
+  static Future<Object> startGoodsDetail(BuildContext context, String supplierId, String goodsId){
     StoreProvider.of<AppState>(context)
-        .dispatch(UpdateArgumentsAction<GoodsDetailArguments>(GoodsDetailArguments(goodsId)));
+        .dispatch(UpdateArgumentsAction<GoodsDetailArguments>(GoodsDetailArguments(supplierId, goodsId)));
     return Navigator.of(context).pushNamed(RouterPath.goodsDetail);
   }
 
