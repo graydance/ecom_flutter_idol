@@ -5,12 +5,13 @@ import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:idol/widgets/button.dart';
+import 'package:idol/widgets/dialog.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'package:idol/widgets/widgets.dart';
 import 'package:idol/r.g.dart';
 
 class BalanceScreen extends StatefulWidget {

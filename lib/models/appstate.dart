@@ -1,4 +1,5 @@
 import 'package:idol/models/arguments/rewards_detail.dart';
+import 'package:idol/models/arguments/supplier_detail.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/main.dart';
@@ -22,6 +23,12 @@ class AppState {
   final MyInfoGoodsListState myInfoGoodsListState;
   final MyInfoGoodsCategoryListState myInfoGoodsCategoryListState;
   final ImageCropArguments imageCropArguments;
+  final SupplierDetailArguments supplierDetailArguments;
+  final SupplierInfoState supplierInfoState;
+  final SupplierHotGoodsListState supplierHotGoodsListState;
+  final SupplierNewGoodsListState supplierNewGoodsListState;
+  final GoodsDetailState goodsDetailState;
+  final GoodsDetailArguments goodsDetailArguments;
 
   AppState({
     this.dashboardState = const DashboardInitial(),
@@ -39,6 +46,12 @@ class AppState {
     this.myInfoGoodsListState = const MyInfoGoodsListInitial(),
     this.myInfoGoodsCategoryListState = const MyInfoGoodsCategoryListInitial(),
     this.imageCropArguments = const ImageCropArguments(''),
+    this.supplierDetailArguments = const SupplierDetailArguments('', ''),
+    this.supplierInfoState = const SupplierInfoInitial(),
+    this.supplierHotGoodsListState = const SupplierHotGoodsListInitial(),
+    this.supplierNewGoodsListState = const SupplierNewGoodsListInitial(),
+    this.goodsDetailState = const GoodsDetailInitial(),
+    this.goodsDetailArguments = const GoodsDetailArguments('', ''),
   });
 
   AppState copyWith({
@@ -57,6 +70,12 @@ class AppState {
     MyInfoGoodsListState myInfoGoodsListState,
     MyInfoGoodsCategoryListState myInfoGoodsCategoryListState,
     ImageCropArguments imageCropArguments,
+    SupplierDetailArguments supplierDetailArgument,
+    SupplierInfoState supplierInfoState,
+    SupplierHotGoodsListState supplierHotGoodsListState,
+    SupplierNewGoodsListState supplierNewGoodsListState,
+    GoodsDetailState goodsDetailState,
+    GoodsDetailArguments goodsDetailArguments,
   }) {
     if ((loginState == null || identical(loginState, this.loginState)) &&
         (dashboardState == null ||
@@ -85,7 +104,21 @@ class AppState {
             identical(myInfoGoodsCategoryListState,
                 this.myInfoGoodsCategoryListState)) &&
         (imageCropArguments == null ||
-            identical(imageCropArguments, this.imageCropArguments))) {
+            identical(imageCropArguments, this.imageCropArguments)) &&
+        (supplierDetailArgument == null ||
+            identical(supplierDetailArgument, this.supplierDetailArguments)) &&
+        (supplierInfoState == null ||
+            identical(supplierInfoState, this.supplierInfoState)) &&
+        (supplierHotGoodsListState == null ||
+            identical(
+                supplierHotGoodsListState, this.supplierHotGoodsListState)) &&
+        (supplierNewGoodsListState == null ||
+            identical(
+                supplierNewGoodsListState, this.supplierNewGoodsListState)) &&
+        (goodsDetailState == null ||
+            identical(goodsDetailState, this.goodsDetailState)) &&
+        (goodsDetailArguments == null ||
+            identical(goodsDetailArguments, this.goodsDetailArguments))) {
       return this;
     }
 
@@ -109,6 +142,15 @@ class AppState {
       myInfoGoodsCategoryListState:
           myInfoGoodsCategoryListState ?? this.myInfoGoodsCategoryListState,
       imageCropArguments: imageCropArguments ?? this.imageCropArguments,
+      supplierDetailArguments:
+          supplierDetailArgument ?? this.supplierDetailArguments,
+      supplierInfoState: supplierInfoState ?? this.supplierInfoState,
+      supplierHotGoodsListState:
+          supplierHotGoodsListState ?? this.supplierHotGoodsListState,
+      supplierNewGoodsListState:
+          supplierNewGoodsListState ?? this.supplierNewGoodsListState,
+      goodsDetailState: goodsDetailState ?? this.goodsDetailState,
+      goodsDetailArguments: goodsDetailArguments ?? this.goodsDetailArguments,
     );
   }
 
@@ -131,7 +173,13 @@ class AppState {
           editStoreState == other.editStoreState &&
           myInfoGoodsListState == other.myInfoGoodsListState &&
           myInfoGoodsCategoryListState == other.myInfoGoodsCategoryListState &&
-          imageCropArguments == other.imageCropArguments;
+          imageCropArguments == other.imageCropArguments &&
+          supplierDetailArguments == other.supplierDetailArguments &&
+          supplierInfoState == other.supplierInfoState &&
+          supplierHotGoodsListState == other.supplierHotGoodsListState &&
+          supplierNewGoodsListState == other.supplierNewGoodsListState &&
+          goodsDetailState == other.goodsDetailState &&
+          goodsDetailArguments == other.goodsDetailArguments;
 
   @override
   int get hashCode =>
@@ -149,7 +197,11 @@ class AppState {
       editStoreState.hashCode ^
       myInfoGoodsListState.hashCode ^
       myInfoGoodsCategoryListState.hashCode ^
-      imageCropArguments.hashCode;
-
-
+      imageCropArguments.hashCode ^
+      supplierDetailArguments.hashCode ^
+      supplierInfoState.hashCode ^
+      supplierHotGoodsListState.hashCode ^
+      supplierNewGoodsListState.hashCode ^
+      goodsDetailState.hashCode ^
+      goodsDetailArguments.hashCode;
 }

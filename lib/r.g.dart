@@ -94,6 +94,12 @@ class AssetResource {
 class _R_Image_AssetResource {
   const _R_Image_AssetResource();
 
+  /// asset: assets/images/bg_common_error.png
+  // ignore: non_constant_identifier_names
+  final bg_common_error = const AssetResource(
+      "assets/images/bg_common_error.png",
+      packageName: null);
+
   /// asset: assets/images/dashboard/bg_withdraw.png
   // ignore: non_constant_identifier_names
   final bg_withdraw = const AssetResource(
@@ -225,6 +231,36 @@ class _R_Image_AssetResource {
       "assets/images/store/ic_tab_product_unselected.png",
       packageName: null);
 
+  /// asset: assets/images/supply/ic_goods_share.png
+  // ignore: non_constant_identifier_names
+  final ic_goods_share = const AssetResource(
+      "assets/images/supply/ic_goods_share.png",
+      packageName: null);
+
+  /// asset: assets/images/supply/ic_tab_supplier_hot_product_selected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_supplier_hot_product_selected = const AssetResource(
+      "assets/images/supply/ic_tab_supplier_hot_product_selected.png",
+      packageName: null);
+
+  /// asset: assets/images/supply/ic_tab_supplier_hot_product_unselected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_supplier_hot_product_unselected = const AssetResource(
+      "assets/images/supply/ic_tab_supplier_hot_product_unselected.png",
+      packageName: null);
+
+  /// asset: assets/images/supply/ic_tab_supplier_new_product_selected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_supplier_new_product_selected = const AssetResource(
+      "assets/images/supply/ic_tab_supplier_new_product_selected.png",
+      packageName: null);
+
+  /// asset: assets/images/supply/ic_tab_supplier_new_product_unselected.png
+  // ignore: non_constant_identifier_names
+  final ic_tab_supplier_new_product_unselected = const AssetResource(
+      "assets/images/supply/ic_tab_supplier_new_product_unselected.png",
+      packageName: null);
+
   /// asset: assets/images/supply/pause.png
   // ignore: non_constant_identifier_names
   final pause =
@@ -252,6 +288,12 @@ class _R_Image {
   const _R_Image();
 
   final asset = const _R_Image_AssetResource();
+
+  /// asset: assets/images/bg_common_error.png
+  // ignore: non_constant_identifier_names
+  AssetImage bg_common_error() {
+    return AssetImage(asset.bg_common_error.keyName);
+  }
 
   /// asset: assets/images/dashboard/bg_withdraw.png
   // ignore: non_constant_identifier_names
@@ -383,6 +425,36 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_tab_product_unselected() {
     return AssetImage(asset.ic_tab_product_unselected.keyName);
+  }
+
+  /// asset: assets/images/supply/ic_goods_share.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_goods_share() {
+    return AssetImage(asset.ic_goods_share.keyName);
+  }
+
+  /// asset: assets/images/supply/ic_tab_supplier_hot_product_selected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_supplier_hot_product_selected() {
+    return AssetImage(asset.ic_tab_supplier_hot_product_selected.keyName);
+  }
+
+  /// asset: assets/images/supply/ic_tab_supplier_hot_product_unselected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_supplier_hot_product_unselected() {
+    return AssetImage(asset.ic_tab_supplier_hot_product_unselected.keyName);
+  }
+
+  /// asset: assets/images/supply/ic_tab_supplier_new_product_selected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_supplier_new_product_selected() {
+    return AssetImage(asset.ic_tab_supplier_new_product_selected.keyName);
+  }
+
+  /// asset: assets/images/supply/ic_tab_supplier_new_product_unselected.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_tab_supplier_new_product_unselected() {
+    return AssetImage(asset.ic_tab_supplier_new_product_unselected.keyName);
   }
 
   /// asset: assets/images/supply/pause.png

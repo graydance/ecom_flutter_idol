@@ -1,4 +1,4 @@
-import 'package:idol/models/goods_list.dart';
+import 'package:idol/models/store_goods_list.dart';
 import 'package:idol/models/user.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/store.dart';
@@ -52,9 +52,9 @@ class MyInfoGoodsListInitial implements MyInfoGoodsListState {
 class MyInfoGoodsListLoading implements MyInfoGoodsListState {}
 
 class MyInfoGoodsListSuccess implements MyInfoGoodsListState {
-  final GoodsList goodsList;
+  final StoreGoodsList storeGoodsList;
 
-  MyInfoGoodsListSuccess(this.goodsList);
+  MyInfoGoodsListSuccess(this.storeGoodsList);
 }
 
 class MyInfoGoodsListFailure implements MyInfoGoodsListState {
@@ -70,9 +70,9 @@ class MyInfoGoodsListAction {
 }
 
 class MyInfoGoodsListSuccessAction {
-  final GoodsList goodsList;
+  final StoreGoodsList storeGoodsList;
 
-  MyInfoGoodsListSuccessAction(this.goodsList);
+  MyInfoGoodsListSuccessAction(this.storeGoodsList);
 }
 
 class MyInfoGoodsListFailureAction {
@@ -91,9 +91,9 @@ class MyInfoGoodsCategoryListInitial implements MyInfoGoodsCategoryListState {
 class MyInfoGoodsCategoryListLoading implements MyInfoGoodsCategoryListState {}
 
 class MyInfoGoodsCategoryListSuccess implements MyInfoGoodsCategoryListState {
-  final GoodsList goodsList;
+  final StoreGoodsList storeGoodsList;
 
-  MyInfoGoodsCategoryListSuccess(this.goodsList);
+  MyInfoGoodsCategoryListSuccess(this.storeGoodsList);
 }
 
 class MyInfoGoodsCategoryListFailure implements MyInfoGoodsCategoryListState {
@@ -110,9 +110,9 @@ class MyInfoGoodsCategoryListAction {
 }
 
 class MyInfoGoodsCategoryListSuccessAction {
-  final GoodsList goodsList;
+  final StoreGoodsList storeGoodsList;
 
-  MyInfoGoodsCategoryListSuccessAction(this.goodsList);
+  MyInfoGoodsCategoryListSuccessAction(this.storeGoodsList);
 }
 
 class MyInfoGoodsCategoryListFailureAction {

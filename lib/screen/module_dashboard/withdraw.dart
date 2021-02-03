@@ -8,7 +8,9 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
-import 'package:idol/widgets/widgets.dart';
+import 'package:idol/widgets/button.dart';
+import 'package:idol/widgets/dialog.dart';
+import 'package:idol/widgets/ui.dart';
 import 'package:redux/redux.dart';
 
 /// 提现信息填写页

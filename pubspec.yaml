@@ -14,7 +14,7 @@ dependencies:
   logging: ^0.11.4
   flutter_snake_navigationbar: ^0.4.2
   flustars: ^0.3.3
-  carousel_slider: ^2.3.1
+  carousel_slider: ^3.0.0
   animations: ^1.1.2
   pull_to_refresh: ^1.6.3
   flutter_easyloading: ^2.2.2
@@ -25,10 +25,12 @@ dependencies:
   crop: any
   image_gallery_saver: any
   permission_handler: any
-  r_dart_library:
-    git:
-      url: https://github.com/YK-Unit/r_dart_library.git
-      ref: 0.2.1
+  flutter_staggered_grid_view: ^0.3.2
+  r_dart_library: ^0.2.1
+
+dependency_overrides:
+  flutter_svg: 0.20.0-nullsafety.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,6 +48,7 @@ flr:
 flutter:
   uses-material-design: true
   assets:
+  - assets/images/bg_common_error.png
   - assets/images/dashboard/bg_withdraw.png
   - assets/images/dashboard/bg_withdraw.webp
   - assets/images/dashboard/bg_withdraw_failure.webp
@@ -68,5 +71,10 @@ flutter:
   - assets/images/store/ic_tab_category_unselected.png
   - assets/images/store/ic_tab_product_selected.png
   - assets/images/store/ic_tab_product_unselected.png
+  - assets/images/supply/ic_goods_share.png
+  - assets/images/supply/ic_tab_supplier_hot_product_selected.png
+  - assets/images/supply/ic_tab_supplier_hot_product_unselected.png
+  - assets/images/supply/ic_tab_supplier_new_product_selected.png
+  - assets/images/supply/ic_tab_supplier_new_product_unselected.png
   - assets/images/supply/pause.png
   - assets/images/supply/play.png

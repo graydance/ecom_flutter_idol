@@ -17,12 +17,20 @@ class ApiPath{
   static final String withdraw = '/idol/withdraw';
   // Dashboard->任务完成领取奖励
   static final String completeRewards = '/idol/complete_rewards';
-  // Supply
-  static final String following = '/idol/following';
+  // Supply Goods List
+  static final String supplyGoodsList = '/idol/following';
+  // Supply Follow | UnFollow
+  static final String follow = '/idol/follow';
+  // Goods Detail
+  static final String goodsDetail = '/idol/goods_detail';
+  // Supplier info
+  static final String supplierInfo = '/idol/supplier_detail';
+  // Supplier goods list
+  static final String supplierGoodsList = '/idol/supplier_goods';
   // Supply->Following|ForYou->Add to my Store.
   static final String addStore = '/idol/add_store';
   // Store->UserDetail(left|right goods)
-  static final String goodsList = '/user/pub/good_list';
+  static final String storeGoodsList = '/user/pub/good_list';
   // Upload
   static final String upload = '/api/upload';
 }

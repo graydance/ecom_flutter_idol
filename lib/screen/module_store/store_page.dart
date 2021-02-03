@@ -6,10 +6,11 @@ import 'package:idol/net/request/base.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'package:idol/screen/module_store/goods_category_tab_view.dart';
-import 'package:idol/screen/module_store/goods_list_tab_view.dart';
+import 'package:idol/screen/module_store/store_goods_category_tab_view.dart';
+import 'package:idol/screen/module_store/store_goods_list_tab_view.dart';
 import 'package:idol/store/actions/store.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/widgets/loading.dart';
 import 'package:redux/redux.dart';
 
 class StorePage extends StatefulWidget {
@@ -45,8 +46,8 @@ class _StorePageState extends State<StorePage>
               _leftTabIcon = R.image.ic_tab_product_selected();
               _rightTabIcon = R.image.ic_tab_category_unselected();
             }else{
+              _leftTabIcon = R.image.ic_tab_product_unselected();
               _rightTabIcon = R.image.ic_tab_category_selected();
-              _leftTabIcon = R.image.ic_tab_category_unselected();
             }
           });
       }
@@ -58,6 +59,7 @@ class _StorePageState extends State<StorePage>
     super.build(context);
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
+      distinct: true,
       onInit: (store) {
         StoreProvider.of<AppState>(context)
             .dispatch(MyInfoAction(BaseRequestImpl()));
@@ -72,11 +74,7 @@ class _StorePageState extends State<StorePage>
 
   Widget _buildStorePage(_ViewModel vm) {
     return vm._myInfoState is MyInfoInitial || vm._myInfoState is MyInfoLoading
-        ? Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colours.color_EA5228),
-            ),
-          )
+        ? IdolLoadingWidget()
         : NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
@@ -421,4 +419,14 @@ class _ViewModel {
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(store.state.myInfoState);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          _myInfoState == other._myInfoState;
+
+  @override
+  int get hashCode => _myInfoState.hashCode;
 }

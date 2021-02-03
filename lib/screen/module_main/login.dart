@@ -5,12 +5,12 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/widgets/button.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/login.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/main.dart';
-import 'package:idol/widgets/widgets.dart';
 
 /// Sign Up/Sign In
 class LoginScreen extends StatefulWidget {
