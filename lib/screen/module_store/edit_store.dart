@@ -125,7 +125,6 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
         return;
       }
       _changeSaveButtonStatus();
-      _saveButtonKey.currentState.updateButtonStatus(_saveButtonStatus);
     });
   }
 
@@ -133,13 +132,13 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
     try {
       await DioClient.getInstance()
           .post(ApiPath.checkName, baseRequest: checkNameRequest);
-      if (checkNameRequest.storeName != null &&
-          checkNameRequest.storeName.isNotEmpty) {
-        _storeNameValid = true;
-      } else {
-        _userNameValid = true;
-      }
       setState(() {
+        if (checkNameRequest.storeName != null &&
+            checkNameRequest.storeName.isNotEmpty) {
+          _storeNameValid = true;
+        } else {
+          _userNameValid = true;
+        }
         _changeSaveButtonStatus();
         if (checkNameRequest.storeName != null &&
             checkNameRequest.storeName.isNotEmpty) {
@@ -174,6 +173,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
             _storeDescController.text.trim().isNotEmpty
         ? IdolButtonStatus.enable
         : IdolButtonStatus.disable;
+    _saveButtonKey.currentState.updateButtonStatus(_saveButtonStatus);
     debugPrint("_saveButtonStatus >> $_saveButtonStatus");
   }
 
@@ -358,7 +358,8 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
                                   _isUpdating = true;
                                   _clearFocus();
                                   vm._editStore(
-                                      storeName: _storeNameController.text.trim(),
+                                      storeName:
+                                          _storeNameController.text.trim(),
                                       userName: _userNameController.text.trim(),
                                       aboutMe: _storeDescController.text.trim(),
                                       storePicture: _storeBackground,
