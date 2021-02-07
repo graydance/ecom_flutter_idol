@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -28,7 +31,9 @@ class FollowingGoodsListItem extends StatefulWidget {
 typedef OnProductAddedStoreListener = Function(GoodsDetail goodsDetail);
 
 class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
-  String buttonText = 'Add to my store';
+  String _buttonText = 'Add to my store';
+  final GlobalKey<IdolButtonState> _idolButtonStatusKey = GlobalKey();
+  IdolButtonStatus _idolButtonStatus = IdolButtonStatus.enable;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
     return GestureDetector(
       onTap: () {
         // GoodsDetail
-        IdolRoute.startGoodsDetail(context, widget.goodsDetail.supplierId, widget.goodsDetail.id);
+        IdolRoute.startGoodsDetail(
+            context, widget.goodsDetail.supplierId, widget.goodsDetail.id);
       },
       child: Container(
         padding: EdgeInsets.all(15),
@@ -73,12 +79,10 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                               style: TextStyle(
                                   color: Colours.color_48B6EF, fontSize: 16),
                             ),
-                            FollowButton(
-                              widget.goodsDetail.supplierId,
-                              defaultFollowStatus: FollowStatus.unFollow,
-                              buttonStyle: FollowButtonStyle.text,
-                              fontSize: 16.0
-                            ),
+                            FollowButton(widget.goodsDetail.supplierId,
+                                defaultFollowStatus: FollowStatus.unFollow,
+                                buttonStyle: FollowButtonStyle.text,
+                                fontSize: 16.0),
                           ]
                         : [],
                   ],
@@ -288,10 +292,16 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ),
             // Add to my store.
             IdolButton(
-              buttonText,
-              status: IdolButtonStatus.enable,
+              _buttonText,
+              key: _idolButtonStatusKey,
+              status: _idolButtonStatus,
+              isPartialRefresh: true,
               listener: (status) {
-                _addProductToMyStore(widget.goodsDetail);
+                if (status == IdolButtonStatus.enable) {
+                  debounce(() {
+                    _addProductToMyStore(widget.goodsDetail);
+                  }, 1000);
+                }
               },
             ),
           ],
@@ -300,17 +310,21 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
     );
   }
 
-  void _addProductToMyStore(GoodsDetail goodsDetail) {
-    DioClient.getInstance()
-        .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id))
-        .then((data) {
+  Future _addProductToMyStore(GoodsDetail goodsDetail) async {
+    try {
+      await DioClient.getInstance()
+          .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
       if (widget.onProductAddedStoreListener != null) {
         widget.onProductAddedStoreListener(goodsDetail);
       }
-    }).catchError((err) {
-      debugPrint(err.toString());
-      EasyLoading.showError(err.toString());
-    });
+      _buttonText = 'Has been added to my store';
+      _idolButtonStatus = IdolButtonStatus.normal;
+      _idolButtonStatusKey.currentState.updateText(_buttonText);
+      _idolButtonStatusKey.currentState.updateButtonStatus(_idolButtonStatus);
+    } on DioError catch (e) {
+      debugPrint(e.toString());
+      EasyLoading.showError(e.toString());
+    }
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {
@@ -352,5 +366,17 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         url.contains('.3gp') ||
         url.contains('.wmv') ||
         url.contains('.mkv'));
+  }
+
+  Timer _debounce;
+
+  void debounce(Function fn, [int t = 30]) {
+    // return () {
+    // 还在时间之内，抛弃上一次
+    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _debounce = Timer(Duration(milliseconds: t), () {
+      fn();
+    });
+    // };
   }
 }

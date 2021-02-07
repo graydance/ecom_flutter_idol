@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,6 @@ import 'package:idol/net/request/store.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/utils/global.dart';
-import 'package:idol/utils/method.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:redux/redux.dart';
@@ -92,10 +92,10 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
           debugPrint('StoreName is not modify, return.');
           return;
         }
-        throttle(() async {
-          await _checkName(
+        debounce(() {
+          _checkName(
               CheckNameRequest(storeName: _storeNameController.text.trim()));
-        }, Duration(milliseconds: 200));
+        }, 1000);
       }
     });
     _userNameController =
@@ -111,10 +111,10 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
           return;
         }
         // checkName
-        throttle(() async {
-          await _checkName(
+        debounce(() {
+          _checkName(
               CheckNameRequest(userName: _userNameController.text.trim()));
-        }, Duration(milliseconds: 200));
+        }, 1000);
       }
     });
     _storeDescController =
@@ -582,6 +582,19 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
   void _clearFocus() {
     _storeNameFocusNode.unfocus();
     _userNameFocusNode.unfocus();
+  }
+
+  Timer _debounce;
+
+  Function debounce(Function fn, [int t = 30]) {
+    return () {
+      // 还在时间之内，抛弃上一次
+      if (_debounce?.isActive ?? false) _debounce.cancel();
+
+      _debounce = Timer(Duration(milliseconds: t), () {
+        fn();
+      });
+    };
   }
 }
 
