@@ -6,7 +6,7 @@ import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
 
 /// 通用按钮样式
-class IdolButton extends StatelessWidget {
+class IdolButton extends StatefulWidget {
   /// Button text.
   final String text;
 
@@ -34,6 +34,9 @@ class IdolButton extends StatelessWidget {
   /// Button [LinearGradient.end]
   final Alignment linearGradientEnd;
 
+  /// 是否使用局部刷新？ 如果使用局部刷新则通过rebuild方式无法进行status更改。
+  final bool isPartialRefresh;
+
   /// Button click callback.
   final IdolButtonClickListener listener;
 
@@ -51,25 +54,43 @@ class IdolButton extends StatelessWidget {
     this.normalColor = Colours.color_C3C4C4,
     this.linearGradientBegin = Alignment.centerLeft,
     this.linearGradientEnd = Alignment.centerRight,
+    this.isPartialRefresh = false,
     this.listener,
   }) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() => IdolButtonState();
+}
+
+class IdolButtonState extends State<IdolButton> {
+  String _text;
+  IdolButtonStatus _status;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    debugPrint('IdolButton didChangeDependencies...');
+    _text = widget.text;
+    _status = widget.status;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return status == IdolButtonStatus.enable
+    debugPrint('IdolButton build...');
+    return (widget.isPartialRefresh ? (_status == IdolButtonStatus.enable) : (widget.status == IdolButtonStatus.enable))
         ? Container(
-            width: width,
-            height: height,
+            width: widget.width,
+            height: widget.height,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: linearGradientBegin,
-                end: linearGradientEnd,
-                colors: enableColors,
+                begin: widget.linearGradientBegin,
+                end: widget.linearGradientEnd,
+                colors: widget.enableColors,
               ),
               borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             child: RaisedButton(
-              onPressed: () => listener(status),
+              onPressed: () => widget.listener(widget.isPartialRefresh ? _status : widget.status),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
@@ -77,22 +98,22 @@ class IdolButton extends StatelessWidget {
               highlightElevation: 0,
               elevation: 0,
               child: Text(
-                text,
+                widget.isPartialRefresh ? _text : widget.text,
                 style: TextStyle(color: Colours.white, fontSize: 16),
               ),
             ),
           )
         : Container(
-            width: width,
-            height: height,
+            width: widget.width,
+            height: widget.height,
             decoration: BoxDecoration(
-              color: status == IdolButtonStatus.normal
-                  ? normalColor
-                  : disableColor,
+              color: (widget.isPartialRefresh ? _status == IdolButtonStatus.normal : widget.status == IdolButtonStatus.normal)
+                  ? widget.normalColor
+                  : widget.disableColor,
               borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             child: RaisedButton(
-              onPressed: () => listener(status),
+              onPressed: () => widget.listener(widget.isPartialRefresh ? _status : widget.status),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
@@ -100,11 +121,37 @@ class IdolButton extends StatelessWidget {
               highlightElevation: 0,
               elevation: 0,
               child: Text(
-                text,
+                widget.isPartialRefresh ? _text : widget.text,
                 style: TextStyle(color: Colours.white, fontSize: 16),
               ),
             ),
           );
+  }
+
+  void updateText(String buttonText) {
+    assert((){
+      if(!widget.isPartialRefresh){
+        throw FlutterError('You must set the IdolButton->isPartialRefresh property, then use updateText/updateButtonStatus method.');
+      }
+      return true;
+    }());
+    debugPrint('updateIButtonText >>> $buttonText');
+    setState(() {
+      _text = buttonText;
+    });
+  }
+
+  void updateButtonStatus(IdolButtonStatus status) {
+    assert((){
+      if(!widget.isPartialRefresh){
+        throw FlutterError('You must set the IdolButton->isPartialRefresh property, then use updateText/updateButtonStatus method.');
+      }
+      return true;
+    }());
+    debugPrint('updateIButtonStatus >>> $status');
+    setState(() {
+      _status = status;
+    });
   }
 }
 
@@ -194,7 +241,8 @@ class _FollowButtonState extends State<FollowButton> {
       case FollowStatus.unFollow: // 未关注
         childWidget = Text(
           'Follow',
-          style: TextStyle(color: Colours.color_48B6EF, fontSize: widget.fontSize),
+          style:
+              TextStyle(color: Colours.color_48B6EF, fontSize: widget.fontSize),
         );
         break;
       case FollowStatus.following: // Loading
@@ -216,7 +264,8 @@ class _FollowButtonState extends State<FollowButton> {
       default:
         childWidget = Text(
           'Follow',
-          style: TextStyle(color: Colours.color_48B6EF, fontSize: widget.fontSize),
+          style:
+              TextStyle(color: Colours.color_48B6EF, fontSize: widget.fontSize),
         );
         break;
     }

@@ -21,7 +21,7 @@ class StorePage extends StatefulWidget {
 }
 
 class _StorePageState extends State<StorePage>
-    with AutomaticKeepAliveClientMixin<StorePage>,SingleTickerProviderStateMixin<StorePage>  {
+    with AutomaticKeepAliveClientMixin<StorePage>,TickerProviderStateMixin<StorePage>  {
 
   TabController _tabController;
   int _currentTabIndex = 0;
