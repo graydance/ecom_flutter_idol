@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">ecomshare</string>
+    <string name="social_instagram">Share to Instagram</string>
+    <!--Facebook-->
+    <string name="facebook_app_id">1724164214411840</string>
+    <string name="fb_login_protocol_scheme">fbabc1724164214411840</string>
+
+    <!--Twitter-->
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">[YOUR KEY]</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">[YOUR SECRET]</string>
+</resources>

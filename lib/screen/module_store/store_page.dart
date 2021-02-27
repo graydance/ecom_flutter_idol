@@ -11,6 +11,7 @@ import 'package:idol/screen/module_store/store_goods_list_tab_view.dart';
 import 'package:idol/store/actions/store.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/loading.dart';
+import 'package:idol/widgets/sliver_appbar_delegate.dart';
 import 'package:redux/redux.dart';
 
 class StorePage extends StatefulWidget {
@@ -21,7 +22,7 @@ class StorePage extends StatefulWidget {
 }
 
 class _StorePageState extends State<StorePage>
-    with AutomaticKeepAliveClientMixin<StorePage>,SingleTickerProviderStateMixin<StorePage>  {
+    with AutomaticKeepAliveClientMixin<StorePage>,TickerProviderStateMixin<StorePage>  {
 
   TabController _tabController;
   int _currentTabIndex = 0;
@@ -92,7 +93,7 @@ class _StorePageState extends State<StorePage>
                   ),
                   SliverPersistentHeader(
                     pinned: true,
-                    delegate: _SliverAppBarDelegate(
+                    delegate: SliverAppBarDelegate(
                       TabBar(
                         controller: _tabController,
                         indicatorColor: Colours.color_1E2539,
@@ -383,32 +384,6 @@ class _StorePageState extends State<StorePage>
 
   @override
   bool get wantKeepAlive => true;
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new Container(
-      color: Colours.white,
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return true;
-  }
 }
 
 class _ViewModel {

@@ -36,6 +36,7 @@ class GoodsDetail {
   final int inMyStore;
   final List<Tag> tag;
   final List<String> goods;
+  final String updateTime;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
@@ -56,6 +57,7 @@ class GoodsDetail {
     this.inMyStore = 0,
     this.tag = const [],
     this.goods = const[],
+    this.updateTime = '',
   });
 
   GoodsDetail copyWith({
@@ -74,6 +76,7 @@ class GoodsDetail {
     int collectNum,
     List<Tag> tag,
     List<String> goods,
+    String updateTime,
   }) {
     if ((id == null || identical(id, this.id)) &&
     (supplierName == null || identical(supplierName, this.supplierName)) &&
@@ -94,7 +97,8 @@ class GoodsDetail {
         (collectNum == null || identical(collectNum, this.collectNum)) &&
         (inMyStore == null || identical(inMyStore, this.inMyStore)) &&
         (tag == null || identical(tag, this.tag)) &&
-        (goods == null || identical(goods, this.goods))) {
+        (goods == null || identical(goods, this.goods)) &&
+        (updateTime == null || identical(updateTime, this.updateTime))) {
       return this;
     }
 
@@ -115,54 +119,42 @@ class GoodsDetail {
       inMyStore: inMyStore ?? this.inMyStore,
       tag: tag ?? this.tag,
       goods: goods ?? this.goods,
+      updateTime: updateTime ?? this.updateTime,
     );
   }
 
   @override
   String toString() {
-    return 'GoodsDetail{id: $id, supplierName: $supplierName, supplierId: $supplierId, followStatus: $followStatus, goodsName: $goodsName, earningPrice: $earningPrice, earningPriceStr: $earningPriceStr, suggestedPrice: $suggestedPrice, suggestedPriceStr: $suggestedPriceStr, goodsDescription: $goodsDescription, discount: $discount, soldNum: $soldNum, collectNum: $collectNum, inMyStore:$inMyStore, tag: $tag, goods: $goods}';
+    return 'GoodsDetail{id: $id, supplierName: $supplierName, supplierId: $supplierId, followStatus: $followStatus, goodsName: $goodsName, earningPrice: $earningPrice, earningPriceStr: $earningPriceStr, suggestedPrice: $suggestedPrice, suggestedPriceStr: $suggestedPriceStr, goodsDescription: $goodsDescription, discount: $discount, soldNum: $soldNum, collectNum: $collectNum, inMyStore: $inMyStore, tag: $tag, goods: $goods, updateTime: $updateTime}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is GoodsDetail &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          supplierName == other.supplierName &&
-          supplierId == other.supplierId &&
-          followStatus == other.followStatus &&
-          goodsName == other.goodsName &&
-          earningPrice == other.earningPrice &&
-          earningPriceStr == other.earningPriceStr &&
-          suggestedPrice == other.suggestedPrice &&
-          suggestedPriceStr == other.suggestedPriceStr &&
-          goodsDescription == other.goodsDescription &&
-          discount == other.discount &&
-          soldNum == other.soldNum &&
-          collectNum == other.collectNum &&
-          inMyStore == other.inMyStore &&
-          tag == other.tag &&
-          goods == other.goods);
+          other is GoodsDetail && runtimeType == other.runtimeType &&
+              id == other.id && supplierName == other.supplierName &&
+              supplierId == other.supplierId &&
+              followStatus == other.followStatus &&
+              goodsName == other.goodsName &&
+              earningPrice == other.earningPrice &&
+              earningPriceStr == other.earningPriceStr &&
+              suggestedPrice == other.suggestedPrice &&
+              suggestedPriceStr == other.suggestedPriceStr &&
+              goodsDescription == other.goodsDescription &&
+              discount == other.discount && soldNum == other.soldNum &&
+              collectNum == other.collectNum && inMyStore == other.inMyStore &&
+              tag == other.tag && goods == other.goods &&
+              updateTime == other.updateTime;
 
   @override
   int get hashCode =>
-      id.hashCode ^
-      supplierName.hashCode ^
-      supplierId.hashCode ^
-      followStatus.hashCode ^
-      goodsName.hashCode ^
-      earningPrice.hashCode ^
-      earningPriceStr.hashCode ^
-      suggestedPrice.hashCode ^
-      suggestedPriceStr.hashCode ^
-      goodsDescription.hashCode ^
-      discount.hashCode ^
-      soldNum.hashCode ^
-      collectNum.hashCode ^
-      inMyStore.hashCode ^
-      tag.hashCode ^
-      goods.hashCode;
+      id.hashCode ^ supplierName.hashCode ^ supplierId.hashCode ^ followStatus
+          .hashCode ^ goodsName.hashCode ^ earningPrice
+          .hashCode ^ earningPriceStr.hashCode ^ suggestedPrice
+          .hashCode ^ suggestedPriceStr.hashCode ^ goodsDescription
+          .hashCode ^ discount.hashCode ^ soldNum.hashCode ^ collectNum
+          .hashCode ^ inMyStore.hashCode ^ tag.hashCode ^ goods
+          .hashCode ^ updateTime.hashCode;
 
   factory GoodsDetail.fromMap(
     Map<String, dynamic> map, {
@@ -182,6 +174,7 @@ class GoodsDetail {
       suggestedPriceStr: map[keyMapper('suggestedPriceStr')] as String,
       goodsDescription: map[keyMapper('goodsDescription')] as String,
       discount: map[keyMapper('discount')] as String,
+      updateTime: map[keyMapper('updateTime')] as String,
       soldNum: map[keyMapper('soldNum')] as int,
       collectNum: map[keyMapper('collectNum')] as int,
       inMyStore: map[keyMapper('inMyStore')] as int,
@@ -213,6 +206,7 @@ class GoodsDetail {
       keyMapper('inMyStore'): this.inMyStore,
       keyMapper('tag'): this.tag,
       keyMapper('goods'): this.goods,
+      keyMapper('updateTime'): this.updateTime,
     } as Map<String, dynamic>;
   }
 
