@@ -3,3 +3,4 @@ export 'package:idol/store/reducers/dashboard.dart';
 export 'package:idol/store/reducers/main.dart';
 export 'package:idol/store/reducers/store.dart';
 export 'package:idol/store/reducers/supply.dart';
+export 'package:idol/store/reducers/biolinks.dart';
