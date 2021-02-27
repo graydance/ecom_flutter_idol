@@ -73,3 +73,19 @@ class CheckNameRequest implements BaseRequest{
     };
   }
 }
+
+/// 删除商品
+class DeleteGoodsRequest implements BaseRequest{
+  final String goodsId;
+
+  DeleteGoodsRequest(this.goodsId);
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+    return {
+      keyMapper('goodsId'): this.goodsId,
+    };
+  }
+}

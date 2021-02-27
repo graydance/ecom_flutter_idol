@@ -11,4 +11,5 @@ class KeyStore {
   static const String PASSWORD = "password";
   static const String PAYMENT = "payment";
   static const String PAYMENT_ACCOUNT = "paymentAccount";
+  static const String IS_FIRST_RUN = "isFirstRun";
 }

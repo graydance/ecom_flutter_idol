@@ -4,3 +4,4 @@ export 'package:idol/store/actions/inbox.dart';
 export 'package:idol/store/actions/biolinks.dart';
 export 'package:idol/store/actions/store.dart';
 export 'package:idol/store/actions/main.dart';
+export 'package:idol/store/actions/biolinks.dart';

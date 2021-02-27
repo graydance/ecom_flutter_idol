@@ -42,7 +42,7 @@ class TokenInterceptors extends InterceptorsWrapper {
         if (code >= 400 && code < 500) {
           if (code == 402) {
             // Need login.
-            IdolRoute.start(RouterPath.login);
+            IdolRoute.start(RouterPath.signIn);
           }
         } else if (code >= 500) {
           // Unified handling

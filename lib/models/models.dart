@@ -1,5 +1,6 @@
 export 'dashboard.dart';
 export 'appstate.dart';
+export 'validate_email.dart';
 export 'user.dart';
 export 'withdraw_info.dart';
 export 'arguments/arguments.dart';
@@ -10,3 +11,5 @@ export 'goods_list.dart';
 export 'goods_detail.dart';
 export 'goods_detail_list.dart';
 export 'store_goods_list.dart';
+export 'best_sales_list.dart';
+export 'sales_history_list.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/widgets/ui.dart';
+import '../../r.g.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -8,46 +9,42 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  List<Icon> _icons = <Icon>[
-    Icon(
-      Icons.share,
-      color: Colours.black,
-      size: 20,
+  List<Image> _icons = <Image>[
+    Image(
+      image: R.image.ic_settings_set_password(),
+      color: Colours.color_555764,
+      width: 30,
+      height: 30,
     ),
-    Icon(
-      Icons.group,
-      color: Colours.black,
-      size: 20,
+    Image(
+      image: R.image.ic_settings_email(),
+      color: Colours.color_555764,
+      width: 30,
+      height: 30,
     ),
-    Icon(
-      Icons.email,
-      color: Colours.black,
-      size: 20,
+    Image(
+      image: R.image.ic_settings_contact(),
+      color: Colours.color_555764,
+      width: 30,
+      height: 30,
     ),
-    Icon(
-      Icons.vpn_key,
-      color: Colours.black,
-      size: 20,
+    Image(
+      image: R.image.ic_settings_rate_us(),
+      color: Colours.color_555764,
+      width: 30,
+      height: 30,
     ),
-    Icon(
-      Icons.contact_mail,
-      color: Colours.black,
-      size: 20,
+    Image(
+      image: R.image.ic_settings_faq(),
+      color: Colours.color_555764,
+      width: 30,
+      height: 30,
     ),
-    Icon(
-      Icons.star_rate,
-      color: Colours.black,
-      size: 20,
-    ),
-    Icon(
-      Icons.help,
-      color: Colours.black,
-      size: 20,
-    ),
-    Icon(
-      Icons.privacy_tip,
-      color: Colours.black,
-      size: 20,
+    Image(
+      image: R.image.ic_settings_privacy(),
+      color: Colours.color_555764,
+      width: 30,
+      height: 30,
     ),
   ];
 
@@ -55,23 +52,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   List<Widget> _titles = <Widget>[
     Text(
-      'Invite friends for extra earnings!',
+      'Set Password',
       style: titleTextStyle,
     ),
     Text(
-      'Customer Success Manager',
+      'Email Us',
       style: titleTextStyle,
     ),
     Text(
-      'Set Email',
-      style: titleTextStyle,
-    ),
-    Text(
-      'Password',
-      style: titleTextStyle,
-    ),
-    Text(
-      'Contact Us',
+      'Stuff WatsApp',
       style: titleTextStyle,
     ),
     Text(
@@ -83,9 +72,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       style: titleTextStyle,
     ),
     Text(
-      'Privacy Settings',
+      'Privacy Policy',
       style: titleTextStyle,
-    )
+    ),
   ];
 
   @override
@@ -149,10 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 5:
 
         break;
-      case 6:
-
-        break;
-      case 7:
+      default:
 
         break;
     }

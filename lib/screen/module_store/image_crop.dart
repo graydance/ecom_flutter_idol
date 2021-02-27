@@ -112,7 +112,7 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
                    Do NOT remove this line.
                    There are a lot of issues on github repo by people who remove this line and their image is not shown correctly.
                 */
-                foreground: IgnorePointer(
+                /*foreground: IgnorePointer(
                   child: Container(
                     alignment: Alignment.bottomRight,
                     child: Text(
@@ -120,7 +120,7 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
-                ),
+                ),*/
                 helper: shape == BoxShape.rectangle
                     ? Container(
                   decoration: BoxDecoration(

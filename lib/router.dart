@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/arguments/supplier_detail.dart';
+import 'package:idol/screen/module_main/validate_email.dart';
 import 'package:idol/store/actions/arguments.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/screen/screens.dart';
@@ -9,7 +10,10 @@ import 'package:idol/utils/global.dart';
 
 class RouterPath {
   static const String splash = '/splash';
-  static const String login = '/login';
+  static const String guide = '/guide';
+  static const String validateEmail = '/validate_email';
+  static const String signUp = '/sign_up';
+  static const String signIn = '/sign_in';
   static const String home = '/home';
   static const String imageCrop = '/image_crop';
   static const String dashboard$RewardsDetail = '/dashboard/rewards_detail';
@@ -17,6 +21,7 @@ class RouterPath {
   static const String dashboard$Withdraw = '/dashboard/withdraw';
   static const String dashboard$VerifyPassword = '/dashboard/verify_password';
   static const String dashboard$WithdrawResult = '/dashboard/withdraw_result';
+  static const String dashboard$SalesHistory = '/dashboard/sales_history';
   static const String supply$SupplierDetail = '/supply/supplier_detail';
   static const String goodsDetail = '/goods_detail';
   static const String supply$Search = '/supply/search';
@@ -33,7 +38,10 @@ class IdolRoute {
   static Map<String, WidgetBuilder> routes() {
     return {
       RouterPath.splash: (context) => SplashScreen(),
-      RouterPath.login: (context) => LoginScreen(),
+      RouterPath.guide: (context) => GuideScreen(),
+      RouterPath.validateEmail: (context) => ValidateEmailScreen(),
+      RouterPath.signUp: (context) => SignUpScreen(),
+      RouterPath.signIn: (context) => SignInScreen(),
       RouterPath.home: (context) => HomeScreen(),
       RouterPath.imageCrop: (context) => ImageCropScreen(),
       RouterPath.dashboard$RewardsDetail: (context) => RewardsDetailScreen(),
@@ -41,6 +49,7 @@ class IdolRoute {
       RouterPath.dashboard$Withdraw: (context) => WithdrawScreen(),
       RouterPath.dashboard$VerifyPassword: (context) => VerifyPasswordScreen(),
       RouterPath.dashboard$WithdrawResult: (context) => WithdrawResultScreen(),
+      RouterPath.dashboard$SalesHistory: (context) => SalesHistoryScreen(),
       RouterPath.settings: (context) => SettingsScreen(),
       RouterPath.store$EditStore: (context) => EditStoreScreen(),
       RouterPath.supply$SupplierDetail: (context) => SupplierDetailScreen(),
@@ -61,7 +70,7 @@ class IdolRoute {
   }
 
   static Future<Object> start(String routePath) {
-    if (routePath == RouterPath.login ||
+    if (routePath == RouterPath.signIn ||
         routePath == RouterPath.home) {
       return Navigator.of(Global.navigatorKey.currentContext)
           .pushReplacementNamed(routePath);
@@ -70,14 +79,30 @@ class IdolRoute {
           .pushNamed(routePath);
     }
   }
-
-  static Future<Object> startSignUpOrSignIn(BuildContext context) {
+  static Future<Object> startGuide(BuildContext context) {
     return Navigator.of(context)
-        .pushReplacementNamed(RouterPath.login);
+        .pushReplacementNamed(RouterPath.guide);
+  }
+
+  static Future<Object> startValidateEmail(BuildContext context) {
+    return Navigator.of(context)
+        .pushReplacementNamed(RouterPath.validateEmail);
+  }
+
+  static Future<Object> startSignUp(BuildContext context, SignUpSignInArguments arguments) {
+    StoreProvider.of<AppState>(context).dispatch(UpdateArgumentsAction<SignUpSignInArguments>(arguments));
+    return Navigator.of(context)
+        .pushReplacementNamed(RouterPath.signUp);
+  }
+
+  static Future<Object> startSignIn(BuildContext context, SignUpSignInArguments arguments) {
+    StoreProvider.of<AppState>(context).dispatch(UpdateArgumentsAction<SignUpSignInArguments>(arguments));
+    return Navigator.of(context)
+        .pushReplacementNamed(RouterPath.signIn);
   }
 
   static Future<Object> startHome(BuildContext context) {
-    return Navigator.of(context).pushReplacementNamed(RouterPath.home);
+    return Navigator.of(context).pushNamedAndRemoveUntil(RouterPath.home, (Route<dynamic> route) => false);
   }
 
   static Future<Object> startSettings(BuildContext context) {
@@ -106,6 +131,12 @@ class IdolRoute {
   static Future<Object> startDashboardWithdrawResult(BuildContext context, WithdrawResultArguments arguments) {
     StoreProvider.of<AppState>(context).dispatch(
         UpdateArgumentsAction<WithdrawResultArguments>(arguments));
+    return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
+  }
+
+  static Future<Object> startDashboardSalesHistory(BuildContext context, SalesHistoryArguments arguments) {
+    StoreProvider.of<AppState>(context).dispatch(
+        UpdateArgumentsAction<SalesHistoryArguments>(arguments));
     return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
   }
 

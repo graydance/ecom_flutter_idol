@@ -273,10 +273,10 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
         barrierDismissible: false,
         builder: (BuildContext context) => WillPopScope(
               onWillPop: () async => false, // 屏蔽返回键
-              child: WithdrawMessageDialog(
+              child: IdolMessageDialog(
                 'Please confirm your email address\n for password security and to\n receive withdrawal updates.',
                 onClose: () => {IdolRoute.pop(context)},
-                onNext: () {
+                onTap: () {
                   IdolRoute.pop(context);
                   IdolRoute.startDashboardWithdraw(context).then((value) {
                     IdolRoute.pop(context);
@@ -294,6 +294,6 @@ class _ViewModel {
   _ViewModel(this.withdrawInfoState, this.user);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.withdrawInfoState, (store.state.loginState as LoginSuccess).loginUser);
+    return _ViewModel(store.state.withdrawInfoState, (store.state.signInState as SignInSuccess).signInUser);
   }
 }

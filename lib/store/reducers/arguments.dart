@@ -72,3 +72,23 @@ GoodsDetailArguments _onUpdateGoodsDetailArguments(Arguments arguments,
     UpdateArgumentsAction<GoodsDetailArguments> action){
   return action.arguments;
 }
+
+/// 登录注册所需参数
+final signUpSignInArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<SignUpSignInArguments>>(
+      _onUpdateSignUpSignInArguments),
+]);
+SignUpSignInArguments _onUpdateSignUpSignInArguments(Arguments arguments,
+    UpdateArgumentsAction<SignUpSignInArguments> action){
+  return action.arguments;
+}
+
+/// 查询单日销售历史记录
+final salesHistoryArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<SalesHistoryArguments>>(
+      _onUpdateSalesHistoryArguments),
+]);
+SalesHistoryArguments _onUpdateSalesHistoryArguments(Arguments arguments,
+    UpdateArgumentsAction<SalesHistoryArguments> action){
+  return action.arguments;
+}

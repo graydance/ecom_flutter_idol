@@ -22,8 +22,14 @@ class Global {
     _configLoading();
   }
 
-  static User getUser(BuildContext context){
-     return (StoreProvider.of<AppState>(context, listen: false).state?.loginState as LoginSuccess).loginUser;
+  static User getUser(BuildContext context) {
+    SignUpState signUpState =
+        StoreProvider.of<AppState>(context, listen: false).state?.signUpState;
+    SignInState signInState =
+        StoreProvider.of<AppState>(context, listen: false).state?.signInState;
+    return signUpState is SignUpSuccess
+        ? signUpState.signUpUser
+        : (signInState as SignInSuccess).signInUser;
   }
 
   static saveUserAccount(String email, String password) {

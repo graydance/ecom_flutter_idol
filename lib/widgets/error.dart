@@ -4,11 +4,12 @@ import 'package:idol/res/colors.dart';
 
 /// 统一错误提示
 class IdolErrorWidget extends StatefulWidget {
+  final String buttonText;
   final String tipsText;
-  final OnRetryClickCallback onRetry;
+  final Function onRetry;
 
   IdolErrorWidget(this.onRetry,
-      {this.tipsText = 'Oh, sorry about the network connection\n error'});
+      {this.buttonText = 'Retry', this.tipsText = 'Oh, sorry about the network connection\n error'});
 
   @override
   State<StatefulWidget> createState() => _IdolErrorWidgetState();
@@ -52,7 +53,7 @@ class _IdolErrorWidgetState extends State<IdolErrorWidget> {
               widget.onRetry();
             },
             child: Text(
-              'Retry',
+              widget.buttonText,
               style: TextStyle(color: Colours.color_48B6EF, fontSize: 14),
             ),
           )
@@ -61,5 +62,3 @@ class _IdolErrorWidgetState extends State<IdolErrorWidget> {
     );
   }
 }
-
-typedef OnRetryClickCallback = Function();

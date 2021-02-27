@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:idol/models/tag.dart';
 
 /// totalPage : 1
 /// currentPage : 1
@@ -10,9 +11,9 @@ class StoreGoodsList {
   final List<StoreGoods> list;
 
   const StoreGoodsList({
-    this.totalPage,
-    this.currentPage,
-    this.list,
+    this.totalPage = 1,
+    this.currentPage = 1,
+    this.list = const[],
   });
 
   StoreGoodsList copyWith({
@@ -96,6 +97,13 @@ class StoreGoods {
   final int isOffTheShelf;
   final String interestName;
   final String supplierId;
+  final String goodsName;
+  final int originalPrice;
+  final String originalPriceStr;
+  final int currentPrice;
+  final String currentPriceStr;
+  final String discount;
+  final List<Tag> tag;
 
   const StoreGoods(
       {this.id = '',
@@ -106,19 +114,32 @@ class StoreGoods {
       this.isSellOut = 0,
       this.isOffTheShelf = 0,
       this.interestName = '',
-      this.supplierId = ''});
+      this.supplierId = '',
+      this.goodsName = '',
+      this.originalPrice = 0,
+      this.originalPriceStr = '',
+      this.currentPrice = 0,
+      this.currentPriceStr = '',
+      this.discount = '',
+      this.tag = const []});
 
-  StoreGoods copyWith({
-    String id,
-    String idolGoodsId,
-    String picture,
-    int width,
-    int height,
-    int isSellOut,
-    int isOffTheShelf,
-    String interestName,
-    String supplierId,
-  }) {
+  StoreGoods copyWith(
+      {String id,
+      String idolGoodsId,
+      String picture,
+      int width,
+      int height,
+      int isSellOut,
+      int isOffTheShelf,
+      String interestName,
+      String supplierId,
+      String goodsName,
+      int originalPrice,
+      String originalPriceStr,
+      int currentPrice,
+      String currentPriceStr,
+      String discount,
+      List<Tag> tag}) {
     return StoreGoods(
       id: id ?? this.id,
       idolGoodsId: idolGoodsId ?? this.idolGoodsId,
@@ -129,18 +150,25 @@ class StoreGoods {
       isOffTheShelf: isOffTheShelf ?? this.isOffTheShelf,
       interestName: interestName ?? this.interestName,
       supplierId: supplierId ?? this.supplierId,
+      goodsName: goodsName ?? this.goodsName,
+      originalPrice: originalPrice ?? this.originalPrice,
+      originalPriceStr: originalPriceStr ?? this.originalPriceStr,
+      currentPrice: currentPrice ?? this.currentPrice,
+      currentPriceStr: currentPriceStr ?? this.currentPriceStr,
+      discount: discount ?? this.discount,
+      tag: tag ?? this.tag,
     );
   }
 
   @override
   String toString() {
-    return 'StoreGoods{id: $id, idolGoodsId: $idolGoodsId, picture: $picture, width: $width, height: $height, isSellOut: $isSellOut, isOffTheShelf: $isOffTheShelf, interestName: $interestName, supplierId:$supplierId}';
+    return 'StoreGoods{id: $id, idolGoodsId: $idolGoodsId, picture: $picture, width: $width, height: $height, isSellOut: $isSellOut, isOffTheShelf: $isOffTheShelf, interestName: $interestName, supplierId: $supplierId, goodsName: $goodsName, originalPrice: $originalPrice, originalPriceStr: $originalPriceStr, currentPrice: $currentPrice, currentPriceStr: $currentPriceStr, tag: $tag}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is StoreGoods &&
+      other is StoreGoods &&
           runtimeType == other.runtimeType &&
           id == other.id &&
           idolGoodsId == other.idolGoodsId &&
@@ -148,9 +176,16 @@ class StoreGoods {
           width == other.width &&
           height == other.height &&
           isSellOut == other.isSellOut &&
+          isOffTheShelf == other.isOffTheShelf &&
           interestName == other.interestName &&
           supplierId == other.supplierId &&
-          isOffTheShelf == other.isOffTheShelf);
+          goodsName == other.goodsName &&
+          originalPrice == other.originalPrice &&
+          originalPriceStr == other.originalPriceStr &&
+          currentPrice == other.currentPrice &&
+          currentPriceStr == other.currentPriceStr &&
+          discount == other.discount &&
+          tag == other.tag;
 
   @override
   int get hashCode =>
@@ -160,9 +195,16 @@ class StoreGoods {
       width.hashCode ^
       height.hashCode ^
       isSellOut.hashCode ^
+      isOffTheShelf.hashCode ^
       interestName.hashCode ^
       supplierId.hashCode ^
-      isOffTheShelf.hashCode;
+      goodsName.hashCode ^
+      originalPrice.hashCode ^
+      originalPriceStr.hashCode ^
+      currentPrice.hashCode ^
+      currentPriceStr.hashCode ^
+      discount.hashCode ^
+      tag.hashCode;
 
   factory StoreGoods.fromMap(
     Map<String, dynamic> map, {
@@ -180,6 +222,14 @@ class StoreGoods {
       interestName: map[keyMapper('interestName')] as String,
       isOffTheShelf: map[keyMapper('isOffTheShelf')] as int,
       supplierId: map[keyMapper('supplierId')] as String,
+      goodsName: map[keyMapper('goodsName')] as String,
+      originalPrice: map[keyMapper('originalPrice')] as int,
+      originalPriceStr: map[keyMapper('originalPriceStr')] as String,
+      currentPrice: map[keyMapper('currentPrice')] as int,
+      discount: map[keyMapper('discount')] as String,
+      tag: (map[keyMapper('tag')] as List)
+          .map((e) => Tag.fromMap((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 

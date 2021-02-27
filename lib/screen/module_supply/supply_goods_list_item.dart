@@ -31,7 +31,7 @@ class FollowingGoodsListItem extends StatefulWidget {
 typedef OnProductAddedStoreListener = Function(GoodsDetail goodsDetail);
 
 class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
-  String _buttonText = 'Add to my store';
+  String _buttonText = 'Add to my store & Share';
   final GlobalKey<IdolButtonState> _idolButtonStatusKey = GlobalKey();
   IdolButtonStatus _idolButtonStatus = IdolButtonStatus.enable;
 
@@ -72,31 +72,33 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                             color: Colours.color_393939, fontSize: 16),
                       ),
                     ),
-                    ...(widget.goodsDetail.followStatus == 0)
-                        ? [
-                            Text(
-                              ' · ',
-                              style: TextStyle(
-                                  color: Colours.color_48B6EF, fontSize: 16),
-                            ),
-                            FollowButton(widget.goodsDetail.supplierId,
-                                defaultFollowStatus: FollowStatus.unFollow,
-                                buttonStyle: FollowButtonStyle.text,
-                                fontSize: 16.0),
-                          ]
-                        : [],
+                    // Follow
+                    // ...(widget.goodsDetail.followStatus == 0)
+                    //     ? [
+                    //         Text(
+                    //           ' · ',
+                    //           style: TextStyle(
+                    //               color: Colours.color_48B6EF, fontSize: 16),
+                    //         ),
+                    //         FollowButton(widget.goodsDetail.supplierId,
+                    //             defaultFollowStatus: FollowStatus.unFollow,
+                    //             buttonStyle: FollowButtonStyle.text,
+                    //             fontSize: 16.0),
+                    //       ]
+                    //     : [],
                   ],
                 ),
-                IconButton(
-                    icon: Icon(
-                      Icons.more_vert,
-                      size: 18,
-                      color: Colours.color_575859,
-                    ),
-                    onPressed: () => {
-                          // TODO
-                          EasyLoading.showToast("More menu"),
-                        }),
+                // Right more menu
+                // IconButton(
+                //     icon: Icon(
+                //       Icons.more_vert,
+                //       size: 18,
+                //       color: Colours.color_575859,
+                //     ),
+                //     onPressed: () => {
+                //           // TODO
+                //           EasyLoading.showToast("More menu"),
+                //         }),
               ],
             ),
             SizedBox(
@@ -131,79 +133,79 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         ],
                       ),
                     ),
-                    Positioned(
-                      bottom: 15,
-                      right: 15,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              EasyLoading.showToast(
-                                  '${widget.goodsDetail.collectNum} Liked');
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.favorite,
-                                    size: 20,
-                                    color: Colours.white,
-                                  ),
-                                  Text(
-                                    _formatNum(widget.goodsDetail.collectNum),
-                                    style: TextStyle(
-                                        color: Colours.white, fontSize: 8),
-                                  )
-                                ],
-                              ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colours.color_black20,
-                              ),
-                              //padding: EdgeInsets.all(5),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              EasyLoading.showToast(
-                                  '${widget.goodsDetail.soldNum} Sold');
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.whatshot,
-                                    size: 20,
-                                    color: Colours.white,
-                                  ),
-                                  Text(
-                                    _formatNum(widget.goodsDetail.soldNum),
-                                    style: TextStyle(
-                                        color: Colours.white, fontSize: 8),
-                                  )
-                                ],
-                              ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colours.color_black20,
-                              ),
-                              // padding: EdgeInsets.all(5),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Positioned(
+                    //   bottom: 15,
+                    //   right: 15,
+                    //   child: Column(
+                    //     children: [
+                    //       GestureDetector(
+                    //         onTap: () {
+                    //           EasyLoading.showToast(
+                    //               '${widget.goodsDetail.collectNum} Liked');
+                    //         },
+                    //         child: Container(
+                    //           width: 40,
+                    //           height: 40,
+                    //           child: Column(
+                    //             mainAxisSize: MainAxisSize.min,
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             children: [
+                    //               Icon(
+                    //                 Icons.favorite,
+                    //                 size: 20,
+                    //                 color: Colours.white,
+                    //               ),
+                    //               Text(
+                    //                 _formatNum(widget.goodsDetail.collectNum),
+                    //                 style: TextStyle(
+                    //                     color: Colours.white, fontSize: 8),
+                    //               )
+                    //             ],
+                    //           ),
+                    //           decoration: BoxDecoration(
+                    //             shape: BoxShape.circle,
+                    //             color: Colours.color_black20,
+                    //           ),
+                    //           //padding: EdgeInsets.all(5),
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         height: 16,
+                    //       ),
+                    //       GestureDetector(
+                    //         onTap: () {
+                    //           EasyLoading.showToast(
+                    //               '${widget.goodsDetail.soldNum} Sold');
+                    //         },
+                    //         child: Container(
+                    //           width: 40,
+                    //           height: 40,
+                    //           child: Column(
+                    //             mainAxisSize: MainAxisSize.min,
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             children: [
+                    //               Icon(
+                    //                 Icons.whatshot,
+                    //                 size: 20,
+                    //                 color: Colours.white,
+                    //               ),
+                    //               Text(
+                    //                 _formatNum(widget.goodsDetail.soldNum),
+                    //                 style: TextStyle(
+                    //                     color: Colours.white, fontSize: 8),
+                    //               )
+                    //             ],
+                    //           ),
+                    //           decoration: BoxDecoration(
+                    //             shape: BoxShape.circle,
+                    //             color: Colours.color_black20,
+                    //           ),
+                    //           // padding: EdgeInsets.all(5),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -212,23 +214,35 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
               height: 10,
             ),
             // Tag
-            Wrap(
-              direction: Axis.horizontal,
-              alignment: WrapAlignment.start,
-              spacing: 5,
-              children: widget.goodsDetail.tag.map((tag) {
-                return Container(
-                  padding: EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colours.color_48B6EF, width: 1),
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
+            Row(
+              children: [
+                Expanded(
+                  child: Wrap(
+                    direction: Axis.horizontal,
+                    alignment: WrapAlignment.start,
+                    spacing: 5,
+                    children: widget.goodsDetail.tag.map((tag) {
+                      return Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(color: Colours.color_ED8514, width: 1),
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                        ),
+                        child: Text(
+                          tag.interestName,
+                          style: TextStyle(
+                              color: Colours.color_ED8514, fontSize: 12),
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  child: Text(
-                    tag.interestName,
-                    style: TextStyle(color: Colours.color_48B6EF, fontSize: 12),
-                  ),
-                );
-              }).toList(),
+                ),
+                Text(
+                  widget.goodsDetail.updateTime ?? '',
+                  style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12),
+                )
+              ],
             ),
             SizedBox(
               height: 5,
@@ -312,8 +326,10 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
 
   Future _addProductToMyStore(GoodsDetail goodsDetail) async {
     try {
+      EasyLoading.show(status: 'Loading...');
       await DioClient.getInstance()
           .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
+      EasyLoading.dismiss();
       if (widget.onProductAddedStoreListener != null) {
         widget.onProductAddedStoreListener(goodsDetail);
       }
@@ -321,7 +337,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
       _idolButtonStatus = IdolButtonStatus.normal;
       _idolButtonStatusKey.currentState.updateText(_buttonText);
       _idolButtonStatusKey.currentState.updateButtonStatus(_idolButtonStatus);
-    } on DioError catch (e) {
+    } catch (e) {
+      EasyLoading.dismiss();
       debugPrint(e.toString());
       EasyLoading.showError(e.toString());
     }

@@ -77,7 +77,9 @@ class IdolButtonState extends State<IdolButton> {
   @override
   Widget build(BuildContext context) {
     debugPrint('IdolButton build...');
-    return (widget.isPartialRefresh ? (_status == IdolButtonStatus.enable) : (widget.status == IdolButtonStatus.enable))
+    return (widget.isPartialRefresh
+            ? (_status == IdolButtonStatus.enable)
+            : (widget.status == IdolButtonStatus.enable))
         ? Container(
             width: widget.width,
             height: widget.height,
@@ -90,7 +92,8 @@ class IdolButtonState extends State<IdolButton> {
               borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             child: RaisedButton(
-              onPressed: () => widget.listener(widget.isPartialRefresh ? _status : widget.status),
+              onPressed: () => widget
+                  .listener(widget.isPartialRefresh ? _status : widget.status),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
@@ -107,13 +110,16 @@ class IdolButtonState extends State<IdolButton> {
             width: widget.width,
             height: widget.height,
             decoration: BoxDecoration(
-              color: (widget.isPartialRefresh ? _status == IdolButtonStatus.normal : widget.status == IdolButtonStatus.normal)
+              color: (widget.isPartialRefresh
+                      ? _status == IdolButtonStatus.normal
+                      : widget.status == IdolButtonStatus.normal)
                   ? widget.normalColor
                   : widget.disableColor,
               borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
             child: RaisedButton(
-              onPressed: () => widget.listener(widget.isPartialRefresh ? _status : widget.status),
+              onPressed: () => widget
+                  .listener(widget.isPartialRefresh ? _status : widget.status),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
@@ -129,9 +135,10 @@ class IdolButtonState extends State<IdolButton> {
   }
 
   void updateText(String buttonText) {
-    assert((){
-      if(!widget.isPartialRefresh){
-        throw FlutterError('You must set the IdolButton->isPartialRefresh property, then use updateText/updateButtonStatus method.');
+    assert(() {
+      if (!widget.isPartialRefresh) {
+        throw FlutterError(
+            'You must set the IdolButton->isPartialRefresh property, then use updateText/updateButtonStatus method.');
       }
       return true;
     }());
@@ -142,9 +149,10 @@ class IdolButtonState extends State<IdolButton> {
   }
 
   void updateButtonStatus(IdolButtonStatus status) {
-    assert((){
-      if(!widget.isPartialRefresh){
-        throw FlutterError('You must set the IdolButton->isPartialRefresh property, then use updateText/updateButtonStatus method.');
+    assert(() {
+      if (!widget.isPartialRefresh) {
+        throw FlutterError(
+            'You must set the IdolButton->isPartialRefresh property, then use updateText/updateButtonStatus method.');
       }
       return true;
     }());
@@ -338,4 +346,65 @@ enum FollowStatus {
 enum FollowButtonStyle {
   text,
   elevated,
+}
+
+/// EditPage/Save Button
+class EditButton extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() => EditButtonState();
+
+  EditButton({key}) : super(key: key);
+}
+
+class EditButtonState extends State<EditButton> {
+  String _buttonText = 'Edit Page';
+  EditButtonStatus _status = EditButtonStatus.normal;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 16, right: 16,),
+        height: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(
+                strokeWidth: 3.0,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    _status == EditButtonStatus.loading
+                        ? Colours.black
+                        : Colours.white),
+              ),
+            ),
+            Text(
+              _buttonText,
+              style: TextStyle(color: Colours.color_29292B, fontSize: 14),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void updateButtonStatus(EditButtonStatus status) {
+    setState(() {
+      _status = status;
+      _buttonText = _status == EditButtonStatus.normal ? 'Edit Page' : 'Done';
+    });
+  }
+}
+
+enum EditButtonStatus {
+  normal,
+  loading,
 }

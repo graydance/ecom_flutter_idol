@@ -3,8 +3,10 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/net/request/login.dart';
+import 'package:idol/models/arguments/arguments.dart';
+import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
+import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/store/actions/main.dart';
@@ -12,10 +14,14 @@ import 'package:idol/utils/keystore.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => SplashScreenState();
+  State<StatefulWidget> createState() => _SplashScreenState();
 }
 
-class SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
+
+  bool _isFirstRun(){
+    return SpUtil.getBool(KeyStore.IS_FIRST_RUN, defValue: true);
+  }
 
   bool _isUserLoggedIn() {
     return SpUtil
@@ -23,13 +29,13 @@ class SplashScreenState extends State<SplashScreen> {
         .isNotEmpty;
   }
 
-  void _onLoginStateChange(LoginState state) {
-    if (state is LoginSuccess) {
+  void _onLoginStateChange(SignInState state) {
+    if (state is SignInSuccess) {
       debugPrint('state is LoginSuccess, startHome...');
       IdolRoute.startHome(context);
-    } else if (state is LoginFailure) {
+    } else if (state is SignInFailure) {
       debugPrint('state is LoginFailure, ${state.message})...');
-      IdolRoute.startSignUpOrSignIn(context);
+      IdolRoute.startSignIn(context, SignUpSignInArguments(SpUtil.getString(KeyStore.EMAIL)));
     }
   }
 
@@ -47,14 +53,14 @@ class SplashScreenState extends State<SplashScreen> {
               String email = SpUtil.getString(KeyStore.EMAIL);
               String password = SpUtil.getString(KeyStore.PASSWORD);
               StoreProvider.of<AppState>(context)
-                  .dispatch(LoginAction(LoginRequest(email, password)));
+                  .dispatch(SignInAction(SignUpSignInRequest(email, password)));
             });
           } else {
             debugPrint(
                 'User is not logged in. will jump to Sign Up/Sign In.');
             // sing up/sign in.
             Future.delayed(Duration(seconds: 2),
-                    (){IdolRoute.startSignUpOrSignIn(context);});
+                    (){_isFirstRun() ? IdolRoute.startGuide(context) : IdolRoute.startValidateEmail(context);});
           }
         },
         onWillChange: (oldVM, newVM) {
@@ -65,8 +71,14 @@ class SplashScreenState extends State<SplashScreen> {
         builder: (context, vm) {
           return Container(
             decoration: BoxDecoration(
+              color: Colours.transparent,
               image: DecorationImage(
                   image: R.image.launch_background_webp(), fit: BoxFit.cover),
+            ),
+            child: Center(
+              child: ClipOval(
+                child: Image(image: R.image.ic_logo(), width: 150, height: 150,),
+              ),
             ),
           );
         }
@@ -76,12 +88,12 @@ class SplashScreenState extends State<SplashScreen> {
 }
 
 class _ViewModel {
-  final LoginState loginState;
+  final SignInState loginState;
 
   _ViewModel(this.loginState);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.loginState);
+    return _ViewModel(store.state.signInState);
   }
 
   @override
