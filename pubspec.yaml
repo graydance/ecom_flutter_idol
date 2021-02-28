@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: none
 version: 1.0.0+1
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: ">=2.7.0 <3.0.0"
 dependencies:
   flutter:
     sdk: flutter
@@ -30,6 +30,8 @@ dependencies:
   webview_flutter: ^1.0.7
   share: ^0.6.5+4
   ecomshare:
+    git:
+      url: git@github.com:graydance/ecomshare.git
     path: plugins/ecomshare
 dependency_overrides:
   flutter_svg: 0.20.0-nullsafety.3
@@ -43,59 +45,59 @@ flr:
   core_version: 3.1.0
   dartfmt_line_length: 80
   assets:
-  - assets/images
-  - assets/texts
+    - assets/images
+    - assets/texts
   fonts:
-  - assets/fonts
+    - assets/fonts
 flutter:
   uses-material-design: true
   assets:
-  - assets/images/bg_common_error.png
-  - assets/images/dashboard/bg_withdraw.png
-  - assets/images/dashboard/bg_withdraw.webp
-  - assets/images/dashboard/bg_withdraw_failure.webp
-  - assets/images/dashboard/bg_withdraw_success.webp
-  - assets/images/dashboard/ic_complete_rewards.png
-  - assets/images/ic_share_copy_link.png
-  - assets/images/ic_share_download.png
-  - assets/images/ic_share_facebook.png
-  - assets/images/ic_share_instagram.png
-  - assets/images/ic_share_more.png
-  - assets/images/ic_share_twitter.png
-  - assets/images/main/bg_login_signup.png
-  - assets/images/main/ic_logo.png
-  - assets/images/main/ic_password_visibility.png
-  - assets/images/main/ic_password_visibility_off.png
-  - assets/images/main/ic_tab_biolinks_normal.png
-  - assets/images/main/ic_tab_biolinks_selected.png
-  - assets/images/main/ic_tab_dashboard_normal.png
-  - assets/images/main/ic_tab_dashboard_selected.png
-  - assets/images/main/ic_tab_inbox_normal.png
-  - assets/images/main/ic_tab_inbox_selected.png
-  - assets/images/main/ic_tab_store_normal.png
-  - assets/images/main/ic_tab_store_selected.png
-  - assets/images/main/ic_tab_supply_normal.png
-  - assets/images/main/ic_tab_supply_selected.png
-  - assets/images/main/ic_whatsapp.png
-  - assets/images/main/launch_background.webp
-  - assets/images/shoplink/ic_change_avatar.png
-  - assets/images/shoplink/ic_edit.png
-  - assets/images/store/bg_header.png
-  - assets/images/store/default_portrait.png
-  - assets/images/store/ic_settings_contact.png
-  - assets/images/store/ic_settings_email.png
-  - assets/images/store/ic_settings_faq.png
-  - assets/images/store/ic_settings_privacy.png
-  - assets/images/store/ic_settings_rate_us.png
-  - assets/images/store/ic_settings_set_password.png
-  - assets/images/store/ic_tab_category_selected.png
-  - assets/images/store/ic_tab_category_unselected.png
-  - assets/images/store/ic_tab_product_selected.png
-  - assets/images/store/ic_tab_product_unselected.png
-  - assets/images/supply/ic_goods_share.png
-  - assets/images/supply/ic_tab_supplier_hot_product_selected.png
-  - assets/images/supply/ic_tab_supplier_hot_product_unselected.png
-  - assets/images/supply/ic_tab_supplier_new_product_selected.png
-  - assets/images/supply/ic_tab_supplier_new_product_unselected.png
-  - assets/images/supply/pause.png
-  - assets/images/supply/play.png
+    - assets/images/bg_common_error.png
+    - assets/images/dashboard/bg_withdraw.png
+    - assets/images/dashboard/bg_withdraw.webp
+    - assets/images/dashboard/bg_withdraw_failure.webp
+    - assets/images/dashboard/bg_withdraw_success.webp
+    - assets/images/dashboard/ic_complete_rewards.png
+    - assets/images/ic_share_copy_link.png
+    - assets/images/ic_share_download.png
+    - assets/images/ic_share_facebook.png
+    - assets/images/ic_share_instagram.png
+    - assets/images/ic_share_more.png
+    - assets/images/ic_share_twitter.png
+    - assets/images/main/bg_login_signup.png
+    - assets/images/main/ic_logo.png
+    - assets/images/main/ic_password_visibility.png
+    - assets/images/main/ic_password_visibility_off.png
+    - assets/images/main/ic_tab_biolinks_normal.png
+    - assets/images/main/ic_tab_biolinks_selected.png
+    - assets/images/main/ic_tab_dashboard_normal.png
+    - assets/images/main/ic_tab_dashboard_selected.png
+    - assets/images/main/ic_tab_inbox_normal.png
+    - assets/images/main/ic_tab_inbox_selected.png
+    - assets/images/main/ic_tab_store_normal.png
+    - assets/images/main/ic_tab_store_selected.png
+    - assets/images/main/ic_tab_supply_normal.png
+    - assets/images/main/ic_tab_supply_selected.png
+    - assets/images/main/ic_whatsapp.png
+    - assets/images/main/launch_background.webp
+    - assets/images/shoplink/ic_change_avatar.png
+    - assets/images/shoplink/ic_edit.png
+    - assets/images/store/bg_header.png
+    - assets/images/store/default_portrait.png
+    - assets/images/store/ic_settings_contact.png
+    - assets/images/store/ic_settings_email.png
+    - assets/images/store/ic_settings_faq.png
+    - assets/images/store/ic_settings_privacy.png
+    - assets/images/store/ic_settings_rate_us.png
+    - assets/images/store/ic_settings_set_password.png
+    - assets/images/store/ic_tab_category_selected.png
+    - assets/images/store/ic_tab_category_unselected.png
+    - assets/images/store/ic_tab_product_selected.png
+    - assets/images/store/ic_tab_product_unselected.png
+    - assets/images/supply/ic_goods_share.png
+    - assets/images/supply/ic_tab_supplier_hot_product_selected.png
+    - assets/images/supply/ic_tab_supplier_hot_product_unselected.png
+    - assets/images/supply/ic_tab_supplier_new_product_selected.png
+    - assets/images/supply/ic_tab_supplier_new_product_unselected.png
+    - assets/images/supply/pause.png
+    - assets/images/supply/play.png
