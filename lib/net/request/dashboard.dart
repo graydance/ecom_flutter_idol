@@ -43,3 +43,34 @@ class WithdrawRequest extends BaseRequest {
     } as Map<String, dynamic>;
   }
 }
+
+class BestSalesRequest extends BaseRequest{
+  final int type;
+
+  BestSalesRequest(this.type);
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+    return {
+      keyMapper('type'): this.type,
+    };
+  }
+}
+class SalesHistoryRequest extends BaseRequest{
+  final String date;
+
+  SalesHistoryRequest(this.date);
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
+    return {
+      keyMapper('date'): this.date,
+    };
+  }
+}

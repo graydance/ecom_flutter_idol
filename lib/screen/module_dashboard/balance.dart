@@ -5,12 +5,13 @@ import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:idol/widgets/button.dart';
+import 'package:idol/widgets/dialog.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'package:idol/widgets/widgets.dart';
 import 'package:idol/r.g.dart';
 
 class BalanceScreen extends StatefulWidget {
@@ -253,7 +254,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
             .then((value){
               if(value != null){
                 // 通知上层跳转到选品页
-                IdolRoute.popAndResult(context);
+                IdolRoute.popAndExit(context);
               }
         });
       }
@@ -272,10 +273,10 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
         barrierDismissible: false,
         builder: (BuildContext context) => WillPopScope(
               onWillPop: () async => false, // 屏蔽返回键
-              child: WithdrawMessageDialog(
+              child: IdolMessageDialog(
                 'Please confirm your email address\n for password security and to\n receive withdrawal updates.',
                 onClose: () => {IdolRoute.pop(context)},
-                onNext: () {
+                onTap: () {
                   IdolRoute.pop(context);
                   IdolRoute.startDashboardWithdraw(context).then((value) {
                     IdolRoute.pop(context);
@@ -293,6 +294,6 @@ class _ViewModel {
   _ViewModel(this.withdrawInfoState, this.user);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.withdrawInfoState, (store.state.loginState as LoginSuccess).loginUser);
+    return _ViewModel(store.state.withdrawInfoState, (store.state.signInState as SignInSuccess).signInUser);
   }
 }

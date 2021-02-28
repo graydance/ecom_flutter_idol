@@ -11,9 +11,10 @@ import 'package:idol/router.dart';
 import 'package:idol/screen/module_dashboard/pastsales_tab_view.dart';
 import 'package:idol/screen/module_dashboard/rewards_tab_view.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/store/actions/arguments.dart';
 import 'package:idol/store/actions/dashboard.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/widgets/error.dart';
+import 'package:idol/widgets/loading.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
 
@@ -49,8 +50,7 @@ class _DashboardPageState extends State<DashboardPage>
       converter: _ViewModel.fromStore,
       distinct: true,
       onInit: (Store<AppState> store) {
-        StoreProvider.of<AppState>(context)
-            .dispatch(DashboardAction(BaseRequestImpl()));
+        store.dispatch(DashboardAction(BaseRequestImpl()));
       },
       onWillChange: (oldVM, newVM) {
         _onStateChanged(
@@ -257,8 +257,8 @@ class _DashboardPageState extends State<DashboardPage>
                           dashboard.rewardList,
                           (rewards) {
                             // 任务详情页
-                            _viewModel._updateRewardsDetailArguments(rewards);
-                            IdolRoute.startDashboardRewardsDetail(context);
+                            IdolRoute.startDashboardRewardsDetail(context,
+                                RewardsDetailArguments(reward: rewards));
                           },
                           (rewards) {
                             // 任务领取
@@ -278,21 +278,13 @@ class _DashboardPageState extends State<DashboardPage>
         ],
       );
     } else if (_viewModel._dashboardState is DashboardFailure) {
-      // TODO 展示请求错误页面（包含重试按钮），待UI设计
       EasyLoading.showToast(
           (_viewModel._dashboardState as DashboardFailure).message);
-      return Center(
-        child: Text(
-          (_viewModel._dashboardState as DashboardFailure).message,
-          style: TextStyle(color: Colours.color_ED3544, fontSize: 20),
-        ),
-      );
+      return IdolErrorWidget(() {
+        _viewModel._load();
+      });
     } else {
-      return Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colours.color_EA5228),
-        ),
-      );
+      return IdolLoadingWidget();
     }
   }
 
@@ -307,27 +299,38 @@ class _DashboardPageState extends State<DashboardPage>
 
 class _ViewModel {
   final DashboardState _dashboardState;
+  final Function _load;
   final CompleteRewardsState _completeRewardsState;
   final Function(String) _completeRewards;
-  final Function(Reward) _updateRewardsDetailArguments;
 
-  _ViewModel(this._dashboardState, this._completeRewardsState,
-      this._completeRewards, this._updateRewardsDetailArguments);
+  _ViewModel(
+      this._dashboardState, this._completeRewardsState, this._completeRewards, this._load);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    _completeRewards(String rewardId) {
+    void _completeRewards(String rewardId) {
       store.dispatch(CompleteRewardsAction(CompleteRewardsRequest(rewardId)));
     }
 
-    _updateRewardsDetailArguments(Reward reward) {
-      store.dispatch(UpdateArgumentsAction<RewardsDetailArguments>(
-          RewardsDetailArguments(reward: reward)));
+    void _load(){
+      store.dispatch(DashboardAction(BaseRequestImpl()));
     }
 
-    return _ViewModel(
-        store.state.dashboardState,
-        store.state.completeRewardsState,
-        _completeRewards,
-        _updateRewardsDetailArguments);
+    return _ViewModel(store.state.dashboardState,
+        store.state.completeRewardsState, _completeRewards, _load);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          _dashboardState == other._dashboardState &&
+          _completeRewardsState == other._completeRewardsState &&
+          _completeRewards == other._completeRewards;
+
+  @override
+  int get hashCode =>
+      _dashboardState.hashCode ^
+      _completeRewardsState.hashCode ^
+      _completeRewards.hashCode;
 }

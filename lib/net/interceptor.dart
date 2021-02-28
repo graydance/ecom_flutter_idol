@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
+import 'package:flutter/material.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
@@ -19,6 +20,8 @@ class TokenInterceptors extends InterceptorsWrapper {
       String cacheToken = SpUtil.getString('token');
       if (cacheToken.isNotEmpty) {
         options.headers['x-token'] = cacheToken;
+      }else{
+        debugPrint('cacheToken is null');
       }
     }
     if(options.path == ApiPath.upload){
@@ -35,14 +38,19 @@ class TokenInterceptors extends InterceptorsWrapper {
         "TokenInterceptors RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
     if (response.data['code'] != 0) {
       int code = response.data['code'];
-      if (code >= 400 && code < 500) {
-        if (code == 401) {
-          // Need login.
-          IdolRoute.start(RouterPath.login);
+      if(code != null){
+        if (code >= 400 && code < 500) {
+          if (code == 402) {
+            // Need login.
+            IdolRoute.start(RouterPath.signIn);
+          }
+        } else if (code >= 500) {
+          // Unified handling
+          response.data['msg'] = 'The network is busy, please try again later!';
         }
-      } else if (code >= 500) {
-        // Unified handling
-        response.data['msg'] = 'The network is busy, please try again later!';
+      }else{
+        debugPrint('Data structure error!');
+        throw 'Data structure error!';
       }
     }
     return super.onResponse(response);

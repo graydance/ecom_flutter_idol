@@ -39,3 +39,56 @@ RewardsDetailArguments _onUpdateRewardsDetailArguments(Arguments arguments,
     UpdateArgumentsAction<RewardsDetailArguments> action) {
   return action.arguments;
 }
+
+/// 任务详情所需参数
+final imageCropArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<ImageCropArguments>>(
+      _onUpdateImageCropArguments),
+]);
+
+ImageCropArguments _onUpdateImageCropArguments(Arguments arguments,
+    UpdateArgumentsAction<ImageCropArguments> action) {
+  return action.arguments;
+}
+
+/// 供应商详情页参数
+final supplierDetailArgumentsReducer  = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<SupplierDetailArguments>>(
+      _onUpdateSupplierDetailArguments),
+]);
+
+SupplierDetailArguments _onUpdateSupplierDetailArguments(Arguments arguments,
+    UpdateArgumentsAction<SupplierDetailArguments> action){
+  return action.arguments;
+}
+
+/// 产品详情所需参数
+final goodsDetailArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<GoodsDetailArguments>>(
+      _onUpdateGoodsDetailArguments),
+]);
+
+GoodsDetailArguments _onUpdateGoodsDetailArguments(Arguments arguments,
+    UpdateArgumentsAction<GoodsDetailArguments> action){
+  return action.arguments;
+}
+
+/// 登录注册所需参数
+final signUpSignInArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<SignUpSignInArguments>>(
+      _onUpdateSignUpSignInArguments),
+]);
+SignUpSignInArguments _onUpdateSignUpSignInArguments(Arguments arguments,
+    UpdateArgumentsAction<SignUpSignInArguments> action){
+  return action.arguments;
+}
+
+/// 查询单日销售历史记录
+final salesHistoryArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<SalesHistoryArguments>>(
+      _onUpdateSalesHistoryArguments),
+]);
+SalesHistoryArguments _onUpdateSalesHistoryArguments(Arguments arguments,
+    UpdateArgumentsAction<SalesHistoryArguments> action){
+  return action.arguments;
+}

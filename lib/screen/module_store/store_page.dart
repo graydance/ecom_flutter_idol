@@ -6,25 +6,28 @@ import 'package:idol/net/request/base.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'package:idol/screen/module_store/goods_category_tab_view.dart';
-import 'package:idol/screen/module_store/goods_list_tab_view.dart';
+import 'package:idol/screen/module_store/store_goods_category_tab_view.dart';
+import 'package:idol/screen/module_store/store_goods_list_tab_view.dart';
 import 'package:idol/store/actions/store.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/widgets/loading.dart';
+import 'package:idol/widgets/sliver_appbar_delegate.dart';
 import 'package:redux/redux.dart';
 
 class StorePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return StorePageState();
+    return _StorePageState();
   }
 }
 
-class StorePageState extends State<StorePage>
-    with AutomaticKeepAliveClientMixin<StorePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class _StorePageState extends State<StorePage>
+    with AutomaticKeepAliveClientMixin<StorePage>,TickerProviderStateMixin<StorePage>  {
+
+  TabController _tabController;
+  int _currentTabIndex = 0;
+  var _leftTabIcon = R.image.ic_tab_product_selected();
+  var _rightTabIcon = R.image.ic_tab_category_unselected();
 
   double _expandedHeight() {
     Size size = MediaQuery.of(context).size;
@@ -33,10 +36,31 @@ class StorePageState extends State<StorePage>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if(_tabController.index != _currentTabIndex){
+          _currentTabIndex = _tabController.index;
+          setState(() {
+            if(_tabController.index == 0){
+              _leftTabIcon = R.image.ic_tab_product_selected();
+              _rightTabIcon = R.image.ic_tab_category_unselected();
+            }else{
+              _leftTabIcon = R.image.ic_tab_product_unselected();
+              _rightTabIcon = R.image.ic_tab_category_selected();
+            }
+          });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
+      distinct: true,
       onInit: (store) {
         StoreProvider.of<AppState>(context)
             .dispatch(MyInfoAction(BaseRequestImpl()));
@@ -50,67 +74,64 @@ class StorePageState extends State<StorePage>
   }
 
   Widget _buildStorePage(_ViewModel vm) {
-    return vm._myInfoState is MyInfoInitial || vm._myInfoState is MyInfoLoading ? Center(
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colours.color_EA5228),
-      ),
-    ) : DefaultTabController(
-      length: 2,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              floating: false,
-              pinned: false,
-              expandedHeight: _expandedHeight(),
-              flexibleSpace: FlexibleSpaceBar(
-                  title: Text("",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      )),
-                  background: _buildFlexibleSpaceWidget(vm)),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SliverAppBarDelegate(
-                TabBar(
-                  indicatorColor: Colours.color_1E2539,
-                  tabs: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 16, bottom: 10),
-                      child: Image(
-                        image: R.image.ic_tab_product_unselected(),
-                        width: 20,
-                        height: 20,
-                        fit: BoxFit.cover,
+    return vm._myInfoState is MyInfoInitial || vm._myInfoState is MyInfoLoading
+        ? IdolLoadingWidget()
+        : NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    floating: false,
+                    pinned: false,
+                    expandedHeight: _expandedHeight(),
+                    flexibleSpace: FlexibleSpaceBar(
+                        title: Text("",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                            )),
+                        background: _buildFlexibleSpaceWidget(vm)),
+                  ),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: SliverAppBarDelegate(
+                      TabBar(
+                        controller: _tabController,
+                        indicatorColor: Colours.color_1E2539,
+                        tabs: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 16, bottom: 10),
+                            child: Image(
+                              image: _leftTabIcon,
+                              width: 20,
+                              height: 20,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 16, bottom: 10),
+                            child: Image(
+                              image: _rightTabIcon,
+                              width: 20,
+                              height: 20,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 16, bottom: 10),
-                      child: Image(
-                        image: R.image.ic_tab_category_unselected(),
-                        width: 20,
-                        height: 20,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ],
+                  ),
+                ];
+              },
+              body: Container(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    GoodsListTabView(),
+                    GoodsCategoryTabView(),
+                  ].toList(),
                 ),
               ),
-            ),
-          ];
-        },
-        body: Container(
-          child: TabBarView(
-            children: [
-              GoodsListTabView(),
-              GoodsCategoryTabView(),
-            ].toList(),
-          ),
-        ),
-      ),
-    );
+          );
   }
 
   Widget _buildFlexibleSpaceWidget(_ViewModel vm) {
@@ -124,7 +145,9 @@ class StorePageState extends State<StorePage>
         decoration: BoxDecoration(
           color: Colours.white,
           image: DecorationImage(
-            image: R.image.bg_header(),
+            image: myInfo != null && myInfo.storePicture != null
+                ? NetworkImage(myInfo.storePicture)
+                : R.image.bg_header(),
             fit: BoxFit.cover,
           ),
         ),
@@ -309,7 +332,19 @@ class StorePageState extends State<StorePage>
                       ),
                       color: Colours.white,
                       textColor: Colours.color_0F1015,
-                      onPressed: () => IdolRoute.startStoreEditStore(context),
+                      onPressed: () {
+                        IdolRoute.startStoreEditStore(context).then((value) {
+                          if (value != null && value is Command) {
+                            if (value == Command.refreshMyInfo) {
+                              Future.delayed(Duration(seconds: 2))
+                                  .then((value) {
+                                StoreProvider.of<AppState>(context)
+                                    .dispatch(MyInfoAction(BaseRequestImpl()));
+                              });
+                            }
+                          }
+                        });
+                      },
                     ),
                   ),
                   SizedBox(
@@ -351,32 +386,6 @@ class StorePageState extends State<StorePage>
   bool get wantKeepAlive => true;
 }
 
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new Container(
-      color: Colours.white,
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return true;
-  }
-}
-
 class _ViewModel {
   final MyInfoState _myInfoState;
 
@@ -385,4 +394,14 @@ class _ViewModel {
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(store.state.myInfoState);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          _myInfoState == other._myInfoState;
+
+  @override
+  int get hashCode => _myInfoState.hashCode;
 }

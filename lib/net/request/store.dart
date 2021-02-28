@@ -47,11 +47,11 @@ class EditStoreRequest implements BaseRequest {
     keyMapper ??= (key) => key;
     return {
       keyMapper('storeName'): this.storeName,
-      keyMapper('userName'): this.storeName,
+      keyMapper('userName'): this.userName,
       keyMapper('aboutMe'): this.aboutMe,
       keyMapper('storePicture'): this.storePicture,
       keyMapper('portrait'): this.portrait,
-    } as Map<String, dynamic>;
+    };
   }
 }
 
@@ -62,11 +62,30 @@ class CheckNameRequest implements BaseRequest{
 
   CheckNameRequest({this.storeName = '', this.userName = ''});
 
-  @override
-  Map<String, dynamic> toMap({String Function(String key) keyMapper}) {
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+
     return {
       keyMapper('storeName'): this.storeName,
       keyMapper('userName'): this.userName,
-    }as Map<String, dynamic>;
+    };
+  }
+}
+
+/// 删除商品
+class DeleteGoodsRequest implements BaseRequest{
+  final String goodsId;
+
+  DeleteGoodsRequest(this.goodsId);
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+    return {
+      keyMapper('goodsId'): this.goodsId,
+    };
   }
 }
