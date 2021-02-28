@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/router.dart';
@@ -17,7 +16,7 @@ class TokenInterceptors extends InterceptorsWrapper {
     // 登录成功后，写入token到headers中
     String token = options.headers['x-token'];
     if (token.isEmpty) {
-      String cacheToken = SpUtil.getString('token');
+      String cacheToken = Global.token;
       if (cacheToken.isNotEmpty) {
         options.headers['x-token'] = cacheToken;
       }else{

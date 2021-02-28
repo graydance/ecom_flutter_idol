@@ -37,7 +37,10 @@ class Global {
     SpUtil.putString(KeyStore.PASSWORD, password);
   }
 
-  static saveToken(String token) => SpUtil.putString(KeyStore.TOKEN, token);
+  static saveToken(String token){
+    Future<bool> success = SpUtil.putString(KeyStore.TOKEN, token);
+    print('token cache success > $success > ${SpUtil.getString(KeyStore.TOKEN)}');
+  }
 
   static String get token => SpUtil.getString(KeyStore.TOKEN);
 

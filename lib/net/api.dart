@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:idol/env.dart';
 import 'package:idol/net/interceptor.dart';
 import 'package:idol/net/request/base.dart';
-import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/global.dart';
 
 class DioClient {
   static DioClient _instance;
@@ -17,7 +16,7 @@ class DioClient {
     contentType: "application/json; charset=utf-8",
     responseType: ResponseType.json,
     headers: {
-      'x-token': SpUtil.getString(KeyStore.TOKEN),
+      'x-token': Global.token,
     },
   );
 
