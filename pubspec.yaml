@@ -32,7 +32,6 @@ dependencies:
   ecomshare:
     git:
       url: git@github.com:graydance/ecomshare.git
-    path: plugins/ecomshare
 dependency_overrides:
   flutter_svg: 0.20.0-nullsafety.3
 dev_dependencies:
