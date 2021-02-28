@@ -19,7 +19,7 @@ class ForYouTabView extends StatefulWidget {
 
 class _ForYouTabViewState extends State<ForYouTabView>
     with AutomaticKeepAliveClientMixin<ForYouTabView> {
-  List<GoodsDetail> _goodsDetail = const [];
+  List<GoodsDetail> _goodsDetailList = const [];
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
@@ -53,7 +53,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
   }
 
   Widget _buildWidget(_ViewModel vm) {
-    if (vm._forYouState is ForYouInitial || vm._forYouState is ForYouLoading) {
+    if ((vm._forYouState is ForYouInitial || vm._forYouState is ForYouLoading) && _goodsDetailList.isEmpty) {
       return IdolLoadingWidget();
     } else if (vm._forYouState is ForYouFailure) {
       return IdolErrorWidget(() {
@@ -73,9 +73,13 @@ class _ForYouTabViewState extends State<ForYouTabView>
                 color: Colors.transparent,
               );
             },
-            itemCount: _goodsDetail.length,
+            itemCount: _goodsDetailList.length,
             itemBuilder: (context, index) =>
-                FollowingGoodsListItem(goodsDetail: _goodsDetail[index]),
+                FollowingGoodsListItem(goodsDetail: _goodsDetailList[index], onProductAddedStoreListener: (goodsDetail){
+                  setState(() {
+                    _goodsDetailList.removeAt(index);
+                  });
+                },),
           ),
           onRefresh: () async {
             await Future(() {
@@ -97,9 +101,9 @@ class _ForYouTabViewState extends State<ForYouTabView>
     if (state is ForYouSuccess) {
       setState(() {
         if ((state).goodsDetailList.currentPage == 1) {
-          _goodsDetail = (state).goodsDetailList.list;
+          _goodsDetailList = (state).goodsDetailList.list;
         } else {
-          _goodsDetail.addAll((state).goodsDetailList.list);
+          _goodsDetailList.addAll((state).goodsDetailList.list);
         }
         _currentPage = (state).goodsDetailList.currentPage;
         _enablePullUp = (state).goodsDetailList.currentPage !=

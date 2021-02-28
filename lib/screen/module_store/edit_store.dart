@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -26,25 +28,44 @@ class EditStoreScreen extends StatefulWidget {
 }
 
 class _EditStoreScreenState extends State<EditStoreScreen> {
+  final GlobalKey<IdolButtonState> _saveButtonKey =
+      GlobalKey(debugLabel: '_saveButtonKey');
   IdolButtonStatus _saveButtonStatus = IdolButtonStatus.normal;
   TextEditingController _storeNameController;
   TextEditingController _userNameController;
   TextEditingController _storeDescController;
   FocusNode _storeNameFocusNode;
   FocusNode _userNameFocusNode;
-  FocusNode _storeDescFocusNode;
-  String _storeBackground;
-  File _storeBackgroundFile;
-  String _portrait;
-  File _portraitFile;
-  final _picker = ImagePicker();
-  User _myInfo;
   String _storeNameErrorText = '';
   String _userNameErrorText = '';
   String _storeDescErrorText = '';
-  bool _storeNameValid = false;
-  bool _userNameValid = false;
-  bool _updating = false;
+
+  // 店招背景图Url
+  String _storeBackground;
+
+  // 店招背景Local File
+  File _storeBackgroundFile;
+
+  // 个人头像Url
+  String _portrait;
+
+  // 个人头像Local File
+  File _portraitFile;
+
+  // 图片选择器
+  final _picker = ImagePicker();
+
+  // 当前用户个人信息
+  User _myInfo;
+
+  // 店铺名称是否合法
+  bool _storeNameValid = true;
+
+  // 用户名是否合法
+  bool _userNameValid = true;
+
+  // 正在更新/保存
+  bool _isUpdating = false;
 
   @override
   void setState(fn) {
@@ -54,84 +75,111 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _storeNameValid = Global.getUser(context).storeName != null &&
+        Global.getUser(context).storeName.isNotEmpty;
+    _userNameValid = Global.getUser(context).userName != null &&
+        Global.getUser(context).userName.isNotEmpty;
     _storeNameController =
         TextEditingController(text: Global.getUser(context).storeName ?? '');
     _storeNameFocusNode = FocusNode(debugLabel: '_storeNameFocusNode');
     _storeNameFocusNode.addListener(() {
-      if (!_storeNameFocusNode.hasFocus && !_updating) {
+      if (!_storeNameFocusNode.hasFocus && !_isUpdating) {
         // checkName
         if (_storeNameController.text == null ||
-            _storeNameController.text.isEmpty) {
+            _storeNameController.text.trim().isEmpty ||
+            _storeNameController.text.trim() == _myInfo?.storeName) {
+          // 店铺名称为空或者未修改不进行查重
+          debugPrint('StoreName is not modify, return.');
           return;
         }
-        _checkName(CheckNameRequest(storeName: _storeNameController.text));
+        debounce(() {
+          _checkName(
+              CheckNameRequest(storeName: _storeNameController.text.trim()));
+        }, 1000);
       }
     });
     _userNameController =
         TextEditingController(text: Global.getUser(context).userName ?? '');
     _userNameFocusNode = FocusNode(debugLabel: '_userNameFocusNode');
     _userNameFocusNode.addListener(() {
-      if (!_storeNameFocusNode.hasFocus && !_updating) {
+      if (!_userNameFocusNode.hasFocus && !_isUpdating) {
         if (_userNameController.text == null ||
-            _userNameController.text.isEmpty) {
+            _userNameController.text.trim().isEmpty ||
+            _userNameController.text.trim() == _myInfo?.userName) {
+          // 用户名称为空或者未修改不进行查重
+          debugPrint('UserName is not modify, return.');
           return;
         }
         // checkName
-        _checkName(CheckNameRequest(storeName: _userNameController.text));
+        debounce(() {
+          _checkName(
+              CheckNameRequest(userName: _userNameController.text.trim()));
+        }, 1000);
       }
     });
     _storeDescController =
         TextEditingController(text: Global.getUser(context).aboutMe ?? '');
-    _storeDescFocusNode = FocusNode(debugLabel: '_storeDescFocusNode');
-    _storeDescFocusNode.addListener(() {
-      if (!_storeDescFocusNode.hasFocus) {
-        _changeSaveButtonStatus();
+    _storeDescController.addListener(() {
+      if (_storeDescController.text.trim() == _myInfo?.aboutMe) {
+        debugPrint('Store description is not modify, return.');
+        return;
       }
+      _changeSaveButtonStatus();
     });
   }
 
-  void _checkName(CheckNameRequest checkNameRequest) {
-    DioClient.getInstance()
-        .post(ApiPath.checkName, baseRequest: checkNameRequest)
-        .whenComplete(() => null)
-        .then((data) {
-      if (checkNameRequest.storeName != null &&
-          checkNameRequest.storeName.isNotEmpty) {
-        _storeNameValid = true;
-      } else {
-        _userNameValid = true;
-      }
-      setState(() {
-        _changeSaveButtonStatus();
-      });
-    }).catchError((err) {
-      print(err.toString());
+  Future _checkName(CheckNameRequest checkNameRequest) async {
+    try {
+      await DioClient.getInstance()
+          .post(ApiPath.checkName, baseRequest: checkNameRequest);
       setState(() {
         if (checkNameRequest.storeName != null &&
             checkNameRequest.storeName.isNotEmpty) {
+          _storeNameValid = true;
+        } else {
+          _userNameValid = true;
+        }
+        _changeSaveButtonStatus();
+        if (checkNameRequest.storeName != null &&
+            checkNameRequest.storeName.isNotEmpty) {
+          _storeNameErrorText = '';
+        } else {
+          _userNameErrorText = '';
+        }
+      });
+    } on DioError catch (e) {
+      debugPrint(e.toString());
+      setState(() {
+        if (checkNameRequest.storeName != null &&
+            checkNameRequest.storeName.isNotEmpty) {
+          _storeNameValid = false;
           _storeNameErrorText = 'This name has already been taken.';
         } else {
+          _userNameValid = false;
           _userNameErrorText = 'This name has already been taken.';
         }
       });
-    });
+    }
   }
 
   void _changeSaveButtonStatus() {
     _saveButtonStatus = _storeNameController.text != null &&
-            _storeNameController.text.isNotEmpty &&
+            _storeNameController.text.trim().isNotEmpty &&
             _userNameController.text != null &&
-            _userNameController.text.isNotEmpty &&
+            _userNameController.text.trim().isNotEmpty &&
             _storeNameValid &&
             _userNameValid &&
             _storeDescController.text != null &&
-            _storeDescController.text.isNotEmpty
+            _storeDescController.text.trim().isNotEmpty
         ? IdolButtonStatus.enable
         : IdolButtonStatus.disable;
+    _saveButtonKey.currentState.updateButtonStatus(_saveButtonStatus);
+    debugPrint("_saveButtonStatus >> $_saveButtonStatus");
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('EditStoreScreen build...');
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       onWillChange: (oldVM, newVM) {
@@ -283,7 +331,6 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
                             ),
                             TextField(
                               controller: _storeDescController,
-                              focusNode: _storeDescFocusNode,
                               maxLength: 512,
                               cursorColor: Colours.color_EA5228,
                               decoration: InputDecoration(
@@ -303,15 +350,18 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
                             ),
                             IdolButton(
                               'Save',
+                              key: _saveButtonKey,
                               status: _saveButtonStatus,
+                              isPartialRefresh: true,
                               listener: (status) {
                                 if (status == IdolButtonStatus.enable) {
-                                _updating = true;
+                                  _isUpdating = true;
                                   _clearFocus();
                                   vm._editStore(
-                                      _storeNameController.text,
-                                      _userNameController.text,
-                                      _storeDescController.text,
+                                      storeName:
+                                          _storeNameController.text.trim(),
+                                      userName: _userNameController.text.trim(),
+                                      aboutMe: _storeDescController.text.trim(),
                                       storePicture: _storeBackground,
                                       portrait: _portrait);
                                 }
@@ -396,7 +446,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
       IdolRoute.popWithCommand(context, Command.refreshMyInfo);
     } else if (state is EditStoreFailure) {
       EasyLoading.showError((state).message);
-      _updating = false;
+      _isUpdating = false;
     }
   }
 
@@ -524,7 +574,6 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
     _clearFocus();
     _storeNameFocusNode.dispose();
     _userNameFocusNode.dispose();
-    _storeDescFocusNode.dispose();
     _storeNameController.dispose();
     _storeDescController.dispose();
     _userNameController.dispose();
@@ -533,23 +582,39 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
   void _clearFocus() {
     _storeNameFocusNode.unfocus();
     _userNameFocusNode.unfocus();
-    _storeDescFocusNode.unfocus();
+  }
+
+  Timer _debounce;
+
+  Function debounce(Function fn, [int t = 30]) {
+    return () {
+      // 还在时间之内，抛弃上一次
+      if (_debounce?.isActive ?? false) _debounce.cancel();
+
+      _debounce = Timer(Duration(milliseconds: t), () {
+        fn();
+      });
+    };
   }
 }
 
 class _ViewModel {
   final MyInfoState _myInfoState;
   final EditStoreState _editStoreState;
-  final Function(String, String, String, {String storePicture, String portrait})
-      _editStore;
+  final Function(
+      {String storeName,
+      String userName,
+      String aboutMe,
+      String storePicture,
+      String portrait}) _editStore;
 
   _ViewModel(this._myInfoState, this._editStoreState, this._editStore);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    void _editStore(
+    void _editStore({
       storeName,
       userName,
-      aboutMe, {
+      aboutMe,
       storePicture,
       portrait,
     }) {

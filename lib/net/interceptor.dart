@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
 
 class TokenInterceptors extends InterceptorsWrapper {
   final Dio dio;
@@ -16,18 +17,17 @@ class TokenInterceptors extends InterceptorsWrapper {
         "TokenInterceptors REQUEST[${options?.method}] => PATH: ${options?.path}");
     // 登录成功后，写入token到headers中
     String token = options.headers['x-token'];
-    if (token.isEmpty) {
-      String cacheToken = SpUtil.getString('token');
-      if (cacheToken.isNotEmpty) {
-        options.headers['x-token'] = cacheToken;
-      }else{
-        debugPrint('cacheToken is null');
-      }
+    if (token == null || token.isEmpty) {
+      final storage = new FlutterSecureStorage();
+      String token = await storage.read(key: KeyStore.TOKEN);
+      options.headers['x-token'] = token;
+      debugPrint('cacheToken >>> $token');
     }
-    if(options.path == ApiPath.upload){
+    if (options.path == ApiPath.upload) {
       options.headers[Headers.contentTypeHeader] = 'multipart/form-data';
-    }else{
-      options.headers[Headers.contentTypeHeader] = 'application/json; charset=utf-8';
+    } else {
+      options.headers[Headers.contentTypeHeader] =
+          'application/json; charset=utf-8';
     }
     return super.onRequest(options);
   }
@@ -38,17 +38,17 @@ class TokenInterceptors extends InterceptorsWrapper {
         "TokenInterceptors RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
     if (response.data['code'] != 0) {
       int code = response.data['code'];
-      if(code != null){
+      if (code != null) {
         if (code >= 400 && code < 500) {
-          if (code == 401) {
+          if (code == 402) {
             // Need login.
-            IdolRoute.start(RouterPath.login);
+            IdolRoute.start(RouterPath.signIn);
           }
         } else if (code >= 500) {
           // Unified handling
           response.data['msg'] = 'The network is busy, please try again later!';
         }
-      }else{
+      } else {
         debugPrint('Data structure error!');
         throw 'Data structure error!';
       }

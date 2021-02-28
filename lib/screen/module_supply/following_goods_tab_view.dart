@@ -80,7 +80,7 @@ class _FollowingTabViewState extends State<FollowingTabView>
             itemBuilder: (context, index) => FollowingGoodsListItem(
               goodsDetail: goodsDetail[index],
               onProductAddedStoreListener: (product) {
-                goodsDetail.remove(product);
+                goodsDetail.remove(index);
                 setState(() {});
               },
             ),

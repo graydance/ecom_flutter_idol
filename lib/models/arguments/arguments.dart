@@ -5,3 +5,5 @@ export 'rewards_detail.dart';
 export 'supplier_detail.dart';
 export 'goods_detail.dart';
 export 'supplier_detail.dart';
+export 'signup_signin.dart';
+export 'sales_history.dart';

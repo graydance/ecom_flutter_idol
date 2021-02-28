@@ -1,6 +1,7 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/store/actions/actions.dart';
@@ -20,6 +21,7 @@ class BalanceScreen extends StatefulWidget {
 }
 
 class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
+  final _storage = new FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,10 +246,10 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
     );
   }
 
-  _withdraw(IdolButtonStatus status) {
+  _withdraw(IdolButtonStatus status) async{
     if (status == IdolButtonStatus.enable) {
-      String paymentAccount = SpUtil.getString(KeyStore.PAYMENT_ACCOUNT);
-      if (paymentAccount.isEmpty) {
+      String paymentAccount = await _storage.read(key: KeyStore.PAYMENT_ACCOUNT);
+      if (paymentAccount == null || paymentAccount.isEmpty) {
         _showNeedSetWithdrawAccountDialog(context);
       } else {
         IdolRoute.startDashboardWithdraw(context)
@@ -273,10 +275,10 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
         barrierDismissible: false,
         builder: (BuildContext context) => WillPopScope(
               onWillPop: () async => false, // 屏蔽返回键
-              child: WithdrawMessageDialog(
+              child: IdolMessageDialog(
                 'Please confirm your email address\n for password security and to\n receive withdrawal updates.',
                 onClose: () => {IdolRoute.pop(context)},
-                onNext: () {
+                onTap: () {
                   IdolRoute.pop(context);
                   IdolRoute.startDashboardWithdraw(context).then((value) {
                     IdolRoute.pop(context);
@@ -294,6 +296,6 @@ class _ViewModel {
   _ViewModel(this.withdrawInfoState, this.user);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.withdrawInfoState, (store.state.loginState as LoginSuccess).loginUser);
+    return _ViewModel(store.state.withdrawInfoState, (store.state.signInState as SignInSuccess).signInUser);
   }
 }

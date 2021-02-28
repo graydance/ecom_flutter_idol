@@ -130,6 +130,64 @@ class _R_Image_AssetResource {
       "assets/images/dashboard/ic_complete_rewards.png",
       packageName: null);
 
+  /// asset: assets/images/ic_share_copy_link.png
+  // ignore: non_constant_identifier_names
+  final ic_share_copy_link = const AssetResource(
+      "assets/images/ic_share_copy_link.png",
+      packageName: null);
+
+  /// asset: assets/images/ic_share_download.png
+  // ignore: non_constant_identifier_names
+  final ic_share_download = const AssetResource(
+      "assets/images/ic_share_download.png",
+      packageName: null);
+
+  /// asset: assets/images/ic_share_facebook.png
+  // ignore: non_constant_identifier_names
+  final ic_share_facebook = const AssetResource(
+      "assets/images/ic_share_facebook.png",
+      packageName: null);
+
+  /// asset: assets/images/ic_share_instagram.png
+  // ignore: non_constant_identifier_names
+  final ic_share_instagram = const AssetResource(
+      "assets/images/ic_share_instagram.png",
+      packageName: null);
+
+  /// asset: assets/images/ic_share_more.png
+  // ignore: non_constant_identifier_names
+  final ic_share_more =
+      const AssetResource("assets/images/ic_share_more.png", packageName: null);
+
+  /// asset: assets/images/ic_share_twitter.png
+  // ignore: non_constant_identifier_names
+  final ic_share_twitter = const AssetResource(
+      "assets/images/ic_share_twitter.png",
+      packageName: null);
+
+  /// asset: assets/images/main/bg_login_signup.png
+  // ignore: non_constant_identifier_names
+  final bg_login_signup = const AssetResource(
+      "assets/images/main/bg_login_signup.png",
+      packageName: null);
+
+  /// asset: assets/images/main/ic_logo.png
+  // ignore: non_constant_identifier_names
+  final ic_logo =
+      const AssetResource("assets/images/main/ic_logo.png", packageName: null);
+
+  /// asset: assets/images/main/ic_password_visibility.png
+  // ignore: non_constant_identifier_names
+  final ic_password_visibility = const AssetResource(
+      "assets/images/main/ic_password_visibility.png",
+      packageName: null);
+
+  /// asset: assets/images/main/ic_password_visibility_off.png
+  // ignore: non_constant_identifier_names
+  final ic_password_visibility_off = const AssetResource(
+      "assets/images/main/ic_password_visibility_off.png",
+      packageName: null);
+
   /// asset: assets/images/main/ic_tab_biolinks_normal.png
   // ignore: non_constant_identifier_names
   final ic_tab_biolinks_normal = const AssetResource(
@@ -190,10 +248,26 @@ class _R_Image_AssetResource {
       "assets/images/main/ic_tab_supply_selected.png",
       packageName: null);
 
+  /// asset: assets/images/main/ic_whatsapp.png
+  // ignore: non_constant_identifier_names
+  final ic_whatsapp = const AssetResource("assets/images/main/ic_whatsapp.png",
+      packageName: null);
+
   /// asset: assets/images/main/launch_background.webp
   // ignore: non_constant_identifier_names
   final launch_background_webp = const AssetResource(
       "assets/images/main/launch_background.webp",
+      packageName: null);
+
+  /// asset: assets/images/shoplink/ic_change_avatar.png
+  // ignore: non_constant_identifier_names
+  final ic_change_avatar = const AssetResource(
+      "assets/images/shoplink/ic_change_avatar.png",
+      packageName: null);
+
+  /// asset: assets/images/shoplink/ic_edit.png
+  // ignore: non_constant_identifier_names
+  final ic_edit = const AssetResource("assets/images/shoplink/ic_edit.png",
       packageName: null);
 
   /// asset: assets/images/store/bg_header.png
@@ -205,6 +279,42 @@ class _R_Image_AssetResource {
   // ignore: non_constant_identifier_names
   final default_portrait = const AssetResource(
       "assets/images/store/default_portrait.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_settings_contact.png
+  // ignore: non_constant_identifier_names
+  final ic_settings_contact = const AssetResource(
+      "assets/images/store/ic_settings_contact.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_settings_email.png
+  // ignore: non_constant_identifier_names
+  final ic_settings_email = const AssetResource(
+      "assets/images/store/ic_settings_email.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_settings_faq.png
+  // ignore: non_constant_identifier_names
+  final ic_settings_faq = const AssetResource(
+      "assets/images/store/ic_settings_faq.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_settings_privacy.png
+  // ignore: non_constant_identifier_names
+  final ic_settings_privacy = const AssetResource(
+      "assets/images/store/ic_settings_privacy.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_settings_rate_us.png
+  // ignore: non_constant_identifier_names
+  final ic_settings_rate_us = const AssetResource(
+      "assets/images/store/ic_settings_rate_us.png",
+      packageName: null);
+
+  /// asset: assets/images/store/ic_settings_set_password.png
+  // ignore: non_constant_identifier_names
+  final ic_settings_set_password = const AssetResource(
+      "assets/images/store/ic_settings_set_password.png",
       packageName: null);
 
   /// asset: assets/images/store/ic_tab_category_selected.png
@@ -325,6 +435,66 @@ class _R_Image {
     return AssetImage(asset.ic_complete_rewards.keyName);
   }
 
+  /// asset: assets/images/ic_share_copy_link.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_share_copy_link() {
+    return AssetImage(asset.ic_share_copy_link.keyName);
+  }
+
+  /// asset: assets/images/ic_share_download.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_share_download() {
+    return AssetImage(asset.ic_share_download.keyName);
+  }
+
+  /// asset: assets/images/ic_share_facebook.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_share_facebook() {
+    return AssetImage(asset.ic_share_facebook.keyName);
+  }
+
+  /// asset: assets/images/ic_share_instagram.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_share_instagram() {
+    return AssetImage(asset.ic_share_instagram.keyName);
+  }
+
+  /// asset: assets/images/ic_share_more.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_share_more() {
+    return AssetImage(asset.ic_share_more.keyName);
+  }
+
+  /// asset: assets/images/ic_share_twitter.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_share_twitter() {
+    return AssetImage(asset.ic_share_twitter.keyName);
+  }
+
+  /// asset: assets/images/main/bg_login_signup.png
+  // ignore: non_constant_identifier_names
+  AssetImage bg_login_signup() {
+    return AssetImage(asset.bg_login_signup.keyName);
+  }
+
+  /// asset: assets/images/main/ic_logo.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_logo() {
+    return AssetImage(asset.ic_logo.keyName);
+  }
+
+  /// asset: assets/images/main/ic_password_visibility.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_password_visibility() {
+    return AssetImage(asset.ic_password_visibility.keyName);
+  }
+
+  /// asset: assets/images/main/ic_password_visibility_off.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_password_visibility_off() {
+    return AssetImage(asset.ic_password_visibility_off.keyName);
+  }
+
   /// asset: assets/images/main/ic_tab_biolinks_normal.png
   // ignore: non_constant_identifier_names
   AssetImage ic_tab_biolinks_normal() {
@@ -385,10 +555,28 @@ class _R_Image {
     return AssetImage(asset.ic_tab_supply_selected.keyName);
   }
 
+  /// asset: assets/images/main/ic_whatsapp.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_whatsapp() {
+    return AssetImage(asset.ic_whatsapp.keyName);
+  }
+
   /// asset: assets/images/main/launch_background.webp
   // ignore: non_constant_identifier_names
   AssetImage launch_background_webp() {
     return AssetImage(asset.launch_background_webp.keyName);
+  }
+
+  /// asset: assets/images/shoplink/ic_change_avatar.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_change_avatar() {
+    return AssetImage(asset.ic_change_avatar.keyName);
+  }
+
+  /// asset: assets/images/shoplink/ic_edit.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_edit() {
+    return AssetImage(asset.ic_edit.keyName);
   }
 
   /// asset: assets/images/store/bg_header.png
@@ -401,6 +589,42 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage default_portrait() {
     return AssetImage(asset.default_portrait.keyName);
+  }
+
+  /// asset: assets/images/store/ic_settings_contact.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_settings_contact() {
+    return AssetImage(asset.ic_settings_contact.keyName);
+  }
+
+  /// asset: assets/images/store/ic_settings_email.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_settings_email() {
+    return AssetImage(asset.ic_settings_email.keyName);
+  }
+
+  /// asset: assets/images/store/ic_settings_faq.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_settings_faq() {
+    return AssetImage(asset.ic_settings_faq.keyName);
+  }
+
+  /// asset: assets/images/store/ic_settings_privacy.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_settings_privacy() {
+    return AssetImage(asset.ic_settings_privacy.keyName);
+  }
+
+  /// asset: assets/images/store/ic_settings_rate_us.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_settings_rate_us() {
+    return AssetImage(asset.ic_settings_rate_us.keyName);
+  }
+
+  /// asset: assets/images/store/ic_settings_set_password.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_settings_set_password() {
+    return AssetImage(asset.ic_settings_set_password.keyName);
   }
 
   /// asset: assets/images/store/ic_tab_category_selected.png

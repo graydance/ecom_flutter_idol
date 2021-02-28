@@ -6,6 +6,7 @@ import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:logging/logging.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// 存储一些全局公共参数或初始化一些配置
 class Global {
@@ -15,25 +16,42 @@ class Global {
       new GlobalKey<NavigatorState>();
 
   static final isRelease = const bool.fromEnvironment('dart.vm.product');
+  static final storage = new FlutterSecureStorage();
 
   static Future init() async {
-    SpUtil.getInstance();
+    await SpUtil.getInstance();
+    // Create storage
     _configLogging();
     _configLoading();
   }
 
-  static User getUser(BuildContext context){
-     return (StoreProvider.of<AppState>(context, listen: false).state?.loginState as LoginSuccess).loginUser;
+  static User getUser(BuildContext context) {
+    SignUpState signUpState =
+        StoreProvider.of<AppState>(context, listen: false).state?.signUpState;
+    SignInState signInState =
+        StoreProvider.of<AppState>(context, listen: false).state?.signInState;
+    return signUpState is SignUpSuccess
+        ? signUpState.signUpUser
+        : (signInState as SignInSuccess).signInUser;
   }
 
   static saveUserAccount(String email, String password) {
-    SpUtil.putString(KeyStore.EMAIL, email);
-    SpUtil.putString(KeyStore.PASSWORD, password);
+    // SpUtil.putString(KeyStore.EMAIL, email);
+    // SpUtil.putString(KeyStore.PASSWORD, password);
+    storage.write(key: KeyStore.EMAIL, value: email);
+    storage.write(key: KeyStore.PASSWORD, value: password);
   }
 
-  static saveToken(String token) => SpUtil.putString(KeyStore.TOKEN, token);
+  static saveToken(String token) async{
+    // Write value
+    await storage.write(key: KeyStore.TOKEN, value: token);
+    //Future<bool> success = SpUtil.putString(KeyStore.TOKEN, token);
+    //print('token cache success > $success > ${SpUtil.getString(KeyStore.TOKEN)}');
+  }
 
-  static String get token => SpUtil.getString(KeyStore.TOKEN);
+  static Future<String> getToken() async{
+    return await storage.read(key: KeyStore.TOKEN);
+  }
 
   static void _configLogging() {
     Logger.root.onRecord.listen((LogRecord r) {

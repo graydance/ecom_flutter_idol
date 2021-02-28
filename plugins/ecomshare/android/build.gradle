@@ -1,0 +1,44 @@
+group 'fun.wqiang.ecomshare'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.1'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        minSdkVersion 16
+    }
+}
+
+dependencies {
+    // Facebook share sdk
+    implementation 'com.facebook.android:facebook-share:4.42.0'
+    implementation 'com.facebook.android:facebook-applinks:4.42.0'
+    // Twitter
+    implementation implementation('com.twitter.sdk.android:twitter:3.3.0@aar') {
+        transitive = true
+    }
+}
+
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+}

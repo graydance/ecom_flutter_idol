@@ -84,3 +84,45 @@ EditStoreFailure _onEditStoreFailure(
     EditStoreState state, EditStoreFailureAction action) {
   return EditStoreFailure(action.message);
 }
+
+/// DeleteGoodsReducer
+final deleteGoodsReducer = combineReducers<DeleteGoodsState>([
+  TypedReducer<DeleteGoodsState, DeleteGoodsAction>(_onDeleteGoods),
+  TypedReducer<DeleteGoodsState, DeleteGoodsSuccessAction>(_onDeleteGoodsSuccess),
+  TypedReducer<DeleteGoodsState, DeleteGoodsFailureAction>(_onDeleteGoodsFailure),
+]);
+
+DeleteGoodsLoading _onDeleteGoods(DeleteGoodsState state, DeleteGoodsAction action) {
+  return DeleteGoodsLoading();
+}
+
+DeleteGoodsSuccess _onDeleteGoodsSuccess(
+    DeleteGoodsState state, DeleteGoodsSuccessAction action) {
+  return DeleteGoodsSuccess();
+}
+
+DeleteGoodsFailure _onDeleteGoodsFailure(
+    DeleteGoodsState state, DeleteGoodsFailureAction action) {
+  return DeleteGoodsFailure(action.message);
+}
+
+/// UpdateUserInfoReducer
+final updateUserInfoReducer  = combineReducers<UpdateUserInfoState>([
+  TypedReducer<UpdateUserInfoState, UpdateUserInfoAction>(_onUpdateUserInfo),
+  TypedReducer<UpdateUserInfoState, UpdateUserInfoSuccessAction>(_onUpdateUserInfoSuccess),
+  TypedReducer<UpdateUserInfoState, UpdateUserInfoFailureAction>(_onUpdateUserInfoFailure),
+]);
+
+UpdateUserInfoLoading _onUpdateUserInfo(UpdateUserInfoState state, UpdateUserInfoAction action) {
+  return UpdateUserInfoLoading();
+}
+
+UpdateUserInfoSuccess _onUpdateUserInfoSuccess(
+    UpdateUserInfoState state, UpdateUserInfoSuccessAction action) {
+  return UpdateUserInfoSuccess();
+}
+
+UpdateUserInfoFailure _onUpdateUserInfoFailure(
+    UpdateUserInfoState state, UpdateUserInfoFailureAction action) {
+  return UpdateUserInfoFailure(action.message);
+}
