@@ -85,8 +85,8 @@ final Middleware<AppState> signUpSignInMiddleware =
         .whenComplete(() => null)
         .then((data) {
       // save login user data
-      Global.saveUserAccount(action.request.email, action.request.password);
       Global.saveToken(User.fromMap(data).token);
+      Global.saveUserAccount(action.request.email, action.request.password);
       debugPrint(
           'SignUp/SignIn success, write data to sp >>> email:${action.request.email}, '
           'pwd:${action.request.password}, token:${User.fromMap(data).token}');

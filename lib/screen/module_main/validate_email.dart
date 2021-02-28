@@ -1,6 +1,7 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
@@ -26,7 +27,8 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
   @override
   void initState() {
     super.initState();
-    SpUtil.putBool(KeyStore.IS_FIRST_RUN, false);
+    final storage = new FlutterSecureStorage();
+    storage.write(key: KeyStore.IS_FIRST_RUN, value: 'false');
     _controller.addListener(() {
       setState(() {
         _enable = RegexUtil.isEmail(_controller.text.trim());
