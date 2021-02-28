@@ -16,7 +16,7 @@ class DioClient {
     contentType: "application/json; charset=utf-8",
     responseType: ResponseType.json,
     headers: {
-      'x-token': Global.token,
+      'x-token': '',
     },
   );
 
