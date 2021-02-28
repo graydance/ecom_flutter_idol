@@ -31,7 +31,7 @@ dependencies:
   share: ^0.6.5+4
   ecomshare:
     git:
-      url: git@github.com:graydance/ecomshare.git
+      url: https://github.com/graydance/ecomshare.git
 dependency_overrides:
   flutter_svg: 0.20.0-nullsafety.3
 dev_dependencies:
