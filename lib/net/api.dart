@@ -1,24 +1,22 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:idol/env.dart';
 import 'package:idol/net/interceptor.dart';
 import 'package:idol/net/request/base.dart';
-import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/global.dart';
 
 class DioClient {
   static DioClient _instance;
-  static final String _fastMock =
-      "https://www.fastmock.site/mock/1b6bacacb1d24a5476d15e12d54a7093/idol";
   Dio _dio;
   BaseOptions _options = BaseOptions(
-    baseUrl: SpUtil.getBool('fastMockFlag') ? _fastMock : apiEntry,
+    baseUrl: apiEntry,
     connectTimeout: 10000,
     receiveTimeout: 10000,
     contentType: "application/json; charset=utf-8",
     responseType: ResponseType.json,
     headers: {
-      'x-token': SpUtil.getString(KeyStore.TOKEN),
+      'x-token': '',
     },
   );
 
@@ -52,7 +50,7 @@ class DioClient {
       {BaseRequest baseRequest}) async {
     try {
       var data = baseRequest.toMap();
-      debugPrint('body=>$data');
+      debugPrint('api post body => $data');
       Response rsp = await _dio.post(path, data: data);
       if (rsp.data['code'] == 0) {
         return rsp.data['data'];
@@ -61,6 +59,39 @@ class DioClient {
     } on DioError catch (e) {
       print(e.message);
       throw e.message;
+    }
+  }
+
+  Future<Map<String, dynamic>> upload(String path, File file, {ProgressCallback onSendProgress}) async {
+    try {
+      _dio.options.headers[Headers.contentLengthHeader] = file.lengthSync();
+      FormData formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path),
+      });
+      Response rsp = await _dio.post(path, data: formData, onSendProgress: onSendProgress);
+      if (rsp.data['code'] == 0) {
+        return rsp.data['data'];
+      }
+      throw rsp.data['msg'];
+    } on DioError catch (e) {
+      print(e.message);
+      throw e.message;
+    }
+  }
+
+  Future<String> download(String url, savePath, {Function(int, int) progressCallback}) async{
+    CancelToken cancelToken = CancelToken();
+    try{
+      await _dio.download(url, savePath, onReceiveProgress: progressCallback, cancelToken: cancelToken);
+      return savePath;
+    }catch (e){
+      debugPrint(e);
+      throw e.message;
+    }
+  }
+  void showDownloadProgress(int received, int total){
+    if(total != -1){
+      debugPrint("File download progress >>> " + (received/total*100).toStringAsFixed(0) + "%");
     }
   }
 }

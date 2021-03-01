@@ -55,6 +55,7 @@ class Colours {
   static const Color color_F1F1F6 = Color(0xFFF1F1F6);
   static const Color color_FA812B = Color(0xFFFA812B);
   static const Color color_F95453 = Color(0xFFF95453);
+  static const Color color_ED8514 = Color(0xFFED8514);
   static const Color color_EDEDF2 = Color(0xFFEDEDF2);
   static const Color color_B1B2B3 = Color(0xFFB1B2B3);
   static const Color color_29292B = Color(0xFF29292B);
@@ -75,12 +76,18 @@ class Colours {
   static const Color color_393939 = Color(0xFF393939);
   static const Color color_FEAC1B = Color(0xFFFEAC1B);
   static const Color color_D8D8D8 = Color(0xFFD8D8D8);
+  static const Color color_1E2539 = Color(0xFF1E2539);
+  static const Color color_979797 = Color(0xFF979797);
+  static const Color color_030406 = Color(0xFF030406);
+  static const Color color_949494 = Color(0xFF949494);
+  static const Color color_FFFFF0 = Color(0xFFFFFFF0);
   static const Color color_50D8D8D8 = Color(0x80D8D8D8);
   static const Color color_5028292A = Color(0x8028292A);
   static const Color color_40A2A2A2 = Color(0x66A2A2A2);
   static const Color color_10777777 = Color(0x1A777777);
   static const Color color_10EA5228 = Color(0x1AEA5228);
   static const Color color_35444648 = Color(0x59444648);
+  static const Color color_70555764 = Color(0xB3444648);
 
   static const Color color_black100 = Color(0xFF000000);
   static const Color color_black95 = Color(0xF2000000);
@@ -102,6 +109,26 @@ class Colours {
   static const Color color_black15 = Color(0x26000000);
   static const Color color_black10 = Color(0x1A000000);
   static const Color color_black5 = Color(0x0D000000);
+  static const Color color_white100 = Color(0xFFFFFFFF);
+  static const Color color_white95 = Color(0xF2FFFFFF);
+  static const Color color_white90 = Color(0xE6FFFFFF);
+  static const Color color_white85 = Color(0x85000000);
+  static const Color color_white80 = Color(0xCCFFFFFF);
+  static const Color color_white75 = Color(0xBFFFFFFF);
+  static const Color color_white70 = Color(0xB3FFFFFF);
+  static const Color color_white65 = Color(0xA6FFFFFF);
+  static const Color color_white60 = Color(0x99FFFFFF);
+  static const Color color_white55 = Color(0x8CFFFFFF);
+  static const Color color_white50 = Color(0x80FFFFFF);
+  static const Color color_white45 = Color(0x73FFFFFF);
+  static const Color color_white40 = Color(0x66FFFFFF);
+  static const Color color_white35 = Color(0x59FFFFFF);
+  static const Color color_white30 = Color(0x4DFFFFFF);
+  static const Color color_white25 = Color(0x4DFFFFFF);
+  static const Color color_white20 = Color(0x33FFFFFF);
+  static const Color color_white15 = Color(0x26FFFFFF);
+  static const Color color_white10 = Color(0x1AFFFFFF);
+  static const Color color_white5 = Color(0x0DFFFFFF);
 
   /// 透明度对应关系
   /// 100->FF 95->F2 90->E6 85->D9 80->CC 75->BF 70->B3 65->A6 60->99

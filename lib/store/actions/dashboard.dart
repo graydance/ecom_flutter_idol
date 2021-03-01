@@ -147,3 +147,83 @@ class CompleteRewardsFailureAction {
 }
 
 class CompleteRewardsSuccessAction {}
+
+/// BestSalesState
+abstract class BestSalesState {}
+
+class BestSalesInitial implements BestSalesState {
+  const BestSalesInitial();
+}
+
+class BestSalesLoading implements BestSalesState {}
+
+class BestSalesSuccess implements BestSalesState {
+  final BestSalesList bestSalesList;
+
+  BestSalesSuccess(this.bestSalesList);
+}
+
+class BestSalesFailure implements BestSalesState {
+  final String message;
+
+  BestSalesFailure(this.message);
+}
+
+/// BestSalesAction
+class BestSalesAction {
+  final BaseRequest request;
+
+  BestSalesAction(this.request);
+}
+
+class BestSalesFailureAction {
+  final String message;
+
+  BestSalesFailureAction(this.message);
+}
+
+class BestSalesSuccessAction {
+  final BestSalesList bestSalesList;
+
+  BestSalesSuccessAction(this.bestSalesList);
+}
+
+/// SalesHistoryState
+abstract class SalesHistoryState {}
+
+class SalesHistoryInitial implements SalesHistoryState {
+  const SalesHistoryInitial();
+}
+
+class SalesHistoryLoading implements SalesHistoryState {}
+
+class SalesHistorySuccess implements SalesHistoryState {
+  final SalesHistoryList salesHistoryList;
+
+  SalesHistorySuccess(this.salesHistoryList);
+}
+
+class SalesHistoryFailure implements SalesHistoryState {
+  final String message;
+
+  SalesHistoryFailure(this.message);
+}
+
+/// SalesHistoryAction
+class SalesHistoryAction {
+  final BaseRequest request;
+
+  SalesHistoryAction(this.request);
+}
+
+class SalesHistoryFailureAction {
+  final String message;
+
+  SalesHistoryFailureAction(this.message);
+}
+
+class SalesHistorySuccessAction {
+  final SalesHistoryList salesHistoryList;
+
+  SalesHistorySuccessAction(this.salesHistoryList);
+}

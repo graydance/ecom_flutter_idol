@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/net/request/login.dart';
+import 'package:idol/models/arguments/arguments.dart';
+import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
+import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/store/actions/main.dart';
@@ -12,22 +14,21 @@ import 'package:idol/utils/keystore.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => SplashScreenState();
+  State<StatefulWidget> createState() => _SplashScreenState();
 }
 
-class SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
+  final _storage = new FlutterSecureStorage();
 
-  bool _isUserLoggedIn() {
-    return SpUtil.getString(KeyStore.TOKEN).isNotEmpty;
-  }
-
-  void _onLoginStateChange(LoginState state) {
-    if (state is LoginSuccess) {
-      Future.delayed(
-          Duration(milliseconds: 3000), () => {IdolRoute.startHome(context)});
-    } else if (state is LoginFailure) {
-      Future.delayed(Duration(milliseconds: 3000),
-          () => {IdolRoute.startSignUpOrSignIn(context)});
+  void _onLoginStateChange(SignInState state) async{
+    if (state is SignInSuccess) {
+      debugPrint('state is LoginSuccess, startHome...');
+      IdolRoute.startHome(context);
+    } else if (state is SignInFailure) {
+      debugPrint('state is LoginFailure, ${state.message})...');
+      String email = await _storage.read(key: KeyStore.EMAIL);
+      IdolRoute.startSignIn(
+          context, SignUpSignInArguments(email));
     }
   }
 
@@ -35,44 +36,69 @@ class SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
-        distinct: true,
-        onInit: (store){
-          if (_isUserLoggedIn()) {
-            // auto login
-            debugPrint(
-                'User is logged in. will running auto login.');
-            String email = SpUtil.getString(KeyStore.EMAIL);
-            String password = SpUtil.getString(KeyStore.PASSWORD);
-            StoreProvider.of<AppState>(context)
-                .dispatch(LoginAction(LoginRequest(email, password)));
-          } else {
-            debugPrint(
-                'User is not logged in. will jump to Sign Up/Sign In.');
-            // sing up/sign in.
-            Future.delayed(Duration(milliseconds: 2000),
-                    () => {IdolRoute.startSignUpOrSignIn(context)});
-          }
-        },
-        onWillChange: (oldVM, newVM) =>
-            {_onLoginStateChange(newVM == null ? oldVM.loginState : newVM)},
-        converter: _ViewModel.fromStore,
-        builder: (context, vm) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: R.image.bg_splash_jpg(), fit: BoxFit.cover),
-          ),
-        ),
-      ),
+          distinct: true,
+          onInit: (store) {
+            checkSignInStatus();
+          },
+          onWillChange: (oldVM, newVM) {
+            debugPrint('onWillChange...');
+            _onLoginStateChange(
+                newVM == null ? oldVM.loginState : newVM.loginState);
+          },
+          converter: _ViewModel.fromStore,
+          builder: (context, vm) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colours.transparent,
+                image: DecorationImage(
+                    image: R.image.launch_background_webp(), fit: BoxFit.cover),
+              ),
+              child: Center(
+                child: ClipOval(
+                  child: Image(
+                    image: R.image.ic_logo(),
+                    width: 150,
+                    height: 150,
+                  ),
+                ),
+              ),
+            );
+          }),
     );
+  }
+
+  void checkSignInStatus() async {
+    String isFirstRun = await _storage.read(key: KeyStore.IS_FIRST_RUN);
+    String signedIn = await _storage.read(key: KeyStore.TOKEN);
+    String email = await _storage.read(key: KeyStore.EMAIL);
+    String password = await _storage.read(key: KeyStore.PASSWORD);
+    if (signedIn != null && signedIn.isNotEmpty) {
+      // auto login
+      debugPrint('User is logged in. will running auto login.');
+      Future.delayed(Duration(seconds: 2), () {
+        StoreProvider.of<AppState>(context)
+            .dispatch(SignInAction(SignUpSignInRequest(email, password)));
+      });
+    } else {
+      debugPrint('User is not logged in. will jump to Sign Up/Sign In.');
+      // sing up/sign in.
+      Future.delayed(Duration(seconds: 2), () {
+        isFirstRun != null &&
+                bool.fromEnvironment(isFirstRun, defaultValue: false)
+            ? IdolRoute.startGuide(context)
+            : IdolRoute.startValidateEmail(context);
+      });
+    }
   }
 }
 
 class _ViewModel {
-  final LoginState loginState;
+  final SignInState loginState;
+
   _ViewModel(this.loginState);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.loginState);
+    return _ViewModel(store.state.signInState);
   }
 
   @override

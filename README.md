@@ -1,5 +1,7 @@
 # idol
 
+![CI/CD](https://github.com/graydance/ecom_flutter_idol/workflows/CI/CD/badge.svg)
+
 A new Flutter project.
 
 ## Getting Started
