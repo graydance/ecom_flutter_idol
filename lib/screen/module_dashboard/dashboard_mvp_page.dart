@@ -4,7 +4,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/conf.dart';
-import 'package:idol/env.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/dashboard.dart';
@@ -95,14 +94,10 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
     }
   }
 
-  void _showHowToMakeMoneyDialog(bool check) async {
-    String neverShowHowToMakeDialog =
-        await _storage.read(key: KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG);
-    if (check &&
-        (_isShowedHowToMakeMoneyDialog ||
-            bool.fromEnvironment(neverShowHowToMakeDialog))) {
-      debugPrint(
-          '_showHowToMakeMoneyDialog >>> $_isShowedHowToMakeMoneyDialog | $neverShowHowToMakeDialog');
+  void _showHowToMakeMoneyDialog(bool check) async{
+    String neverShowHowToMakeDialog = await _storage.read(key: KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG);
+    if(check && (_isShowedHowToMakeMoneyDialog || 'true' == neverShowHowToMakeDialog)){
+      debugPrint('_showHowToMakeMoneyDialog >>> $_isShowedHowToMakeMoneyDialog | $neverShowHowToMakeDialog');
       return;
     }
     _isShowedHowToMakeMoneyDialog = true;
@@ -110,19 +105,15 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
       context: context,
       builder: (context) {
         return TipsGuideDialog(
-          KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG,
-          'How to make money\n with the app',
-          '1. Select and add products in Supply panel.\n 2. Add Shop Link to your bio in Socials.\n 3. Share great post in your socials. 4. Get your earnings after sales.(we cover all shopping and service)',
-          videoUrls[0],
-          buttonText: 'Select Now',
-          onTap: () {
-            IdolRoute.pop(context);
-            IdolRoute.sendArguments(context, HomeTabArguments(tabIndex: 0));
-          },
-          onClose: () {
-            IdolRoute.pop(context);
-          },
-        );
+            KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG,
+            'How to make money\n with MyPik',
+            '1. Select and add products in Supply panel.\n 2. Add Shop Link to your bio in Socials.\n 3. Share great post in your socials. 4. Get your earnings after sales.(we cover all shopping and service)',
+            videoUrls[0], buttonText: 'Select Now', onTap: (){
+              IdolRoute.pop(context);
+              IdolRoute.sendArguments(context, HomeTabArguments(tabIndex: 0));
+        }, onClose: (){
+              IdolRoute.pop(context);
+        },);
       },
       barrierDismissible: false,
     );
@@ -205,7 +196,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'How to make money with the app',
+                'How to make money with MyPik',
                 style: TextStyle(
                   color: Colours.color_0F1015,
                   fontSize: 12,

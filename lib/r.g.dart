@@ -94,6 +94,12 @@ class AssetResource {
 class _R_Image_AssetResource {
   const _R_Image_AssetResource();
 
+  /// asset: assets/images/bg_congratulations.png
+  // ignore: non_constant_identifier_names
+  final bg_congratulations = const AssetResource(
+      "assets/images/bg_congratulations.png",
+      packageName: null);
+
   /// asset: assets/images/bg_default_empty_goods.webp
   // ignore: non_constant_identifier_names
   final bg_default_empty_goods_webp = const AssetResource(
@@ -283,6 +289,11 @@ class _R_Image_AssetResource {
   final ic_edit = const AssetResource("assets/images/shoplink/ic_edit.png",
       packageName: null);
 
+  /// asset: assets/images/shoplink/ic_pv.png
+  // ignore: non_constant_identifier_names
+  final ic_pv = const AssetResource("assets/images/shoplink/ic_pv.png",
+      packageName: null);
+
   /// asset: assets/images/store/bg_header.png
   // ignore: non_constant_identifier_names
   final bg_header = const AssetResource("assets/images/store/bg_header.png",
@@ -411,6 +422,12 @@ class _R_Image {
   const _R_Image();
 
   final asset = const _R_Image_AssetResource();
+
+  /// asset: assets/images/bg_congratulations.png
+  // ignore: non_constant_identifier_names
+  AssetImage bg_congratulations() {
+    return AssetImage(asset.bg_congratulations.keyName);
+  }
 
   /// asset: assets/images/bg_default_empty_goods.webp
   // ignore: non_constant_identifier_names
@@ -602,6 +619,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_edit() {
     return AssetImage(asset.ic_edit.keyName);
+  }
+
+  /// asset: assets/images/shoplink/ic_pv.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_pv() {
+    return AssetImage(asset.ic_pv.keyName);
   }
 
   /// asset: assets/images/store/bg_header.png

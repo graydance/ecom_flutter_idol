@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -21,17 +20,15 @@ import 'package:idol/screen/module_shoplink/shoplink_goods_list_item.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_bottom_sheet.dart';
 import 'package:idol/widgets/dialog_change_username.dart';
-import 'package:idol/widgets/dialog_share.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
-import 'package:ecomshare/ecomshare.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -81,7 +78,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
       builder: (context, vm) {
         debugPrint('>>>>>>>>>>>>>>>>>>>ShopLink build<<<<<<<<<<<<<<<<<<<');
         return Container(
-          margin: EdgeInsets.only(bottom: 45),
           color: Colours.color_F8F8F8,
           child: Column(
             //mainAxisSize: MainAxisSize.max,
@@ -193,10 +189,17 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           ),
                           Visibility(
                             visible: _editState,
-                            child: Image(
-                              image: R.image.ic_edit(),
-                              width: 15,
-                              height: 15,
+                            child: GestureDetector(
+                              child: Image(
+                                image: R.image.ic_edit(),
+                                width: 15,
+                                height: 15,
+                              ),
+                              onTap: () {
+                                if (_editState) {
+                                  _showEditUserNameDialog();
+                                }
+                              },
                             ),
                           ),
                         ],
@@ -206,7 +209,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           : [
                               GestureDetector(
                                 onTap: () {
-                                  _showShareLinkDialog('$linkDomain$_userName');
+                                  ShareManager.showShareLinkDialog(
+                                      context, '$linkDomain$_userName');
                                 },
                                 child: Container(
                                   padding: EdgeInsets.only(
@@ -336,95 +340,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
-  void _showShareLinkDialog(String link) {
-    showModalBottomSheet(
-        /*backgroundColor: Colours.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-        ),*/
-        context: context,
-        builder: (context) {
-          return ShareDialog(
-            'How to sales on socials',
-            videoUrls[0],
-            '1. Go to my Social account\n 2. Edit profile\n 3. Paste your Shop Link into Bio\n 4. Notice your fans with great post',
-            ShareType.link,
-            (channel) {
-              if ('Copy Link' == channel) {
-                var link = linkDomain + _userName;
-                //复制
-                Clipboard.setData(ClipboardData(text: link));
-                EasyLoading.showToast('$link\n is Replicated!');
-              } else {
-                Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
-              }
-              IdolRoute.pop(context);
-            },
-          );
-        });
-  }
-
-  void _showShareGoodsDialog(StoreGoods storeGoods) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return ShareDialog(
-            'Share great posts in feed',
-            storeGoods.picture,
-            'The product is now available in your store.\n share the news with your fans on social media to make money!',
-            ShareType.goods,
-            (shareChannel) {
-              IdolRoute.pop(context);
-              _createSaveDownloadPicturePath(
-                      storeGoods.id ?? storeGoods.idolGoodsId)
-                  .then((savePath) {
-                DioClient.getInstance()
-                    .download(
-                  storeGoods.picture,
-                  savePath,
-                )
-                    .then((path) {
-                  _showGuideDialog(
-                    videoUrls[0],
-                    shareChannel,
-                    savePath,
-                  );
-                });
-              });
-            },
-            tips:
-                'Tips: Share your own pictures with product can increase 38% Sales.',
-          );
-        });
-  }
-
-  Future<String> _createSaveDownloadPicturePath(String id) async {
-    Directory tempDir = await getTemporaryDirectory();
-    return tempDir.path + id + '.jpg';
-  }
-
-  void _showGuideDialog(
-      String guideVideoUrl, String shareChannel, String pictureLocalPath) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return ShareDialog(
-            'How to share in $shareChannel',
-            guideVideoUrl,
-            '1. Go to my account in $shareChannel\n 2. Edit profile\n 3. Paste your shop link into Website',
-            ShareType.guide,
-            (sChannel) {
-              Ecomshare.shareTo(
-                  Ecomshare.MEDIA_TYPE_IMAGE, shareChannel, pictureLocalPath);
-            },
-            shareChannel: shareChannel,
-          );
-        });
-  }
-
   Widget _buildWidget(_ViewModel vm) {
     if (vm._myInfoGoodsListState is MyInfoGoodsListInitial ||
         vm._myInfoGoodsListState is MyInfoGoodsListLoading) {
@@ -470,7 +385,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         mainAxisSpacing: 15.0,
         staggeredTileBuilder: (int index) {
           // return StaggeredTile.count(1, 1.5);
-          return StaggeredTile.count(1, 1.4);
+          return StaggeredTile.count(1, index == 0 ? 1.55 : 1.8);
         },
         //physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
@@ -545,7 +460,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           onItemClick: (index) {
             switch (index) {
               case 0:
-                _showShareGoodsDialog(storeGoods);
+                ShareManager.showShareGoodsDialog(context, storeGoods.picture);
                 break;
               case 1:
                 vm._deleteGoods(storeGoods.idolGoodsId);

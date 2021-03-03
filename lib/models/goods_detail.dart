@@ -42,7 +42,7 @@ class GoodsDetail {
 
   const GoodsDetail({
     this.id = '',
-    this.supplierName = '',
+    this.supplierName= '',
     this.supplierId = '',
     this.followStatus = 0,
     this.goodsName = '',
@@ -56,7 +56,7 @@ class GoodsDetail {
     this.collectNum = 0,
     this.inMyStore = 0,
     this.tag = const [],
-    this.goods = const [],
+    this.goods = const[],
     this.updateTime = 0,
   });
 
@@ -76,10 +76,10 @@ class GoodsDetail {
     int collectNum,
     List<Tag> tag,
     List<String> goods,
-    String updateTime,
+    int updateTime,
   }) {
     if ((id == null || identical(id, this.id)) &&
-        (supplierName == null || identical(supplierName, this.supplierName)) &&
+    (supplierName == null || identical(supplierName, this.supplierName)) &&
         (supplierId == null || identical(supplierId, this.supplierId)) &&
         (followStatus == null || identical(followStatus, this.followStatus)) &&
         (goodsName == null || identical(goodsName, this.goodsName)) &&
@@ -131,45 +131,30 @@ class GoodsDetail {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is GoodsDetail &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          supplierName == other.supplierName &&
-          supplierId == other.supplierId &&
-          followStatus == other.followStatus &&
-          goodsName == other.goodsName &&
-          earningPrice == other.earningPrice &&
-          earningPriceStr == other.earningPriceStr &&
-          suggestedPrice == other.suggestedPrice &&
-          suggestedPriceStr == other.suggestedPriceStr &&
-          goodsDescription == other.goodsDescription &&
-          discount == other.discount &&
-          soldNum == other.soldNum &&
-          collectNum == other.collectNum &&
-          inMyStore == other.inMyStore &&
-          tag == other.tag &&
-          goods == other.goods &&
-          updateTime == other.updateTime;
+          other is GoodsDetail && runtimeType == other.runtimeType &&
+              id == other.id && supplierName == other.supplierName &&
+              supplierId == other.supplierId &&
+              followStatus == other.followStatus &&
+              goodsName == other.goodsName &&
+              earningPrice == other.earningPrice &&
+              earningPriceStr == other.earningPriceStr &&
+              suggestedPrice == other.suggestedPrice &&
+              suggestedPriceStr == other.suggestedPriceStr &&
+              goodsDescription == other.goodsDescription &&
+              discount == other.discount && soldNum == other.soldNum &&
+              collectNum == other.collectNum && inMyStore == other.inMyStore &&
+              tag == other.tag && goods == other.goods &&
+              updateTime == other.updateTime;
 
   @override
   int get hashCode =>
-      id.hashCode ^
-      supplierName.hashCode ^
-      supplierId.hashCode ^
-      followStatus.hashCode ^
-      goodsName.hashCode ^
-      earningPrice.hashCode ^
-      earningPriceStr.hashCode ^
-      suggestedPrice.hashCode ^
-      suggestedPriceStr.hashCode ^
-      goodsDescription.hashCode ^
-      discount.hashCode ^
-      soldNum.hashCode ^
-      collectNum.hashCode ^
-      inMyStore.hashCode ^
-      tag.hashCode ^
-      goods.hashCode ^
-      updateTime.hashCode;
+      id.hashCode ^ supplierName.hashCode ^ supplierId.hashCode ^ followStatus
+          .hashCode ^ goodsName.hashCode ^ earningPrice
+          .hashCode ^ earningPriceStr.hashCode ^ suggestedPrice
+          .hashCode ^ suggestedPriceStr.hashCode ^ goodsDescription
+          .hashCode ^ discount.hashCode ^ soldNum.hashCode ^ collectNum
+          .hashCode ^ inMyStore.hashCode ^ tag.hashCode ^ goods
+          .hashCode ^ updateTime.hashCode;
 
   factory GoodsDetail.fromMap(
     Map<String, dynamic> map, {
@@ -193,9 +178,7 @@ class GoodsDetail {
       soldNum: map[keyMapper('soldNum')] as int,
       collectNum: map[keyMapper('collectNum')] as int,
       inMyStore: map[keyMapper('inMyStore')] as int,
-      tag: (map[keyMapper('tag')] as List)
-          .map((e) => Tag.fromMap(e as Map<String, dynamic>))
-          .toList(),
+      tag: (map[keyMapper('tag')] as List).map((e) => Tag.fromMap(e as Map<String, dynamic>)).toList(),
       goods: map[keyMapper('goods')].cast<String>(),
     );
   }
