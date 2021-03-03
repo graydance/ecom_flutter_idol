@@ -46,7 +46,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         } else {
           _goodsId = arguments.goodsId;
           _supplierId = arguments.supplierId;
-          store.dispatch(GoodsDetailAction(GoodsDetailRequest(_supplierId, _goodsId)));
+          store.dispatch(
+              GoodsDetailAction(GoodsDetailRequest(_supplierId, _goodsId)));
         }
       },
       distinct: true,
@@ -120,7 +121,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   }
 
   Widget _buildBodyWidget(_ViewModel vm) {
-    if (vm._goodsDetailState is GoodsDetailInitial || vm._goodsDetailState is GoodsDetailLoading) {
+    if (vm._goodsDetailState is GoodsDetailInitial ||
+        vm._goodsDetailState is GoodsDetailLoading) {
       return IdolLoadingWidget();
     } else if (vm._goodsDetailState is GoodsDetailFailure) {
       return IdolErrorWidget(() {
@@ -132,8 +134,12 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
           (vm._goodsDetailState as GoodsDetailSuccess).goodsDetail;
       _supplierId = goodsDetail.supplierId;
       _supplierName = goodsDetail.supplierName;
-      _bottomButtonStatus = goodsDetail.inMyStore == 0 ? IdolButtonStatus.enable : IdolButtonStatus.disable;
-      _bottomButtonText = goodsDetail.inMyStore == 0 ? 'Add to my store' : 'Has been added to my store';
+      _bottomButtonStatus = goodsDetail.inMyStore == 0
+          ? IdolButtonStatus.enable
+          : IdolButtonStatus.disable;
+      _bottomButtonText = goodsDetail.inMyStore == 0
+          ? 'Add to my store'
+          : 'Has been added to my store';
       return SingleChildScrollView(
         child: Container(
           //padding: EdgeInsets.all(15),
@@ -262,8 +268,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         return Container(
                           padding: EdgeInsets.only(left: 1, right: 1),
                           decoration: BoxDecoration(
-                            border:
-                            Border.all(color: Colours.color_48B6EF, width: 1),
+                            border: Border.all(
+                                color: Colours.color_48B6EF, width: 1),
                             borderRadius: BorderRadius.all(Radius.circular(4)),
                           ),
                           child: Text(
@@ -283,7 +289,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         children: [
                           TextSpan(
                             text: Global.getUser(context).monetaryUnit +
-                                goodsDetail.earningPriceStr ??
+                                    goodsDetail.earningPriceStr ??
                                 '0.00',
                             style: TextStyle(
                                 color: Colours.color_EA5228, fontSize: 20),
@@ -304,7 +310,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         children: [
                           TextSpan(
                             text: Global.getUser(context).monetaryUnit +
-                                goodsDetail.suggestedPriceStr ??
+                                    goodsDetail.suggestedPriceStr ??
                                 '0.00',
                             style: TextStyle(
                                 color: Colours.color_0F1015, fontSize: 14),
@@ -416,12 +422,16 @@ class _ViewModel {
 
   static _ViewModel fromStore(Store<AppState> store) {
     void _goodsDetail(String supplierId, String goodsId) {
-      store.dispatch(GoodsDetailAction(GoodsDetailRequest(supplierId, goodsId)));
+      store
+          .dispatch(GoodsDetailAction(GoodsDetailRequest(supplierId, goodsId)));
     }
-    void _addToMyStore(String goodsId){
+
+    void _addToMyStore(String goodsId) {
       store.dispatch(AddStoreRequest(goodsId));
     }
-    return _ViewModel(store.state.goodsDetailState, _goodsDetail, _addToMyStore);
+
+    return _ViewModel(
+        store.state.goodsDetailState, _goodsDetail, _addToMyStore);
   }
 
   @override
