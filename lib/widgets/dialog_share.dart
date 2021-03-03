@@ -63,6 +63,8 @@ class _ShareDialogState extends State<ShareDialog> {
             widget.mediaUrl.toLowerCase().endsWith('.mp4')) {
       _controller = VideoPlayerController.network(widget.mediaUrl)
         ..initialize().then((_) {
+          _controller.setLooping(true);
+          // _controller.play();
           setState(() {});
         });
     }
@@ -253,31 +255,30 @@ class _ShareDialogState extends State<ShareDialog> {
               alignment: Alignment.center,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    _controller.value.isPlaying
-                        ? _controller.pause()
-                        : _controller.play();
-                    setState(() {});
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(2)),
-                    child: AspectRatio(
-                      aspectRatio: 270 / 140, //_controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
-                    ),
+                    onTap: () {
+                      _controller.value.isPlaying
+                          ? _controller.pause()
+                          : _controller.play();
+                      setState(() {});
+                    },
+                    child: Center(
+                      child: _controller.value.initialized
+                          ? Visibility(
+                              visible: !_controller.value.isPlaying,
+                              child: Image(
+                                image: R.image.play(),
+                                width: 50,
+                                height: 50,
+                              ),
+                            )
+                          : IdolLoadingWidget(),
+                    )),
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                  child: AspectRatio(
+                    aspectRatio: 270 / 140, //_controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
                   ),
-                ),
-                Center(
-                  child: _controller.value.initialized
-                      ? Visibility(
-                          visible: !_controller.value.isPlaying,
-                          child: Image(
-                            image: R.image.play(),
-                            width: 50,
-                            height: 50,
-                          ),
-                        )
-                      : IdolLoadingWidget(),
                 ),
               ],
             ),
@@ -331,16 +332,44 @@ class _ShareDialogState extends State<ShareDialog> {
             height: 10,
           ),
           Container(
+              padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(
                   Radius.circular(2),
                 ),
-                color: Colours.black,
               ),
-              child: AspectRatio(
-                aspectRatio: 270 / 140, //_controller.value.aspectRatio
-                child: VideoPlayer(_controller),
-              )),
+              child: GestureDetector(
+                  onTap: () {
+                    _controller.value.isPlaying
+                        ? _controller.pause()
+                        : _controller.play();
+                    setState(() {});
+                  },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        child: AspectRatio(
+                          aspectRatio:
+                              270 / 140, //_controller.value.aspectRatio,
+                          child: VideoPlayer(_controller),
+                        ),
+                      ),
+                      Center(
+                        child: _controller.value.initialized
+                            ? Visibility(
+                                visible: !_controller.value.isPlaying,
+                                child: Image(
+                                  image: R.image.play(),
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              )
+                            : IdolLoadingWidget(),
+                      ),
+                    ],
+                  ))),
           SizedBox(
             height: 10,
           ),
