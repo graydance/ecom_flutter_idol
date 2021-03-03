@@ -108,7 +108,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
             KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG,
             'How to make money\n with the app',
             '1. Select and add products in Supply panel.\n 2. Add Shop Link to your bio in Socials.\n 3. Share great post in your socials. 4. Get your earnings after sales.(we cover all shopping and service)',
-            videoUrls[0], onTap: (){
+            videoUrls[0], buttonText: 'Select Now', onTap: (){
               IdolRoute.pop(context);
               IdolRoute.sendArguments(context, HomeTabArguments(tabIndex: 0));
         }, onClose: (){

@@ -1,11 +1,18 @@
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:ecomshare/ecomshare.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/env.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
+import 'package:idol/net/api.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
 import 'package:idol/store/actions/supply.dart';
+import 'package:idol/widgets/dialog_share.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -76,9 +83,10 @@ class _ForYouTabViewState extends State<ForYouTabView>
             itemCount: _goodsDetailList.length,
             itemBuilder: (context, index) =>
                 FollowingGoodsListItem(goodsDetail: _goodsDetailList[index], onProductAddedStoreListener: (goodsDetail){
-                  setState(() {
-                    _goodsDetailList.removeAt(index);
-                  });
+                  // setState(() {
+                  //_goodsDetailList.removeAt(index);
+                  // });
+                    _showShareGoodsDialog(goodsDetail);
                 },),
           ),
           onRefresh: () async {
@@ -95,6 +103,63 @@ class _ForYouTabViewState extends State<ForYouTabView>
         ),
       );
     }
+  }
+
+  void _showShareGoodsDialog(GoodsDetail goodsDetail) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return ShareDialog(
+            'Share great posts in feed',
+            goodsDetail.goods[0],
+            'The product is now available in your store.\n share the news with your fans on social media to make money!',
+            ShareType.goods,
+                (shareChannel) {
+              IdolRoute.pop(context);
+              _createSaveDownloadPicturePath(goodsDetail.id)
+                  .then((savePath) {
+                DioClient.getInstance()
+                    .download(
+                  goodsDetail.goods[0],
+                  savePath,
+                )
+                    .then((path) {
+                  _showGuideDialog(
+                    videoUrls[0],
+                    shareChannel,
+                    savePath,
+                  );
+                });
+              });
+            },
+            tips:
+            'Tips: Share your own pictures with product can increase 38% Sales.',
+          );
+        });
+  }
+
+  Future<String> _createSaveDownloadPicturePath(String id) async {
+    Directory tempDir = await getTemporaryDirectory();
+    return tempDir.path + id + '.jpg';
+  }
+
+  void _showGuideDialog(
+      String guideVideoUrl, String shareChannel, String pictureLocalPath) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return ShareDialog(
+            'How to share in $shareChannel',
+            guideVideoUrl,
+            '1. Go to my account in $shareChannel\n 2. Edit profile\n 3. Paste your shop link into Website',
+            ShareType.guide,
+                (sChannel) {
+              Ecomshare.shareTo(
+                  Ecomshare.MEDIA_TYPE_IMAGE, shareChannel, pictureLocalPath);
+            },
+            shareChannel: shareChannel,
+          );
+        });
   }
 
   void _onFollowingStateChanged(ForYouState state) {
