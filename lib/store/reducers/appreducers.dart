@@ -36,5 +36,7 @@ AppState appReducer(AppState state, action) {
     bestSalesState: bestSalesReducer(state.bestSalesState, action),
     salesHistoryState: salesHistoryReducer(state.salesHistoryState, action),
     salesHistoryArguments: salesHistoryArgumentsReducer(state.salesHistoryArguments, action),
+    updatePasswordState: updatePasswordReducer(state.updatePasswordState, action),
+    innerWebViewArguments: innerWebViewArgumentsReducer(state.innerWebViewArguments, action),
   );
 }

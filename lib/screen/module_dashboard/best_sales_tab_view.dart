@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/dashboard.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/error.dart';
@@ -22,7 +24,6 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
   List<BestSales> _bestSalesList = const [];
   RefreshController _refreshController;
   int _type = 0; // 0 最近7天 1 最近30天
-  int _currentPage = 1;
   bool _enablePullUp = false;
 
   @override
@@ -55,7 +56,12 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
 
   void _onBestSalesStateChanged(BestSalesState state) {
     if (state is BestSalesSuccess) {
-    } else if (state is BestSalesFailure) {}
+      if(state.bestSalesList != null && state.bestSalesList.list != null){
+        _bestSalesList = state.bestSalesList.list;
+      }
+    } else if (state is BestSalesFailure) {
+      EasyLoading.showError(state.message);
+    }
   }
 
   Widget _buildWidget(_ViewModel vm) {
@@ -65,30 +71,38 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
       return IdolLoadingWidget();
     } else if (vm._bestSalesState is BestSalesFailure) {
       return IdolErrorWidget(() {
-        vm._load(1);
+        vm._load(_type);
       });
-    } else {
+    }else {
       return Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PopupMenuButton(
-              initialValue: 2,
-              child: Center(
+            PopupMenuButton<int>(
+              onSelected: (index) {
+                setState(() {
+                  debugPrint('onSelect >>> $index');
+                  _type = index;
+                });
+              },
+              child: Padding(
+                padding:
+                    EdgeInsets.only(left: 16, top: 10, right: 16, bottom: 10),
                 child: Text(
-                  _type == 0 ? 'Last 7 days' : 'Last 30 days',
+                  _type == 0 ? 'Last 7 days ▼' : 'Last 30 days ▼',
                   style: TextStyle(color: Colours.color_555764, fontSize: 12),
                 ),
               ),
               itemBuilder: (context) {
-                return [
+                return <PopupMenuEntry<int>>[
                   PopupMenuItem(
                     child: Text(
                       'Last 7 days',
                       style:
                           TextStyle(color: Colours.color_C4C5CD, fontSize: 10),
                     ),
+                    value: 0,
                   ),
                   PopupMenuItem(
                     child: Text(
@@ -96,13 +110,9 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
                       style:
                           TextStyle(color: Colours.color_C4C5CD, fontSize: 10),
                     ),
+                    value: 1,
                   ),
                 ].toList();
-              },
-              onSelected: (index) {
-                setState(() {
-                  _type = index;
-                });
               },
             ),
             Expanded(
@@ -120,19 +130,19 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
                       color: Colors.transparent,
                     );
                   },
-                  itemCount: _bestSalesList.length,
+                  itemCount: _bestSalesList.length == 0 ? 1 : _bestSalesList.length,
                   itemBuilder: (context, index) => _bestSalesList.isEmpty
                       ? _bestSalesEmptyWidget()
                       : _BestSalesItem(_bestSalesList[index]),
                 ),
                 onRefresh: () async {
                   await Future(() {
-                    vm._load(1);
+                    vm._load(_type);
                   });
                 },
                 onLoading: () async {
                   await Future(() {
-                    vm._load(_currentPage + 1);
+                    vm._load(_type);
                   });
                 },
                 controller: _refreshController,
@@ -152,7 +162,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image(
-            image: R.image.bg_common_error(),
+            image: R.image.bg_default_empty_sales_history_webp(),
             width: 170,
             height: 195,
           ),
@@ -160,18 +170,8 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
             height: 20,
           ),
           Text(
-            'No sales history Now, Add and Share products now',
+            'Temporarily no data',
             style: TextStyle(color: Colours.color_0F1015, fontSize: 16),
-          ),
-          SizedBox(
-            height: 28,
-          ),
-          IdolButton(
-            'Add and share',
-            status: IdolButtonStatus.enable,
-            listener: (status) {
-              // TODO go supply.
-            },
           ),
         ],
       ),

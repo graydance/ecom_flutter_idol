@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:idol/conf.dart';
+import 'package:idol/env.dart';
 import 'package:idol/models/arguments/withdraw_result.dart';
 import 'package:idol/widgets/button.dart';
-import 'package:idol/widgets/dialog.dart';
+import 'package:idol/widgets/dialog_rating.dart';
 import 'package:idol/widgets/ui.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
@@ -12,10 +15,8 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 
 class WithdrawResultScreen extends StatefulWidget {
-
   @override
-  State<StatefulWidget> createState() =>
-      _WithdrawResultScreenState();
+  State<StatefulWidget> createState() => _WithdrawResultScreenState();
 }
 
 class _WithdrawResultScreenState extends State {
@@ -29,11 +30,11 @@ class _WithdrawResultScreenState extends State {
     Store<AppState> store = StoreProvider.of<AppState>(context, listen: false);
     arguments = store.state.withdrawResultArguments;
     if (arguments.withdrawStatus != -1) {
-      if(arguments.withdrawStatus == 0){
-      Future.delayed(
-          Duration(milliseconds: 1000), () => {_showRateDialog(context)});
+      if (arguments.withdrawStatus == 0) {
+        Future.delayed(
+            Duration(milliseconds: 1000), () => {_showRateDialog(context)});
       }
-    }else{
+    } else {
       IdolRoute.popAndExit(context);
     }
   }
@@ -49,9 +50,8 @@ class _WithdrawResultScreenState extends State {
                 onRate: (rateValue) {
                   debugPrint('rate：' + rateValue);
                   if (double.tryParse(rateValue) >= 8) {
-                    // TODO 跳转到应用商店进行评分
-                    EasyLoading.showToast(
-                        'Jump to the GooglePlay Store rating.');
+                    LaunchReview.launch(
+                        androidAppId: "me.hookar.idol", iOSAppId: iosAppId);
                   } else {
                     EasyLoading.showToast(
                         'Thank you for your comment, we will do better.');
@@ -89,9 +89,9 @@ class _WithdrawResultScreenState extends State {
               IdolButton(
                 'Make more money',
                 status: IdolButtonStatus.enable,
-                enableColors: arguments.withdrawStatus == 0
-                    ? [Colours.color_95EC7E, Colours.color_5CD548]
-                    : [Colours.color_F17F7F, Colours.color_EA4E4E],
+                // enableColors: arguments.withdrawStatus == 0
+                //     ? [Colours.color_95EC7E, Colours.color_5CD548]
+                //     : [Colours.color_F17F7F, Colours.color_EA4E4E],
                 linearGradientBegin: Alignment.topCenter,
                 linearGradientEnd: Alignment.bottomCenter,
                 listener: (status) => {IdolRoute.popAndExit(context)},

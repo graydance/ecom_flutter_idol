@@ -1,7 +1,10 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/conf.dart';
+import 'package:idol/env.dart';
 import 'package:idol/models/appstate.dart';
+import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/models/arguments/withdraw_verify.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/res/colors.dart';
@@ -9,7 +12,7 @@ import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/button.dart';
-import 'package:idol/widgets/dialog.dart';
+import 'package:idol/widgets/dialog_select_payment.dart';
 import 'package:idol/widgets/ui.dart';
 import 'package:redux/redux.dart';
 
@@ -65,8 +68,8 @@ class _WithdrawScreenState extends State {
         debugPrint('Confirm Account TextField lose focus.');
         setState(() {
           _confirmAccountTips = _accountController.text.isNotEmpty &&
-              _confirmAccountController.text.isNotEmpty &&
-              _confirmAccountController.text == _accountController.text
+                  _confirmAccountController.text.isNotEmpty &&
+                  _confirmAccountController.text == _accountController.text
               ? ''
               : 'Account not match';
         });
@@ -81,14 +84,14 @@ class _WithdrawScreenState extends State {
         if (withdrawalAmountString.isNotEmpty) {
           if (withdrawalAmountString.contains('.')) {
             double withdrawalAmountDouble =
-            double.tryParse(withdrawalAmountString);
+                double.tryParse(withdrawalAmountString);
             if (withdrawalAmountDouble < 100) {
               _amountTips =
-              'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
+                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
-                  _withdrawInfo.withdraw
+                      _withdrawInfo.withdraw
                   ? ''
                   : 'Not sufficient funds';
             }
@@ -96,11 +99,11 @@ class _WithdrawScreenState extends State {
             int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
             if (withdrawalAmountInt < 100) {
               _amountTips =
-              'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
+                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
-                  _withdrawInfo.withdraw
+                      _withdrawInfo.withdraw
                   ? ''
                   : 'Not sufficient funds';
             }
@@ -146,274 +149,311 @@ class _WithdrawScreenState extends State {
   }
 
   Widget _buildWidget(_ViewModel vm) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.only(left: 15, right: 15, top: 40),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 5),
-              child: Row(
-                children: [
-                  Text(
-                    'Available',
-                    style: TextStyle(fontSize: 16, color: Colours.color_A9A9A9),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                Global.getUser(context).monetaryUnit +
-                    TextUtil.formatDoubleComma3(
-                        vm._withdrawInfo.withdraw / 100),
-                style: TextStyle(
-                    fontSize: 35,
-                    color: Colours.color_EA5228,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              //color: Colours.color_F4F5F6,
-              decoration: BoxDecoration(
-                color: Colours.color_F4F5F6,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              margin: EdgeInsets.only(top: 35),
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.only(left: 15, right: 15, top: 40),
               child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: () => _showPaymentMethodsDialog(
-                        vm._withdrawInfo.withdrawType),
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: 15, top: 25, right: 15, bottom: 0),
-                      child: Row(
-                        //mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Payment',
-                            style: TextStyle(
-                              color: Colours.color_3B3F42,
-                              fontSize: 14,
+                  Padding(
+                    padding: EdgeInsets.only(left: 5),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Available',
+                          style: TextStyle(
+                              fontSize: 16, color: Colours.color_A9A9A9),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      Global.getUser(context).monetaryUnit +
+                          TextUtil.formatDoubleComma3(
+                              vm._withdrawInfo.withdraw / 100),
+                      style: TextStyle(
+                          fontSize: 35,
+                          color: Colours.color_EA5228,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    //color: Colours.color_F4F5F6,
+                    decoration: BoxDecoration(
+                      color: Colours.color_F4F5F6,
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    margin: EdgeInsets.only(top: 35),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _showPaymentMethodsDialog(
+                              vm._withdrawInfo.withdrawType),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 15, top: 25, right: 15, bottom: 0),
+                            child: Row(
+                              //mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Payment',
+                                  style: TextStyle(
+                                    color: Colours.color_3B3F42,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      _withdrawTypeName,
+                                      style: TextStyle(
+                                          color: Colours.color_B1B2B3,
+                                          fontSize: 14),
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      color: Colours.color_35444648,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          Row(
+                        ),
+                        Divider(
+                          color: Colours.color_E7E8EC,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 15, top: 15, right: 15, bottom: 5),
+                          child: Row(
+                            //mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                _withdrawTypeName,
+                                'Account',
                                 style: TextStyle(
-                                    color: Colours.color_B1B2B3, fontSize: 14),
+                                  color: Colours.color_3B3F42,
+                                  fontSize: 14,
+                                ),
                               ),
-                              Icon(
-                                Icons.chevron_right,
-                                color: Colours.color_35444648,
-                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: _accountController,
+                                  focusNode: _accountFocusNode,
+                                  style: TextStyle(
+                                      color: Colours.color_B1B2B3,
+                                      fontSize: 14),
+                                  textAlign: TextAlign.end,
+                                  maxLines: 1,
+                                  //maxLength: 254,
+                                  keyboardType: TextInputType.emailAddress,
+
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      isCollapsed: true,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(vertical: 1.0)),
+                                ),
+                              )
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Divider(
-                    color: Colours.color_E7E8EC,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: 15, top: 15, right: 15, bottom: 5),
-                    child: Row(
-                      //mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Account',
-                          style: TextStyle(
-                            color: Colours.color_3B3F42,
-                            fontSize: 14,
-                          ),
                         ),
-                        Expanded(
-                          child: TextField(
-                            controller: _accountController,
-                            focusNode: _accountFocusNode,
-                            style: TextStyle(
-                                color: Colours.color_B1B2B3, fontSize: 14),
-                            textAlign: TextAlign.end,
-                            maxLines: 1,
-                            //maxLength: 254,
-                            keyboardType: TextInputType.emailAddress,
-
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                isCollapsed: true,
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 1.0)),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Divider(
-                    color: Colours.color_E7E8EC,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        _accountTips,
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colours.color_ED3544,
+                        Divider(
+                          color: Colours.color_E7E8EC,
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 15, top: 6, right: 15, bottom: 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Confirm Account',
-                          style: TextStyle(
-                            color: Colours.color_3B3F42,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: _confirmAccountController,
-                            textAlign: TextAlign.end,
-                            focusNode: _confirmAccountFocusNode,
-                            style: TextStyle(
-                                color: Colours.color_B1B2B3, fontSize: 14),
-                            maxLines: 1,
-                            //maxLength: 254,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                isCollapsed: true,
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 1.0)),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Divider(
-                    color: Colours.color_E7E8EC,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        _confirmAccountTips,
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colours.color_ED3544,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 15, top: 6, right: 15, bottom: 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Amount(${Global.getUser(context).monetaryUnit})',
-                          style: TextStyle(
-                            color: Colours.color_3B3F42,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: _amountController,
-                            focusNode: _amountFocusNode,
-                            style: TextStyle(
-                                color: Colours.color_B1B2B3, fontSize: 14),
-                            textAlign: TextAlign.end,
-                            maxLines: 1,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                isCollapsed: true,
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 1.0)),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Divider(
-                    color: Colours.color_E7E8EC,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 15),
-                        child: Text(
-                          _amountTips,
-                          style: TextStyle(
-                              color: Colours.color_B1B2B3, fontSize: 12),
-                        ),
-                      )
-                    ],
-                  ),
-                  Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        //mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Notice',
-                            style: TextStyle(
-                                fontSize: 14, color: Colours.color_3B3F42),
-                          ),
-                          SizedBox(
-                            height: 7,
-                            width: double.infinity,
-                          ),
-                          Text(
-                            'We will process the withdraw request within 2 working days.\nThe minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colours.color_B1B2B3,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              _accountTips,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colours.color_ED3544,
+                              ),
                             ),
-                            textAlign: TextAlign.start,
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 15, top: 6, right: 15, bottom: 5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Confirm Account',
+                                style: TextStyle(
+                                  color: Colours.color_3B3F42,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: _confirmAccountController,
+                                  textAlign: TextAlign.end,
+                                  focusNode: _confirmAccountFocusNode,
+                                  style: TextStyle(
+                                      color: Colours.color_B1B2B3,
+                                      fontSize: 14),
+                                  maxLines: 1,
+                                  //maxLength: 254,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      isCollapsed: true,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(vertical: 1.0)),
+                                ),
+                              )
+                            ],
                           ),
-                        ],
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: 24, top: 26, right: 24, bottom: 26),
-                    child: IdolButton(
-                      'Withdraw',
-                      status: withdrawButtonStatus,
-                      listener: (status) => {
-                        if (status == IdolButtonStatus.enable) {_withdraw(vm)}
-                      },
+                        ),
+                        Divider(
+                          color: Colours.color_E7E8EC,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              _confirmAccountTips,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colours.color_ED3544,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 15, top: 6, right: 15, bottom: 5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Amount(${Global.getUser(context).monetaryUnit})',
+                                style: TextStyle(
+                                  color: Colours.color_3B3F42,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: _amountController,
+                                  focusNode: _amountFocusNode,
+                                  style: TextStyle(
+                                      color: Colours.color_B1B2B3,
+                                      fontSize: 14),
+                                  textAlign: TextAlign.end,
+                                  maxLines: 1,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      isCollapsed: true,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(vertical: 1.0)),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          color: Colours.color_E7E8EC,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 24),
+                              child: Text(
+                                _amountTips,
+                                style: TextStyle(
+                                    color: Colours.color_ED3544, fontSize: 9),
+                              ),
+                            ),
+                            // Padding(
+                            //   padding: EdgeInsets.only(right: 24),
+                            //   child: Text(
+                            //     _amountTips,
+                            //     style: TextStyle(
+                            //         color: Colours.color_ED3544, fontSize: 9),
+                            //   ),
+                            // )
+                          ],
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              //mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Notice',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colours.color_3B3F42),
+                                ),
+                                SizedBox(
+                                  height: 7,
+                                  width: double.infinity,
+                                ),
+                                Text(
+                                  'We will process the withdraw request within 2 working days.\nThe minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colours.color_B1B2B3,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            )),
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: 24, top: 26, right: 24, bottom: 26),
+                          child: IdolButton(
+                            'Withdraw Now',
+                            status: withdrawButtonStatus,
+                            listener: (status) => {
+                              if (status == IdolButtonStatus.enable)
+                                {_withdraw(vm)}
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
-      ),
+        Padding(
+          padding: EdgeInsets.only(
+            top: 20,
+            bottom: 20,
+          ),
+          child: TextButton(
+            onPressed: () {
+              IdolRoute.startInnerWebView(
+                  context, InnerWebViewArguments('FAQ', faqUri));
+            },
+            child: Text(
+              'FAQ',
+              style: TextStyle(color: Colours.color_48B6EF, fontSize: 14),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -456,7 +496,9 @@ class _WithdrawScreenState extends State {
     }
 
     // 缓存下级页面所需参数信息到AppStore
-    IdolRoute.startDashboardWithdrawVerifyPassword(context, WithdrawVerifyArguments(
+    IdolRoute.startDashboardWithdrawVerifyPassword(
+            context,
+            WithdrawVerifyArguments(
                 withdrawTypeId: _withdrawTypeId,
                 account: _accountController.text,
                 amount: amount))
@@ -488,7 +530,6 @@ class _ViewModel {
   _ViewModel(this._withdrawInfo);
 
   static _ViewModel fromStore(Store<AppState> store) {
-
     WithdrawInfo withdrawInfo = store.state.withdrawInfoState
             is WithdrawInfoSuccess
         ? (store.state.withdrawInfoState as WithdrawInfoSuccess).withdrawInfo

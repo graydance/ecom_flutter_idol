@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
@@ -20,31 +19,15 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final _storage = new FlutterSecureStorage();
 
-  void _onLoginStateChange(SignInState state) async{
-    if (state is SignInSuccess) {
-      debugPrint('state is LoginSuccess, startHome...');
-      IdolRoute.startHome(context);
-    } else if (state is SignInFailure) {
-      debugPrint('state is LoginFailure, ${state.message})...');
-      String email = await _storage.read(key: KeyStore.EMAIL);
-      IdolRoute.startSignIn(
-          context, SignUpSignInArguments(email));
-    }
+  initState() {
+    checkSignInStatus();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
-          distinct: true,
-          onInit: (store) {
-            checkSignInStatus();
-          },
-          onWillChange: (oldVM, newVM) {
-            debugPrint('onWillChange...');
-            _onLoginStateChange(
-                newVM == null ? oldVM.loginState : newVM.loginState);
-          },
           converter: _ViewModel.fromStore,
           builder: (context, vm) {
             return Container(
@@ -56,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Center(
                 child: ClipOval(
                   child: Image(
-                    image: R.image.ic_logo(),
+                    image: R.image.ic_circle_logo(),
                     width: 150,
                     height: 150,
                   ),
@@ -68,10 +51,16 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkSignInStatus() async {
-    String isFirstRun = await _storage.read(key: KeyStore.IS_FIRST_RUN);
-    String signedIn = await _storage.read(key: KeyStore.TOKEN);
-    String email = await _storage.read(key: KeyStore.EMAIL);
-    String password = await _storage.read(key: KeyStore.PASSWORD);
+    String isFirstRun;
+    String signedIn;
+    String email;
+    String password;
+    try {
+      isFirstRun = await _storage.read(key: KeyStore.IS_FIRST_RUN);
+      signedIn = await _storage.read(key: KeyStore.TOKEN);
+      email = await _storage.read(key: KeyStore.EMAIL);
+      password = await _storage.read(key: KeyStore.PASSWORD);
+    } catch (ex) {}
     if (signedIn != null && signedIn.isNotEmpty) {
       // auto login
       debugPrint('User is logged in. will running auto login.');

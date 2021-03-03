@@ -52,3 +52,20 @@ class SignUpRequest extends BaseRequest{
     };
   }
 }
+
+class UpdatePasswordRequest extends BaseRequest{
+  final String oldPassword;
+  final String newPassword;
+
+  UpdatePasswordRequest(this.oldPassword, this.newPassword);
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+    return {
+      keyMapper('oldPassword'): this.oldPassword,
+      keyMapper('newPassword'): this.newPassword,
+    };
+  }
+}

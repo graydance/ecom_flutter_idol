@@ -3,6 +3,8 @@ class ApiPath{
   static final String whiteList = '/idol/pub/white_list';
   // 注册登录
   static final String login = '/user/pub/login';
+  // 更新密码
+  static final String updatePassword = '/idol/update_password';
   // 供应商详情
   static final String userDetail = '/user/detail';
   // 当前用户详情

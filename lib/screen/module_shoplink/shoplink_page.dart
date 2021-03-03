@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/env.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';
@@ -21,7 +22,9 @@ import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/button.dart';
-import 'package:idol/widgets/dialog.dart';
+import 'package:idol/widgets/dialog_bottom_sheet.dart';
+import 'package:idol/widgets/dialog_change_username.dart';
+import 'package:idol/widgets/dialog_share.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:image_picker/image_picker.dart';
@@ -346,7 +349,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         builder: (context) {
           return ShareDialog(
             'How to sales on socials',
-            'https://apd-4661f0ab792aaf41a55c84d57c5b2636.v.smtcdns.com/mv.music.tc.qq.com/A74G4ksnZ1mn_khGkAtW9Hbevr5CTt73vtCHuTUw1lso/725564AD429F3F66B05A7E8DE92726BC144856CF4D69950E8CEE481F3868DEC1D60EEB1DFCF6A628C891573A4C67AED7ZZqqmusic_default/qmmv_0a6bhzmpbqcfotyhaqaq4cqhaigvlv4mfixibe4jjicqwcycbifa.f9834.mp4',
+            videoUrls[0],
             '1. Go to my Social account\n 2. Edit profile\n 3. Paste your Shop Link into Bio\n 4. Notice your fans with great post',
             ShareType.link,
             (channel) {
@@ -385,11 +388,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                 )
                     .then((path) {
                   _showGuideDialog(
-                    'https://apd-4661f0ab792aaf41a55c84d57c5b2636.v.smtcdns.com/mv.music.tc.qq.com/A74G4ksnZ1mn_khGkAtW9Hbevr5CTt73vtCHuTUw1lso/725564AD429F3F66B05A7E8DE92726BC144856CF4D69950E8CEE481F3868DEC1D60EEB1DFCF6A628C891573A4C67AED7ZZqqmusic_default/qmmv_0a6bhzmpbqcfotyhaqaq4cqhaigvlv4mfixibe4jjicqwcycbifa.f9834.mp4',
+                    videoUrls[0],
                     shareChannel,
                     savePath,
                   );
-                }).onError((error, stackTrace) {});
+                });
               });
             },
             tips:
@@ -439,7 +442,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           header: MaterialClassicHeader(
             color: Colours.color_EA5228,
           ),
-          child: _storeGoodsList == null || _storeGoodsList.isEmpty ? _emptyGoodsWidget() : _hasGoodsWidget(vm),
+          child: _storeGoodsList == null || _storeGoodsList.isEmpty
+              ? _emptyGoodsWidget()
+              : _hasGoodsWidget(vm),
           onRefresh: () async {
             await Future(() {
               vm._loadGoods(Global.getUser(context).id, 1);
@@ -456,7 +461,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
-  Widget _hasGoodsWidget(_ViewModel vm){
+  Widget _hasGoodsWidget(_ViewModel vm) {
     return StaggeredGridView.countBuilder(
         padding: EdgeInsets.all(15),
         itemCount: _storeGoodsList.length,
@@ -474,10 +479,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             _storeGoodsList[index],
             onItemClickCallback: () {
               // goods detail
-              IdolRoute.startGoodsDetail(
-                  context,
-                  _storeGoodsList[index].supplierId,
-                  _storeGoodsList[index].id);
+              IdolRoute.startGoodsDetail(context,
+                  _storeGoodsList[index].supplierId, _storeGoodsList[index].id);
             },
             onItemLongPressCallback: () {
               _shareOrRemoveGoods(vm, _storeGoodsList[index]);
@@ -503,7 +506,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image(
-              image: R.image.bg_common_error(),
+              image: R.image.bg_default_empty_goods_webp(),
               width: 170,
               height: 195,
             ),
@@ -521,7 +524,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               'Add and share',
               status: IdolButtonStatus.enable,
               listener: (status) {
-                // TODO go supply.
+                // go supply.
+                IdolRoute.sendArguments<HomeTabArguments>(
+                    context, HomeTabArguments(tabIndex: 0));
               },
             ),
           ],
@@ -659,7 +664,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         }
       }
     } else {
-      EasyLoading.show(status: 'No image selected.');
+      EasyLoading.showToast('No image selected.');
     }
   }
 
