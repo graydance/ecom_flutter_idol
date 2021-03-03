@@ -11,7 +11,6 @@ import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/ui.dart';
 import 'package:redux/redux.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:idol/env.dart';
 
 class SetPasswordScreen extends StatefulWidget {
   @override
@@ -151,8 +150,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  _launcherURL(whatsAppUri,
-                      'Please check whether you have WhatsApp application installed');
+                  _launcherURL(whatsAppUri, 'Please check whether you have WhatsApp application installed');
                 },
                 child: Text(
                   'Forgot password',

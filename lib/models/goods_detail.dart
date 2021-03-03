@@ -36,7 +36,7 @@ class GoodsDetail {
   final int inMyStore;
   final List<Tag> tag;
   final List<String> goods;
-  final String updateTime;
+  final int updateTime;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
@@ -57,7 +57,7 @@ class GoodsDetail {
     this.inMyStore = 0,
     this.tag = const [],
     this.goods = const[],
-    this.updateTime = '',
+    this.updateTime = 0,
   });
 
   GoodsDetail copyWith({
@@ -76,7 +76,7 @@ class GoodsDetail {
     int collectNum,
     List<Tag> tag,
     List<String> goods,
-    String updateTime,
+    int updateTime,
   }) {
     if ((id == null || identical(id, this.id)) &&
     (supplierName == null || identical(supplierName, this.supplierName)) &&
@@ -174,7 +174,7 @@ class GoodsDetail {
       suggestedPriceStr: map[keyMapper('suggestedPriceStr')] as String,
       goodsDescription: map[keyMapper('goodsDescription')] as String,
       discount: map[keyMapper('discount')] as String,
-      updateTime: map[keyMapper('updateTime')].toString(),
+      updateTime: map[keyMapper('updateTime')] as int,
       soldNum: map[keyMapper('soldNum')] as int,
       collectNum: map[keyMapper('collectNum')] as int,
       inMyStore: map[keyMapper('inMyStore')] as int,

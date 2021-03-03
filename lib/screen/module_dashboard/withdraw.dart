@@ -2,7 +2,6 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/conf.dart';
-import 'package:idol/env.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/models/arguments/withdraw_verify.dart';

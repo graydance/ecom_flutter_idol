@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/conf.dart';
-import 'package:idol/env.dart';
 import 'package:idol/models/arguments/withdraw_result.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_rating.dart';

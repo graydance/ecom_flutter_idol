@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:idol/models/appstate.dart';
@@ -245,18 +246,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 15),
-                      child: Text(
-                        goodsDetail.goodsDescription,
-                        style: TextStyle(
-                          color: Colours.color_555764,
-                          fontSize: 14,
-                        ),
-                        strutStyle: StrutStyle(
-                            forceStrutHeight: true,
-                            height: 1,
-                            leading: 0.2,
-                            fontSize: 14),
-                      ),
+                      child: Html(data: goodsDetail.goodsDescription, onLinkTap: (url){
+                        IdolRoute.startInnerWebView(context, InnerWebViewArguments(('Loading...'), url),);
+                      },),
                     ),
                   ],
                 ),
