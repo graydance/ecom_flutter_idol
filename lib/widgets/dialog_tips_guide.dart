@@ -40,7 +40,6 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
 
   @override
   Widget build(BuildContext context) {
-
     return Material(
       type: MaterialType.transparency,
       child: Column(
@@ -60,7 +59,7 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    if(widget.onClose != null){
+                    if (widget.onClose != null) {
                       widget.onClose();
                     }
                   },
@@ -76,16 +75,15 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
                 ),
                 Padding(
                   padding:
-                      EdgeInsets.only(left: 50, right: 50, top: 10, bottom: 10),
+                      EdgeInsets.only(left: 50, right: 50, ),
                   child: Text(
                     widget.title,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, color: Colours.color_0F1015),
+                    style: TextStyle(fontSize: 16, color: Colours.color_0F1015, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
-                  margin:
-                      EdgeInsets.only(top: 10, bottom: 10),
+                  margin: EdgeInsets.only(top: 10, bottom: 10),
                   decoration: BoxDecoration(
                     color: Colours.black,
                     borderRadius: BorderRadius.all(
@@ -126,16 +124,28 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
                     ],
                   ),
                 ),
-                Text(widget.desc, style: TextStyle(color: Colours.color_979AA9, fontSize: 12),),
+                Text(
+                  widget.desc,
+                  style: TextStyle(color: Colours.color_979AA9, fontSize: 12),
+                ),
                 Row(
                   children: [
-                    Checkbox(value: this._neverShow, onChanged: (bool value){
-                      setState(() {
-                        this._neverShow = value;
-                        _storage.write(key: widget.storeKey, value: value.toString());
-                      });
-                    }),
-                    Text('Don\'t show this hint again.', style: TextStyle(color: Colours.color_979AA9, fontSize: 12),),
+                    Checkbox(
+                        value: this._neverShow,
+                        activeColor: Colours.color_ED8514,
+                        checkColor: Colours.white,
+                        onChanged: (bool value) {
+                          setState(() {
+                            this._neverShow = value;
+                            _storage.write(
+                                key: widget.storeKey, value: value.toString());
+                          });
+                        }),
+                    Text(
+                      'Don\'t show this hint again.',
+                      style:
+                          TextStyle(color: Colours.color_979AA9, fontSize: 12),
+                    ),
                   ],
                 ),
                 SizedBox(

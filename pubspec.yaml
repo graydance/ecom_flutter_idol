@@ -53,6 +53,7 @@ flr:
 flutter:
   uses-material-design: true
   assets:
+  - assets/images/bg_congratulations.png
   - assets/images/bg_default_empty_goods.webp
   - assets/images/bg_default_empty_sales_history.webp
   - assets/images/bg_default_error.png
@@ -85,6 +86,7 @@ flutter:
   - assets/images/main/launch_background.webp
   - assets/images/shoplink/ic_change_avatar.png
   - assets/images/shoplink/ic_edit.png
+  - assets/images/shoplink/ic_pv.png
   - assets/images/store/bg_header.png
   - assets/images/store/default_portrait.png
   - assets/images/store/ic_settings_contact.png

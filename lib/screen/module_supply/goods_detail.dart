@@ -5,6 +5,8 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/models/goods_detail.dart';
+import 'package:idol/net/api.dart';
+import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
@@ -12,6 +14,7 @@ import 'package:idol/store/actions/supply.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/error.dart';
+import 'package:idol/widgets/ui.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/widgets/loading.dart';
@@ -23,12 +26,12 @@ class GoodsDetailScreen extends StatefulWidget {
 }
 
 class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
-  String _bottomButtonText = 'Add to my store';
+  String _bottomButtonText = 'Add to my store & share';
   String _goodsId;
   String _supplierId = '';
   String _supplierName = '';
   IdolButtonStatus _bottomButtonStatus = IdolButtonStatus.normal;
-
+  GlobalKey<IdolButtonState> _idolButtonStatusKey = GlobalKey();
   @override
   void initState() {
     super.initState();
@@ -41,12 +44,12 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
       onInit: (store) {
         GoodsDetailArguments arguments = store.state.goodsDetailArguments;
         if (arguments.goodsId == null) {
-          EasyLoading.showToast('SupplierId is null.');
           IdolRoute.pop(context);
         } else {
           _goodsId = arguments.goodsId;
           _supplierId = arguments.supplierId;
-          store.dispatch(GoodsDetailAction(GoodsDetailRequest(_supplierId, _goodsId)));
+          store.dispatch(
+              GoodsDetailAction(GoodsDetailRequest(_supplierId, _goodsId)));
         }
       },
       distinct: true,
@@ -56,56 +59,10 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
       },
       builder: (context, vm) {
         return Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            titleSpacing: 0,
-            actions: [
-              ...(vm._goodsDetailState is GoodsDetailSuccess)
-                  ? [
-                      FollowButton(
-                        _supplierId,
-                        defaultFollowStatus:
-                            (vm._goodsDetailState as GoodsDetailSuccess)
-                                        .goodsDetail
-                                        .followStatus ==
-                                    0
-                                ? FollowStatus.unFollow
-                                : FollowStatus.following,
-                        buttonStyle: FollowButtonStyle.text,
-                      ),
-                    ]
-                  : [],
-              IconButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: Colours.color_444648,
-                ),
-                onPressed: () => IdolRoute.startSupplySearch(context),
-              )
-            ],
-            title: Text(
-              _supplierName,
-              style: TextStyle(fontSize: 16, color: Colours.color_29292B),
-            ),
-            centerTitle: false,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: Colours.color_444648,
-                size: 16,
-              ),
-              onPressed: () => IdolRoute.pop(context),
-            ),
-          ),
+          appBar:
+          IdolUI.appBar(context, 'Details'),
           body: _buildBodyWidget(vm),
-          bottomNavigationBar: // Add to my store.
-              IdolButton(
-            _bottomButtonText,
-            status: _bottomButtonStatus,
-            listener: (status) {
-              vm._addToMyStore(_goodsId);
-            },
-          ),
+          extendBody: true,
         );
       },
     );
@@ -120,7 +77,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   }
 
   Widget _buildBodyWidget(_ViewModel vm) {
-    if (vm._goodsDetailState is GoodsDetailInitial || vm._goodsDetailState is GoodsDetailLoading) {
+    if (vm._goodsDetailState is GoodsDetailInitial ||
+        vm._goodsDetailState is GoodsDetailLoading) {
       return IdolLoadingWidget();
     } else if (vm._goodsDetailState is GoodsDetailFailure) {
       return IdolErrorWidget(() {
@@ -132,17 +90,19 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
           (vm._goodsDetailState as GoodsDetailSuccess).goodsDetail;
       _supplierId = goodsDetail.supplierId;
       _supplierName = goodsDetail.supplierName;
-      _bottomButtonStatus = goodsDetail.inMyStore == 0 ? IdolButtonStatus.enable : IdolButtonStatus.disable;
-      _bottomButtonText = goodsDetail.inMyStore == 0 ? 'Add to my store' : 'Has been added to my store';
+      _bottomButtonStatus = goodsDetail.inMyStore == 0
+          ? IdolButtonStatus.enable
+          : IdolButtonStatus.disable;
+      _bottomButtonText = goodsDetail.inMyStore == 0
+          ? 'Add to my store & share'
+          : 'Share';
       return SingleChildScrollView(
         child: Container(
-          //padding: EdgeInsets.all(15),
-          color: Colours.color_F8F8F8,
+          color: Colours.white,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image|Video source.
               Container(
                 color: Colours.black,
                 child: Stack(
@@ -169,79 +129,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         ],
                       ),
                     ),
-                    Positioned(
-                      bottom: 15,
-                      right: 15,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              EasyLoading.showToast(
-                                  '${goodsDetail.collectNum} Liked');
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.favorite,
-                                    size: 20,
-                                    color: Colours.white,
-                                  ),
-                                  Text(
-                                    _formatNum(goodsDetail.collectNum),
-                                    style: TextStyle(
-                                        color: Colours.white, fontSize: 8),
-                                  )
-                                ],
-                              ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colours.color_black20,
-                              ),
-                              //padding: EdgeInsets.all(5),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              EasyLoading.showToast(
-                                  '${goodsDetail.soldNum} Sold');
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.whatshot,
-                                    size: 20,
-                                    color: Colours.white,
-                                  ),
-                                  Text(
-                                    _formatNum(goodsDetail.soldNum),
-                                    style: TextStyle(
-                                        color: Colours.white, fontSize: 8),
-                                  )
-                                ],
-                              ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colours.color_black20,
-                              ),
-                              // padding: EdgeInsets.all(5),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -254,25 +141,44 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Tag
-                    Wrap(
-                      direction: Axis.horizontal,
-                      alignment: WrapAlignment.start,
-                      spacing: 5,
-                      children: goodsDetail.tag.map((tag) {
-                        return Container(
-                          padding: EdgeInsets.only(left: 1, right: 1),
-                          decoration: BoxDecoration(
-                            border:
-                            Border.all(color: Colours.color_48B6EF, width: 1),
-                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            alignment: WrapAlignment.start,
+                            spacing: 5,
+                            children: goodsDetail.tag.map((tag) {
+                              return Container(
+                                padding: EdgeInsets.only(left: 1, right: 1),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colours.color_ED8514, width: 1),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
+                                ),
+                                child: Text(
+                                  tag.interestName,
+                                  style: TextStyle(
+                                      color: Colours.color_ED8514,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              );
+                            }).toList(),
                           ),
-                          child: Text(
-                            tag.interestName,
-                            style: TextStyle(
-                                color: Colours.color_48B6EF, fontSize: 12),
-                          ),
-                        );
-                      }).toList(),
+                        ),
+                        Text(
+                          goodsDetail.updateTime??'',
+                          style: TextStyle(
+                              color: Colours.color_C4C5CD, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      goodsDetail.goodsName ?? '',
+                      style:
+                          TextStyle(color: Colours.color_555764, fontSize: 12),
                     ),
                     SizedBox(
                       height: 5,
@@ -283,10 +189,12 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         children: [
                           TextSpan(
                             text: Global.getUser(context).monetaryUnit +
-                                goodsDetail.earningPriceStr ??
+                                    goodsDetail.earningPriceStr ??
                                 '0.00',
                             style: TextStyle(
-                                color: Colours.color_EA5228, fontSize: 20),
+                                color: Colours.color_EA5228,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
                           ),
                           TextSpan(text: ' '),
                           TextSpan(
@@ -304,10 +212,12 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         children: [
                           TextSpan(
                             text: Global.getUser(context).monetaryUnit +
-                                goodsDetail.suggestedPriceStr ??
+                                    goodsDetail.suggestedPriceStr ??
                                 '0.00',
                             style: TextStyle(
-                                color: Colours.color_0F1015, fontSize: 14),
+                                color: Colours.color_0F1015,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
                           ),
                           TextSpan(text: ' '),
                           TextSpan(
@@ -318,42 +228,35 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
+                    SizedBox(height: 10,),
+                    IdolButton(
+                      _bottomButtonText,
+                      status: _bottomButtonStatus,
+                      key: _idolButtonStatusKey,
+                      listener: (status) {
+                        if(status == IdolButtonStatus.enable){
+                          if(_bottomButtonText == 'Share'){
 
-              Container(
-                color: Colours.white,
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Product Description',
-                      style: TextStyle(
-                        color: Colours.color_030406,
-                        fontSize: 14,
-                      ),
+                          }else{
+                            _addProductToMyStore(goodsDetail);
+                          }
+                        }
+                      },
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    // Shopping description.
-                    Text(
-                      goodsDetail.goodsDescription,
-                      style: TextStyle(
-                        color: Colours.color_555764,
-                        fontSize: 14,
+                    Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Text(
+                        goodsDetail.goodsDescription,
+                        style: TextStyle(
+                          color: Colours.color_555764,
+                          fontSize: 14,
+                        ),
+                        strutStyle: StrutStyle(
+                            forceStrutHeight: true,
+                            height: 1,
+                            leading: 0.2,
+                            fontSize: 14),
                       ),
-                      strutStyle: StrutStyle(
-                          forceStrutHeight: true,
-                          height: 1,
-                          leading: 0.2,
-                          fontSize: 14),
                     ),
                   ],
                 ),
@@ -362,6 +265,23 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
           ),
         ),
       );
+    }
+  }
+
+
+  Future _addProductToMyStore(GoodsDetail goodsDetail) async {
+    try {
+      EasyLoading.show(status: 'Loading...');
+      await DioClient.getInstance()
+          .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
+      EasyLoading.dismiss();
+      _bottomButtonText = 'Share';
+      _idolButtonStatusKey.currentState.updateText(_bottomButtonText);
+      _idolButtonStatusKey.currentState.updateButtonStatus(_bottomButtonStatus);
+    } catch (e) {
+      EasyLoading.dismiss();
+      debugPrint(e.toString());
+      EasyLoading.showError(e.toString());
     }
   }
 
@@ -377,16 +297,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         alignment: Alignment.center,
         fit: BoxFit.cover,
       );
-    }
-  }
-
-  String _formatNum(int num) {
-    if (num < 1000) {
-      return num.toString();
-    } else if (num < 1000) {
-      return (num / 1000).toStringAsFixed(1) + 'k';
-    } else {
-      return (num / 10000).toStringAsFixed(1) + "w";
     }
   }
 
@@ -410,18 +320,16 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 class _ViewModel {
   final GoodsDetailState _goodsDetailState;
   final Function(String, String) _goodsDetail;
-  final Function(String) _addToMyStore;
 
-  _ViewModel(this._goodsDetailState, this._goodsDetail, this._addToMyStore);
+  _ViewModel(this._goodsDetailState, this._goodsDetail);
 
   static _ViewModel fromStore(Store<AppState> store) {
     void _goodsDetail(String supplierId, String goodsId) {
-      store.dispatch(GoodsDetailAction(GoodsDetailRequest(supplierId, goodsId)));
+      store
+          .dispatch(GoodsDetailAction(GoodsDetailRequest(supplierId, goodsId)));
     }
-    void _addToMyStore(String goodsId){
-      store.dispatch(AddStoreRequest(goodsId));
-    }
-    return _ViewModel(store.state.goodsDetailState, _goodsDetail, _addToMyStore);
+    return _ViewModel(
+        store.state.goodsDetailState, _goodsDetail);
   }
 
   @override
@@ -429,8 +337,9 @@ class _ViewModel {
       identical(this, other) ||
       other is _ViewModel &&
           runtimeType == other.runtimeType &&
-          _goodsDetailState == other._goodsDetailState;
+          _goodsDetailState == other._goodsDetailState &&
+          _goodsDetail == other._goodsDetail;
 
   @override
-  int get hashCode => _goodsDetailState.hashCode;
+  int get hashCode => _goodsDetailState.hashCode ^ _goodsDetail.hashCode;
 }

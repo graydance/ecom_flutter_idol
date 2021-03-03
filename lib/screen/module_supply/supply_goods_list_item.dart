@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -69,36 +67,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                       child: Text(
                         widget.goodsDetail.supplierName,
                         style: TextStyle(
-                            color: Colours.color_393939, fontSize: 16),
+                            color: Colours.color_393939, fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    // Follow
-                    // ...(widget.goodsDetail.followStatus == 0)
-                    //     ? [
-                    //         Text(
-                    //           ' · ',
-                    //           style: TextStyle(
-                    //               color: Colours.color_48B6EF, fontSize: 16),
-                    //         ),
-                    //         FollowButton(widget.goodsDetail.supplierId,
-                    //             defaultFollowStatus: FollowStatus.unFollow,
-                    //             buttonStyle: FollowButtonStyle.text,
-                    //             fontSize: 16.0),
-                    //       ]
-                    //     : [],
                   ],
                 ),
-                // Right more menu
-                // IconButton(
-                //     icon: Icon(
-                //       Icons.more_vert,
-                //       size: 18,
-                //       color: Colours.color_575859,
-                //     ),
-                //     onPressed: () => {
-                //           // TODO
-                //           EasyLoading.showToast("More menu"),
-                //         }),
               ],
             ),
             SizedBox(
@@ -133,79 +106,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         ],
                       ),
                     ),
-                    // Positioned(
-                    //   bottom: 15,
-                    //   right: 15,
-                    //   child: Column(
-                    //     children: [
-                    //       GestureDetector(
-                    //         onTap: () {
-                    //           EasyLoading.showToast(
-                    //               '${widget.goodsDetail.collectNum} Liked');
-                    //         },
-                    //         child: Container(
-                    //           width: 40,
-                    //           height: 40,
-                    //           child: Column(
-                    //             mainAxisSize: MainAxisSize.min,
-                    //             mainAxisAlignment: MainAxisAlignment.center,
-                    //             children: [
-                    //               Icon(
-                    //                 Icons.favorite,
-                    //                 size: 20,
-                    //                 color: Colours.white,
-                    //               ),
-                    //               Text(
-                    //                 _formatNum(widget.goodsDetail.collectNum),
-                    //                 style: TextStyle(
-                    //                     color: Colours.white, fontSize: 8),
-                    //               )
-                    //             ],
-                    //           ),
-                    //           decoration: BoxDecoration(
-                    //             shape: BoxShape.circle,
-                    //             color: Colours.color_black20,
-                    //           ),
-                    //           //padding: EdgeInsets.all(5),
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         height: 16,
-                    //       ),
-                    //       GestureDetector(
-                    //         onTap: () {
-                    //           EasyLoading.showToast(
-                    //               '${widget.goodsDetail.soldNum} Sold');
-                    //         },
-                    //         child: Container(
-                    //           width: 40,
-                    //           height: 40,
-                    //           child: Column(
-                    //             mainAxisSize: MainAxisSize.min,
-                    //             mainAxisAlignment: MainAxisAlignment.center,
-                    //             children: [
-                    //               Icon(
-                    //                 Icons.whatshot,
-                    //                 size: 20,
-                    //                 color: Colours.white,
-                    //               ),
-                    //               Text(
-                    //                 _formatNum(widget.goodsDetail.soldNum),
-                    //                 style: TextStyle(
-                    //                     color: Colours.white, fontSize: 8),
-                    //               )
-                    //             ],
-                    //           ),
-                    //           decoration: BoxDecoration(
-                    //             shape: BoxShape.circle,
-                    //             color: Colours.color_black20,
-                    //           ),
-                    //           // padding: EdgeInsets.all(5),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -249,7 +149,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ),
             // Shopping description.
             Text(
-              widget.goodsDetail.goodsDescription,
+              widget.goodsDetail.goodsName??'',
               style: TextStyle(
                 color: Colours.color_555764,
                 fontSize: 14,
@@ -272,12 +172,12 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                     text: '\$' +
                         TextUtil.formatDoubleComma3(
                             widget.goodsDetail.earningPrice / 100),
-                    style: TextStyle(color: Colours.color_EA5228, fontSize: 20),
+                    style: TextStyle(color: Colours.color_EA5228, fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   TextSpan(text: ' '),
                   TextSpan(
                     text: 'Earnings Per Sale',
-                    style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12),
+                    style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -291,12 +191,12 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                     text: '\$' +
                         TextUtil.formatDoubleComma3(
                             widget.goodsDetail.suggestedPrice / 100),
-                    style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
+                    style: TextStyle(color: Colours.color_0F1015, fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                   TextSpan(text: ' '),
                   TextSpan(
                     text: 'Suggested Price',
-                    style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12),
+                    style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -356,16 +256,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         alignment: Alignment.center,
         fit: BoxFit.cover,
       );
-    }
-  }
-
-  String _formatNum(int num) {
-    if (num < 1000) {
-      return num.toString();
-    } else if (num < 1000) {
-      return (num / 1000).toStringAsFixed(1) + 'k';
-    } else {
-      return (num / 10000).toStringAsFixed(1) + "w";
     }
   }
 

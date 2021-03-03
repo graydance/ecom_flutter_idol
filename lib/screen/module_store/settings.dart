@@ -80,13 +80,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'Privacy Policy',
       style: titleTextStyle,
     ),
-    Container(
-      margin: EdgeInsets.only(top: 8,),
-      child: Text(
-        'Log Out',
-        style: titleTextStyle,
-      ),
-    ),
   ];
 
   @override
@@ -100,31 +93,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildBodyWidget() {
     return Container(
       color: Colours.color_F8F8F8,
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return Container(
-            margin: EdgeInsets.only(top: index == 0 ? 10 : 0),
+      child: Column(
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(top: index == 0 ? 10 : 0),
+                color: Colours.white,
+                child: ListTile(
+                  leading: _icons[index],
+                  title: Transform(
+                    transform: Matrix4.translationValues(-18, 0.0, 0.0),
+                    child: _titles[index],
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colours.color_C3C4C4,
+                    size: 15,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  enabled: true,
+                  onTap: () {
+                    _onTap(index);
+                  },
+                ),
+              );
+            },
+            itemCount: _titles.length,
+          ),
+          GestureDetector(child:Container(
+            width: double.infinity,
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(top: 8,),
+            padding: EdgeInsets.only(top: 16, bottom: 16),
             color: Colours.white,
-            child: ListTile(
-              leading: _icons[index],
-              title: Transform(
-                transform: Matrix4.translationValues(-18, 0.0, 0.0),
-                child: _titles[index],
-              ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                color: Colours.color_C3C4C4,
-                size: 15,
-              ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              enabled: true,
-              onTap: () {
-                _onTap(index);
-              },
+            child: Text(
+              'Log Out',
+              style: titleTextStyle,
             ),
-          );
-        },
-        itemCount: _titles.length,
+          ),onTap: (){
+            IdolRoute.logOut(context);
+          }),
+        ],
       ),
     );
   }
@@ -148,7 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         IdolRoute.startInnerWebView(context, InnerWebViewArguments('FAQ', faqUri));
         break;
       case 5:
-        IdolRoute.logOut(context);
+        IdolRoute.startInnerWebView(context, InnerWebViewArguments('Privacy Policy', privacyPolicyUri));
         break;
       default:
 

@@ -174,7 +174,7 @@ class GoodsDetail {
       suggestedPriceStr: map[keyMapper('suggestedPriceStr')] as String,
       goodsDescription: map[keyMapper('goodsDescription')] as String,
       discount: map[keyMapper('discount')] as String,
-      updateTime: map[keyMapper('updateTime')] as String,
+      updateTime: map[keyMapper('updateTime')].toString(),
       soldNum: map[keyMapper('soldNum')] as int,
       collectNum: map[keyMapper('collectNum')] as int,
       inMyStore: map[keyMapper('inMyStore')] as int,

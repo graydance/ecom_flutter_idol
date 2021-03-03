@@ -6,11 +6,16 @@ import 'package:idol/widgets/button.dart';
 class IdolMessageDialog extends StatelessWidget {
   final String buttonText;
   final String message;
+  final AssetImage image;
   final Function onClose;
   final Function onTap;
 
   const IdolMessageDialog(this.message,
-      {Key key, this.buttonText = 'Next', this.onClose, this.onTap});
+      {Key key,
+      this.buttonText = 'Next',
+      this.onClose,
+      this.onTap,
+      this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +48,22 @@ class IdolMessageDialog extends StatelessWidget {
                     ),
                   ),
                 ),
+                image != null ? Padding(
+                  padding: EdgeInsets.only(
+                    left: 45,
+                    right: 45,
+                  ),
+                  child: Image(
+                    image: image,
+                  ),
+                ) : [],
                 Container(
-                  margin: EdgeInsets.only(left: 20, right: 20),
+                  margin: EdgeInsets.all(20),
                   child: Text(
                     message,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16, color: Colours.color_0F1015),
                   ),
-                ),
-                SizedBox(
-                  height: 30,
                 ),
                 IdolButton(
                   buttonText,

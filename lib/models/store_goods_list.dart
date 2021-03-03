@@ -104,6 +104,7 @@ class StoreGoods {
   final String currentPriceStr;
   final String discount;
   final List<Tag> tag;
+  final int heatRank;
 
   const StoreGoods(
       {this.id = '',
@@ -121,7 +122,8 @@ class StoreGoods {
       this.currentPrice = 0,
       this.currentPriceStr = '',
       this.discount = '',
-      this.tag = const []});
+      this.tag = const [],
+      this.heatRank = 0});
 
   StoreGoods copyWith(
       {String id,
@@ -139,7 +141,8 @@ class StoreGoods {
       int currentPrice,
       String currentPriceStr,
       String discount,
-      List<Tag> tag}) {
+      List<Tag> tag,
+  int heatRank}) {
     return StoreGoods(
       id: id ?? this.id,
       idolGoodsId: idolGoodsId ?? this.idolGoodsId,
@@ -157,12 +160,8 @@ class StoreGoods {
       currentPriceStr: currentPriceStr ?? this.currentPriceStr,
       discount: discount ?? this.discount,
       tag: tag ?? this.tag,
+      heatRank: heatRank ?? this.heatRank,
     );
-  }
-
-  @override
-  String toString() {
-    return 'StoreGoods{id: $id, idolGoodsId: $idolGoodsId, picture: $picture, width: $width, height: $height, isSellOut: $isSellOut, isOffTheShelf: $isOffTheShelf, interestName: $interestName, supplierId: $supplierId, goodsName: $goodsName, originalPrice: $originalPrice, originalPriceStr: $originalPriceStr, currentPrice: $currentPrice, currentPriceStr: $currentPriceStr, tag: $tag}';
   }
 
   @override
@@ -185,7 +184,8 @@ class StoreGoods {
           currentPrice == other.currentPrice &&
           currentPriceStr == other.currentPriceStr &&
           discount == other.discount &&
-          tag == other.tag;
+          tag == other.tag &&
+          heatRank == other.heatRank;
 
   @override
   int get hashCode =>
@@ -204,7 +204,14 @@ class StoreGoods {
       currentPrice.hashCode ^
       currentPriceStr.hashCode ^
       discount.hashCode ^
-      tag.hashCode;
+      tag.hashCode ^
+      heatRank.hashCode;
+
+
+  @override
+  String toString() {
+    return 'StoreGoods{id: $id, idolGoodsId: $idolGoodsId, picture: $picture, width: $width, height: $height, isSellOut: $isSellOut, isOffTheShelf: $isOffTheShelf, interestName: $interestName, supplierId: $supplierId, goodsName: $goodsName, originalPrice: $originalPrice, originalPriceStr: $originalPriceStr, currentPrice: $currentPrice, currentPriceStr: $currentPriceStr, discount: $discount, tag: $tag, heatRank: $heatRank}';
+  }
 
   factory StoreGoods.fromMap(
     Map<String, dynamic> map, {
@@ -230,6 +237,7 @@ class StoreGoods {
       tag: (map[keyMapper('tag')] as List)
           .map((e) => Tag.fromMap((e as Map<String, dynamic>)))
           .toList(),
+      heatRank: map[keyMapper('heatRank')] as int,
     );
   }
 
@@ -247,6 +255,7 @@ class StoreGoods {
       keyMapper('interestName'): this.interestName,
       keyMapper('isOffTheShelf'): this.isOffTheShelf,
       keyMapper('supplierId'): this.supplierId,
+      keyMapper('heatRank'): this.heatRank,
     };
   }
 }

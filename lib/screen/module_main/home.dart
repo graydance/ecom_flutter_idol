@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen>
     },
     builder: (context, vm) =>  Scaffold(
       extendBodyBehindAppBar: true,
-      extendBody: true,
+      extendBody: false,
       body: _createBody(),
       bottomNavigationBar: _createBottomNavigationBar(),
     ),);
@@ -96,16 +96,19 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-  PageView _createBody() {
-    return PageView(
-      controller: _pageController,
-      onPageChanged: (index) {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      children: _pages,
-      physics: NeverScrollableScrollPhysics(),
+  Widget _createBody() {
+    return Container(
+      //padding: EdgeInsets.only(bottom: 15,),
+      child: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: _pages,
+        physics: NeverScrollableScrollPhysics(),
+      ),
     );
   }
 
