@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:idol/conf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ecomshare/ecomshare.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,9 @@ class _ForYouTabViewState extends State<ForYouTabView>
   }
 
   Widget _buildWidget(_ViewModel vm) {
-    if ((vm._forYouState is ForYouInitial || vm._forYouState is ForYouLoading) && _goodsDetailList.isEmpty) {
+    if ((vm._forYouState is ForYouInitial ||
+            vm._forYouState is ForYouLoading) &&
+        _goodsDetailList.isEmpty) {
       return IdolLoadingWidget();
     } else if (vm._forYouState is ForYouFailure) {
       return IdolErrorWidget(() {
@@ -71,7 +74,9 @@ class _ForYouTabViewState extends State<ForYouTabView>
         child: SmartRefresher(
           enablePullDown: true,
           enablePullUp: _enablePullUp,
-          header: MaterialClassicHeader(color: Colours.color_EA5228,),
+          header: MaterialClassicHeader(
+            color: Colours.color_EA5228,
+          ),
           child: ListView.separated(
             scrollDirection: Axis.vertical,
             separatorBuilder: (context, index) {
@@ -81,13 +86,15 @@ class _ForYouTabViewState extends State<ForYouTabView>
               );
             },
             itemCount: _goodsDetailList.length,
-            itemBuilder: (context, index) =>
-                FollowingGoodsListItem(goodsDetail: _goodsDetailList[index], onProductAddedStoreListener: (goodsDetail){
-                  // setState(() {
-                  //_goodsDetailList.removeAt(index);
-                  // });
-                    _showShareGoodsDialog(goodsDetail);
-                },),
+            itemBuilder: (context, index) => FollowingGoodsListItem(
+              goodsDetail: _goodsDetailList[index],
+              onProductAddedStoreListener: (goodsDetail) {
+                // setState(() {
+                //_goodsDetailList.removeAt(index);
+                // });
+                _showShareGoodsDialog(goodsDetail);
+              },
+            ),
           ),
           onRefresh: () async {
             await Future(() {
@@ -114,10 +121,9 @@ class _ForYouTabViewState extends State<ForYouTabView>
             goodsDetail.goods[0],
             'The product is now available in your store.\n share the news with your fans on social media to make money!',
             ShareType.goods,
-                (shareChannel) {
+            (shareChannel) {
               IdolRoute.pop(context);
-              _createSaveDownloadPicturePath(goodsDetail.id)
-                  .then((savePath) {
+              _createSaveDownloadPicturePath(goodsDetail.id).then((savePath) {
                 DioClient.getInstance()
                     .download(
                   goodsDetail.goods[0],
@@ -133,7 +139,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
               });
             },
             tips:
-            'Tips: Share your own pictures with product can increase 38% Sales.',
+                'Tips: Share your own pictures with product can increase 38% Sales.',
           );
         });
   }
@@ -153,7 +159,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
             guideVideoUrl,
             '1. Go to my account in $shareChannel\n 2. Edit profile\n 3. Paste your shop link into Website',
             ShareType.guide,
-                (sChannel) {
+            (sChannel) {
               Ecomshare.shareTo(
                   Ecomshare.MEDIA_TYPE_IMAGE, shareChannel, pictureLocalPath);
             },

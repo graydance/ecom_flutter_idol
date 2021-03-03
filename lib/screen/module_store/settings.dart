@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/env.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/r.g.dart';
@@ -53,7 +54,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ),
   ];
 
-  static const TextStyle titleTextStyle = TextStyle(color: Colours.black, fontSize: 16);
+  static const TextStyle titleTextStyle =
+      TextStyle(color: Colours.black, fontSize: 16);
 
   List<Widget> _titles = <Widget>[
     Text(
@@ -81,7 +83,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       style: titleTextStyle,
     ),
     Container(
-      margin: EdgeInsets.only(top: 8,),
+      margin: EdgeInsets.only(
+        top: 8,
+      ),
       child: Text(
         'Log Out',
         style: titleTextStyle,
@@ -136,25 +140,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
         IdolRoute.startSetPassword(context);
         break;
       case 1:
-        _launcherURL(emailUsUri, 'Please check whether you have email application installed');
+        _launcherURL(emailUsUri,
+            'Please check whether you have email application installed');
         break;
       case 2:
-        _launcherURL(whatsAppUri, 'Please check whether you have WhatsApp application installed');
+        _launcherURL(whatsAppUri,
+            'Please check whether you have WhatsApp application installed');
         break;
       case 3:
         LaunchReview.launch(androidAppId: "me.hookar.idol", iOSAppId: iosAppId);
         break;
       case 4:
-        IdolRoute.startInnerWebView(context, InnerWebViewArguments('FAQ', faqUri));
+        IdolRoute.startInnerWebView(
+            context, InnerWebViewArguments('FAQ', faqUri));
         break;
       case 5:
         IdolRoute.logOut(context);
         break;
       default:
-
         break;
     }
   }
 
-  void _launcherURL(String url, String errorMsg) async => await canLaunch(url) ? launch(url) : throw errorMsg;
+  void _launcherURL(String url, String errorMsg) async =>
+      await canLaunch(url) ? launch(url) : throw errorMsg;
 }

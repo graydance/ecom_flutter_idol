@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/env.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
@@ -212,7 +213,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 // link Terms & Conditions
-                                IdolRoute.startInnerWebView(context, InnerWebViewArguments('Terms & Conditions', termsConditionsUri));
+                                IdolRoute.startInnerWebView(
+                                    context,
+                                    InnerWebViewArguments('Terms & Conditions',
+                                        termsConditionsUri));
                               }),
                         TextSpan(text: ' '),
                         TextSpan(
@@ -224,7 +228,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                IdolRoute.startInnerWebView(context, InnerWebViewArguments('Privacy Policy', privacyPolicyUri));
+                                IdolRoute.startInnerWebView(
+                                    context,
+                                    InnerWebViewArguments(
+                                        'Privacy Policy', privacyPolicyUri));
                               }),
                         TextSpan(text: ' '),
                         TextSpan(
@@ -236,7 +243,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                IdolRoute.startInnerWebView(context, InnerWebViewArguments('Cookie Policy', cookiePolicyUri));
+                                IdolRoute.startInnerWebView(
+                                    context,
+                                    InnerWebViewArguments(
+                                        'Cookie Policy', cookiePolicyUri));
                               }),
                       ]),
                     ),

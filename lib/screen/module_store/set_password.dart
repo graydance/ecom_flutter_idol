@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
@@ -79,29 +80,29 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
         _controllers[1].text.trim().length > 0 ||
         _controllers[1].text.trim().length > 0) {
       _buttonStatus = IdolButtonStatus.normal;
-    }else{
+    } else {
       _buttonStatus = IdolButtonStatus.disable;
     }
-    if(_validTags[0] &&
+    if (_validTags[0] &&
         _validTags[1] &&
         _validTags[2] &&
-        (_controllers[1].text.trim() == _controllers[2].text.trim())){
+        (_controllers[1].text.trim() == _controllers[2].text.trim())) {
       _buttonStatus = IdolButtonStatus.enable;
     }
     _buttonGlobalKey.currentState.updateButtonStatus(_buttonStatus);
   }
-  
-  void _showDisableUpdateTips(){
+
+  void _showDisableUpdateTips() {
     String oldPwd = _controllers[0].text.trim();
     String newPwd = _controllers[1].text.trim();
     String confirmPwd = _controllers[2].text.trim();
-    if(oldPwd.length < 8){
+    if (oldPwd.length < 8) {
       EasyLoading.showToast('Old password must be at least 8 characters.');
     }
-    if(newPwd.length < 8){
+    if (newPwd.length < 8) {
       EasyLoading.showToast('New password must be at least 8 characters.');
     }
-    if(confirmPwd.length < 8 || confirmPwd != newPwd){
+    if (confirmPwd.length < 8 || confirmPwd != newPwd) {
       EasyLoading.showToast('The new and confirmed password don\'t match.');
     }
   }
@@ -138,8 +139,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   listener: (status) {
                     if (status == IdolButtonStatus.enable) {
                       // update password
-                      vm._updatePassword(_controllers[0].text.trim(), _controllers[1].text.trim());
-                    }else if(status == IdolButtonStatus.normal){
+                      vm._updatePassword(_controllers[0].text.trim(),
+                          _controllers[1].text.trim());
+                    } else if (status == IdolButtonStatus.normal) {
                       _showDisableUpdateTips();
                     }
                   },
@@ -149,7 +151,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  _launcherURL(whatsAppUri, 'Please check whether you have WhatsApp application installed');
+                  _launcherURL(whatsAppUri,
+                      'Please check whether you have WhatsApp application installed');
                 },
                 child: Text(
                   'Forgot password',
@@ -166,7 +169,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     );
   }
 
-  void _launcherURL(String url, String errorMsg) async => await canLaunch(url) ? launch(url) : throw errorMsg;
+  void _launcherURL(String url, String errorMsg) async =>
+      await canLaunch(url) ? launch(url) : throw errorMsg;
 
   TextField _createTextField(int index) {
     return TextField(
