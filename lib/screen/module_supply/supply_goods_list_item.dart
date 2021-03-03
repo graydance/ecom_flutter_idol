@@ -4,13 +4,17 @@ import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
+import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -32,10 +36,6 @@ class FollowingGoodsListItem extends StatefulWidget {
 typedef OnProductAddedStoreListener = Function(GoodsDetail goodsDetail);
 
 class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
-  String _buttonText = 'Add to my store & Share';
-  final GlobalKey<IdolButtonState> _idolButtonStatusKey = GlobalKey();
-  IdolButtonStatus _idolButtonStatus = IdolButtonStatus.enable;
-
   @override
   Widget build(BuildContext context) {
     debugPrint('ProductItemWidget >>> ' + widget.goodsDetail.toString());
@@ -43,9 +43,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         DateTime.fromMillisecondsSinceEpoch(widget.goodsDetail.updateTime);
     return GestureDetector(
       onTap: () {
-        // GoodsDetail
-        IdolRoute.startGoodsDetail(
-            context, widget.goodsDetail.supplierId, widget.goodsDetail.id);
+        StoreProvider.of<AppState>(context)
+            .dispatch(ShowGoodsDetailAction(widget.goodsDetail));
       },
       child: Container(
         padding: EdgeInsets.all(15),
@@ -63,11 +62,13 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        // Supplier detail
-                        IdolRoute.startSupplySupplierDetail(
-                            context,
-                            widget.goodsDetail.supplierId,
-                            widget.goodsDetail.supplierName);
+                        StoreProvider.of<AppState>(context).dispatch(
+                            ShowGoodsDetailAction(widget.goodsDetail));
+                        // // Supplier detail
+                        // IdolRoute.startSupplySupplierDetail(
+                        //     context,
+                        //     widget.goodsDetail.supplierId,
+                        //     widget.goodsDetail.supplierName);
                       },
                       child: Text(
                         widget.goodsDetail.supplierName,
@@ -312,10 +313,12 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ),
             // Add to my store.
             IdolButton(
-              _buttonText,
-              key: _idolButtonStatusKey,
-              status: _idolButtonStatus,
-              isPartialRefresh: true,
+              widget.goodsDetail.inMyStore == 1
+                  ? 'Has been added to my store'
+                  : 'Add to my store & Share',
+              status: widget.goodsDetail.inMyStore == 1
+                  ? IdolButtonStatus.normal
+                  : IdolButtonStatus.enable,
               listener: (status) {
                 if (status == IdolButtonStatus.enable) {
                   debounce(() {
@@ -331,23 +334,25 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
   }
 
   Future _addProductToMyStore(GoodsDetail goodsDetail) async {
-    try {
-      EasyLoading.show(status: 'Loading...');
-      await DioClient.getInstance()
-          .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
-      EasyLoading.dismiss();
-      if (widget.onProductAddedStoreListener != null) {
-        widget.onProductAddedStoreListener(goodsDetail);
-      }
-      _buttonText = 'Has been added to my store';
-      _idolButtonStatus = IdolButtonStatus.normal;
-      _idolButtonStatusKey.currentState.updateText(_buttonText);
-      _idolButtonStatusKey.currentState.updateButtonStatus(_idolButtonStatus);
-    } catch (e) {
-      EasyLoading.dismiss();
-      debugPrint(e.toString());
-      EasyLoading.showError(e.toString());
-    }
+    StoreProvider.of<AppState>(context)
+        .dispatch(AddToStoreAction(goodsDetail.id));
+    // try {
+    //   EasyLoading.show(status: 'Loading...');
+    //   await DioClient.getInstance()
+    //       .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
+    //   EasyLoading.dismiss();
+    //   if (widget.onProductAddedStoreListener != null) {
+    //     widget.onProductAddedStoreListener(goodsDetail);
+    //   }
+    //   _buttonText = 'Has been added to my store';
+    //   _idolButtonStatus = IdolButtonStatus.normal;
+    //   _idolButtonStatusKey.currentState.updateText(_buttonText);
+    //   _idolButtonStatusKey.currentState.updateButtonStatus(_idolButtonStatus);
+    // } catch (e) {
+    //   EasyLoading.dismiss();
+    //   debugPrint(e.toString());
+    //   EasyLoading.showError(e.toString());
+    // }
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {

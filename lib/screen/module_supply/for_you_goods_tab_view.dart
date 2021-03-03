@@ -3,9 +3,7 @@ import 'package:idol/conf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ecomshare/ecomshare.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/env.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/api.dart';
@@ -27,7 +25,6 @@ class ForYouTabView extends StatefulWidget {
 
 class _ForYouTabViewState extends State<ForYouTabView>
     with AutomaticKeepAliveClientMixin<ForYouTabView> {
-  List<GoodsDetail> _goodsDetailList = const [];
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
@@ -49,11 +46,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
       onInit: (store) {
         store.dispatch(ForYouAction(FollowingForYouRequest(1, 1)));
       },
-      distinct: true,
-      onWillChange: (oldVM, newVM) {
-        _onFollowingStateChanged(
-            newVM == null ? oldVM._forYouState : newVM._forYouState);
-      },
       builder: (context, vm) {
         return _buildWidget(vm);
       },
@@ -62,8 +54,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
 
   Widget _buildWidget(_ViewModel vm) {
     if ((vm._forYouState is ForYouInitial ||
-            vm._forYouState is ForYouLoading) &&
-        _goodsDetailList.isEmpty) {
+        vm._forYouState is ForYouLoading)) {
       return IdolLoadingWidget();
     } else if (vm._forYouState is ForYouFailure) {
       return IdolErrorWidget(() {
@@ -85,9 +76,12 @@ class _ForYouTabViewState extends State<ForYouTabView>
                 color: Colors.transparent,
               );
             },
-            itemCount: _goodsDetailList.length,
+            itemCount:
+                (vm._forYouState as ForYouSuccess).goodsDetailList.list.length,
             itemBuilder: (context, index) => FollowingGoodsListItem(
-              goodsDetail: _goodsDetailList[index],
+              goodsDetail: (vm._forYouState as ForYouSuccess)
+                  .goodsDetailList
+                  .list[index],
               onProductAddedStoreListener: (goodsDetail) {
                 // setState(() {
                 //_goodsDetailList.removeAt(index);
@@ -167,34 +161,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
           );
         });
   }
-
-  void _onFollowingStateChanged(ForYouState state) {
-    if (state is ForYouSuccess) {
-      setState(() {
-        if ((state).goodsDetailList.currentPage == 1) {
-          _goodsDetailList = (state).goodsDetailList.list;
-        } else {
-          _goodsDetailList.addAll((state).goodsDetailList.list);
-        }
-        _currentPage = (state).goodsDetailList.currentPage;
-        _enablePullUp = (state).goodsDetailList.currentPage !=
-                (state).goodsDetailList.totalPage &&
-            (state).goodsDetailList.totalPage != 0;
-        if (_currentPage == 1) {
-          _refreshController.refreshCompleted(resetFooterState: true);
-        } else {
-          _refreshController.loadComplete();
-        }
-      });
-    } else if (state is ForYouFailure) {
-      if (_currentPage == 1) {
-        _refreshController.refreshCompleted(resetFooterState: true);
-      } else {
-        _refreshController.loadComplete();
-      }
-      EasyLoading.showToast((state).message);
-    }
-  }
 }
 
 class _ViewModel {
@@ -208,16 +174,8 @@ class _ViewModel {
       store.dispatch(ForYouAction(FollowingForYouRequest(1, page, limit: 10)));
     }
 
+    print('************************************** reload from store');
+
     return _ViewModel(store.state.forYouState, _load);
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ViewModel &&
-          runtimeType == other.runtimeType &&
-          _forYouState == other._forYouState;
-
-  @override
-  int get hashCode => _forYouState.hashCode;
 }

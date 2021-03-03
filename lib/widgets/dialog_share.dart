@@ -386,8 +386,8 @@ class _ShareDialogState extends State<ShareDialog> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 }
 

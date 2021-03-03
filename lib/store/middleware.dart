@@ -4,6 +4,7 @@ import 'package:idol/models/biolinks.dart';
 import 'package:idol/models/validate_email.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
+import 'package:idol/net/request/supply.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
@@ -104,6 +105,36 @@ List<Middleware<AppState>> createStoreMiddleware() {
         return Global.navigatorKey.currentState
             .pushReplacementNamed(RouterPath.signIn);
       }
+      next(action);
+    }),
+    TypedMiddleware<AppState, AddToStoreAction>((store, action, next) {
+      EasyLoading.show(status: 'Loading...');
+      next(action);
+    }),
+    TypedMiddleware<AppState, AddToStoreAction>((store, action, next) {
+      DioClient.getInstance()
+          .post(ApiPath.addStore, baseRequest: AddStoreRequest(action.goodId))
+          .whenComplete(() => null)
+          .then((data) {
+        store.dispatch(AddToStoreActionSuccessAction(action.goodId));
+      }).catchError((err) {
+        store.dispatch(AddToStoreActionFailAction(err.toString()));
+      });
+      next(action);
+    }),
+    TypedMiddleware<AppState, AddToStoreActionSuccessAction>(
+        (store, action, next) {
+      EasyLoading.dismiss();
+      next(action);
+    }),
+    TypedMiddleware<AppState, AddToStoreActionFailAction>(
+        (store, action, next) {
+      EasyLoading.dismiss();
+      EasyLoading.showError(action.error);
+      next(action);
+    }),
+    TypedMiddleware<AppState, ShowGoodsDetailAction>((store, action, next) {
+      Global.navigatorKey.currentState.pushNamed(RouterPath.goodsDetail);
       next(action);
     }),
   ];
