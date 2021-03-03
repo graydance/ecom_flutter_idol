@@ -45,37 +45,10 @@ class _SignInScreenState extends State<SignInScreen>
     });
   }
 
-  void _onSignInStateChange(SignInState state) {
-    if (state is SignInLoading) {
-      EasyLoading.show(status: 'Signing in...');
-    } else if (state is SignInSuccess) {
-      EasyLoading.dismiss();
-      IdolRoute.startHome(context);
-    } else if (state is SignInFailure) {
-      String errorMsg = (state).message;
-      EasyLoading.showError(errorMsg);
-    }
-  }
-
-  Future<bool> _onWillPopScope() {
-    if (_showForgotPasswordWidget) {
-      setState(() {
-        _showForgotPasswordWidget = false;
-      });
-    } else {
-      IdolRoute.popAndExit(context);
-    }
-    return Future.value(false);
-  }
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      distinct: true,
-      onWillChange: (oldVM, newVM) {
-        _onSignInStateChange(newVM._signInState);
-      },
       builder: (context, vm) {
         return Scaffold(
           body: Container(
@@ -175,7 +148,10 @@ class _SignInScreenState extends State<SignInScreen>
                 },
                 child: Text(
                   'Forgot your password',
-                  style: TextStyle(color: Colours.color_white60, fontSize: 12, decoration: TextDecoration.underline),
+                  style: TextStyle(
+                      color: Colours.color_white60,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline),
                 ),
               ),
               SizedBox(

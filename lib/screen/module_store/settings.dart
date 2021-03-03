@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
+import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/ui.dart';
 import '../../r.g.dart';
 
@@ -46,9 +49,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       width: 30,
       height: 30,
     ),
+    Image(
+      image: R.image.ic_settings_privacy(),
+      color: Colours.color_555764,
+      width: 30,
+      height: 30,
+    ),
   ];
 
-  static const TextStyle titleTextStyle = TextStyle(color: Colours.black, fontSize: 16);
+  static const TextStyle titleTextStyle =
+      TextStyle(color: Colours.black, fontSize: 16);
 
   List<Widget> _titles = <Widget>[
     Text(
@@ -73,6 +83,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ),
     Text(
       'Privacy Policy',
+      style: titleTextStyle,
+    ),
+    Text(
+      'Logout',
       style: titleTextStyle,
     ),
   ];
@@ -112,34 +126,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           );
         },
-        itemCount: 8,
+        itemCount: _titles.length,
       ),
     );
   }
 
   //TextButton(onPressed: (){}, child: Text('Log Out', style: TextStyle(fontSize: 14, color: Colours.color_4E9AE3),))
-  void _onTap(int index) {
+  void _onTap(int index) async {
     switch (index) {
       case 0:
-
         break;
       case 1:
-
         break;
       case 2:
-
         break;
       case 3:
-
         break;
       case 4:
-
         break;
       case 5:
-
+        break;
+      case 6:
+        await (new FlutterSecureStorage()).deleteAll();
+        Global.navigatorKey.currentState.pushNamedAndRemoveUntil(
+            RouterPath.validateEmail, (route) => false);
         break;
       default:
-
         break;
     }
   }

@@ -29,7 +29,7 @@ class RouterPath {
   static const String store$EditStore = '/store/edit_store';
 }
 
-enum Command{
+enum Command {
   pop,
   refreshMyInfo,
 }
@@ -65,13 +65,12 @@ class IdolRoute {
     Navigator.of(context).pop(Command.pop);
   }
 
-  static void popWithCommand(BuildContext context, Command command){
+  static void popWithCommand(BuildContext context, Command command) {
     Navigator.of(context).pop(command);
   }
 
   static Future<Object> start(String routePath) {
-    if (routePath == RouterPath.signIn ||
-        routePath == RouterPath.home) {
+    if (routePath == RouterPath.signIn || routePath == RouterPath.home) {
       return Navigator.of(Global.navigatorKey.currentContext)
           .pushReplacementNamed(routePath);
     } else {
@@ -79,88 +78,113 @@ class IdolRoute {
           .pushNamed(routePath);
     }
   }
+
   static Future<Object> startGuide(BuildContext context) {
-    return Navigator.of(context)
-        .pushReplacementNamed(RouterPath.guide);
+    return Navigator.of(context).pushReplacementNamed(RouterPath.guide);
   }
 
   static Future<Object> startValidateEmail(BuildContext context) {
-    return Navigator.of(context)
-        .pushReplacementNamed(RouterPath.validateEmail);
+    return Navigator.of(context).pushReplacementNamed(RouterPath.validateEmail);
   }
 
-  static Future<Object> startSignUp(BuildContext context, SignUpSignInArguments arguments) {
-    StoreProvider.of<AppState>(context).dispatch(UpdateArgumentsAction<SignUpSignInArguments>(arguments));
-    return Navigator.of(context)
-        .pushReplacementNamed(RouterPath.signUp);
+  static Future<Object> startSignUp(
+      BuildContext context, SignUpSignInArguments arguments) {
+    StoreProvider.of<AppState>(context)
+        .dispatch(UpdateArgumentsAction<SignUpSignInArguments>(arguments));
+    return Navigator.of(context).pushReplacementNamed(RouterPath.signUp);
   }
 
-  static Future<Object> startSignIn(BuildContext context, SignUpSignInArguments arguments) {
-    StoreProvider.of<AppState>(context).dispatch(UpdateArgumentsAction<SignUpSignInArguments>(arguments));
-    return Navigator.of(context)
+  static Future<Object> startSignIn(
+      BuildContext context, SignUpSignInArguments arguments) {
+    StoreProvider.of<AppState>(context)
+        .dispatch(UpdateArgumentsAction<SignUpSignInArguments>(arguments));
+    return Global.navigatorKey.currentState
         .pushReplacementNamed(RouterPath.signIn);
   }
 
   static Future<Object> startHome(BuildContext context) {
-    return Navigator.of(context).pushNamedAndRemoveUntil(RouterPath.home, (Route<dynamic> route) => false);
+    return Global.navigatorKey.currentState.pushNamedAndRemoveUntil(
+        RouterPath.home, (Route<dynamic> route) => false);
   }
 
   static Future<Object> startSettings(BuildContext context) {
-    return Navigator.of(context).pushReplacementNamed(RouterPath.settings);
+    return Global.navigatorKey.currentState
+        .pushReplacementNamed(RouterPath.settings);
   }
 
-  static Future<Object> startDashboardRewardsDetail(BuildContext context, RewardsDetailArguments arguments){
-    StoreProvider.of<AppState>(context).dispatch(UpdateArgumentsAction<RewardsDetailArguments>(arguments));
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$RewardsDetail);
+  static Future<Object> startDashboardRewardsDetail(
+      BuildContext context, RewardsDetailArguments arguments) {
+    StoreProvider.of<AppState>(context)
+        .dispatch(UpdateArgumentsAction<RewardsDetailArguments>(arguments));
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.dashboard$RewardsDetail);
   }
 
   static Future<Object> startDashboardBalance(BuildContext context) {
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$Balance);
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.dashboard$Balance);
   }
 
   static Future<Object> startDashboardWithdraw(BuildContext context) {
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$Withdraw);
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.dashboard$Withdraw);
   }
 
   static Future<Object> startDashboardWithdrawVerifyPassword(
       BuildContext context, WithdrawVerifyArguments arguments) {
-    StoreProvider.of<AppState>(context).dispatch(UpdateArgumentsAction<WithdrawVerifyArguments>(arguments));
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$VerifyPassword);
-  }
-
-  static Future<Object> startDashboardWithdrawResult(BuildContext context, WithdrawResultArguments arguments) {
-    StoreProvider.of<AppState>(context).dispatch(
-        UpdateArgumentsAction<WithdrawResultArguments>(arguments));
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
-  }
-
-  static Future<Object> startDashboardSalesHistory(BuildContext context, SalesHistoryArguments arguments) {
-    StoreProvider.of<AppState>(context).dispatch(
-        UpdateArgumentsAction<SalesHistoryArguments>(arguments));
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
-  }
-
-  static Future<Object> startSupplySupplierDetail(BuildContext context, String supplierId, String supplierName){
     StoreProvider.of<AppState>(context)
-        .dispatch(UpdateArgumentsAction<SupplierDetailArguments>(SupplierDetailArguments(supplierId, supplierName)));
-    return Navigator.of(context).pushNamed(RouterPath.supply$SupplierDetail);
+        .dispatch(UpdateArgumentsAction<WithdrawVerifyArguments>(arguments));
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.dashboard$VerifyPassword);
   }
 
-  static Future<Object> startGoodsDetail(BuildContext context, String supplierId, String goodsId){
+  static Future<Object> startDashboardWithdrawResult(
+      BuildContext context, WithdrawResultArguments arguments) {
     StoreProvider.of<AppState>(context)
-        .dispatch(UpdateArgumentsAction<GoodsDetailArguments>(GoodsDetailArguments(supplierId, goodsId)));
-    return Navigator.of(context).pushNamed(RouterPath.goodsDetail);
+        .dispatch(UpdateArgumentsAction<WithdrawResultArguments>(arguments));
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.dashboard$WithdrawResult);
+  }
+
+  static Future<Object> startDashboardSalesHistory(
+      BuildContext context, SalesHistoryArguments arguments) {
+    StoreProvider.of<AppState>(context)
+        .dispatch(UpdateArgumentsAction<SalesHistoryArguments>(arguments));
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.dashboard$WithdrawResult);
+  }
+
+  static Future<Object> startSupplySupplierDetail(
+      BuildContext context, String supplierId, String supplierName) {
+    StoreProvider.of<AppState>(context).dispatch(
+        UpdateArgumentsAction<SupplierDetailArguments>(
+            SupplierDetailArguments(supplierId, supplierName)));
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.supply$SupplierDetail);
+  }
+
+  static Future<Object> startGoodsDetail(
+      BuildContext context, String supplierId, String goodsId) {
+    StoreProvider.of<AppState>(context).dispatch(
+        UpdateArgumentsAction<GoodsDetailArguments>(
+            GoodsDetailArguments(supplierId, goodsId)));
+    return Global.navigatorKey.currentState.pushNamed(RouterPath.goodsDetail);
   }
 
   static Future<Object> startSupplySearch(BuildContext context) {
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
-  }
-  static Future<Object> startStoreEditStore(BuildContext context) {
-    return Navigator.of(context).pushNamed(RouterPath.store$EditStore);
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.dashboard$WithdrawResult);
   }
 
-  static Future<Object> startImageCrop(BuildContext context, ImageCropArguments arguments){
-    StoreProvider.of<AppState>(context).dispatch(UpdateArgumentsAction<ImageCropArguments>(arguments));
-    return Navigator.of(context).pushNamed(RouterPath.imageCrop);
+  static Future<Object> startStoreEditStore(BuildContext context) {
+    return Global.navigatorKey.currentState
+        .pushNamed(RouterPath.store$EditStore);
+  }
+
+  static Future<Object> startImageCrop(
+      BuildContext context, ImageCropArguments arguments) {
+    StoreProvider.of<AppState>(context)
+        .dispatch(UpdateArgumentsAction<ImageCropArguments>(arguments));
+    return Global.navigatorKey.currentState.pushNamed(RouterPath.imageCrop);
   }
 }

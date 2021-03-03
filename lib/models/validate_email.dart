@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
     414, "Old user!"
  */
 @immutable
-class ValidateEmail{
+class ValidateEmail {
   final int status;
   final String msg;
 

@@ -2,7 +2,7 @@ import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
 
 /// SignUpState
-abstract class SignUpState{}
+abstract class SignUpState {}
 
 class SignUpInitial implements SignUpState {
   const SignUpInitial();
@@ -74,15 +74,16 @@ class SignInSuccessAction {
 }
 
 class SignInFailureAction {
+  final String email;
   final String message;
 
-  SignInFailureAction(this.message);
+  SignInFailureAction(this.email, this.message);
 }
 
 /// ValidateEmailState
-abstract class ValidateEmailState{}
+abstract class ValidateEmailState {}
 
-class ValidateEmailInitial implements ValidateEmailState{
+class ValidateEmailInitial implements ValidateEmailState {
   const ValidateEmailInitial();
 }
 
@@ -107,9 +108,10 @@ class ValidateEmailAction {
 }
 
 class ValidateEmailSuccessAction {
+  final String email;
   final ValidateEmail validateEmail;
 
-  ValidateEmailSuccessAction(this.validateEmail);
+  ValidateEmailSuccessAction(this.email, this.validateEmail);
 }
 
 class ValidateEmailFailureAction {

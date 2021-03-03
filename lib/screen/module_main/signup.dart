@@ -49,10 +49,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      distinct: true,
-      onWillChange: (oldVM, newVM) {
-        _onSignUpStateChanged(newVM._signUpState);
-      },
       builder: (context, vm) {
         return Scaffold(
           body: Container(
@@ -253,34 +249,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
       },
     );
-  }
-
-  void _onSignUpStateChanged(SignUpState state) {
-    if (state is SignUpLoading) {
-      EasyLoading.show(status: 'Loading...');
-    } else if (state is SignUpSuccess) {
-      EasyLoading.showSuccess(
-          'Congratulations!\n You\'ve opened your store!\n You can check it at the last tab.',);
-      IdolRoute.startHome(context);
-      // TODO 暂时无法解决跳转后该Dialog关闭，使用Toast替代
-      // showDialog(
-      //     context: context,
-      //     barrierDismissible: false,
-      //     builder: (context) {
-      //       return IdolMessageDialog(
-      //         'Congratulations!\n You\'ve opened your store!\n You can check it at the last tab.',
-      //         buttonText: 'START',
-      //         onTap: () {
-      //             IdolRoute.startHome(context);
-      //         },
-      //         onClose: () {
-      //           IdolRoute.popAndExit(context);
-      //         },
-      //       );
-      //     });
-    } else if (state is SignUpFailure) {
-      EasyLoading.showError(state.message);
-    }
   }
 }
 

@@ -389,7 +389,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                     shareChannel,
                     savePath,
                   );
-                }).onError((error, stackTrace) {});
+                });
               });
             },
             tips:
@@ -439,7 +439,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           header: MaterialClassicHeader(
             color: Colours.color_EA5228,
           ),
-          child: _storeGoodsList == null || _storeGoodsList.isEmpty ? _emptyGoodsWidget() : _hasGoodsWidget(vm),
+          child: _storeGoodsList == null || _storeGoodsList.isEmpty
+              ? _emptyGoodsWidget()
+              : _hasGoodsWidget(vm),
           onRefresh: () async {
             await Future(() {
               vm._loadGoods(Global.getUser(context).id, 1);
@@ -456,7 +458,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
-  Widget _hasGoodsWidget(_ViewModel vm){
+  Widget _hasGoodsWidget(_ViewModel vm) {
     return StaggeredGridView.countBuilder(
         padding: EdgeInsets.all(15),
         itemCount: _storeGoodsList.length,
@@ -474,10 +476,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             _storeGoodsList[index],
             onItemClickCallback: () {
               // goods detail
-              IdolRoute.startGoodsDetail(
-                  context,
-                  _storeGoodsList[index].supplierId,
-                  _storeGoodsList[index].id);
+              IdolRoute.startGoodsDetail(context,
+                  _storeGoodsList[index].supplierId, _storeGoodsList[index].id);
             },
             onItemLongPressCallback: () {
               _shareOrRemoveGoods(vm, _storeGoodsList[index]);
