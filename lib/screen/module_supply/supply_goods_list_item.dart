@@ -13,6 +13,7 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class FollowingGoodsListItem extends StatefulWidget {
   final GoodsDetail goodsDetail;
@@ -250,18 +251,21 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
               height: 5,
             ),
             // Shopping description.
-            Text(
-              widget.goodsDetail.goodsDescription,
-              style: TextStyle(
-                color: Colours.color_555764,
-                fontSize: 14,
-              ),
-              strutStyle: StrutStyle(
-                  forceStrutHeight: true,
-                  height: 1,
-                  leading: 0.2,
-                  fontSize: 14),
-            ),
+            Html(
+                data: widget.goodsDetail.goodsDescription,
+                onLinkTap: (String url) {}),
+            // Text(
+            //   widget.goodsDetail.goodsDescription,
+            //   style: TextStyle(
+            //     color: Colours.color_555764,
+            //     fontSize: 14,
+            //   ),
+            //   strutStyle: StrutStyle(
+            //       forceStrutHeight: true,
+            //       height: 1,
+            //       leading: 0.2,
+            //       fontSize: 14),
+            // ),
             SizedBox(
               height: 4,
             ),
