@@ -92,3 +92,13 @@ SalesHistoryArguments _onUpdateSalesHistoryArguments(Arguments arguments,
     UpdateArgumentsAction<SalesHistoryArguments> action){
   return action.arguments;
 }
+
+/// InnerWebView 参数
+final innerWebViewArgumentsReducer = combineReducers<Arguments>([
+  TypedReducer<Arguments, UpdateArgumentsAction<InnerWebViewArguments>>(
+      _onInnerWebViewArguments),
+]);
+InnerWebViewArguments _onInnerWebViewArguments(Arguments arguments,
+    UpdateArgumentsAction<InnerWebViewArguments> action){
+  return action.arguments;
+}

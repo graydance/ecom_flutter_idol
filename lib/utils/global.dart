@@ -35,6 +35,11 @@ class Global {
         : (signInState as SignInSuccess).signInUser;
   }
 
+  static void clearAccountInfo(){
+    storage.delete(key: KeyStore.TOKEN);
+    storage.delete(key: KeyStore.PASSWORD);
+  }
+
   static saveUserAccount(String email, String password) {
     // SpUtil.putString(KeyStore.EMAIL, email);
     // SpUtil.putString(KeyStore.PASSWORD, password);

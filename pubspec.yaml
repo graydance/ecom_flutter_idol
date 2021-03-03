@@ -27,6 +27,8 @@ dependencies:
   permission_handler: any
   flutter_staggered_grid_view: ^0.3.2
   r_dart_library: ^0.2.1
+  url_launcher: ^5.7.10
+  launch_review: ^2.0.0
   webview_flutter: ^1.0.7
   flutter_secure_storage: ^3.3.5
   share: ^0.6.5+4
@@ -51,8 +53,10 @@ flr:
 flutter:
   uses-material-design: true
   assets:
-  - assets/images/bg_common_error.png
-  - assets/images/dashboard/bg_withdraw.png
+  - assets/images/bg_default_empty_goods.webp
+  - assets/images/bg_default_empty_sales_history.webp
+  - assets/images/bg_default_error.png
+  - assets/images/bg_default_net_error.webp
   - assets/images/dashboard/bg_withdraw.webp
   - assets/images/dashboard/bg_withdraw_failure.webp
   - assets/images/dashboard/bg_withdraw_success.webp
@@ -64,7 +68,7 @@ flutter:
   - assets/images/ic_share_more.png
   - assets/images/ic_share_twitter.png
   - assets/images/main/bg_login_signup.png
-  - assets/images/main/ic_logo.png
+  - assets/images/main/ic_circle_logo.png
   - assets/images/main/ic_password_visibility.png
   - assets/images/main/ic_password_visibility_off.png
   - assets/images/main/ic_tab_biolinks_normal.png

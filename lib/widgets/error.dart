@@ -27,7 +27,7 @@ class _IdolErrorWidgetState extends State<IdolErrorWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image(
-            image: R.image.bg_common_error(),
+            image: R.image.bg_default_net_error_webp(),
             width: 212,
             height: 168,
           ),
@@ -43,6 +43,7 @@ class _IdolErrorWidgetState extends State<IdolErrorWidget> {
           ),
           Text(
             widget.tipsText,
+            textAlign: TextAlign.center,
             style: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
           ),
           SizedBox(

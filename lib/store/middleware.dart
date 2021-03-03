@@ -4,18 +4,18 @@ import 'package:idol/models/biolinks.dart';
 import 'package:idol/models/validate_email.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
+import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
-import 'package:idol/widgets/dialog.dart';
+import 'package:idol/widgets/dialog_message.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
-
-import '../router.dart';
 import 'actions/arguments.dart';
 
 List<Middleware<AppState>> createStoreMiddleware() {
   return [
     TypedMiddleware<AppState, ValidateEmailAction>(validateEmailMiddleware),
+    TypedMiddleware<AppState, UpdatePasswordAction>(updatePasswordMiddleware),
     TypedMiddleware<AppState, SignUpAction>(signUpSignInMiddleware),
     TypedMiddleware<AppState, SignInAction>(signUpSignInMiddleware),
     TypedMiddleware<AppState, DashboardAction>(dashboardMiddleware),
@@ -176,6 +176,22 @@ final Middleware<AppState> signUpSignInMiddleware =
       store.dispatch(action is SignUpAction
           ? SignUpFailureAction(err.toString())
           : SignInFailureAction(action.request.email, err.toString()));
+    });
+    next(action);
+  }
+};
+
+final Middleware<AppState> updatePasswordMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is UpdatePasswordAction) {
+    DioClient.getInstance()
+        .post(ApiPath.updatePassword, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data) {
+      store.dispatch(UpdatePasswordSuccessAction());
+    }).catchError((err) {
+      print(err.toString());
+      store.dispatch(UpdatePasswordFailure(err.toString()));
     });
     next(action);
   }

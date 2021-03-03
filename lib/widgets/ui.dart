@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 class IdolUI {
-  static AppBar appBar(BuildContext context, String title,{bool centerTitle = false}) {
+  static AppBar appBar(BuildContext context, String title,{bool centerTitle = true}) {
     return AppBar(
       elevation: 0,
       titleSpacing: 0,

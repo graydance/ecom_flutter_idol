@@ -510,7 +510,7 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
         }
       }
     } else {
-      EasyLoading.show(status: 'No image selected.');
+      EasyLoading.showToast('No image selected.');
     }
   }
 

@@ -94,16 +94,28 @@ class AssetResource {
 class _R_Image_AssetResource {
   const _R_Image_AssetResource();
 
-  /// asset: assets/images/bg_common_error.png
+  /// asset: assets/images/bg_default_empty_goods.webp
   // ignore: non_constant_identifier_names
-  final bg_common_error = const AssetResource(
-      "assets/images/bg_common_error.png",
+  final bg_default_empty_goods_webp = const AssetResource(
+      "assets/images/bg_default_empty_goods.webp",
       packageName: null);
 
-  /// asset: assets/images/dashboard/bg_withdraw.png
+  /// asset: assets/images/bg_default_empty_sales_history.webp
   // ignore: non_constant_identifier_names
-  final bg_withdraw = const AssetResource(
-      "assets/images/dashboard/bg_withdraw.png",
+  final bg_default_empty_sales_history_webp = const AssetResource(
+      "assets/images/bg_default_empty_sales_history.webp",
+      packageName: null);
+
+  /// asset: assets/images/bg_default_error.png
+  // ignore: non_constant_identifier_names
+  final bg_default_error = const AssetResource(
+      "assets/images/bg_default_error.png",
+      packageName: null);
+
+  /// asset: assets/images/bg_default_net_error.webp
+  // ignore: non_constant_identifier_names
+  final bg_default_net_error_webp = const AssetResource(
+      "assets/images/bg_default_net_error.webp",
       packageName: null);
 
   /// asset: assets/images/dashboard/bg_withdraw.webp
@@ -171,10 +183,11 @@ class _R_Image_AssetResource {
       "assets/images/main/bg_login_signup.png",
       packageName: null);
 
-  /// asset: assets/images/main/ic_logo.png
+  /// asset: assets/images/main/ic_circle_logo.png
   // ignore: non_constant_identifier_names
-  final ic_logo =
-      const AssetResource("assets/images/main/ic_logo.png", packageName: null);
+  final ic_circle_logo = const AssetResource(
+      "assets/images/main/ic_circle_logo.png",
+      packageName: null);
 
   /// asset: assets/images/main/ic_password_visibility.png
   // ignore: non_constant_identifier_names
@@ -399,16 +412,28 @@ class _R_Image {
 
   final asset = const _R_Image_AssetResource();
 
-  /// asset: assets/images/bg_common_error.png
+  /// asset: assets/images/bg_default_empty_goods.webp
   // ignore: non_constant_identifier_names
-  AssetImage bg_common_error() {
-    return AssetImage(asset.bg_common_error.keyName);
+  AssetImage bg_default_empty_goods_webp() {
+    return AssetImage(asset.bg_default_empty_goods_webp.keyName);
   }
 
-  /// asset: assets/images/dashboard/bg_withdraw.png
+  /// asset: assets/images/bg_default_empty_sales_history.webp
   // ignore: non_constant_identifier_names
-  AssetImage bg_withdraw() {
-    return AssetImage(asset.bg_withdraw.keyName);
+  AssetImage bg_default_empty_sales_history_webp() {
+    return AssetImage(asset.bg_default_empty_sales_history_webp.keyName);
+  }
+
+  /// asset: assets/images/bg_default_error.png
+  // ignore: non_constant_identifier_names
+  AssetImage bg_default_error() {
+    return AssetImage(asset.bg_default_error.keyName);
+  }
+
+  /// asset: assets/images/bg_default_net_error.webp
+  // ignore: non_constant_identifier_names
+  AssetImage bg_default_net_error_webp() {
+    return AssetImage(asset.bg_default_net_error_webp.keyName);
   }
 
   /// asset: assets/images/dashboard/bg_withdraw.webp
@@ -477,10 +502,10 @@ class _R_Image {
     return AssetImage(asset.bg_login_signup.keyName);
   }
 
-  /// asset: assets/images/main/ic_logo.png
+  /// asset: assets/images/main/ic_circle_logo.png
   // ignore: non_constant_identifier_names
-  AssetImage ic_logo() {
-    return AssetImage(asset.ic_logo.keyName);
+  AssetImage ic_circle_logo() {
+    return AssetImage(asset.ic_circle_logo.keyName);
   }
 
   /// asset: assets/images/main/ic_password_visibility.png

@@ -1,17 +1,14 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
-import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:redux/redux.dart';
-import 'package:idol/widgets/dialog.dart';
 
 /// 校验邮箱
 class ValidateEmailScreen extends StatefulWidget {
@@ -57,7 +54,7 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
                   child: Column(
                     children: [
                       Image(
-                        image: R.image.ic_logo(),
+                        image: R.image.ic_circle_logo(),
                         width: 120,
                         height: 120,
                       ),

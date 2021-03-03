@@ -119,3 +119,38 @@ class ValidateEmailFailureAction {
 
   ValidateEmailFailureAction(this.message);
 }
+
+/// UpdatePasswordState
+abstract class UpdatePasswordState{}
+
+class UpdatePasswordInitial implements UpdatePasswordState{
+  const UpdatePasswordInitial();
+}
+
+class UpdatePasswordLoading implements UpdatePasswordState {}
+
+class UpdatePasswordSuccess implements UpdatePasswordState {
+}
+
+class UpdatePasswordFailure implements UpdatePasswordState {
+  final String message;
+
+  UpdatePasswordFailure(this.message);
+}
+
+class UpdatePasswordAction {
+  final UpdatePasswordRequest request;
+
+  UpdatePasswordAction(this.request);
+}
+
+class UpdatePasswordSuccessAction {
+
+  UpdatePasswordSuccessAction();
+}
+
+class UpdatePasswordFailureAction {
+  final String message;
+
+  UpdatePasswordFailureAction(this.message);
+}

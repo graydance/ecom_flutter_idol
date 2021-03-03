@@ -12,4 +12,5 @@ class KeyStore {
   static const String PAYMENT = "payment";
   static const String PAYMENT_ACCOUNT = "paymentAccount";
   static const String IS_FIRST_RUN = "isFirstRun";
+  static const String NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG = "neverShowHowToMakeMoneyDialog";
 }

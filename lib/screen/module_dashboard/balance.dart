@@ -7,7 +7,7 @@ import 'package:idol/net/request/base.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/widgets/button.dart';
-import 'package:idol/widgets/dialog.dart';
+import 'package:idol/widgets/dialog_message.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/models.dart';

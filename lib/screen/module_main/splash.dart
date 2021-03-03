@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
@@ -40,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Center(
                 child: ClipOval(
                   child: Image(
-                    image: R.image.ic_logo(),
+                    image: R.image.ic_circle_logo(),
                     width: 150,
                     height: 150,
                   ),
