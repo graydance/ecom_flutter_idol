@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:idol/models/appstate.dart';
@@ -349,18 +350,21 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                       height: 5,
                     ),
                     // Shopping description.
-                    Text(
-                      goodsDetail.goodsDescription,
-                      style: TextStyle(
-                        color: Colours.color_555764,
-                        fontSize: 14,
-                      ),
-                      strutStyle: StrutStyle(
-                          forceStrutHeight: true,
-                          height: 1,
-                          leading: 0.2,
-                          fontSize: 14),
-                    ),
+                    Html(
+                        data: goodsDetail.goodsDescription,
+                        onLinkTap: (String url) {}),
+                    // Text(
+                    //   goodsDetail.goodsDescription,
+                    //   style: TextStyle(
+                    //     color: Colours.color_555764,
+                    //     fontSize: 14,
+                    //   ),
+                    //   strutStyle: StrutStyle(
+                    //       forceStrutHeight: true,
+                    //       height: 1,
+                    //       leading: 0.2,
+                    //       fontSize: 14),
+                    // ),
                   ],
                 ),
               ),
