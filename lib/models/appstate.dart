@@ -44,8 +44,10 @@ class AppState {
   final HomeTabArguments homeTabArguments;
   final UpdatePasswordState updatePasswordState;
   final InnerWebViewArguments innerWebViewArguments;
+  final GoodsDetail goodsDetailPage;
 
   AppState({
+    this.goodsDetailPage = const GoodsDetail(),
     this.signUpState = const SignUpInitial(),
     this.signInState = const SignInInitial(),
     this.dashboardState = const DashboardInitial(),
@@ -85,6 +87,7 @@ class AppState {
   });
 
   AppState copyWith({
+    GoodsDetail goodsDetailPage,
     SignUpState signUpState,
     SignInState signInState,
     DashboardState dashboardState,
@@ -122,7 +125,9 @@ class AppState {
     UpdatePasswordState updatePasswordState,
     InnerWebViewArguments innerWebViewArguments,
   }) {
-    if ((signUpState == null || identical(signUpState, this.signUpState)) &&
+    if ((goodsDetailPage == null ||
+            identical(goodsDetailPage, this.goodsDetailPage)) &&
+        (signUpState == null || identical(signUpState, this.signUpState)) &&
         (signInState == null || identical(signInState, this.signInState)) &&
         (dashboardState == null ||
             identical(dashboardState, this.dashboardState)) &&
@@ -197,6 +202,7 @@ class AppState {
     }
 
     return AppState(
+      goodsDetailPage: goodsDetailPage ?? this.goodsDetailPage,
       signUpState: signUpState ?? this.signUpState,
       signInState: signInState ?? this.signInState,
       dashboardState: dashboardState ?? this.dashboardState,
@@ -250,6 +256,7 @@ class AppState {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AppState &&
+          goodsDetailPage == other.goodsDetailPage &&
           runtimeType == other.runtimeType &&
           signUpState == other.signUpState &&
           signInState == other.signInState &&
@@ -290,6 +297,7 @@ class AppState {
 
   @override
   int get hashCode =>
+      goodsDetailPage.hashCode ^
       signUpState.hashCode ^
       signInState.hashCode ^
       dashboardState.hashCode ^

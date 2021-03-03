@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "14.0.0"
+    version: "12.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.41.2"
+    version: "0.40.6"
   animations:
     dependency: "direct main"
     description:
@@ -148,6 +148,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.1"
+  coverage:
+    dependency: transitive
+    description:
+      name: coverage
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.14.2"
   crop:
     dependency: "direct main"
     description:
@@ -425,6 +432,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.9.2+2"
+  io:
+    dependency: transitive
+    description:
+      name: io
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.4"
   js:
     dependency: transitive
     description:
@@ -432,6 +446,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.6.3-nullsafety.3"
+  json_rpc_2:
+    dependency: transitive
+    description:
+      name: json_rpc_2
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.2.2"
   launch_review:
     dependency: "direct main"
     description:
@@ -593,6 +614,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.3"
+  pool:
+    dependency: transitive
+    description:
+      name: pool
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.5.0-nullsafety.3"
   process:
     dependency: transitive
     description:
@@ -710,6 +738,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.9.10+1"
+  source_map_stack_trace:
+    dependency: transitive
+    description:
+      name: source_map_stack_trace
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0-nullsafety.4"
+  source_maps:
+    dependency: transitive
+    description:
+      name: source_maps
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.10.10-nullsafety.3"
   source_span:
     dependency: transitive
     description:
@@ -773,6 +815,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.19-nullsafety.6"
+  test_core:
+    dependency: transitive
+    description:
+      name: test_core
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.12-nullsafety.9"
   transformer_page_view:
     dependency: transitive
     description:
@@ -892,6 +941,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.9.7+15"
+  web_socket_channel:
+    dependency: transitive
+    description:
+      name: web_socket_channel
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.0"
   webdriver:
     dependency: transitive
     description:
@@ -936,4 +992,4 @@ packages:
     version: "2.2.1"
 sdks:
   dart: ">=2.12.0-29.10.beta <3.0.0"
-  flutter: ">=1.22.0"
+  flutter: ">=1.22.0 <2.0.0"

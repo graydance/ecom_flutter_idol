@@ -74,6 +74,7 @@ class GoodsDetail {
     String discount,
     int soldNum,
     int collectNum,
+    int inMyStore,
     List<Tag> tag,
     List<String> goods,
     int updateTime,

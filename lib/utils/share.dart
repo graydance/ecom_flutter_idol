@@ -3,7 +3,7 @@ import 'package:ecomshare/ecomshare.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:idol/env.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/router.dart';
 import 'package:idol/widgets/dialog_share.dart';
@@ -54,18 +54,22 @@ class ShareManager {
         });
   }
 
-  static void _downloadPicture(BuildContext context, String imageUrl, shareChannel) async {
+  static void _downloadPicture(
+      BuildContext context, String imageUrl, shareChannel) async {
     EasyLoading.show(status: 'Downloading...');
     String savePath;
-    try{
+    try {
       Directory tempDir = await getTemporaryDirectory();
-      savePath = tempDir.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + '.jpg';
-    }catch(e){
+      savePath = tempDir.path +
+          '/' +
+          DateTime.now().millisecondsSinceEpoch.toString() +
+          '.jpg';
+    } catch (e) {
       EasyLoading.showError(e.toString());
       debugPrint(e);
       return;
     }
-    DioClient.getInstance().download(imageUrl,savePath).then((savePath){
+    DioClient.getInstance().download(imageUrl, savePath).then((savePath) {
       EasyLoading.dismiss();
       _showGuideDialog(
         context,
@@ -79,7 +83,8 @@ class ShareManager {
     });
   }
 
-  static void _showGuideDialog(BuildContext context, String mediaType, String guideVideoUrl, String shareChannel, String imageLocalPath) {
+  static void _showGuideDialog(BuildContext context, String mediaType,
+      String guideVideoUrl, String shareChannel, String imageLocalPath) {
     Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
     /*showDialog(
         context: context,

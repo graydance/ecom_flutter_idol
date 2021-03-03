@@ -4,9 +4,11 @@ import 'package:idol/models/biolinks.dart';
 import 'package:idol/models/validate_email.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
+import 'package:idol/net/request/supply.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/dialog_message.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
@@ -104,6 +106,38 @@ List<Middleware<AppState>> createStoreMiddleware() {
         return Global.navigatorKey.currentState
             .pushReplacementNamed(RouterPath.signIn);
       }
+      next(action);
+    }),
+    TypedMiddleware<AppState, AddToStoreAction>((store, action, next) {
+      EasyLoading.show(status: 'Loading...');
+      next(action);
+    }),
+    TypedMiddleware<AppState, AddToStoreAction>((store, action, next) {
+      DioClient.getInstance()
+          .post(ApiPath.addStore, baseRequest: AddStoreRequest(action.goods.id))
+          .whenComplete(() => null)
+          .then((data) {
+        store.dispatch(AddToStoreActionSuccessAction(action.goods));
+      }).catchError((err) {
+        store.dispatch(AddToStoreActionFailAction(err.toString()));
+      });
+      next(action);
+    }),
+    TypedMiddleware<AppState, AddToStoreActionSuccessAction>(
+        (store, action, next) {
+      EasyLoading.dismiss();
+      ShareManager.showShareGoodsDialog(
+          Global.navigatorKey.currentContext, action.goods.goods[0]);
+      next(action);
+    }),
+    TypedMiddleware<AppState, AddToStoreActionFailAction>(
+        (store, action, next) {
+      EasyLoading.dismiss();
+      EasyLoading.showError(action.error);
+      next(action);
+    }),
+    TypedMiddleware<AppState, ShowGoodsDetailAction>((store, action, next) {
+      Global.navigatorKey.currentState.pushNamed(RouterPath.goodsDetail);
       next(action);
     }),
   ];

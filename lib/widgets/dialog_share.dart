@@ -251,17 +251,17 @@ class _ShareDialogState extends State<ShareDialog> {
                 Radius.circular(2),
               ),
             ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                GestureDetector(
-                    onTap: () {
-                      _controller.value.isPlaying
-                          ? _controller.pause()
-                          : _controller.play();
-                      setState(() {});
-                    },
-                    child: Center(
+            child: GestureDetector(
+                onTap: () {
+                  _controller.value.isPlaying
+                      ? _controller.pause()
+                      : _controller.play();
+                  setState(() {});
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Center(
                       child: _controller.value.initialized
                           ? Visibility(
                               visible: !_controller.value.isPlaying,
@@ -272,16 +272,16 @@ class _ShareDialogState extends State<ShareDialog> {
                               ),
                             )
                           : IdolLoadingWidget(),
-                    )),
-                ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(2)),
-                  child: AspectRatio(
-                    aspectRatio: 270 / 140, //_controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
-                  ),
-                ),
-              ],
-            ),
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(2)),
+                      child: AspectRatio(
+                        aspectRatio: 270 / 140, //_controller.value.aspectRatio,
+                        child: VideoPlayer(_controller),
+                      ),
+                    ),
+                  ],
+                )),
           ),
           Container(
             width: double.infinity,
@@ -386,8 +386,8 @@ class _ShareDialogState extends State<ShareDialog> {
 
   @override
   void dispose() {
+    // _controller.dispose();
     super.dispose();
-    _controller.dispose();
   }
 }
 
