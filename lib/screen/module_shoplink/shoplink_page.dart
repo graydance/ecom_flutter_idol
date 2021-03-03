@@ -13,6 +13,7 @@ import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/store.dart';
+import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
@@ -393,9 +394,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             index,
             _storeGoodsList[index],
             onItemClickCallback: () {
-              // goods detail
-              IdolRoute.startGoodsDetail(context,
-                  _storeGoodsList[index].supplierId, _storeGoodsList[index].id);
+              StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
+                  GoodsDetailRequest(_storeGoodsList[index].supplierId,
+                      _storeGoodsList[index].id)));
             },
             onItemLongPressCallback: () {
               _shareOrRemoveGoods(vm, _storeGoodsList[index]);

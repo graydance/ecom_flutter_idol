@@ -51,6 +51,15 @@ List<Middleware<AppState>> createStoreMiddleware() {
       EasyLoading.show(status: 'Signing in...');
       next(action);
     }),
+    TypedMiddleware<AppState, GoodsDetailAction>((_, action, next) {
+      EasyLoading.show(status: 'Load...');
+      next(action);
+    }),
+    TypedMiddleware<AppState, GoodsDetailSuccessAction>((store, action, next) {
+      EasyLoading.dismiss();
+      store.dispatch(ShowGoodsDetailAction(action.goodsDetail));
+      next(action);
+    }),
     TypedMiddleware<AppState, SignInSuccessAction>(startHome),
     TypedMiddleware<AppState, SignUpSuccessAction>(startHome),
     TypedMiddleware<AppState, SignUpSuccessAction>((_, action, next) {
