@@ -36,6 +36,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
   @override
   Widget build(BuildContext context) {
     debugPrint('ProductItemWidget >>> ' + widget.goodsDetail.toString());
+    var upTime =
+        DateTime.fromMillisecondsSinceEpoch(widget.goodsDetail.updateTime);
     return GestureDetector(
       onTap: () {
         // GoodsDetail
@@ -139,7 +141,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                   ),
                 ),
                 Text(
-                  widget.goodsDetail.updateTime ?? '',
+                  "${upTime.year.toString()}-${upTime.month.toString().padLeft(2, '0')}-${upTime.day.toString().padLeft(2, '0')} ${upTime.hour.toString()}-${upTime.minute.toString()}",
                   style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12),
                 )
               ],

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/env.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';

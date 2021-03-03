@@ -16,7 +16,7 @@ dependencies:
   flustars: ^0.3.3
   carousel_slider: ^3.0.0
   animations: ^1.1.2
-  pull_to_refresh: ^1.6.3
+  pull_to_refresh: ^1.6.4
   flutter_easyloading: ^2.2.2
   flutter_swiper: ^1.1.6
   video_player: ^1.0.1
@@ -32,16 +32,22 @@ dependencies:
   webview_flutter: ^1.0.7
   flutter_secure_storage: ^3.3.5
   share: ^0.6.5+4
+  flutter_html: ^1.3.0
   ecomshare:
-    path: plugins/ecomshare
+    git:
+      url: 'https://github.com/graydance/ecomshare.git'
 dependency_overrides:
-  flutter_svg: 0.20.0-nullsafety.3
+  flutter_svg: ^0.19.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
   mockito: ^4.1.3
+flutter_icons:
+  android: launcher_icon
+  ios: true
+  image_path: assets/icon/icon.png
 flr:
   core_version: 3.1.0
   dartfmt_line_length: 80

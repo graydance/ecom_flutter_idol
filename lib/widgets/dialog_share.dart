@@ -63,7 +63,8 @@ class _ShareDialogState extends State<ShareDialog> {
             widget.mediaUrl.toLowerCase().endsWith('.mp4')) {
       _controller = VideoPlayerController.network(widget.mediaUrl)
         ..initialize().then((_) {
-          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+          _controller.setLooping(true);
+          // _controller.play();
           setState(() {});
         });
     }
@@ -73,7 +74,7 @@ class _ShareDialogState extends State<ShareDialog> {
     List<String> supportChannels;
     try {
       supportChannels =
-      await Ecomshare.getSupportedChannels(Ecomshare.MEDIA_TYPE_IMAGE);
+          await Ecomshare.getSupportedChannels(Ecomshare.MEDIA_TYPE_IMAGE);
     } on PlatformException {
       supportChannels = [];
     }
@@ -107,7 +108,7 @@ class _ShareDialogState extends State<ShareDialog> {
       return _createGuideShareWidget(widget.shareChannel);
     } else {
       return IdolErrorWidget(
-            () {
+        () {
           IdolRoute.pop(context);
         },
         buttonText: 'Close',
@@ -162,7 +163,9 @@ class _ShareDialogState extends State<ShareDialog> {
             margin: EdgeInsets.only(left: 80, right: 80, top: 15, bottom: 10),
             child: AspectRatio(
               aspectRatio: 1.0, //_controller.value.aspectRatio,
-              child: Image(image: NetworkImage(widget.mediaUrl),),
+              child: Image(
+                image: NetworkImage(widget.mediaUrl),
+              ),
             ),
           ),
           Text(
@@ -252,31 +255,30 @@ class _ShareDialogState extends State<ShareDialog> {
               alignment: Alignment.center,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    _controller.value.isPlaying
-                        ? _controller.pause()
-                        : _controller.play();
-                    setState(() {});
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(2)),
-                    child: AspectRatio(
-                      aspectRatio: 270 / 140, //_controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
-                    ),
+                    onTap: () {
+                      _controller.value.isPlaying
+                          ? _controller.pause()
+                          : _controller.play();
+                      setState(() {});
+                    },
+                    child: Center(
+                      child: _controller.value.initialized
+                          ? Visibility(
+                              visible: !_controller.value.isPlaying,
+                              child: Image(
+                                image: R.image.play(),
+                                width: 50,
+                                height: 50,
+                              ),
+                            )
+                          : IdolLoadingWidget(),
+                    )),
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                  child: AspectRatio(
+                    aspectRatio: 270 / 140, //_controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
                   ),
-                ),
-                Center(
-                  child: _controller.value.initialized
-                      ? Visibility(
-                    visible: !_controller.value.isPlaying,
-                    child: Image(
-                      image: R.image.play(),
-                      width: 50,
-                      height: 50,
-                    ),
-                  )
-                      : IdolLoadingWidget(),
                 ),
               ],
             ),
@@ -330,48 +332,53 @@ class _ShareDialogState extends State<ShareDialog> {
             height: 10,
           ),
           Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(2),
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(2),
+                ),
               ),
-              color: Colours.black,
-            ),
-            child: Stack(
-              children: [
-                _controller.value.initialized
-                    ? AspectRatio(
-                  aspectRatio: 270 / 140, //_controller.value.aspectRatio
-                  child: VideoPlayer(_controller),
-                )
-                    : Container(
-                  child: Text(
-                    'The video resource failed to load or initialize',
-                    style: TextStyle(
-                        fontSize: 10, color: Colours.color_ED3544),
-                  ),
-                ),
-                Visibility(
-                  visible: _controller.value.initialized,
-                  child: Image(
-                    image: _controller.value.isPlaying
-                        ? R.image.pause()
-                        : R.image.play(),
-                    width: 25,
-                    height: 25,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              child: GestureDetector(
+                  onTap: () {
+                    _controller.value.isPlaying
+                        ? _controller.pause()
+                        : _controller.play();
+                    setState(() {});
+                  },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        child: AspectRatio(
+                          aspectRatio:
+                              270 / 140, //_controller.value.aspectRatio,
+                          child: VideoPlayer(_controller),
+                        ),
+                      ),
+                      Center(
+                        child: _controller.value.initialized
+                            ? Visibility(
+                                visible: !_controller.value.isPlaying,
+                                child: Image(
+                                  image: R.image.play(),
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              )
+                            : IdolLoadingWidget(),
+                      ),
+                    ],
+                  ))),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           IdolButton('Go to $channel', status: IdolButtonStatus.enable,
               listener: (status) {
-                if (widget.onShareButtonClick != null) {
-                  widget.onShareButtonClick(channel);
-                }
-              }),
+            if (widget.onShareButtonClick != null) {
+              widget.onShareButtonClick(channel);
+            }
+          }),
         ],
       ),
     );
