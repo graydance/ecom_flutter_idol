@@ -151,7 +151,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
 
   void _showGuideDialog(
       String guideVideoUrl, String shareChannel, String pictureLocalPath) {
-    showDialog(
+    showModalBottomSheet(
         context: context,
         builder: (context) {
           return ShareDialog(

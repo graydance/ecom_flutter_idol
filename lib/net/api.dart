@@ -89,7 +89,7 @@ class DioClient {
           onReceiveProgress: progressCallback, cancelToken: cancelToken);
       return savePath;
     } catch (e) {
-      debugPrint(e);
+      debugPrint(e.toString());
       throw e.message;
     }
   }

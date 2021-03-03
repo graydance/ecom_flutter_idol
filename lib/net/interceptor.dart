@@ -38,24 +38,30 @@ class TokenInterceptors extends InterceptorsWrapper {
   Future onResponse(Response response) {
     Global.logger.fine(
         "TokenInterceptors RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
-    if (response.data['code'] != 0) {
-      int code = response.data['code'];
-      if (code != null) {
-        if (code >= 400 && code < 500) {
-          if (code == 401 || code == 402) {
-            // Need login.
-            EasyLoading.showError(response.data['msg']);
-            BuildContext context = Global.navigatorKey.currentContext;
-            IdolRoute.startSignIn(context, SignUpSignInArguments(Global.getUser(context).email));
+    try {
+      if (response.data['code'] != 0) {
+        int code = response.data['code'];
+        if (code != null) {
+          if (code >= 400 && code < 500) {
+            if (code == 401 || code == 402) {
+              // Need login.
+              EasyLoading.showError(response.data['msg']);
+              BuildContext context = Global.navigatorKey.currentContext;
+              IdolRoute.startSignIn(context,
+                  SignUpSignInArguments(Global.getUser(context).email));
+            }
+          } else if (code >= 500) {
+            // Unified handling
+            response.data['msg'] =
+                'The network is busy, please try again later!';
           }
-        } else if (code >= 500) {
-          // Unified handling
-          response.data['msg'] = 'The network is busy, please try again later!';
+        } else {
+          debugPrint('Data structure error!');
+          throw 'Data structure error!';
         }
-      } else {
-        debugPrint('Data structure error!');
-        throw 'Data structure error!';
       }
+    } catch (error) {
+      debugPrint(error.toString());
     }
     return super.onResponse(response);
   }

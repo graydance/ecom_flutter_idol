@@ -73,7 +73,7 @@ class _ShareDialogState extends State<ShareDialog> {
     List<String> supportChannels;
     try {
       supportChannels =
-      await Ecomshare.getSupportedChannels(Ecomshare.MEDIA_TYPE_IMAGE);
+          await Ecomshare.getSupportedChannels(Ecomshare.MEDIA_TYPE_IMAGE);
     } on PlatformException {
       supportChannels = [];
     }
@@ -107,7 +107,7 @@ class _ShareDialogState extends State<ShareDialog> {
       return _createGuideShareWidget(widget.shareChannel);
     } else {
       return IdolErrorWidget(
-            () {
+        () {
           IdolRoute.pop(context);
         },
         buttonText: 'Close',
@@ -162,7 +162,9 @@ class _ShareDialogState extends State<ShareDialog> {
             margin: EdgeInsets.only(left: 80, right: 80, top: 15, bottom: 10),
             child: AspectRatio(
               aspectRatio: 1.0, //_controller.value.aspectRatio,
-              child: Image(image: NetworkImage(widget.mediaUrl),),
+              child: Image(
+                image: NetworkImage(widget.mediaUrl),
+              ),
             ),
           ),
           Text(
@@ -269,13 +271,13 @@ class _ShareDialogState extends State<ShareDialog> {
                 Center(
                   child: _controller.value.initialized
                       ? Visibility(
-                    visible: !_controller.value.isPlaying,
-                    child: Image(
-                      image: R.image.play(),
-                      width: 50,
-                      height: 50,
-                    ),
-                  )
+                          visible: !_controller.value.isPlaying,
+                          child: Image(
+                            image: R.image.play(),
+                            width: 50,
+                            height: 50,
+                          ),
+                        )
                       : IdolLoadingWidget(),
                 ),
               ],
@@ -330,48 +332,25 @@ class _ShareDialogState extends State<ShareDialog> {
             height: 10,
           ),
           Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(2),
+                ),
+                color: Colours.black,
               ),
-              color: Colours.black,
-            ),
-            child: Stack(
-              children: [
-                _controller.value.initialized
-                    ? AspectRatio(
-                  aspectRatio: 270 / 140, //_controller.value.aspectRatio
-                  child: VideoPlayer(_controller),
-                )
-                    : Container(
-                  child: Text(
-                    'The video resource failed to load or initialize',
-                    style: TextStyle(
-                        fontSize: 10, color: Colours.color_ED3544),
-                  ),
-                ),
-                Visibility(
-                  visible: _controller.value.initialized,
-                  child: Image(
-                    image: _controller.value.isPlaying
-                        ? R.image.pause()
-                        : R.image.play(),
-                    width: 25,
-                    height: 25,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              child: AspectRatio(
+                aspectRatio: 270 / 140, //_controller.value.aspectRatio
+                child: VideoPlayer(_controller),
+              )),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           IdolButton('Go to $channel', status: IdolButtonStatus.enable,
               listener: (status) {
-                if (widget.onShareButtonClick != null) {
-                  widget.onShareButtonClick(channel);
-                }
-              }),
+            if (widget.onShareButtonClick != null) {
+              widget.onShareButtonClick(channel);
+            }
+          }),
         ],
       ),
     );
