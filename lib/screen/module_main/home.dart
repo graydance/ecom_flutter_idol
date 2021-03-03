@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:idol/models/appstate.dart';
+import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/screen/screens.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 /// 应用主页面
 /// 对于当前页面缓存一级Page页面问题，可参考该[https://www.jb51.net/article/157680.htm]
@@ -11,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin<HomeScreen>{
+    with AutomaticKeepAliveClientMixin<HomeScreen> {
   PageController _pageController;
 
   int _selectedIndex = 0;
@@ -72,12 +76,24 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
+    return StoreConnector<AppState, _ViewModel>(
+    converter: _ViewModel.fromStore,
+    distinct: true,
+    onWillChange: (oldVM, newVM) {
+      _onStateChanged(newVM._homeTabArguments);
+    },
+    builder: (context, vm) =>  Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
       body: _createBody(),
       bottomNavigationBar: _createBottomNavigationBar(),
-    );
+    ),);
+  }
+
+  void _onStateChanged(HomeTabArguments arguments){
+    setState(() {
+      _selectedIndex = arguments.tabIndex;
+    });
   }
 
   PageView _createBody() {
@@ -137,8 +153,12 @@ class _HomeScreenState extends State<HomeScreen>
           ),*/
         ],
         type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        unselectedItemColor: Colours.color_979AA9,
+        unselectedFontSize: 12,
+        selectedItemColor: Colours.color_0F1015,
+        selectedFontSize: 12,
         currentIndex: _selectedIndex,
         onTap: (index) => _pageController.jumpToPage(index),
       ),
@@ -147,4 +167,24 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class _ViewModel{
+  final HomeTabArguments _homeTabArguments;
+
+  _ViewModel(this._homeTabArguments);
+
+  static _ViewModel fromStore(Store<AppState> store) {
+    return _ViewModel(store.state.homeTabArguments);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          _homeTabArguments == other._homeTabArguments;
+
+  @override
+  int get hashCode => _homeTabArguments.hashCode;
 }

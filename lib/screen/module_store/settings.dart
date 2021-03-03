@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:idol/conf.dart';
+import 'package:idol/env.dart';
+import 'package:idol/models/arguments/arguments.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
 import 'package:idol/widgets/ui.dart';
-import '../../r.g.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:launch_review/launch_review.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -48,7 +54,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ),
   ];
 
-  static const TextStyle titleTextStyle = TextStyle(color: Colours.black, fontSize: 16);
+  static const TextStyle titleTextStyle =
+      TextStyle(color: Colours.black, fontSize: 16);
 
   List<Widget> _titles = <Widget>[
     Text(
@@ -74,6 +81,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Text(
       'Privacy Policy',
       style: titleTextStyle,
+    ),
+    Container(
+      margin: EdgeInsets.only(
+        top: 8,
+      ),
+      child: Text(
+        'Log Out',
+        style: titleTextStyle,
+      ),
     ),
   ];
 
@@ -102,7 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               trailing: Icon(
                 Icons.arrow_forward_ios,
                 color: Colours.color_C3C4C4,
-                size: 18,
+                size: 15,
               ),
               contentPadding: EdgeInsets.symmetric(horizontal: 16),
               enabled: true,
@@ -112,7 +128,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           );
         },
-        itemCount: 8,
+        itemCount: _titles.length,
       ),
     );
   }
@@ -121,26 +137,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _onTap(int index) {
     switch (index) {
       case 0:
-
+        IdolRoute.startSetPassword(context);
         break;
       case 1:
-
+        _launcherURL(emailUsUri,
+            'Please check whether you have email application installed');
         break;
       case 2:
-
+        _launcherURL(whatsAppUri,
+            'Please check whether you have WhatsApp application installed');
         break;
       case 3:
-
+        LaunchReview.launch(androidAppId: "me.hookar.idol", iOSAppId: iosAppId);
         break;
       case 4:
-
+        IdolRoute.startInnerWebView(
+            context, InnerWebViewArguments('FAQ', faqUri));
         break;
       case 5:
-
+        IdolRoute.logOut(context);
         break;
       default:
-
         break;
     }
   }
+
+  void _launcherURL(String url, String errorMsg) async =>
+      await canLaunch(url) ? launch(url) : throw errorMsg;
 }

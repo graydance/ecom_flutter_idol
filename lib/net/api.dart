@@ -11,7 +11,7 @@ class DioClient {
   Dio _dio;
   BaseOptions _options = BaseOptions(
     baseUrl: apiEntry,
-    connectTimeout: 10000,
+    connectTimeout: 30000,
     receiveTimeout: 10000,
     contentType: "application/json; charset=utf-8",
     responseType: ResponseType.json,
@@ -62,13 +62,15 @@ class DioClient {
     }
   }
 
-  Future<Map<String, dynamic>> upload(String path, File file, {ProgressCallback onSendProgress}) async {
+  Future<Map<String, dynamic>> upload(String path, File file,
+      {ProgressCallback onSendProgress}) async {
     try {
       _dio.options.headers[Headers.contentLengthHeader] = file.lengthSync();
       FormData formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(file.path),
       });
-      Response rsp = await _dio.post(path, data: formData, onSendProgress: onSendProgress);
+      Response rsp =
+          await _dio.post(path, data: formData, onSendProgress: onSendProgress);
       if (rsp.data['code'] == 0) {
         return rsp.data['data'];
       }
@@ -79,19 +81,24 @@ class DioClient {
     }
   }
 
-  Future<String> download(String url, savePath, {Function(int, int) progressCallback}) async{
+  Future<String> download(String url, savePath,
+      {Function(int, int) progressCallback}) async {
     CancelToken cancelToken = CancelToken();
-    try{
-      await _dio.download(url, savePath, onReceiveProgress: progressCallback, cancelToken: cancelToken);
+    try {
+      await _dio.download(url, savePath,
+          onReceiveProgress: progressCallback, cancelToken: cancelToken);
       return savePath;
-    }catch (e){
+    } catch (e) {
       debugPrint(e);
       throw e.message;
     }
   }
-  void showDownloadProgress(int received, int total){
-    if(total != -1){
-      debugPrint("File download progress >>> " + (received/total*100).toStringAsFixed(0) + "%");
+
+  void showDownloadProgress(int received, int total) {
+    if (total != -1) {
+      debugPrint("File download progress >>> " +
+          (received / total * 100).toStringAsFixed(0) +
+          "%");
     }
   }
 }
