@@ -54,7 +54,7 @@ List<Middleware<AppState>> createStoreMiddleware() {
       next(action);
     }),
     TypedMiddleware<AppState, GoodsDetailAction>((_, action, next) {
-      EasyLoading.show(status: 'Load...');
+      EasyLoading.show(status: 'Loading...');
       next(action);
     }),
     TypedMiddleware<AppState, GoodsDetailSuccessAction>((store, action, next) {
@@ -153,6 +153,19 @@ List<Middleware<AppState>> createStoreMiddleware() {
       });
       next(action);
     }),
+
+    TypedMiddleware<AppState, DeleteGoodsAction>((store, action, next) {
+      EasyLoading.show(status: 'Loading...');
+      next(action);
+    }),
+    TypedMiddleware<AppState, DeleteGoodsSuccessAction>((store, action, next) {
+      EasyLoading.dismiss();
+      next(action);
+    }),
+    TypedMiddleware<AppState, DeleteGoodsFailureAction>((store, action, next) {
+      EasyLoading.showError(action.message);
+      next(action);
+    }),
     TypedMiddleware<AppState, AddToStoreActionSuccessAction>(
         (store, action, next) {
       EasyLoading.dismiss();
@@ -207,7 +220,7 @@ void loadGlobalConfig(store, action, next) {
       .whenComplete(() => null)
       .then((data) {
     linkDomain = data['linkDomain'];
-    videoUrls = data['videoUrls'];
+    videoUrls = List<String>.from(data['videoUrls']);
     iosAppId = data['iosAppId'];
     emailUsUri = data['emailUsUri'];
     whatsAppUri = data['whatsAppUri'];
@@ -217,7 +230,7 @@ void loadGlobalConfig(store, action, next) {
     cookiePolicyUri = data['cookiePolicyUri'];
     privacyPolicyUri = data['privacyPolicyUri'];
   }).catchError((err) {
-    EasyLoading.show(status: 'Ops, seems network error!!!');
+    EasyLoading.show(status: 'Ops, seems network error:${err.toString()}');
   });
   next(action);
 }
@@ -601,7 +614,7 @@ final Middleware<AppState> deleteGoodsMiddleware =
         .post(ApiPath.deleteGoods, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) {
-      store.dispatch(DeleteGoodsSuccessAction());
+      store.dispatch(DeleteGoodsSuccessAction(action.request.goodsId));
     }).catchError((err) {
       print(err.toString());
       store.dispatch(DeleteGoodsFailureAction(err.toString()));
