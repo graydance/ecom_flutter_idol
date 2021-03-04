@@ -121,6 +121,20 @@ List<Middleware<AppState>> createStoreMiddleware() {
       }
       next(action);
     }),
+    TypedMiddleware<AppState, ValidateEmailAction>((store, action, next) {
+      EasyLoading.show(status: 'Loading...');
+      next(action);
+    }),
+    TypedMiddleware<AppState, ValidateEmailSuccessAction>(
+        (store, action, next) {
+      EasyLoading.dismiss();
+      next(action);
+    }),
+    TypedMiddleware<AppState, ValidateEmailFailureAction>(
+        (store, action, next) {
+      EasyLoading.dismiss();
+      next(action);
+    }),
     TypedMiddleware<AppState, AddToStoreAction>((store, action, next) {
       EasyLoading.show(status: 'Loading...');
       next(action);

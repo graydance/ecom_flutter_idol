@@ -48,15 +48,19 @@ class IdolMessageDialog extends StatelessWidget {
                     ),
                   ),
                 ),
-                image != null ? Padding(
-                  padding: EdgeInsets.only(
-                    left: 45,
-                    right: 45,
-                  ),
-                  child: Image(
-                    image: image,
-                  ),
-                ) : [],
+                ...image != null
+                    ? [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 45,
+                            right: 45,
+                          ),
+                          child: Image(
+                            image: image,
+                          ),
+                        )
+                      ]
+                    : [],
                 Container(
                   margin: EdgeInsets.all(20),
                   child: Text(

@@ -1,5 +1,4 @@
-import 'package:idol/env.dart';
-
+var linkDomain = 'https://mypik.shop/';
 var videoUrls = ['https://oss.wqiang.fun/video/test.mp4'];
 var iosAppId = '1234567890';
 var emailUsUri = 'mailto:cs@mysocials.shop';

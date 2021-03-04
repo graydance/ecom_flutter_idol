@@ -65,6 +65,7 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
                         keyboardType: TextInputType.emailAddress,
                         maxLines: 1,
                         style: TextStyle(color: Colours.white, fontSize: 18),
+                        textAlign: TextAlign.center,
                         controller: _controller,
                         decoration: InputDecoration(
                           filled: true,
