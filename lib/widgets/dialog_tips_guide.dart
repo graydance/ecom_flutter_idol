@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/widgets/button.dart';
+import 'package:idol/widgets/dialog_share.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:video_player/video_player.dart';
 
@@ -33,6 +34,7 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
     super.initState();
     _controller = VideoPlayerController.network(widget.mediaUrl)
       ..initialize().then((_) {
+        _controller.setLooping(true);
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
       });
@@ -74,56 +76,28 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      EdgeInsets.only(left: 50, right: 50, ),
+                  padding: EdgeInsets.only(
+                    left: 50,
+                    right: 50,
+                  ),
                   child: Text(
                     widget.title,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, color: Colours.color_0F1015, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colours.color_0F1015,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  decoration: BoxDecoration(
-                    color: Colours.black,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(2),
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    decoration: BoxDecoration(
+                      color: Colours.black,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(2),
+                      ),
                     ),
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          _controller.value.isPlaying
-                              ? _controller.pause()
-                              : _controller.play();
-                          setState(() {});
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(2)),
-                          child: AspectRatio(
-                            aspectRatio: 270 / 140,
-                            //_controller.value.aspectRatio,
-                            child: VideoPlayer(_controller),
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: _controller.value.initialized
-                            ? Visibility(
-                                visible: !_controller.value.isPlaying,
-                                child: Image(
-                                  image: R.image.play(),
-                                  width: 50,
-                                  height: 50,
-                                ),
-                              )
-                            : IdolLoadingWidget(),
-                      ),
-                    ],
-                  ),
-                ),
+                    child: MyPikVideo(_controller)),
                 Text(
                   widget.desc,
                   style: TextStyle(color: Colours.color_979AA9, fontSize: 12),

@@ -107,61 +107,57 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   }
 
   Widget _buildBodyWidget(_ViewModel vm) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Container(
-          color: Colours.white,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                'Current password',
-                style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
-              ),
-              _createTextField(0),
-              Text(
-                'New password',
-                style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
-              ),
-              _createTextField(1),
-              Text(
-                'Confirm password',
-                style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
-              ),
-              _createTextField(2),
-              Container(
-                child: IdolButton(
-                  'Update',
-                  key: _buttonGlobalKey,
-                  status: _buttonStatus,
-                  isPartialRefresh: true,
-                  listener: (status) {
-                    if (status == IdolButtonStatus.enable) {
-                      // update password
-                      vm._updatePassword(_controllers[0].text.trim(),
-                          _controllers[1].text.trim());
-                    } else if (status == IdolButtonStatus.normal) {
-                      _showDisableUpdateTips();
-                    }
-                  },
-                ),
-                margin:
-                    EdgeInsets.only(left: 27, right: 27, top: 75, bottom: 8),
-              ),
-              TextButton(
-                onPressed: () {
-                  _launcherURL(whatsAppUri, 'Please check whether you have WhatsApp application installed');
+    return SingleChildScrollView(
+      child: Container(
+        color: Colours.white,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text(
+              'Current password',
+              style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
+            ),
+            _createTextField(0),
+            Text(
+              'New password',
+              style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
+            ),
+            _createTextField(1),
+            Text(
+              'Confirm password',
+              style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
+            ),
+            _createTextField(2),
+            Container(
+              child: IdolButton(
+                'Update',
+                status: _buttonStatus,
+                listener: (status) {
+                  if (status == IdolButtonStatus.enable) {
+                    // update password
+                    vm._updatePassword(_controllers[0].text.trim(),
+                        _controllers[1].text.trim());
+                  } else if (status == IdolButtonStatus.normal) {
+                    _showDisableUpdateTips();
+                  }
                 },
-                child: Text(
-                  'Forgot password',
-                  style: TextStyle(
-                      color: Colours.color_48B6EF,
-                      fontSize: 12,
-                      decoration: TextDecoration.underline),
-                ),
               ),
-            ],
-          ),
+              margin: EdgeInsets.only(left: 27, right: 27, top: 75, bottom: 8),
+            ),
+            TextButton(
+              onPressed: () {
+                _launcherURL(whatsAppUri,
+                    'Please check whether you have WhatsApp application installed');
+              },
+              child: Text(
+                'Forgot password',
+                style: TextStyle(
+                    color: Colours.color_48B6EF,
+                    fontSize: 12,
+                    decoration: TextDecoration.underline),
+              ),
+            ),
+          ],
         ),
       ),
     );

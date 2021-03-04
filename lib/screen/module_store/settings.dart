@@ -15,73 +15,87 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  List<Image> _icons = <Image>[
-    Image(
-      image: R.image.ic_settings_set_password(),
-      color: Colours.color_555764,
-      width: 30,
-      height: 30,
-    ),
-    Image(
-      image: R.image.ic_settings_email(),
-      color: Colours.color_555764,
-      width: 30,
-      height: 30,
-    ),
-    Image(
-      image: R.image.ic_settings_contact(),
-      color: Colours.color_555764,
-      width: 30,
-      height: 30,
-    ),
-    Image(
-      image: R.image.ic_settings_rate_us(),
-      color: Colours.color_555764,
-      width: 30,
-      height: 30,
-    ),
-    Image(
-      image: R.image.ic_settings_faq(),
-      color: Colours.color_555764,
-      width: 30,
-      height: 30,
-    ),
-    Image(
-      image: R.image.ic_settings_privacy(),
-      color: Colours.color_555764,
-      width: 30,
-      height: 30,
-    ),
-  ];
-
   static const TextStyle titleTextStyle =
       TextStyle(color: Colours.black, fontSize: 16);
-
-  List<Widget> _titles = <Widget>[
-    Text(
-      'Set Password',
-      style: titleTextStyle,
-    ),
-    Text(
-      'Email Us',
-      style: titleTextStyle,
-    ),
-    Text(
-      'Stuff WatsApp',
-      style: titleTextStyle,
-    ),
-    Text(
-      'Rate Us',
-      style: titleTextStyle,
-    ),
-    Text(
-      'FAQ',
-      style: titleTextStyle,
-    ),
-    Text(
-      'Privacy Policy',
-      style: titleTextStyle,
-    ),
+  var settingDatas = [
+    // {
+    //   "key": "set_password",
+    //   "image": Image(
+    //     image: R.image.ic_settings_set_password(),
+    //     color: Colours.color_555764,
+    //     width: 30,
+    //     height: 30,
+    //   ),
+    //   "widget": Text(
+    //     'Set Password',
+    //     style: titleTextStyle,
+    //   )
+    // },
+    {
+      "key": 1,
+      "image": Image(
+        image: R.image.ic_settings_email(),
+        color: Colours.color_555764,
+        width: 30,
+        height: 30,
+      ),
+      "widget": Text(
+        'Email Us',
+        style: titleTextStyle,
+      ),
+    },
+    {
+      "key": 2,
+      "image": Image(
+        image: R.image.ic_settings_contact(),
+        color: Colours.color_555764,
+        width: 30,
+        height: 30,
+      ),
+      "widget": Text(
+        'Stuff WhatsApp',
+        style: titleTextStyle,
+      ),
+    },
+    {
+      "key": 3,
+      "image": Image(
+        image: R.image.ic_settings_rate_us(),
+        color: Colours.color_555764,
+        width: 30,
+        height: 30,
+      ),
+      "widget": Text(
+        'Rate Us',
+        style: titleTextStyle,
+      ),
+    },
+    {
+      "key": 4,
+      "image": Image(
+        image: R.image.ic_settings_faq(),
+        color: Colours.color_555764,
+        width: 30,
+        height: 30,
+      ),
+      "widget": Text(
+        'FAQ',
+        style: titleTextStyle,
+      ),
+    },
+    {
+      "key": 5,
+      "image": Image(
+        image: R.image.ic_settings_privacy(),
+        color: Colours.color_555764,
+        width: 30,
+        height: 30,
+      ),
+      "widget": Text(
+        'Privacy Policy',
+        style: titleTextStyle,
+      )
+    },
   ];
 
   @override
@@ -104,10 +118,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 margin: EdgeInsets.only(top: index == 0 ? 10 : 0),
                 color: Colours.white,
                 child: ListTile(
-                  leading: _icons[index],
+                  leading: settingDatas[index]['image'],
                   title: Transform(
                     transform: Matrix4.translationValues(-18, 0.0, 0.0),
-                    child: _titles[index],
+                    child: settingDatas[index]['widget'],
                   ),
                   trailing: Icon(
                     Icons.arrow_forward_ios,
@@ -117,12 +131,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   enabled: true,
                   onTap: () {
-                    _onTap(index);
+                    _onTap(settingDatas[index]['key']);
                   },
                 ),
               );
             },
-            itemCount: _titles.length,
+            itemCount: settingDatas.length,
           ),
           GestureDetector(
               child: Container(

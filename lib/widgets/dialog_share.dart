@@ -40,6 +40,55 @@ class ShareDialog extends StatefulWidget {
   _ShareDialogState createState() => _ShareDialogState();
 }
 
+class MyPikVideo extends StatefulWidget {
+  final VideoPlayerController controller;
+  MyPikVideo(this.controller);
+  @override
+  State<StatefulWidget> createState() => _MyPikVideo();
+}
+
+class _MyPikVideo extends State<MyPikVideo> {
+  @override
+  Widget build(BuildContext context) {
+    print(
+        '************************************ MyPikVideo build ${widget.controller.value.initialized}');
+    return GestureDetector(
+        onTap: () {
+          widget.controller.value.isPlaying
+              ? widget.controller.pause()
+              : widget.controller.play();
+          setState(() {});
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: AspectRatio(
+                aspectRatio: 270 / 140, //_controller.value.aspectRatio,
+                child: VideoPlayer(widget.controller),
+              ),
+            ),
+            Center(
+              child: widget.controller.value.initialized
+                  ? widget.controller.value.isPlaying
+                      ? Container(
+                          width: 50,
+                          height: 50,
+                          color: Colors.transparent,
+                        )
+                      : Image(
+                          image: R.image.play(),
+                          width: 50,
+                          height: 50,
+                        )
+                  : IdolLoadingWidget(),
+            ),
+          ],
+        ));
+  }
+}
+
 class _ShareDialogState extends State<ShareDialog> {
   List<String> _supportShareChannels = [];
 
@@ -58,9 +107,12 @@ class _ShareDialogState extends State<ShareDialog> {
   void initState() {
     super.initState();
     initSharePlatformState();
+    print(
+        '*************************************** ${widget.shareType} ${widget.mediaUrl}');
     if (ShareType.guide == widget.shareType ||
         ShareType.link == widget.shareType &&
             widget.mediaUrl.toLowerCase().endsWith('.mp4')) {
+      print('******************* init controller');
       _controller = VideoPlayerController.network(widget.mediaUrl)
         ..initialize().then((_) {
           _controller.setLooping(true);
@@ -246,45 +298,14 @@ class _ShareDialogState extends State<ShareDialog> {
                 fontWeight: FontWeight.bold),
           ),
           Container(
-            margin: EdgeInsets.only(left: 50, right: 50, top: 10, bottom: 10),
-            decoration: BoxDecoration(
-              color: Colours.black,
-              borderRadius: BorderRadius.all(
-                Radius.circular(2),
+              margin: EdgeInsets.only(left: 50, right: 50, top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: Colours.black,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(2),
+                ),
               ),
-            ),
-            child: GestureDetector(
-                onTap: () {
-                  _controller.value.isPlaying
-                      ? _controller.pause()
-                      : _controller.play();
-                  setState(() {});
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Center(
-                      child: _controller.value.initialized
-                          ? Visibility(
-                              visible: !_controller.value.isPlaying,
-                              child: Image(
-                                image: R.image.play(),
-                                width: 50,
-                                height: 50,
-                              ),
-                            )
-                          : IdolLoadingWidget(),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(2)),
-                      child: AspectRatio(
-                        aspectRatio: 270 / 140, //_controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
-                      ),
-                    ),
-                  ],
-                )),
-          ),
+              child: MyPikVideo(_controller)),
           Container(
             width: double.infinity,
             margin: EdgeInsets.only(left: 60, right: 60),
@@ -340,38 +361,7 @@ class _ShareDialogState extends State<ShareDialog> {
                   Radius.circular(2),
                 ),
               ),
-              child: GestureDetector(
-                  onTap: () {
-                    _controller.value.isPlaying
-                        ? _controller.pause()
-                        : _controller.play();
-                    setState(() {});
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        child: AspectRatio(
-                          aspectRatio:
-                              270 / 140, //_controller.value.aspectRatio,
-                          child: VideoPlayer(_controller),
-                        ),
-                      ),
-                      Center(
-                        child: _controller.value.initialized
-                            ? Visibility(
-                                visible: !_controller.value.isPlaying,
-                                child: Image(
-                                  image: R.image.play(),
-                                  width: 50,
-                                  height: 50,
-                                ),
-                              )
-                            : IdolLoadingWidget(),
-                      ),
-                    ],
-                  ))),
+              child: MyPikVideo(_controller)),
           SizedBox(
             height: 10,
           ),
@@ -388,7 +378,7 @@ class _ShareDialogState extends State<ShareDialog> {
 
   @override
   void dispose() {
-    // _controller.dispose();
+    if (_controller != null) _controller.dispose();
     super.dispose();
   }
 }
