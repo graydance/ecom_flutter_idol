@@ -16,7 +16,7 @@ dependencies:
   flustars: ^0.3.3
   carousel_slider: ^3.0.0
   animations: ^1.1.2
-  pull_to_refresh: ^1.6.3
+  pull_to_refresh: ^1.6.4
   flutter_easyloading: ^2.2.2
   flutter_swiper: ^1.1.6
   video_player: ^1.0.1
@@ -27,20 +27,27 @@ dependencies:
   permission_handler: any
   flutter_staggered_grid_view: ^0.3.2
   r_dart_library: ^0.2.1
+  url_launcher: ^5.7.10
+  launch_review: ^2.0.0
   webview_flutter: ^1.0.7
   flutter_secure_storage: ^3.3.5
   share: ^0.6.5+4
+  flutter_html: ^1.3.0
   ecomshare:
     git:
-      url: https://github.com/graydance/ecomshare.git
+      url: "https://github.com/graydance/ecomshare.git"
 dependency_overrides:
-  flutter_svg: 0.20.0-nullsafety.3
+  flutter_svg: ^0.19.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
   mockito: ^4.1.3
+flutter_icons:
+  android: launcher_icon
+  ios: true
+  image_path: assets/icon/icon.png
 flr:
   core_version: 3.1.0
   dartfmt_line_length: 80
@@ -52,8 +59,11 @@ flr:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/bg_common_error.png
-    - assets/images/dashboard/bg_withdraw.png
+    - assets/images/bg_congratulations.png
+    - assets/images/bg_default_empty_goods.webp
+    - assets/images/bg_default_empty_sales_history.webp
+    - assets/images/bg_default_error.png
+    - assets/images/bg_default_net_error.webp
     - assets/images/dashboard/bg_withdraw.webp
     - assets/images/dashboard/bg_withdraw_failure.webp
     - assets/images/dashboard/bg_withdraw_success.webp
@@ -65,7 +75,7 @@ flutter:
     - assets/images/ic_share_more.png
     - assets/images/ic_share_twitter.png
     - assets/images/main/bg_login_signup.png
-    - assets/images/main/ic_logo.png
+    - assets/images/main/ic_circle_logo.png
     - assets/images/main/ic_password_visibility.png
     - assets/images/main/ic_password_visibility_off.png
     - assets/images/main/ic_tab_biolinks_normal.png
@@ -82,6 +92,7 @@ flutter:
     - assets/images/main/launch_background.webp
     - assets/images/shoplink/ic_change_avatar.png
     - assets/images/shoplink/ic_edit.png
+    - assets/images/shoplink/ic_pv.png
     - assets/images/store/bg_header.png
     - assets/images/store/default_portrait.png
     - assets/images/store/ic_settings_contact.png
@@ -101,3 +112,4 @@ flutter:
     - assets/images/supply/ic_tab_supplier_new_product_unselected.png
     - assets/images/supply/pause.png
     - assets/images/supply/play.png
+    - assets/images/avatar.png

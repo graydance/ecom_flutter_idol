@@ -1,16 +1,19 @@
 import 'dart:async';
-
-import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
+import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
+import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 
@@ -31,18 +34,15 @@ class FollowingGoodsListItem extends StatefulWidget {
 typedef OnProductAddedStoreListener = Function(GoodsDetail goodsDetail);
 
 class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
-  String _buttonText = 'Add to my store & Share';
-  final GlobalKey<IdolButtonState> _idolButtonStatusKey = GlobalKey();
-  IdolButtonStatus _idolButtonStatus = IdolButtonStatus.enable;
-
   @override
   Widget build(BuildContext context) {
     debugPrint('ProductItemWidget >>> ' + widget.goodsDetail.toString());
+    var upTime =
+        DateTime.fromMillisecondsSinceEpoch(widget.goodsDetail.updateTime);
     return GestureDetector(
       onTap: () {
-        // GoodsDetail
-        IdolRoute.startGoodsDetail(
-            context, widget.goodsDetail.supplierId, widget.goodsDetail.id);
+        StoreProvider.of<AppState>(context)
+            .dispatch(ShowGoodsDetailAction(widget.goodsDetail));
       },
       child: Container(
         padding: EdgeInsets.all(15),
@@ -60,45 +60,24 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        // Supplier detail
-                        IdolRoute.startSupplySupplierDetail(
-                            context,
-                            widget.goodsDetail.supplierId,
-                            widget.goodsDetail.supplierName);
+                        StoreProvider.of<AppState>(context).dispatch(
+                            ShowGoodsDetailAction(widget.goodsDetail));
+                        // // Supplier detail
+                        // IdolRoute.startSupplySupplierDetail(
+                        //     context,
+                        //     widget.goodsDetail.supplierId,
+                        //     widget.goodsDetail.supplierName);
                       },
                       child: Text(
                         widget.goodsDetail.supplierName,
                         style: TextStyle(
-                            color: Colours.color_393939, fontSize: 16),
+                            color: Colours.color_393939,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
-                    // Follow
-                    // ...(widget.goodsDetail.followStatus == 0)
-                    //     ? [
-                    //         Text(
-                    //           ' · ',
-                    //           style: TextStyle(
-                    //               color: Colours.color_48B6EF, fontSize: 16),
-                    //         ),
-                    //         FollowButton(widget.goodsDetail.supplierId,
-                    //             defaultFollowStatus: FollowStatus.unFollow,
-                    //             buttonStyle: FollowButtonStyle.text,
-                    //             fontSize: 16.0),
-                    //       ]
-                    //     : [],
                   ],
                 ),
-                // Right more menu
-                // IconButton(
-                //     icon: Icon(
-                //       Icons.more_vert,
-                //       size: 18,
-                //       color: Colours.color_575859,
-                //     ),
-                //     onPressed: () => {
-                //           // TODO
-                //           EasyLoading.showToast("More menu"),
-                //         }),
               ],
             ),
             SizedBox(
@@ -133,79 +112,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         ],
                       ),
                     ),
-                    // Positioned(
-                    //   bottom: 15,
-                    //   right: 15,
-                    //   child: Column(
-                    //     children: [
-                    //       GestureDetector(
-                    //         onTap: () {
-                    //           EasyLoading.showToast(
-                    //               '${widget.goodsDetail.collectNum} Liked');
-                    //         },
-                    //         child: Container(
-                    //           width: 40,
-                    //           height: 40,
-                    //           child: Column(
-                    //             mainAxisSize: MainAxisSize.min,
-                    //             mainAxisAlignment: MainAxisAlignment.center,
-                    //             children: [
-                    //               Icon(
-                    //                 Icons.favorite,
-                    //                 size: 20,
-                    //                 color: Colours.white,
-                    //               ),
-                    //               Text(
-                    //                 _formatNum(widget.goodsDetail.collectNum),
-                    //                 style: TextStyle(
-                    //                     color: Colours.white, fontSize: 8),
-                    //               )
-                    //             ],
-                    //           ),
-                    //           decoration: BoxDecoration(
-                    //             shape: BoxShape.circle,
-                    //             color: Colours.color_black20,
-                    //           ),
-                    //           //padding: EdgeInsets.all(5),
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         height: 16,
-                    //       ),
-                    //       GestureDetector(
-                    //         onTap: () {
-                    //           EasyLoading.showToast(
-                    //               '${widget.goodsDetail.soldNum} Sold');
-                    //         },
-                    //         child: Container(
-                    //           width: 40,
-                    //           height: 40,
-                    //           child: Column(
-                    //             mainAxisSize: MainAxisSize.min,
-                    //             mainAxisAlignment: MainAxisAlignment.center,
-                    //             children: [
-                    //               Icon(
-                    //                 Icons.whatshot,
-                    //                 size: 20,
-                    //                 color: Colours.white,
-                    //               ),
-                    //               Text(
-                    //                 _formatNum(widget.goodsDetail.soldNum),
-                    //                 style: TextStyle(
-                    //                     color: Colours.white, fontSize: 8),
-                    //               )
-                    //             ],
-                    //           ),
-                    //           decoration: BoxDecoration(
-                    //             shape: BoxShape.circle,
-                    //             color: Colours.color_black20,
-                    //           ),
-                    //           // padding: EdgeInsets.all(5),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -239,7 +145,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                   ),
                 ),
                 Text(
-                  widget.goodsDetail.updateTime ?? '',
+                  "${upTime.year.toString()}-${upTime.month.toString().padLeft(2, '0')}-${upTime.day.toString().padLeft(2, '0')} ${upTime.hour.toString()}-${upTime.minute.toString()}",
                   style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12),
                 )
               ],
@@ -249,7 +155,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ),
             // Shopping description.
             Text(
-              widget.goodsDetail.goodsDescription,
+              widget.goodsDetail.goodsName ?? '',
               style: TextStyle(
                 color: Colours.color_555764,
                 fontSize: 14,
@@ -272,12 +178,18 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                     text: '\$' +
                         TextUtil.formatDoubleComma3(
                             widget.goodsDetail.earningPrice / 100),
-                    style: TextStyle(color: Colours.color_EA5228, fontSize: 20),
+                    style: TextStyle(
+                        color: Colours.color_EA5228,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
                   ),
                   TextSpan(text: ' '),
                   TextSpan(
                     text: 'Earnings Per Sale',
-                    style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12),
+                    style: TextStyle(
+                        color: Colours.color_C4C5CD,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -291,12 +203,18 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                     text: '\$' +
                         TextUtil.formatDoubleComma3(
                             widget.goodsDetail.suggestedPrice / 100),
-                    style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
+                    style: TextStyle(
+                        color: Colours.color_0F1015,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
                   ),
                   TextSpan(text: ' '),
                   TextSpan(
                     text: 'Suggested Price',
-                    style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12),
+                    style: TextStyle(
+                        color: Colours.color_C4C5CD,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -306,14 +224,19 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ),
             // Add to my store.
             IdolButton(
-              _buttonText,
-              key: _idolButtonStatusKey,
-              status: _idolButtonStatus,
-              isPartialRefresh: true,
+              widget.goodsDetail.inMyStore == 1
+                  ? 'Share'
+                  : 'Add to my store & Share',
+              status: IdolButtonStatus.enable,
               listener: (status) {
                 if (status == IdolButtonStatus.enable) {
                   debounce(() {
-                    _addProductToMyStore(widget.goodsDetail);
+                    if (widget.goodsDetail.inMyStore == 1) {
+                      ShareManager.showShareGoodsDialog(
+                          context, widget.goodsDetail.goods[0]);
+                    } else {
+                      _addProductToMyStore(widget.goodsDetail);
+                    }
                   }, 1000);
                 }
               },
@@ -325,23 +248,24 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
   }
 
   Future _addProductToMyStore(GoodsDetail goodsDetail) async {
-    try {
-      EasyLoading.show(status: 'Loading...');
-      await DioClient.getInstance()
-          .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
-      EasyLoading.dismiss();
-      if (widget.onProductAddedStoreListener != null) {
-        widget.onProductAddedStoreListener(goodsDetail);
-      }
-      _buttonText = 'Has been added to my store';
-      _idolButtonStatus = IdolButtonStatus.normal;
-      _idolButtonStatusKey.currentState.updateText(_buttonText);
-      _idolButtonStatusKey.currentState.updateButtonStatus(_idolButtonStatus);
-    } catch (e) {
-      EasyLoading.dismiss();
-      debugPrint(e.toString());
-      EasyLoading.showError(e.toString());
-    }
+    StoreProvider.of<AppState>(context).dispatch(AddToStoreAction(goodsDetail));
+    // try {
+    //   EasyLoading.show(status: 'Loading...');
+    //   await DioClient.getInstance()
+    //       .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
+    //   EasyLoading.dismiss();
+    //   if (widget.onProductAddedStoreListener != null) {
+    //     widget.onProductAddedStoreListener(goodsDetail);
+    //   }
+    //   _buttonText = 'Has been added to my store';
+    //   _idolButtonStatus = IdolButtonStatus.normal;
+    //   _idolButtonStatusKey.currentState.updateText(_buttonText);
+    //   _idolButtonStatusKey.currentState.updateButtonStatus(_idolButtonStatus);
+    // } catch (e) {
+    //   EasyLoading.dismiss();
+    //   debugPrint(e.toString());
+    //   EasyLoading.showError(e.toString());
+    // }
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {
@@ -356,16 +280,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         alignment: Alignment.center,
         fit: BoxFit.cover,
       );
-    }
-  }
-
-  String _formatNum(int num) {
-    if (num < 1000) {
-      return num.toString();
-    } else if (num < 1000) {
-      return (num / 1000).toStringAsFixed(1) + 'k';
-    } else {
-      return (num / 10000).toStringAsFixed(1) + "w";
     }
   }
 

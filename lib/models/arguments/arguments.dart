@@ -7,3 +7,5 @@ export 'goods_detail.dart';
 export 'supplier_detail.dart';
 export 'signup_signin.dart';
 export 'sales_history.dart';
+export 'home_tab.dart';
+export 'webview.dart';

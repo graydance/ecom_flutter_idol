@@ -56,3 +56,21 @@ SignInSuccess _onSignInSuccess(SignInState state, SignInSuccessAction action) {
 SignInFailure _onSignInFailure(SignInState state, SignInFailureAction action){
   return SignInFailure(action.message);
 }
+
+final updatePasswordReducer = combineReducers<UpdatePasswordState>([
+  TypedReducer<UpdatePasswordState, UpdatePasswordAction>(_onUpdatePassword),
+  TypedReducer<UpdatePasswordState, UpdatePasswordSuccessAction>(_onUpdatePasswordSuccess),
+  TypedReducer<UpdatePasswordState, UpdatePasswordFailureAction>(_onUpdatePasswordFailure),
+]);
+
+UpdatePasswordLoading _onUpdatePassword(UpdatePasswordState state, UpdatePasswordAction action){
+  return UpdatePasswordLoading();
+}
+
+UpdatePasswordSuccess _onUpdatePasswordSuccess(UpdatePasswordState state, UpdatePasswordSuccessAction action) {
+  return UpdatePasswordSuccess();
+}
+
+UpdatePasswordFailure _onUpdatePasswordFailure(UpdatePasswordState state, UpdatePasswordFailureAction action){
+  return UpdatePasswordFailure(action.message);
+}

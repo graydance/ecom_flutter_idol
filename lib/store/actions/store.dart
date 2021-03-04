@@ -23,6 +23,7 @@ class MyInfoFailure implements MyInfoState {
 
   MyInfoFailure(this.message);
 }
+
 /// MyInfoAction
 class MyInfoAction {
   final BaseRequest request;
@@ -62,6 +63,7 @@ class MyInfoGoodsListFailure implements MyInfoGoodsListState {
 
   MyInfoGoodsListFailure(this.message);
 }
+
 /// MyInfoGoodsListAction
 class MyInfoGoodsListAction {
   final MyInfoGoodsListRequest request;
@@ -130,14 +132,14 @@ class EditStoreInitial implements EditStoreState {
 
 class EditStoreLoading implements EditStoreState {}
 
-class EditStoreSuccess implements EditStoreState {
-}
+class EditStoreSuccess implements EditStoreState {}
 
 class EditStoreFailure implements EditStoreState {
   final String message;
 
   EditStoreFailure(this.message);
 }
+
 /// EditStoreAction
 class EditStoreAction {
   final EditStoreRequest request;
@@ -145,8 +147,7 @@ class EditStoreAction {
   EditStoreAction(this.request);
 }
 
-class EditStoreSuccessAction {
-}
+class EditStoreSuccessAction {}
 
 class EditStoreFailureAction {
   final String message;
@@ -162,14 +163,14 @@ class CheckNameInitial implements CheckNameState {
 
 class CheckNameLoading implements CheckNameState {}
 
-class CheckNameSuccess implements CheckNameState {
-}
+class CheckNameSuccess implements CheckNameState {}
 
 class CheckNameFailure implements CheckNameState {
   final String message;
 
   CheckNameFailure(this.message);
 }
+
 /// CheckNameAction
 class CheckNameAction {
   final CheckNameRequest request;
@@ -177,8 +178,7 @@ class CheckNameAction {
   CheckNameAction(this.request);
 }
 
-class CheckNameSuccessAction {
-}
+class CheckNameSuccessAction {}
 
 class CheckNameFailureAction {
   final String message;
@@ -194,14 +194,14 @@ class DeleteGoodsInitial implements DeleteGoodsState {
 
 class DeleteGoodsLoading implements DeleteGoodsState {}
 
-class DeleteGoodsSuccess implements DeleteGoodsState {
-}
+class DeleteGoodsSuccess implements DeleteGoodsState {}
 
 class DeleteGoodsFailure implements DeleteGoodsState {
   final String message;
 
   DeleteGoodsFailure(this.message);
 }
+
 /// DeleteGoodsAction
 class DeleteGoodsAction {
   final DeleteGoodsRequest request;
@@ -210,6 +210,8 @@ class DeleteGoodsAction {
 }
 
 class DeleteGoodsSuccessAction {
+  final String goodsId;
+  DeleteGoodsSuccessAction(this.goodsId);
 }
 
 class DeleteGoodsFailureAction {

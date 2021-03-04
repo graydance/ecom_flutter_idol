@@ -170,7 +170,7 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
                           ),
                         ),
                         Text(
-                          dailySale,
+                          Global.getUser(context).monetaryUnit + dailySale,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

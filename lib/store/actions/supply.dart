@@ -101,6 +101,7 @@ class SupplierInfoFailure implements SupplierInfoState {
 
   SupplierInfoFailure(this.message);
 }
+
 /// SupplierInfoAction
 class SupplierInfoAction {
   final SupplierInfoRequest request;
@@ -240,4 +241,31 @@ class GoodsDetailFailureAction {
   final String message;
 
   GoodsDetailFailureAction(this.message);
+}
+
+class ChangeHomePageAction {
+  final int page;
+  ChangeHomePageAction(this.page);
+}
+
+class LoadConfigurationAction {}
+
+class AddToStoreAction {
+  final GoodsDetail goods;
+  AddToStoreAction(this.goods);
+}
+
+class AddToStoreActionSuccessAction {
+  final GoodsDetail goods;
+  AddToStoreActionSuccessAction(this.goods);
+}
+
+class AddToStoreActionFailAction {
+  final String error;
+  AddToStoreActionFailAction(this.error);
+}
+
+class ShowGoodsDetailAction {
+  final GoodsDetail detail;
+  ShowGoodsDetailAction(this.detail);
 }

@@ -1,3 +1,4 @@
+import 'package:idol/models/store_goods_list.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:redux/redux.dart';
 
@@ -12,24 +13,33 @@ MyInfoLoading _onMyInfo(MyInfoState state, MyInfoAction action) {
   return MyInfoLoading();
 }
 
-MyInfoSuccess _onMyInfoSuccess(
-    MyInfoState state, MyInfoSuccessAction action) {
+MyInfoSuccess _onMyInfoSuccess(MyInfoState state, MyInfoSuccessAction action) {
   return MyInfoSuccess(action.myInfo);
 }
 
-MyInfoFailure _onMyInfoFailure(
-    MyInfoState state, MyInfoFailureAction action) {
+MyInfoFailure _onMyInfoFailure(MyInfoState state, MyInfoFailureAction action) {
   return MyInfoFailure(action.message);
 }
 
 /// MyInfoGoodsListReducer
 final userDetailGoodsListReducer = combineReducers<MyInfoGoodsListState>([
   TypedReducer<MyInfoGoodsListState, MyInfoGoodsListAction>(_onMyInfoGoodsList),
-  TypedReducer<MyInfoGoodsListState, MyInfoGoodsListSuccessAction>(_onMyInfoGoodsListSuccess),
-  TypedReducer<MyInfoGoodsListState, MyInfoGoodsListFailureAction>(_onMyInfoGoodsListFailure),
+  TypedReducer<MyInfoGoodsListState, MyInfoGoodsListSuccessAction>(
+      _onMyInfoGoodsListSuccess),
+  TypedReducer<MyInfoGoodsListState, MyInfoGoodsListFailureAction>(
+      _onMyInfoGoodsListFailure),
+  TypedReducer<MyInfoGoodsListState, DeleteGoodsSuccessAction>((state, action) {
+    var store = (state as MyInfoGoodsListSuccess).storeGoodsList;
+    return MyInfoGoodsListSuccess(StoreGoodsList(
+        totalPage: store.totalPage,
+        currentPage: store.currentPage,
+        list:
+            store.list.where((goods) => goods.id != action.goodsId).toList()));
+  }),
 ]);
 
-MyInfoGoodsListLoading _onMyInfoGoodsList(MyInfoGoodsListState state, MyInfoGoodsListAction action) {
+MyInfoGoodsListLoading _onMyInfoGoodsList(
+    MyInfoGoodsListState state, MyInfoGoodsListAction action) {
   return MyInfoGoodsListLoading();
 }
 
@@ -44,23 +54,30 @@ MyInfoGoodsListFailure _onMyInfoGoodsListFailure(
 }
 
 /// MyInfoGoodsCategoryList
-final userDetailGoodsCategoryListReducer = combineReducers<MyInfoGoodsCategoryListState>([
-  TypedReducer<MyInfoGoodsCategoryListState, MyInfoGoodsCategoryListAction>(_onMyInfoGoodsCategoryList),
-  TypedReducer<MyInfoGoodsCategoryListState, MyInfoGoodsCategoryListSuccessAction>(_onMyInfoGoodsCategoryListSuccess),
-  TypedReducer<MyInfoGoodsCategoryListState, MyInfoGoodsCategoryListFailureAction>(_onMyInfoGoodsCategoryListFailure),
+final userDetailGoodsCategoryListReducer =
+    combineReducers<MyInfoGoodsCategoryListState>([
+  TypedReducer<MyInfoGoodsCategoryListState, MyInfoGoodsCategoryListAction>(
+      _onMyInfoGoodsCategoryList),
+  TypedReducer<MyInfoGoodsCategoryListState,
+      MyInfoGoodsCategoryListSuccessAction>(_onMyInfoGoodsCategoryListSuccess),
+  TypedReducer<MyInfoGoodsCategoryListState,
+      MyInfoGoodsCategoryListFailureAction>(_onMyInfoGoodsCategoryListFailure),
 ]);
 
-MyInfoGoodsCategoryListLoading _onMyInfoGoodsCategoryList(MyInfoGoodsCategoryListState state, MyInfoGoodsCategoryListAction action) {
+MyInfoGoodsCategoryListLoading _onMyInfoGoodsCategoryList(
+    MyInfoGoodsCategoryListState state, MyInfoGoodsCategoryListAction action) {
   return MyInfoGoodsCategoryListLoading();
 }
 
 MyInfoGoodsCategoryListSuccess _onMyInfoGoodsCategoryListSuccess(
-    MyInfoGoodsCategoryListState state, MyInfoGoodsCategoryListSuccessAction action) {
+    MyInfoGoodsCategoryListState state,
+    MyInfoGoodsCategoryListSuccessAction action) {
   return MyInfoGoodsCategoryListSuccess(action.storeGoodsList);
 }
 
 MyInfoGoodsCategoryListFailure _onMyInfoGoodsCategoryListFailure(
-    MyInfoGoodsCategoryListState state, MyInfoGoodsCategoryListFailureAction action) {
+    MyInfoGoodsCategoryListState state,
+    MyInfoGoodsCategoryListFailureAction action) {
   return MyInfoGoodsCategoryListFailure(action.message);
 }
 
@@ -88,11 +105,14 @@ EditStoreFailure _onEditStoreFailure(
 /// DeleteGoodsReducer
 final deleteGoodsReducer = combineReducers<DeleteGoodsState>([
   TypedReducer<DeleteGoodsState, DeleteGoodsAction>(_onDeleteGoods),
-  TypedReducer<DeleteGoodsState, DeleteGoodsSuccessAction>(_onDeleteGoodsSuccess),
-  TypedReducer<DeleteGoodsState, DeleteGoodsFailureAction>(_onDeleteGoodsFailure),
+  TypedReducer<DeleteGoodsState, DeleteGoodsSuccessAction>(
+      _onDeleteGoodsSuccess),
+  TypedReducer<DeleteGoodsState, DeleteGoodsFailureAction>(
+      _onDeleteGoodsFailure),
 ]);
 
-DeleteGoodsLoading _onDeleteGoods(DeleteGoodsState state, DeleteGoodsAction action) {
+DeleteGoodsLoading _onDeleteGoods(
+    DeleteGoodsState state, DeleteGoodsAction action) {
   return DeleteGoodsLoading();
 }
 
@@ -107,13 +127,16 @@ DeleteGoodsFailure _onDeleteGoodsFailure(
 }
 
 /// UpdateUserInfoReducer
-final updateUserInfoReducer  = combineReducers<UpdateUserInfoState>([
+final updateUserInfoReducer = combineReducers<UpdateUserInfoState>([
   TypedReducer<UpdateUserInfoState, UpdateUserInfoAction>(_onUpdateUserInfo),
-  TypedReducer<UpdateUserInfoState, UpdateUserInfoSuccessAction>(_onUpdateUserInfoSuccess),
-  TypedReducer<UpdateUserInfoState, UpdateUserInfoFailureAction>(_onUpdateUserInfoFailure),
+  TypedReducer<UpdateUserInfoState, UpdateUserInfoSuccessAction>(
+      _onUpdateUserInfoSuccess),
+  TypedReducer<UpdateUserInfoState, UpdateUserInfoFailureAction>(
+      _onUpdateUserInfoFailure),
 ]);
 
-UpdateUserInfoLoading _onUpdateUserInfo(UpdateUserInfoState state, UpdateUserInfoAction action) {
+UpdateUserInfoLoading _onUpdateUserInfo(
+    UpdateUserInfoState state, UpdateUserInfoAction action) {
   return UpdateUserInfoLoading();
 }
 

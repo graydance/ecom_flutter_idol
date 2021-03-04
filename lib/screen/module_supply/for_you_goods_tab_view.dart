@@ -1,11 +1,12 @@
+import 'package:idol/utils/share.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/supply.dart';
+import 'package:idol/widgets/dialog_share.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -19,7 +20,6 @@ class ForYouTabView extends StatefulWidget {
 
 class _ForYouTabViewState extends State<ForYouTabView>
     with AutomaticKeepAliveClientMixin<ForYouTabView> {
-  List<GoodsDetail> _goodsDetailList = const [];
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
@@ -41,11 +41,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
       onInit: (store) {
         store.dispatch(ForYouAction(FollowingForYouRequest(1, 1)));
       },
-      distinct: true,
-      onWillChange: (oldVM, newVM) {
-        _onFollowingStateChanged(
-            newVM == null ? oldVM._forYouState : newVM._forYouState);
-      },
       builder: (context, vm) {
         return _buildWidget(vm);
       },
@@ -53,7 +48,8 @@ class _ForYouTabViewState extends State<ForYouTabView>
   }
 
   Widget _buildWidget(_ViewModel vm) {
-    if ((vm._forYouState is ForYouInitial || vm._forYouState is ForYouLoading) && _goodsDetailList.isEmpty) {
+    if ((vm._forYouState is ForYouInitial ||
+        vm._forYouState is ForYouLoading)) {
       return IdolLoadingWidget();
     } else if (vm._forYouState is ForYouFailure) {
       return IdolErrorWidget(() {
@@ -64,7 +60,9 @@ class _ForYouTabViewState extends State<ForYouTabView>
         child: SmartRefresher(
           enablePullDown: true,
           enablePullUp: _enablePullUp,
-          header: MaterialClassicHeader(color: Colours.color_EA5228,),
+          header: MaterialClassicHeader(
+            color: Colours.color_EA5228,
+          ),
           child: ListView.separated(
             scrollDirection: Axis.vertical,
             separatorBuilder: (context, index) {
@@ -73,13 +71,17 @@ class _ForYouTabViewState extends State<ForYouTabView>
                 color: Colors.transparent,
               );
             },
-            itemCount: _goodsDetailList.length,
-            itemBuilder: (context, index) =>
-                FollowingGoodsListItem(goodsDetail: _goodsDetailList[index], onProductAddedStoreListener: (goodsDetail){
-                  setState(() {
-                    _goodsDetailList.removeAt(index);
-                  });
-                },),
+            itemCount:
+                (vm._forYouState as ForYouSuccess).goodsDetailList.list.length,
+            itemBuilder: (context, index) => FollowingGoodsListItem(
+              goodsDetail: (vm._forYouState as ForYouSuccess)
+                  .goodsDetailList
+                  .list[index],
+              onProductAddedStoreListener: (goodsDetail) {
+                ShareManager.showShareGoodsDialog(
+                    context, goodsDetail.goods[0]);
+              },
+            ),
           ),
           onRefresh: () async {
             await Future(() {
@@ -94,34 +96,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
           controller: _refreshController,
         ),
       );
-    }
-  }
-
-  void _onFollowingStateChanged(ForYouState state) {
-    if (state is ForYouSuccess) {
-      setState(() {
-        if ((state).goodsDetailList.currentPage == 1) {
-          _goodsDetailList = (state).goodsDetailList.list;
-        } else {
-          _goodsDetailList.addAll((state).goodsDetailList.list);
-        }
-        _currentPage = (state).goodsDetailList.currentPage;
-        _enablePullUp = (state).goodsDetailList.currentPage !=
-                (state).goodsDetailList.totalPage &&
-            (state).goodsDetailList.totalPage != 0;
-        if (_currentPage == 1) {
-          _refreshController.refreshCompleted(resetFooterState: true);
-        } else {
-          _refreshController.loadComplete();
-        }
-      });
-    } else if (state is ForYouFailure) {
-      if (_currentPage == 1) {
-        _refreshController.refreshCompleted(resetFooterState: true);
-      } else {
-        _refreshController.loadComplete();
-      }
-      EasyLoading.showToast((state).message);
     }
   }
 }
@@ -139,14 +113,4 @@ class _ViewModel {
 
     return _ViewModel(store.state.forYouState, _load);
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ViewModel &&
-          runtimeType == other.runtimeType &&
-          _forYouState == other._forYouState;
-
-  @override
-  int get hashCode => _forYouState.hashCode;
 }

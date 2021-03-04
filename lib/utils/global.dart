@@ -17,6 +17,7 @@ class Global {
 
   static final isRelease = const bool.fromEnvironment('dart.vm.product');
   static final storage = new FlutterSecureStorage();
+  static final homePageController = PageController();
 
   static Future init() async {
     await SpUtil.getInstance();
@@ -35,6 +36,11 @@ class Global {
         : (signInState as SignInSuccess).signInUser;
   }
 
+  static void clearAccountInfo() {
+    storage.delete(key: KeyStore.TOKEN);
+    storage.delete(key: KeyStore.PASSWORD);
+  }
+
   static saveUserAccount(String email, String password) {
     // SpUtil.putString(KeyStore.EMAIL, email);
     // SpUtil.putString(KeyStore.PASSWORD, password);
@@ -42,14 +48,14 @@ class Global {
     storage.write(key: KeyStore.PASSWORD, value: password);
   }
 
-  static saveToken(String token) async{
+  static saveToken(String token) async {
     // Write value
     await storage.write(key: KeyStore.TOKEN, value: token);
     //Future<bool> success = SpUtil.putString(KeyStore.TOKEN, token);
     //print('token cache success > $success > ${SpUtil.getString(KeyStore.TOKEN)}');
   }
 
-  static Future<String> getToken() async{
+  static Future<String> getToken() async {
     return await storage.read(key: KeyStore.TOKEN);
   }
 

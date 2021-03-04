@@ -1,17 +1,14 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
-import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:redux/redux.dart';
-import 'package:idol/widgets/dialog.dart';
 
 /// 校验邮箱
 class ValidateEmailScreen extends StatefulWidget {
@@ -40,11 +37,6 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      distinct: true,
-      onWillChange: (oldVM, newVM) {
-        debugPrint('oldVM>>>${oldVM.hashCode} ||| newVM>>>${newVM.hashCode}');
-        _onValidateEmailStateChanged(newVM._validateEmailState);
-      },
       builder: (context, vm) {
         return Scaffold(
           body: Container(
@@ -62,7 +54,7 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
                   child: Column(
                     children: [
                       Image(
-                        image: R.image.ic_logo(),
+                        image: R.image.ic_circle_logo(),
                         width: 120,
                         height: 120,
                       ),
@@ -73,6 +65,7 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
                         keyboardType: TextInputType.emailAddress,
                         maxLines: 1,
                         style: TextStyle(color: Colours.white, fontSize: 18),
+                        textAlign: TextAlign.center,
                         controller: _controller,
                         decoration: InputDecoration(
                           filled: true,
@@ -120,50 +113,6 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
         );
       },
     );
-  }
-
-  void _onValidateEmailStateChanged(ValidateEmailState state) {
-    debugPrint('_onValidateEmailStateChanged >>> ');
-    if(_finish){
-      return;
-    }
-    if (state is ValidateEmailLoading) {
-      EasyLoading.show(status: 'Loading...');
-    } else if (state is ValidateEmailSuccess) {
-      _finish = true;
-      EasyLoading.dismiss();
-      if (412 == state.validateEmail.status) {
-        // 邮箱不在白名单内
-        _showMessageDialog();
-      } else if (413 == state.validateEmail.status) {
-        // 邮箱在白名单内,邮箱未注册(新用户)
-        IdolRoute.startSignUp(
-            context, SignUpSignInArguments(_controller.text.trim()));
-      } else if (414 == state.validateEmail.status) {
-        // 邮箱在白名单内,邮箱已注册(老用户)
-        IdolRoute.startSignIn(
-            context, SignUpSignInArguments(_controller.text.trim()));
-      }
-    } else if (state is ValidateEmailFailure) {
-      EasyLoading.showError(state.message);
-    }
-  }
-
-  void _showMessageDialog() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return IdolMessageDialog(
-            'You have not been invited,\n please contact the customer\n service staff WhatsApp\n +1 6625080411',
-            onTap: () {
-              IdolRoute.pop(context);
-            },
-            onClose: () {
-              IdolRoute.pop(context);
-            },
-            buttonText: 'OK',
-          );
-        });
   }
 }
 

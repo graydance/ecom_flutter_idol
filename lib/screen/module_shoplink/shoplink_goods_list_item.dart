@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:idol/models/models.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/utils/global.dart';
 
@@ -40,17 +41,49 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AspectRatio(
-                      // aspectRatio: widget.index % 2 != 0 ? 1.0 : 10 / 15,
-                      aspectRatio: 1,
-                      child: Image(
-                        image: NetworkImage(widget._goods.picture),
-                        fit: BoxFit.cover,
-                      )),
+                  Stack(
+                    children: [
+                      AspectRatio(
+                        // aspectRatio: widget.index % 2 != 0 ? 1.0 : 10 / 15,
+                        aspectRatio: widget.index == 0 ? 1 : 167/210,
+                        child: Image(
+                          image: NetworkImage(widget._goods.picture),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        left: 6,
+                        bottom: 6,
+                        child: Row(
+                          children: [
+                            Image(
+                              image: R.image.ic_pv(),
+                              width: 12,
+                              height: 8,
+                            ),
+                            Text(
+                              _formatHeatRank(widget._goods.heatRank) ?? '0',
+                              style: TextStyle(
+                                color: Colours.white,
+                                fontSize: 10,
+                                shadows: [
+                                  Shadow(
+                                    offset: Offset(0.2, 0.2),
+                                    blurRadius: 3.0,
+                                    color: Colours.color_B1B2B3,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: Text(
-                      widget._goods.goodsName,
+                      widget._goods.goodsName,//'我是一个商品哈哈哈哈哈哈哈哈哈哈',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style:
@@ -148,6 +181,15 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
         ),
       ),
     );
+  }
+  String _formatHeatRank(int heatRank){
+    if(heatRank >= 10000){
+      return (heatRank/10000).toStringAsFixed(1) + "w";
+    }else if(heatRank >= 1000){
+      return (heatRank/1000).toStringAsFixed(1) + "k";
+    }else{
+      return heatRank.toString();
+    }
   }
 }
 

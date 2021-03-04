@@ -2,17 +2,19 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/env.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/base.dart';
+import 'package:idol/net/request/biolinks.dart';
 import 'package:idol/net/request/store.dart';
+import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
@@ -20,15 +22,15 @@ import 'package:idol/screen/module_shoplink/shoplink_goods_list_item.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
-import 'package:idol/widgets/dialog.dart';
+import 'package:idol/widgets/dialog_bottom_sheet.dart';
+import 'package:idol/widgets/dialog_change_username.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
-import 'package:ecomshare/ecomshare.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -37,7 +39,6 @@ class ShopLinkPage extends StatefulWidget {
 
 class _ShopLinkPageState extends State<ShopLinkPage>
     with AutomaticKeepAliveClientMixin<ShopLinkPage> {
-  List<StoreGoods> _storeGoodsList = const [];
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
@@ -65,20 +66,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     super.build(context);
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      onInit: (store) {
-        store.dispatch(MyInfoGoodsListAction(
-            MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1)));
-      },
-      distinct: true,
-      onWillChange: (oldVM, newVM) {
-        debugPrint(
-            '>>>>>>>>>>>>>>>>>>>ShopLink onWillChange<<<<<<<<<<<<<<<<<<<');
-        _onStateChanged(newVM == null ? oldVM : newVM);
-      },
       builder: (context, vm) {
         debugPrint('>>>>>>>>>>>>>>>>>>>ShopLink build<<<<<<<<<<<<<<<<<<<');
         return Container(
-          margin: EdgeInsets.only(bottom: 45),
           color: Colours.color_F8F8F8,
           child: Column(
             //mainAxisSize: MainAxisSize.max,
@@ -148,9 +138,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         image: DecorationImage(
-          image: NetworkImage(
-            _avatar,
-          ),
+          image: _avatar != null && _avatar.length > 0
+              ? NetworkImage(
+                  _avatar,
+                )
+              : AssetImage('assets/images/avatar.png'),
           fit: BoxFit.fitWidth,
         ),
         border: Border.all(color: Colours.white, width: 1.0),
@@ -178,6 +170,12 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             onTap: () {
                               if (_editState) {
                                 _showEditUserNameDialog();
+                              } else {
+                                IdolRoute.startInnerWebView(
+                                    context,
+                                    InnerWebViewArguments(
+                                        '${Global.getUser(context).userName}\'s Shop',
+                                        '$linkDomain$_userName'));
                               }
                             },
                             child: Text(
@@ -190,10 +188,17 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           ),
                           Visibility(
                             visible: _editState,
-                            child: Image(
-                              image: R.image.ic_edit(),
-                              width: 15,
-                              height: 15,
+                            child: GestureDetector(
+                              child: Image(
+                                image: R.image.ic_edit(),
+                                width: 15,
+                                height: 15,
+                              ),
+                              onTap: () {
+                                if (_editState) {
+                                  _showEditUserNameDialog();
+                                }
+                              },
                             ),
                           ),
                         ],
@@ -203,7 +208,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           : [
                               GestureDetector(
                                 onTap: () {
-                                  _showShareLinkDialog('$linkDomain$_userName');
+                                  ShareManager.showShareLinkDialog(
+                                      context, '$linkDomain$_userName');
                                 },
                                 child: Container(
                                   padding: EdgeInsets.only(
@@ -242,12 +248,26 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                              image: NetworkImage(_avatar),
+                              image: _avatar != null && _avatar.length > 0
+                                  ? NetworkImage(_avatar)
+                                  : AssetImage('assets/images/avatar.png'),
                             ),
                             border:
                                 Border.all(color: Colours.white, width: 1.0),
                             color: Colours.color_F8F8F8,
                           ),
+                          child: _avatar != null && _avatar.length > 0
+                              ? null
+                              : Center(
+                                  child: Text(
+                                  _userName != null && _userName.isNotEmpty
+                                      ? _userName[0].toUpperCase()
+                                      : '',
+                                  style: TextStyle(
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white60),
+                                )),
                         ),
                       ),
                       SizedBox(
@@ -312,7 +332,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           return ChangeUserNameDialog(_userName, linkDomain, () {
             IdolRoute.pop(context);
           }, (newUserName) {
-            _checkName(CheckNameRequest(userName: newUserName));
+            // _checkName(CheckNameRequest(userName: newUserName));
+            _changeName(UpdateUserInfoRequest(
+                UpdateUserInfoFieldType.userName, newUserName));
           });
         });
   }
@@ -333,93 +355,20 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
-  void _showShareLinkDialog(String link) {
-    showModalBottomSheet(
-        /*backgroundColor: Colours.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-        ),*/
-        context: context,
-        builder: (context) {
-          return ShareDialog(
-            'How to sales on socials',
-            'https://apd-4661f0ab792aaf41a55c84d57c5b2636.v.smtcdns.com/mv.music.tc.qq.com/A74G4ksnZ1mn_khGkAtW9Hbevr5CTt73vtCHuTUw1lso/725564AD429F3F66B05A7E8DE92726BC144856CF4D69950E8CEE481F3868DEC1D60EEB1DFCF6A628C891573A4C67AED7ZZqqmusic_default/qmmv_0a6bhzmpbqcfotyhaqaq4cqhaigvlv4mfixibe4jjicqwcycbifa.f9834.mp4',
-            '1. Go to my Social account\n 2. Edit profile\n 3. Paste your Shop Link into Bio\n 4. Notice your fans with great post',
-            ShareType.link,
-            (channel) {
-              if ('Copy Link' == channel) {
-                var link = linkDomain + _userName;
-                //复制
-                Clipboard.setData(ClipboardData(text: link));
-                EasyLoading.showToast('$link\n is Replicated!');
-              } else {
-                Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
-              }
-              IdolRoute.pop(context);
-            },
-          );
-        });
-  }
-
-  void _showShareGoodsDialog(StoreGoods storeGoods) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return ShareDialog(
-            'Share great posts in feed',
-            storeGoods.picture,
-            'The product is now available in your store.\n share the news with your fans on social media to make money!',
-            ShareType.goods,
-            (shareChannel) {
-              IdolRoute.pop(context);
-              _createSaveDownloadPicturePath(
-                      storeGoods.id ?? storeGoods.idolGoodsId)
-                  .then((savePath) {
-                DioClient.getInstance()
-                    .download(
-                  storeGoods.picture,
-                  savePath,
-                )
-                    .then((path) {
-                  _showGuideDialog(
-                    'https://apd-4661f0ab792aaf41a55c84d57c5b2636.v.smtcdns.com/mv.music.tc.qq.com/A74G4ksnZ1mn_khGkAtW9Hbevr5CTt73vtCHuTUw1lso/725564AD429F3F66B05A7E8DE92726BC144856CF4D69950E8CEE481F3868DEC1D60EEB1DFCF6A628C891573A4C67AED7ZZqqmusic_default/qmmv_0a6bhzmpbqcfotyhaqaq4cqhaigvlv4mfixibe4jjicqwcycbifa.f9834.mp4',
-                    shareChannel,
-                    savePath,
-                  );
-                }).onError((error, stackTrace) {});
-              });
-            },
-            tips:
-                'Tips: Share your own pictures with product can increase 38% Sales.',
-          );
-        });
-  }
-
-  Future<String> _createSaveDownloadPicturePath(String id) async {
-    Directory tempDir = await getTemporaryDirectory();
-    return tempDir.path + id + '.jpg';
-  }
-
-  void _showGuideDialog(
-      String guideVideoUrl, String shareChannel, String pictureLocalPath) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return ShareDialog(
-            'How to share in $shareChannel',
-            guideVideoUrl,
-            '1. Go to my account in $shareChannel\n 2. Edit profile\n 3. Paste your shop link into Website',
-            ShareType.guide,
-            (sChannel) {
-              Ecomshare.shareTo(
-                  Ecomshare.MEDIA_TYPE_IMAGE, shareChannel, pictureLocalPath);
-            },
-            shareChannel: shareChannel,
-          );
-        });
+  Future _changeName(UpdateUserInfoRequest request) async {
+    EasyLoading.show(status: 'Update UserName...');
+    try {
+      await DioClient.getInstance()
+          .post(ApiPath.updateUserInfo, baseRequest: request);
+      setState(() {
+        _userName = request.value;
+      });
+      EasyLoading.dismiss();
+      IdolRoute.pop(context);
+    } on DioError catch (e) {
+      debugPrint(e.toString());
+      EasyLoading.showError(e.toString());
+    }
   }
 
   Widget _buildWidget(_ViewModel vm) {
@@ -439,7 +388,13 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           header: MaterialClassicHeader(
             color: Colours.color_EA5228,
           ),
-          child: _storeGoodsList == null || _storeGoodsList.isEmpty ? _emptyGoodsWidget() : _hasGoodsWidget(vm),
+          child: (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                      .storeGoodsList
+                      .list
+                      .length ==
+                  0
+              ? _emptyGoodsWidget()
+              : _hasGoodsWidget(vm),
           onRefresh: () async {
             await Future(() {
               vm._loadGoods(Global.getUser(context).id, 1);
@@ -456,31 +411,45 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
-  Widget _hasGoodsWidget(_ViewModel vm){
+  Widget _hasGoodsWidget(_ViewModel vm) {
     return StaggeredGridView.countBuilder(
         padding: EdgeInsets.all(15),
-        itemCount: _storeGoodsList.length,
+        itemCount: (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+            .storeGoodsList
+            .list
+            .length,
         crossAxisCount: 2,
         crossAxisSpacing: 15.0,
         mainAxisSpacing: 15.0,
         staggeredTileBuilder: (int index) {
           // return StaggeredTile.count(1, 1.5);
-          return StaggeredTile.count(1, 1.4);
+          return StaggeredTile.count(1, index == 0 ? 1.55 : 1.8);
         },
         //physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return ShopLinkGoodsListItem(
             index,
-            _storeGoodsList[index],
+            (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                .storeGoodsList
+                .list[index],
             onItemClickCallback: () {
-              // goods detail
-              IdolRoute.startGoodsDetail(
-                  context,
-                  _storeGoodsList[index].supplierId,
-                  _storeGoodsList[index].id);
+              StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
+                  GoodsDetailRequest(
+                      (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                          .storeGoodsList
+                          .list[index]
+                          .supplierId,
+                      (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                          .storeGoodsList
+                          .list[index]
+                          .id)));
             },
             onItemLongPressCallback: () {
-              _shareOrRemoveGoods(vm, _storeGoodsList[index]);
+              _shareOrRemoveGoods(
+                  vm,
+                  (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                      .storeGoodsList
+                      .list[index]);
             },
           );
         });
@@ -503,7 +472,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image(
-              image: R.image.bg_common_error(),
+              image: R.image.bg_default_empty_goods_webp(),
               width: 170,
               height: 195,
             ),
@@ -521,7 +490,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               'Add and share',
               status: IdolButtonStatus.enable,
               listener: (status) {
-                // TODO go supply.
+                // go supply.
+                StoreProvider.of<AppState>(context)
+                    .dispatch(ChangeHomePageAction(0));
               },
             ),
           ],
@@ -540,10 +511,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           onItemClick: (index) {
             switch (index) {
               case 0:
-                _showShareGoodsDialog(storeGoods);
+                ShareManager.showShareGoodsDialog(context, storeGoods.picture);
                 break;
               case 1:
-                vm._deleteGoods(storeGoods.idolGoodsId);
+                vm._deleteGoods(storeGoods.id);
                 break;
               default:
                 break;
@@ -552,56 +523,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         );
       },
     );
-  }
-
-  void _onStateChanged(_ViewModel vm) {
-    if (_ViewModel.actionType == ActionType.goodsList) {
-      if (vm._myInfoGoodsListState is MyInfoGoodsListSuccess) {
-        MyInfoGoodsListSuccess state = vm._myInfoGoodsListState;
-        if ((state).storeGoodsList.currentPage == 1) {
-          _storeGoodsList = (state).storeGoodsList.list;
-        } else {
-          _storeGoodsList.addAll((state).storeGoodsList.list);
-        }
-        _currentPage = (state).storeGoodsList.currentPage;
-        _enablePullUp = (state).storeGoodsList.currentPage !=
-                (state).storeGoodsList.totalPage &&
-            (state).storeGoodsList.totalPage != 0;
-        if (_currentPage == 1) {
-          _refreshController.refreshCompleted(resetFooterState: true);
-        } else {
-          _refreshController.loadComplete();
-        }
-      } else if (vm._myInfoGoodsListState is MyInfoGoodsListFailure) {
-        if (_currentPage == 1) {
-          _refreshController.refreshCompleted(resetFooterState: true);
-        } else {
-          _refreshController.loadComplete();
-        }
-        EasyLoading.showError(
-            (vm._myInfoGoodsListState as MyInfoGoodsListFailure).message);
-      }
-    } else if (_ViewModel.actionType == ActionType.editStore) {
-      if (vm._editStoreState is EditStoreSuccess) {
-        vm._fetchMyInfo();
-      } else if (vm._editStoreState is EditStoreFailure) {
-        EasyLoading.showError(
-            (vm._editStoreState as UpdateUserInfoFailure).message);
-      }
-    } else if (_ViewModel.actionType == ActionType.deleteGoods) {
-      if (vm._deleteGoodsState is DeleteGoodsSuccess) {
-        debugPrint('vm._deleteGoodsState is DeleteGoodsSuccess');
-      } else if (vm._deleteGoodsState is DeleteGoodsFailure) {
-        EasyLoading.showError(
-            (vm._deleteGoodsState as DeleteGoodsFailure).message);
-      }
-    } else if (_ViewModel.actionType == ActionType.fetchMyInfo) {
-      if (vm._myInfoState is MyInfoSuccess) {
-        debugPrint('vm._myInfoState is MyInfoSuccess');
-      } else if (vm._myInfoState is MyInfoFailure) {
-        EasyLoading.showError((vm._myInfoState as MyInfoFailure).message);
-      }
-    }
   }
 
   // 选择拍照/相册
@@ -659,7 +580,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         }
       }
     } else {
-      EasyLoading.show(status: 'No image selected.');
+      EasyLoading.showToast('No image selected.');
     }
   }
 
@@ -749,31 +670,6 @@ class _ViewModel {
         store.state.myInfoGoodsListState,
         store.state.deleteGoodsState);
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ViewModel &&
-          runtimeType == other.runtimeType &&
-          _myInfoState == other._myInfoState &&
-          _myInfoGoodsListState == other._myInfoGoodsListState &&
-          _deleteGoodsState == other._deleteGoodsState &&
-          _editStoreState == other._editStoreState &&
-          _fetchMyInfo == other._fetchMyInfo &&
-          _editStore == other._editStore &&
-          _loadGoods == other._loadGoods &&
-          _deleteGoods == other._deleteGoods;
-
-  @override
-  int get hashCode =>
-      _myInfoState.hashCode ^
-      _myInfoGoodsListState.hashCode ^
-      _deleteGoodsState.hashCode ^
-      _editStoreState.hashCode ^
-      _fetchMyInfo.hashCode ^
-      _editStore.hashCode ^
-      _loadGoods.hashCode ^
-      _deleteGoods.hashCode;
 }
 
 enum ActionType {

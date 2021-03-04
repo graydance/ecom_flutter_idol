@@ -2,6 +2,8 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/dashboard.dart';
@@ -12,6 +14,8 @@ import 'package:idol/screen/module_dashboard/pastsales_tab_view.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/dashboard.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
+import 'package:idol/widgets/dialog_tips_guide.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:redux/redux.dart';
@@ -27,6 +31,8 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
         AutomaticKeepAliveClientMixin<DashboardMVPPage>,
         SingleTickerProviderStateMixin {
   TabController _tabController;
+  bool _isShowedHowToMakeMoneyDialog = false;
+  static final _storage = new FlutterSecureStorage();
 
   final List<String> _tabValues = [
     'Past Sales',
@@ -65,6 +71,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
           children: [
             AppBar(
               title: Text('Dashboard'),
+              centerTitle: true,
               elevation: 0,
               primary: true,
             ),
@@ -87,10 +94,44 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
     }
   }
 
+  void _showHowToMakeMoneyDialog(bool check) async {
+    String neverShowHowToMakeDialog =
+        await _storage.read(key: KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG);
+    if (check &&
+        (_isShowedHowToMakeMoneyDialog || 'true' == neverShowHowToMakeDialog)) {
+      debugPrint(
+          '_showHowToMakeMoneyDialog >>> $_isShowedHowToMakeMoneyDialog | $neverShowHowToMakeDialog');
+      return;
+    }
+    _isShowedHowToMakeMoneyDialog = true;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return TipsGuideDialog(
+          KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG,
+          'How to make money\n with MyPik',
+          '1. Select and add products in Supply panel.\n 2. Add Shop Link to your bio in Socials.\n 3. Share great post in your socials. 4. Get your earnings after sales.(we cover all shopping and service)',
+          videoUrls[0],
+          buttonText: 'Select Now',
+          onTap: () {
+            IdolRoute.pop(context);
+            StoreProvider.of<AppState>(context)
+                .dispatch(ChangeHomePageAction(0));
+          },
+          onClose: () {
+            IdolRoute.pop(context);
+          },
+        );
+      },
+      barrierDismissible: false,
+    );
+  }
+
   Widget _createChildWidgetByState(_ViewModel _viewModel) {
     if (_viewModel._dashboardState is DashboardSuccess) {
       var dashboard =
           (_viewModel._dashboardState as DashboardSuccess).dashboard;
+      _showHowToMakeMoneyDialog(true);
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,8 +141,8 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
           GestureDetector(
             onTap: () => IdolRoute.startDashboardBalance(context).then((value) {
               if (value != null) {
-                // TODO 切换到选品页
-
+                // 切换到Supply
+                IdolRoute.sendArguments(context, HomeTabArguments(tabIndex: 0));
               }
             }),
             child: Row(
@@ -163,7 +204,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'How to make money with the app',
+                'How to make money with MyPik',
                 style: TextStyle(
                   color: Colours.color_0F1015,
                   fontSize: 12,
@@ -171,7 +212,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
               ),
               GestureDetector(
                 onTap: () {
-                  // TODO show dialog
+                  _showHowToMakeMoneyDialog(false);
                 },
                 child: Icon(
                   Icons.help,
@@ -211,9 +252,12 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
                 ],
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
+                    margin: EdgeInsets.only(
+                      left: 0,
+                    ),
                     child: TabBar(
                       tabs: _tabValues.map((title) {
                         return Text(
@@ -221,7 +265,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
                           style: TextStyle(fontWeight: FontWeight.bold),
                         );
                       }).toList(),
-                      isScrollable: false,
+                      isScrollable: true,
                       controller: _tabController,
                       indicatorColor: Colours.color_EA5228,
                       indicatorSize: TabBarIndicatorSize.label,

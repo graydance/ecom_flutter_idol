@@ -1,8 +1,7 @@
-import 'package:flustars/flustars.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
@@ -10,7 +9,6 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/widgets/dialog.dart';
 import 'package:redux/redux.dart';
 
 /// 白名单用户注册
@@ -49,10 +47,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      distinct: true,
-      onWillChange: (oldVM, newVM) {
-        _onSignUpStateChanged(newVM._signUpState);
-      },
       builder: (context, vm) {
         return Scaffold(
           body: Container(
@@ -216,7 +210,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                // TODO link Terms & Conditions
+                                // link Terms & Conditions
+                                IdolRoute.startInnerWebView(
+                                    context,
+                                    InnerWebViewArguments('Terms & Conditions',
+                                        termsConditionsUri));
                               }),
                         TextSpan(text: ' '),
                         TextSpan(
@@ -228,7 +226,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                // TODO Privacy Policy
+                                IdolRoute.startInnerWebView(
+                                    context,
+                                    InnerWebViewArguments(
+                                        'Privacy Policy', privacyPolicyUri));
                               }),
                         TextSpan(text: ' '),
                         TextSpan(
@@ -240,7 +241,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                // TODO Cookie Policy
+                                IdolRoute.startInnerWebView(
+                                    context,
+                                    InnerWebViewArguments(
+                                        'Cookie Policy', cookiePolicyUri));
                               }),
                       ]),
                     ),
@@ -253,34 +257,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
       },
     );
-  }
-
-  void _onSignUpStateChanged(SignUpState state) {
-    if (state is SignUpLoading) {
-      EasyLoading.show(status: 'Loading...');
-    } else if (state is SignUpSuccess) {
-      EasyLoading.showSuccess(
-          'Congratulations!\n You\'ve opened your store!\n You can check it at the last tab.',);
-      IdolRoute.startHome(context);
-      // TODO 暂时无法解决跳转后该Dialog关闭，使用Toast替代
-      // showDialog(
-      //     context: context,
-      //     barrierDismissible: false,
-      //     builder: (context) {
-      //       return IdolMessageDialog(
-      //         'Congratulations!\n You\'ve opened your store!\n You can check it at the last tab.',
-      //         buttonText: 'START',
-      //         onTap: () {
-      //             IdolRoute.startHome(context);
-      //         },
-      //         onClose: () {
-      //           IdolRoute.popAndExit(context);
-      //         },
-      //       );
-      //     });
-    } else if (state is SignUpFailure) {
-      EasyLoading.showError(state.message);
-    }
   }
 }
 

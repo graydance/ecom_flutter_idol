@@ -3,22 +3,40 @@ PODS:
     - FBSDKCoreKit
     - FBSDKShareKit
     - Flutter
-  - FBSDKCoreKit (9.0.1):
-    - FBSDKCoreKit/Basics (= 9.0.1)
-    - FBSDKCoreKit/Core (= 9.0.1)
-  - FBSDKCoreKit/Basics (9.0.1)
-  - FBSDKCoreKit/Core (9.0.1):
+  - FacebookSDK (8.2.0):
+    - FacebookSDK/CoreKit (= 8.2.0)
+  - FacebookSDK/CoreKit (8.2.0):
+    - FBSDKCoreKit (~> 8.2.0)
+  - FacebookSDK/LoginKit (8.2.0):
+    - FacebookSDK/CoreKit
+    - FBSDKLoginKit (~> 8.2.0)
+  - FacebookSDK/ShareKit (8.2.0):
+    - FacebookSDK/CoreKit
+    - FBSDKShareKit (~> 8.2.0)
+  - FBSDKCoreKit (8.2.0):
+    - FBSDKCoreKit/Basics (= 8.2.0)
+    - FBSDKCoreKit/Core (= 8.2.0)
+  - FBSDKCoreKit/Basics (8.2.0)
+  - FBSDKCoreKit/Core (8.2.0):
     - FBSDKCoreKit/Basics
-  - FBSDKShareKit (9.0.1):
-    - FBSDKShareKit/Share (= 9.0.1)
-  - FBSDKShareKit/Share (9.0.1):
-    - FBSDKCoreKit (~> 9.0.1)
+  - FBSDKLoginKit (8.2.0):
+    - FBSDKLoginKit/Login (= 8.2.0)
+  - FBSDKLoginKit/Login (8.2.0):
+    - FBSDKCoreKit (~> 8.2.0)
+  - FBSDKShareKit (8.2.0):
+    - FBSDKShareKit/Share (= 8.2.0)
+  - FBSDKShareKit/Share (8.2.0):
+    - FBSDKCoreKit (~> 8.2.0)
   - Flutter (1.0.0)
+  - flutter_secure_storage (3.3.1):
+    - Flutter
   - image_gallery_saver (1.5.0):
     - Flutter
   - image_picker (0.0.1):
     - Flutter
   - integration_test (0.0.1):
+    - Flutter
+  - launch_review (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
@@ -28,27 +46,40 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
+  - url_launcher (0.0.1):
+    - Flutter
   - video_player (0.0.1):
+    - Flutter
+  - wakelock (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - ecomshare (from `.symlinks/plugins/ecomshare/ios`)
+  - FacebookSDK
+  - FacebookSDK/LoginKit
+  - FacebookSDK/ShareKit
   - Flutter (from `Flutter`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - launch_review (from `.symlinks/plugins/launch_review/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
+  - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
   trunk:
+    - FacebookSDK
     - FBSDKCoreKit
+    - FBSDKLoginKit
     - FBSDKShareKit
 
 EXTERNAL SOURCES:
@@ -56,12 +87,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/ecomshare/ios"
   Flutter:
     :path: Flutter
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
   image_gallery_saver:
     :path: ".symlinks/plugins/image_gallery_saver/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
+  launch_review:
+    :path: ".symlinks/plugins/launch_review/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   permission_handler:
@@ -70,26 +105,36 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
+  wakelock:
+    :path: ".symlinks/plugins/wakelock/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
   ecomshare: 8c7b7f33cc62949a8367def56b953aae3cd3bca7
-  FBSDKCoreKit: fada1a6a0076724678993ff05a633848765ff18c
-  FBSDKShareKit: 6a85acb92eaf43a0b6dfa2ba6106eb74c7f10d30
+  FacebookSDK: 7aa80d5e6eaf235f492328ad40c36dbc16440e52
+  FBSDKCoreKit: 4afd6ff53d8133a433dbcda44451c9498f8c6ce4
+  FBSDKLoginKit: 7181765f2524d7ebf82d9629066c8e6caafc99d0
+  FBSDKShareKit: 0c0d51b3af47075a85ed9bea0e28b2fc70e3594b
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   integration_test: 6eb66a19f7104200dcfdd62bc0077e1b09686e4f
+  launch_review: 75d5a956ba8eaa493e9c9d4bf4c05e505e8d5ed0
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
+  wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
-PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+PODFILE CHECKSUM: 4e388eb04c8b5b12f237ed11ad841dfd26ac683b
 
 COCOAPODS: 1.10.0

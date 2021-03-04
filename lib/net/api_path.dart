@@ -1,8 +1,10 @@
-class ApiPath{
+class ApiPath {
   // 检测email是否在白名单
   static final String whiteList = '/idol/pub/white_list';
   // 注册登录
   static final String login = '/user/pub/login';
+  // 更新密码
+  static final String updatePassword = '/idol/update_password';
   // 供应商详情
   static final String userDetail = '/user/detail';
   // 当前用户详情
@@ -51,4 +53,6 @@ class ApiPath{
   static final String editBioLinks = '/idol/edit_links';
   // 更新userName
   static final String updateUserInfo = '/idol/edit_info';
+  // 更新配置
+  static final String updateGlobalConfig = '/idol/pub/config';
 }

@@ -41,8 +41,13 @@ class AppState {
   final BestSalesState bestSalesState;
   final SalesHistoryState salesHistoryState;
   final SalesHistoryArguments salesHistoryArguments;
+  final HomeTabArguments homeTabArguments;
+  final UpdatePasswordState updatePasswordState;
+  final InnerWebViewArguments innerWebViewArguments;
+  final GoodsDetail goodsDetailPage;
 
   AppState({
+    this.goodsDetailPage = const GoodsDetail(),
     this.signUpState = const SignUpInitial(),
     this.signInState = const SignInInitial(),
     this.dashboardState = const DashboardInitial(),
@@ -76,11 +81,15 @@ class AppState {
     this.bestSalesState = const BestSalesInitial(),
     this.salesHistoryState = const SalesHistoryInitial(),
     this.salesHistoryArguments = const SalesHistoryArguments('', ''),
+    this.homeTabArguments = const HomeTabArguments(),
+    this.updatePasswordState = const UpdatePasswordInitial(),
+    this.innerWebViewArguments = const InnerWebViewArguments('', ''),
   });
 
   AppState copyWith({
+    GoodsDetail goodsDetailPage,
     SignUpState signUpState,
-    SignInState loginState,
+    SignInState signInState,
     DashboardState dashboardState,
     WithdrawInfoState withdrawInfoState,
     WithdrawState withdrawState,
@@ -108,12 +117,18 @@ class AppState {
     UpdateUserInfoState updateUserInfoState,
     DeleteGoodsState deleteGoodsState,
     ValidateEmailState validateEmailState,
-    SignUpSignInArguments signUpArguments,
+    SignUpSignInArguments signUpSignInArguments,
     BestSalesState bestSalesState,
     SalesHistoryState salesHistoryState,
     SalesHistoryArguments salesHistoryArguments,
+    HomeTabArguments homeTabArguments,
+    UpdatePasswordState updatePasswordState,
+    InnerWebViewArguments innerWebViewArguments,
   }) {
-    if ((loginState == null || identical(loginState, this.signInState)) &&
+    if ((goodsDetailPage == null ||
+            identical(goodsDetailPage, this.goodsDetailPage)) &&
+        (signUpState == null || identical(signUpState, this.signUpState)) &&
+        (signInState == null || identical(signInState, this.signInState)) &&
         (dashboardState == null ||
             identical(dashboardState, this.dashboardState)) &&
         (withdrawInfoState == null ||
@@ -167,17 +182,29 @@ class AppState {
             identical(updateUserInfoState, this.updateUserInfoState)) &&
         (deleteGoodsState == null ||
             identical(deleteGoodsState, this.deleteGoodsState)) &&
-        (validateEmailState == null || identical(validateEmailState, this.validateEmailState)) &&
-        (signUpState == null || identical(signUpState, this.signUpState)) &&
-        (signUpArguments == null || identical(signUpArguments, this.signUpSignInArguments)) &&
-        (bestSalesState == null || identical(bestSalesState, this.bestSalesState)) &&
-        (salesHistoryState == null || identical(salesHistoryState, this.salesHistoryState)) &&
-        (salesHistoryArguments == null || identical(salesHistoryArguments, this.salesHistoryArguments))) {
+        (validateEmailState == null ||
+            identical(validateEmailState, this.validateEmailState)) &&
+        (signUpSignInArguments == null ||
+            identical(signUpSignInArguments, this.signUpSignInArguments)) &&
+        (bestSalesState == null ||
+            identical(bestSalesState, this.bestSalesState)) &&
+        (salesHistoryState == null ||
+            identical(salesHistoryState, this.salesHistoryState)) &&
+        (salesHistoryArguments == null ||
+            identical(salesHistoryArguments, this.salesHistoryArguments)) &&
+        (homeTabArguments == null ||
+            identical(homeTabArguments, this.homeTabArguments)) &&
+        (updatePasswordState == null ||
+            identical(updatePasswordState, this.updatePasswordState)) &&
+        (innerWebViewArguments == null ||
+            identical(innerWebViewArguments, this.innerWebViewArguments))) {
       return this;
     }
 
     return AppState(
-      signInState: loginState ?? this.signInState,
+      goodsDetailPage: goodsDetailPage ?? this.goodsDetailPage,
+      signUpState: signUpState ?? this.signUpState,
+      signInState: signInState ?? this.signInState,
       dashboardState: dashboardState ?? this.dashboardState,
       withdrawInfoState: withdrawInfoState ?? this.withdrawInfoState,
       withdrawState: withdrawState ?? this.withdrawState,
@@ -212,11 +239,16 @@ class AppState {
       updateUserInfoState: updateUserInfoState ?? this.updateUserInfoState,
       deleteGoodsState: deleteGoodsState ?? this.deleteGoodsState,
       validateEmailState: validateEmailState ?? this.validateEmailState,
-      signUpState: signUpState ?? this.signUpState,
-      signUpSignInArguments: signUpArguments ?? this.signUpSignInArguments,
+      signUpSignInArguments:
+          signUpSignInArguments ?? this.signUpSignInArguments,
       bestSalesState: bestSalesState ?? this.bestSalesState,
       salesHistoryState: salesHistoryState ?? this.salesHistoryState,
-      salesHistoryArguments: salesHistoryArguments ?? this.salesHistoryArguments,
+      salesHistoryArguments:
+          salesHistoryArguments ?? this.salesHistoryArguments,
+      homeTabArguments: homeTabArguments ?? this.homeTabArguments,
+      updatePasswordState: updatePasswordState ?? this.updatePasswordState,
+      innerWebViewArguments:
+          innerWebViewArguments ?? this.innerWebViewArguments,
     );
   }
 
@@ -224,6 +256,7 @@ class AppState {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AppState &&
+          goodsDetailPage == other.goodsDetailPage &&
           runtimeType == other.runtimeType &&
           signUpState == other.signUpState &&
           signInState == other.signInState &&
@@ -257,10 +290,14 @@ class AppState {
           signUpSignInArguments == other.signUpSignInArguments &&
           bestSalesState == other.bestSalesState &&
           salesHistoryState == other.salesHistoryState &&
-          salesHistoryArguments == other.salesHistoryArguments;
+          salesHistoryArguments == other.salesHistoryArguments &&
+          homeTabArguments == other.homeTabArguments &&
+          updatePasswordState == other.updatePasswordState &&
+          innerWebViewArguments == other.innerWebViewArguments;
 
   @override
   int get hashCode =>
+      goodsDetailPage.hashCode ^
       signUpState.hashCode ^
       signInState.hashCode ^
       dashboardState.hashCode ^
@@ -293,5 +330,8 @@ class AppState {
       signUpSignInArguments.hashCode ^
       bestSalesState.hashCode ^
       salesHistoryState.hashCode ^
-      salesHistoryArguments.hashCode;
+      salesHistoryArguments.hashCode ^
+      homeTabArguments.hashCode ^
+      updatePasswordState.hashCode ^
+      innerWebViewArguments.hashCode;
 }
