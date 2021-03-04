@@ -8,8 +8,7 @@ class SupplyMVPPage extends StatefulWidget {
 }
 
 class _SupplyMVPPageState extends State<SupplyMVPPage>
-    with AutomaticKeepAliveClientMixin<SupplyMVPPage>{
-
+    with AutomaticKeepAliveClientMixin<SupplyMVPPage> {
   @override
   void initState() {
     super.initState();
@@ -28,7 +27,10 @@ class _SupplyMVPPageState extends State<SupplyMVPPage>
             children: [
               AppBar(
                 elevation: 0,
-                title: Text('Supply', style: TextStyle(color: Colours.color_0F1015, fontSize: 20),),
+                title: Text(
+                  'MyPik',
+                  style: TextStyle(color: Colours.color_0F1015, fontSize: 20),
+                ),
                 centerTitle: true,
               ),
             ],
