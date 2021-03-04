@@ -73,8 +73,10 @@ class _ShareDialogState extends State<ShareDialog> {
   Future<void> initSharePlatformState() async {
     List<String> supportChannels;
     try {
-      supportChannels =
-          await Ecomshare.getSupportedChannels(Ecomshare.MEDIA_TYPE_IMAGE);
+      supportChannels = await Ecomshare.getSupportedChannels(
+          widget.shareType == ShareType.link
+              ? Ecomshare.MEDIA_TYPE_TEXT
+              : Ecomshare.MEDIA_TYPE_IMAGE);
     } on PlatformException {
       supportChannels = [];
     }
