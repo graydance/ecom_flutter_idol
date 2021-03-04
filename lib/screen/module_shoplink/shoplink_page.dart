@@ -178,6 +178,12 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             onTap: () {
                               if (_editState) {
                                 _showEditUserNameDialog();
+                              } else {
+                                IdolRoute.startInnerWebView(
+                                    context,
+                                    InnerWebViewArguments(
+                                        '${Global.getUser(context).userName}\'s Shop',
+                                        '$linkDomain$_userName'));
                               }
                             },
                             child: Text(

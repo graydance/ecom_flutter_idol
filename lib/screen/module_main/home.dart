@@ -4,6 +4,7 @@ import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/screen/screens.dart';
+import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -16,8 +17,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin<HomeScreen> {
-  PageController _pageController;
-
   int _selectedIndex = 0;
 
   var _pages = <Widget>[
@@ -63,13 +62,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void initState() {
-    _pageController = PageController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -77,30 +74,21 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return StoreConnector<AppState, _ViewModel>(
-    converter: _ViewModel.fromStore,
-    distinct: true,
-    onWillChange: (oldVM, newVM) {
-      _onStateChanged(newVM._homeTabArguments);
-    },
-    builder: (context, vm) =>  Scaffold(
-      extendBodyBehindAppBar: true,
-      extendBody: false,
-      body: _createBody(),
-      bottomNavigationBar: _createBottomNavigationBar(),
-    ),);
-  }
-
-  void _onStateChanged(HomeTabArguments arguments){
-    setState(() {
-      _selectedIndex = arguments.tabIndex;
-    });
+      converter: _ViewModel.fromStore,
+      builder: (context, vm) => Scaffold(
+        extendBodyBehindAppBar: true,
+        extendBody: false,
+        body: _createBody(),
+        bottomNavigationBar: _createBottomNavigationBar(),
+      ),
+    );
   }
 
   Widget _createBody() {
     return Container(
       //padding: EdgeInsets.only(bottom: 15,),
       child: PageView(
-        controller: _pageController,
+        controller: Global.homePageController,
         onPageChanged: (index) {
           setState(() {
             _selectedIndex = index;
@@ -163,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen>
         selectedItemColor: Colours.color_0F1015,
         selectedFontSize: 12,
         currentIndex: _selectedIndex,
-        onTap: (index) => _pageController.jumpToPage(index),
+        onTap: (index) => Global.homePageController.jumpToPage(index),
       ),
     );
   }
@@ -172,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen>
   bool get wantKeepAlive => true;
 }
 
-class _ViewModel{
+class _ViewModel {
   final HomeTabArguments _homeTabArguments;
 
   _ViewModel(this._homeTabArguments);

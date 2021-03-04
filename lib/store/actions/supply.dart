@@ -243,6 +243,11 @@ class GoodsDetailFailureAction {
   GoodsDetailFailureAction(this.message);
 }
 
+class ChangeHomePageAction {
+  final int page;
+  ChangeHomePageAction(this.page);
+}
+
 class AddToStoreAction {
   final GoodsDetail goods;
   AddToStoreAction(this.goods);

@@ -78,9 +78,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
                   .goodsDetailList
                   .list[index],
               onProductAddedStoreListener: (goodsDetail) {
-                // setState(() {
-                //_goodsDetailList.removeAt(index);
-                // });
                 ShareManager.showShareGoodsDialog(
                     context, goodsDetail.goods[0]);
               },
