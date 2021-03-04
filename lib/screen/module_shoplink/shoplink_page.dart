@@ -148,9 +148,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         image: DecorationImage(
-          image: NetworkImage(
-            _avatar,
-          ),
+          image: _avatar != null && _avatar.length > 0
+              ? NetworkImage(
+                  _avatar,
+                )
+              : AssetImage('assets/images/avatar.png'),
           fit: BoxFit.fitWidth,
         ),
         border: Border.all(color: Colours.white, width: 1.0),
@@ -256,12 +258,24 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                              image: NetworkImage(_avatar),
+                              image: _avatar != null && _avatar.length > 0
+                                  ? NetworkImage(_avatar)
+                                  : AssetImage('assets/images/avatar.png'),
                             ),
                             border:
                                 Border.all(color: Colours.white, width: 1.0),
                             color: Colours.color_F8F8F8,
                           ),
+                          child: _avatar != null && _avatar.length > 0
+                              ? null
+                              : Center(
+                                  child: Text(
+                                  _userName[0].toUpperCase(),
+                                  style: TextStyle(
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white60),
+                                )),
                         ),
                       ),
                       SizedBox(
