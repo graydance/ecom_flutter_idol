@@ -50,8 +50,6 @@ class MyPikVideo extends StatefulWidget {
 class _MyPikVideo extends State<MyPikVideo> {
   @override
   Widget build(BuildContext context) {
-    print(
-        '************************************ MyPikVideo build ${widget.controller.value.initialized}');
     return GestureDetector(
         onTap: () {
           widget.controller.value.isPlaying
@@ -107,12 +105,9 @@ class _ShareDialogState extends State<ShareDialog> {
   void initState() {
     super.initState();
     initSharePlatformState();
-    print(
-        '*************************************** ${widget.shareType} ${widget.mediaUrl}');
     if (ShareType.guide == widget.shareType ||
         ShareType.link == widget.shareType &&
             widget.mediaUrl.toLowerCase().endsWith('.mp4')) {
-      print('******************* init controller');
       _controller = VideoPlayerController.network(widget.mediaUrl)
         ..initialize().then((_) {
           _controller.setLooping(true);

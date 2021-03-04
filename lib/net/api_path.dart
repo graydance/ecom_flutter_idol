@@ -1,4 +1,4 @@
-class ApiPath{
+class ApiPath {
   // 检测email是否在白名单
   static final String whiteList = '/idol/pub/white_list';
   // 注册登录
@@ -53,4 +53,6 @@ class ApiPath{
   static final String editBioLinks = '/idol/edit_links';
   // 更新userName
   static final String updateUserInfo = '/idol/edit_info';
+  // 更新配置
+  static final String updateGlobalConfig = '/idol/pub/config';
 }

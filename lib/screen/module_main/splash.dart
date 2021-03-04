@@ -7,6 +7,7 @@ import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
+import 'package:idol/store/actions/actions.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/store/actions/main.dart';
 import 'package:idol/utils/keystore.dart';
@@ -29,6 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
           converter: _ViewModel.fromStore,
+          onInit: (store) {
+            store.dispatch(LoadConfigurationAction());
+          },
           builder: (context, vm) {
             return Container(
               decoration: BoxDecoration(

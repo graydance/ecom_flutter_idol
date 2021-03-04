@@ -248,6 +248,8 @@ class ChangeHomePageAction {
   ChangeHomePageAction(this.page);
 }
 
+class LoadConfigurationAction {}
+
 class AddToStoreAction {
   final GoodsDetail goods;
   AddToStoreAction(this.goods);

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/models/biolinks.dart';
 import 'package:idol/models/validate_email.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
+import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
@@ -83,6 +85,7 @@ List<Middleware<AppState>> createStoreMiddleware() {
       Global.navigatorKey.currentState.pushReplacementNamed(RouterPath.signIn);
       next(action);
     }),
+    TypedMiddleware<AppState, LoadConfigurationAction>(loadGlobalConfig),
     TypedMiddleware<AppState, SignUpAction>((store, action, next) {
       EasyLoading.show(status: 'Loading...');
       next(action);
@@ -197,6 +200,27 @@ final Middleware<AppState> startHome =
 ///   }
 /// }
 ///
+
+void loadGlobalConfig(store, action, next) {
+  DioClient.getInstance()
+      .post(ApiPath.updateGlobalConfig, baseRequest: BaseRequestImpl())
+      .whenComplete(() => null)
+      .then((data) {
+    linkDomain = data['linkDomain'];
+    videoUrls = data['videoUrls'];
+    iosAppId = data['iosAppId'];
+    emailUsUri = data['emailUsUri'];
+    whatsAppUri = data['whatsAppUri'];
+    whatsAppUri2 = data['whatsAppUri2'];
+    faqUri = data['faqUri'];
+    termsConditionsUri = data['termsConditionsUri'];
+    cookiePolicyUri = data['cookiePolicyUri'];
+    privacyPolicyUri = data['privacyPolicyUri'];
+  }).catchError((err) {
+    EasyLoading.show(status: 'Ops, seems network error!!!');
+  });
+  next(action);
+}
 
 final Middleware<AppState> validateEmailMiddleware =
     (Store<AppState> store, action, NextDispatcher next) {
