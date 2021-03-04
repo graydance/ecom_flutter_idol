@@ -12,6 +12,7 @@ import 'package:idol/models/upload.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/base.dart';
+import 'package:idol/net/request/biolinks.dart';
 import 'package:idol/net/request/store.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
@@ -270,7 +271,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                               ? null
                               : Center(
                                   child: Text(
-                                  _userName[0].toUpperCase(),
+                                  _userName != null && _userName.isNotEmpty
+                                      ? _userName[0].toUpperCase()
+                                      : '',
                                   style: TextStyle(
                                       fontSize: 50,
                                       fontWeight: FontWeight.bold,
@@ -340,7 +343,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           return ChangeUserNameDialog(_userName, linkDomain, () {
             IdolRoute.pop(context);
           }, (newUserName) {
-            _checkName(CheckNameRequest(userName: newUserName));
+            // _checkName(CheckNameRequest(userName: newUserName));
+            _changeName(UpdateUserInfoRequest(
+                UpdateUserInfoFieldType.userName, newUserName));
           });
         });
   }
@@ -352,6 +357,22 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           .post(ApiPath.checkName, baseRequest: checkNameRequest);
       setState(() {
         _userName = checkNameRequest.userName;
+      });
+      EasyLoading.dismiss();
+      IdolRoute.pop(context);
+    } on DioError catch (e) {
+      debugPrint(e.toString());
+      EasyLoading.showError(e.toString());
+    }
+  }
+
+  Future _changeName(UpdateUserInfoRequest request) async {
+    EasyLoading.show(status: 'Update UserName...');
+    try {
+      await DioClient.getInstance()
+          .post(ApiPath.updateUserInfo, baseRequest: request);
+      setState(() {
+        _userName = request.value;
       });
       EasyLoading.dismiss();
       IdolRoute.pop(context);
