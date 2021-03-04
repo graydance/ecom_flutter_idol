@@ -112,7 +112,7 @@ class IdolRoute {
     StoreProvider.of<AppState>(context, listen: false)
         .dispatch(UpdateArgumentsAction<SignUpSignInArguments>(arguments));
     return Navigator.of(context).pushNamedAndRemoveUntil(
-        RouterPath.signUp, (Route<dynamic> route) => false);
+        RouterPath.validateEmail, (Route<dynamic> route) => false);
     //.pushReplacementNamed(RouterPath.signIn);
   }
 

@@ -491,8 +491,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               status: IdolButtonStatus.enable,
               listener: (status) {
                 // go supply.
-                IdolRoute.sendArguments<HomeTabArguments>(
-                    context, HomeTabArguments(tabIndex: 0));
+                StoreProvider.of<AppState>(context)
+                    .dispatch(ChangeHomePageAction(0));
               },
             ),
           ],
