@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen>
   ];
 
   static const _titles = <String>[
-    'Supply',
+    'MyPik',
     'Dashboard',
     'ShopLink',
     // 'Inbox',

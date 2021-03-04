@@ -6,6 +6,7 @@ import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
@@ -56,7 +57,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
 
   void _onBestSalesStateChanged(BestSalesState state) {
     if (state is BestSalesSuccess) {
-      if(state.bestSalesList != null && state.bestSalesList.list != null){
+      if (state.bestSalesList != null && state.bestSalesList.list != null) {
         _bestSalesList = state.bestSalesList.list;
       }
     } else if (state is BestSalesFailure) {
@@ -73,7 +74,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
       return IdolErrorWidget(() {
         vm._load(_type);
       });
-    }else {
+    } else {
       return Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -130,7 +131,8 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
                       color: Colors.transparent,
                     );
                   },
-                  itemCount: _bestSalesList.length == 0 ? 1 : _bestSalesList.length,
+                  itemCount:
+                      _bestSalesList.length == 0 ? 1 : _bestSalesList.length,
                   itemBuilder: (context, index) => _bestSalesList.isEmpty
                       ? _bestSalesEmptyWidget()
                       : _BestSalesItem(_bestSalesList[index]),
@@ -192,6 +194,7 @@ class _BestSalesItemState extends State<_BestSalesItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -203,6 +206,9 @@ class _BestSalesItemState extends State<_BestSalesItem> {
             width: 70,
             height: 70,
             fit: BoxFit.cover,
+          ),
+          SizedBox(
+            width: 8,
           ),
           Expanded(
             child: Column(
@@ -232,7 +238,7 @@ class _BestSalesItemState extends State<_BestSalesItem> {
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
                 '',
@@ -243,13 +249,17 @@ class _BestSalesItemState extends State<_BestSalesItem> {
               ),
               Text(
                 widget.bestSales.soldNum.toString(),
-                style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
+                style: TextStyle(
+                  color: Colours.color_0F1015,
+                  fontSize: 12,
+                ),
               ),
               SizedBox(
                 height: 4,
               ),
               Text(
-                widget.bestSales.earningPriceStr,
+                Global.getUser(context).monetaryUnit +
+                    widget.bestSales.earningPriceStr,
                 style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
               ),
             ],
