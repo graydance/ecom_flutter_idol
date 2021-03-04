@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
+import 'package:idol/net/request/store.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/screen/screens.dart';
+import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -93,6 +95,10 @@ class _HomeScreenState extends State<HomeScreen>
           setState(() {
             _selectedIndex = index;
           });
+          if (index == 2) {
+            StoreProvider.of<AppState>(context).dispatch(MyInfoGoodsListAction(
+                MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1)));
+          }
         },
         children: _pages,
         physics: NeverScrollableScrollPhysics(),

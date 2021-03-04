@@ -39,7 +39,6 @@ class ShopLinkPage extends StatefulWidget {
 
 class _ShopLinkPageState extends State<ShopLinkPage>
     with AutomaticKeepAliveClientMixin<ShopLinkPage> {
-  List<StoreGoods> _storeGoodsList = const [];
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
@@ -67,16 +66,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     super.build(context);
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      onInit: (store) {
-        store.dispatch(MyInfoGoodsListAction(
-            MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1)));
-      },
-      distinct: true,
-      onWillChange: (oldVM, newVM) {
-        debugPrint(
-            '>>>>>>>>>>>>>>>>>>>ShopLink onWillChange<<<<<<<<<<<<<<<<<<<');
-        _onStateChanged(newVM == null ? oldVM : newVM);
-      },
       builder: (context, vm) {
         debugPrint('>>>>>>>>>>>>>>>>>>>ShopLink build<<<<<<<<<<<<<<<<<<<');
         return Container(
@@ -399,7 +388,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           header: MaterialClassicHeader(
             color: Colours.color_EA5228,
           ),
-          child: _storeGoodsList == null || _storeGoodsList.isEmpty
+          child: (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                      .storeGoodsList
+                      .list
+                      .length ==
+                  0
               ? _emptyGoodsWidget()
               : _hasGoodsWidget(vm),
           onRefresh: () async {
@@ -421,7 +414,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   Widget _hasGoodsWidget(_ViewModel vm) {
     return StaggeredGridView.countBuilder(
         padding: EdgeInsets.all(15),
-        itemCount: _storeGoodsList.length,
+        itemCount: (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+            .storeGoodsList
+            .list
+            .length,
         crossAxisCount: 2,
         crossAxisSpacing: 15.0,
         mainAxisSpacing: 15.0,
@@ -433,14 +429,27 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         itemBuilder: (context, index) {
           return ShopLinkGoodsListItem(
             index,
-            _storeGoodsList[index],
+            (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                .storeGoodsList
+                .list[index],
             onItemClickCallback: () {
               StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
-                  GoodsDetailRequest(_storeGoodsList[index].supplierId,
-                      _storeGoodsList[index].id)));
+                  GoodsDetailRequest(
+                      (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                          .storeGoodsList
+                          .list[index]
+                          .supplierId,
+                      (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                          .storeGoodsList
+                          .list[index]
+                          .id)));
             },
             onItemLongPressCallback: () {
-              _shareOrRemoveGoods(vm, _storeGoodsList[index]);
+              _shareOrRemoveGoods(
+                  vm,
+                  (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                      .storeGoodsList
+                      .list[index]);
             },
           );
         });
@@ -505,7 +514,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                 ShareManager.showShareGoodsDialog(context, storeGoods.picture);
                 break;
               case 1:
-                vm._deleteGoods(storeGoods.idolGoodsId);
+                vm._deleteGoods(storeGoods.id);
                 break;
               default:
                 break;
@@ -514,56 +523,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         );
       },
     );
-  }
-
-  void _onStateChanged(_ViewModel vm) {
-    if (_ViewModel.actionType == ActionType.goodsList) {
-      if (vm._myInfoGoodsListState is MyInfoGoodsListSuccess) {
-        MyInfoGoodsListSuccess state = vm._myInfoGoodsListState;
-        if ((state).storeGoodsList.currentPage == 1) {
-          _storeGoodsList = (state).storeGoodsList.list;
-        } else {
-          _storeGoodsList.addAll((state).storeGoodsList.list);
-        }
-        _currentPage = (state).storeGoodsList.currentPage;
-        _enablePullUp = (state).storeGoodsList.currentPage !=
-                (state).storeGoodsList.totalPage &&
-            (state).storeGoodsList.totalPage != 0;
-        if (_currentPage == 1) {
-          _refreshController.refreshCompleted(resetFooterState: true);
-        } else {
-          _refreshController.loadComplete();
-        }
-      } else if (vm._myInfoGoodsListState is MyInfoGoodsListFailure) {
-        if (_currentPage == 1) {
-          _refreshController.refreshCompleted(resetFooterState: true);
-        } else {
-          _refreshController.loadComplete();
-        }
-        EasyLoading.showError(
-            (vm._myInfoGoodsListState as MyInfoGoodsListFailure).message);
-      }
-    } else if (_ViewModel.actionType == ActionType.editStore) {
-      if (vm._editStoreState is EditStoreSuccess) {
-        vm._fetchMyInfo();
-      } else if (vm._editStoreState is EditStoreFailure) {
-        EasyLoading.showError(
-            (vm._editStoreState as UpdateUserInfoFailure).message);
-      }
-    } else if (_ViewModel.actionType == ActionType.deleteGoods) {
-      if (vm._deleteGoodsState is DeleteGoodsSuccess) {
-        debugPrint('vm._deleteGoodsState is DeleteGoodsSuccess');
-      } else if (vm._deleteGoodsState is DeleteGoodsFailure) {
-        EasyLoading.showError(
-            (vm._deleteGoodsState as DeleteGoodsFailure).message);
-      }
-    } else if (_ViewModel.actionType == ActionType.fetchMyInfo) {
-      if (vm._myInfoState is MyInfoSuccess) {
-        debugPrint('vm._myInfoState is MyInfoSuccess');
-      } else if (vm._myInfoState is MyInfoFailure) {
-        EasyLoading.showError((vm._myInfoState as MyInfoFailure).message);
-      }
-    }
   }
 
   // 选择拍照/相册
@@ -711,31 +670,6 @@ class _ViewModel {
         store.state.myInfoGoodsListState,
         store.state.deleteGoodsState);
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ViewModel &&
-          runtimeType == other.runtimeType &&
-          _myInfoState == other._myInfoState &&
-          _myInfoGoodsListState == other._myInfoGoodsListState &&
-          _deleteGoodsState == other._deleteGoodsState &&
-          _editStoreState == other._editStoreState &&
-          _fetchMyInfo == other._fetchMyInfo &&
-          _editStore == other._editStore &&
-          _loadGoods == other._loadGoods &&
-          _deleteGoods == other._deleteGoods;
-
-  @override
-  int get hashCode =>
-      _myInfoState.hashCode ^
-      _myInfoGoodsListState.hashCode ^
-      _deleteGoodsState.hashCode ^
-      _editStoreState.hashCode ^
-      _fetchMyInfo.hashCode ^
-      _editStore.hashCode ^
-      _loadGoods.hashCode ^
-      _deleteGoods.hashCode;
 }
 
 enum ActionType {
