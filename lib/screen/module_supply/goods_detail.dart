@@ -9,6 +9,7 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/supply.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 import 'package:redux/redux.dart';
@@ -69,7 +70,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
             _bottomButtonText,
             status: _bottomButtonStatus,
             listener: (status) {
-              StoreProvider.of(context).dispatch(AddToStoreAction(vm.detail));
+              if (vm.detail.inMyStore == 1) {
+                ShareManager.showShareGoodsDialog(context, vm.detail.goods[0]);
+              } else {
+                StoreProvider.of(context).dispatch(AddToStoreAction(vm.detail));
+              }
             },
           ),
         );
@@ -84,9 +89,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
     _bottomButtonStatus = goodsDetail.inMyStore == 0
         ? IdolButtonStatus.enable
         : IdolButtonStatus.disable;
-    _bottomButtonText = goodsDetail.inMyStore == 0
-        ? 'Add to my store'
-        : 'Has been added to my store';
+    _bottomButtonText =
+        goodsDetail.inMyStore == 0 ? 'Add to my store' : 'Share';
     return SingleChildScrollView(
       child: Container(
         //padding: EdgeInsets.all(15),

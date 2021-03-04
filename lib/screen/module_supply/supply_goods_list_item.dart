@@ -13,6 +13,7 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 
@@ -224,15 +225,18 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             // Add to my store.
             IdolButton(
               widget.goodsDetail.inMyStore == 1
-                  ? 'Has been added to my store'
+                  ? 'Share'
                   : 'Add to my store & Share',
-              status: widget.goodsDetail.inMyStore == 1
-                  ? IdolButtonStatus.normal
-                  : IdolButtonStatus.enable,
+              status: IdolButtonStatus.enable,
               listener: (status) {
                 if (status == IdolButtonStatus.enable) {
                   debounce(() {
-                    _addProductToMyStore(widget.goodsDetail);
+                    if (widget.goodsDetail.inMyStore == 1) {
+                      ShareManager.showShareGoodsDialog(
+                          context, widget.goodsDetail.goods[0]);
+                    } else {
+                      _addProductToMyStore(widget.goodsDetail);
+                    }
                   }, 1000);
                 }
               },

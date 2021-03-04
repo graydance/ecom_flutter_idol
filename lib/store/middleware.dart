@@ -60,6 +60,10 @@ List<Middleware<AppState>> createStoreMiddleware() {
       store.dispatch(ShowGoodsDetailAction(action.goodsDetail));
       next(action);
     }),
+    TypedMiddleware<AppState, ChangeHomePageAction>((_, action, next) {
+      Global.homePageController.jumpToPage(action.page);
+      next(action);
+    }),
     TypedMiddleware<AppState, SignInSuccessAction>(startHome),
     TypedMiddleware<AppState, SignUpSuccessAction>(startHome),
     TypedMiddleware<AppState, SignUpSuccessAction>((_, action, next) {
