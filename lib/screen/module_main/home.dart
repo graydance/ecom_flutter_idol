@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
+import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/store.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/r.g.dart';
@@ -31,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen>
   ];
 
   static const _titles = <String>[
-    'Supply',
+    'MyPik',
     'Dashboard',
     'ShopLink',
     // 'Inbox',
@@ -95,7 +96,10 @@ class _HomeScreenState extends State<HomeScreen>
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
+          if (index == 1) {
+            StoreProvider.of<AppState>(context)
+                .dispatch(DashboardAction(BaseRequestImpl()));
+          } else if (index == 2) {
             StoreProvider.of<AppState>(context).dispatch(MyInfoGoodsListAction(
                 MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1)));
           }
