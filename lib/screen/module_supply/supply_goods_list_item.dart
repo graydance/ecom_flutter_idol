@@ -16,6 +16,7 @@ import 'package:idol/utils/global.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class FollowingGoodsListItem extends StatefulWidget {
   final GoodsDetail goodsDetail;
@@ -37,7 +38,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
   @override
   Widget build(BuildContext context) {
     debugPrint('ProductItemWidget >>> ' + widget.goodsDetail.toString());
-    var upTime =
+    var updateTime =
         DateTime.fromMillisecondsSinceEpoch(widget.goodsDetail.updateTime);
     return GestureDetector(
       onTap: () {
@@ -145,7 +146,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                   ),
                 ),
                 Text(
-                  "${upTime.year.toString()}-${upTime.month.toString().padLeft(2, '0')}-${upTime.day.toString().padLeft(2, '0')} ${upTime.hour.toString()}-${upTime.minute.toString()}",
+                  '${timeago.format(updateTime)}',
                   style: TextStyle(color: Colours.color_C4C5CD, fontSize: 12),
                 )
               ],
