@@ -773,6 +773,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.19"
+  timeago:
+    dependency: "direct main"
+    description:
+      name: timeago
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.1"
   transformer_page_view:
     dependency: transitive
     description:
