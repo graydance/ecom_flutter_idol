@@ -108,7 +108,7 @@ class _ViewModel {
 
   static _ViewModel fromStore(Store<AppState> store) {
     void _load(int page) {
-      store.dispatch(ForYouAction(FollowingForYouRequest(1, page, limit: 10)));
+      store.dispatch(ForYouAction(FollowingForYouRequest(1, page, limit: 50)));
     }
 
     return _ViewModel(store.state.forYouState, _load);
