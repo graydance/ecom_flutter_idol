@@ -19,12 +19,13 @@ class FollowingForYouRequest implements BaseRequest {
     return {
       keyMapper('type'): this.type,
       keyMapper('page'): this.page,
+      keyMapper('limit'): this.limit,
     };
   }
 }
 
 /// Following && Foy You Add to my store.
-class AddStoreRequest implements BaseRequest{
+class AddStoreRequest implements BaseRequest {
   final String goodsId;
 
   const AddStoreRequest(this.goodsId);
@@ -33,12 +34,12 @@ class AddStoreRequest implements BaseRequest{
   Map<String, dynamic> toMap({String Function(String key) keyMapper}) {
     keyMapper ??= (key) => key;
     return {
-      keyMapper('goodsId'):this.goodsId,
+      keyMapper('goodsId'): this.goodsId,
     };
   }
 }
 
-class GoodsDetailRequest implements BaseRequest{
+class GoodsDetailRequest implements BaseRequest {
   final String supplierId;
   final String goodsId;
 
@@ -48,13 +49,13 @@ class GoodsDetailRequest implements BaseRequest{
   Map<String, dynamic> toMap({String Function(String key) keyMapper}) {
     keyMapper ??= (key) => key;
     return {
-      keyMapper('supplierId'):this.supplierId,
-      keyMapper('goodsId'):this.goodsId,
+      keyMapper('supplierId'): this.supplierId,
+      keyMapper('goodsId'): this.goodsId,
     };
   }
 }
 
-class SupplierInfoRequest implements BaseRequest{
+class SupplierInfoRequest implements BaseRequest {
   final String supplierId;
 
   SupplierInfoRequest(this.supplierId);
@@ -69,13 +70,14 @@ class SupplierInfoRequest implements BaseRequest{
   }
 }
 
-class SupplierGoodsListRequest implements BaseRequest{
+class SupplierGoodsListRequest implements BaseRequest {
   final String supplierId;
   final int type;
   final int page;
   final int limit;
 
-  SupplierGoodsListRequest(this.supplierId, this.type, this.page, {this.limit = 20});
+  SupplierGoodsListRequest(this.supplierId, this.type, this.page,
+      {this.limit = 20});
 
   Map<String, dynamic> toMap({
     String keyMapper(String key),
@@ -91,7 +93,7 @@ class SupplierGoodsListRequest implements BaseRequest{
   }
 }
 
-class FollowRequest implements BaseRequest{
+class FollowRequest implements BaseRequest {
   final String supplierId;
 
   FollowRequest(this.supplierId);

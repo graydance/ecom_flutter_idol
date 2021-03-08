@@ -94,6 +94,11 @@ class AssetResource {
 class _R_Image_AssetResource {
   const _R_Image_AssetResource();
 
+  /// asset: assets/images/avatar.png
+  // ignore: non_constant_identifier_names
+  final avatar =
+      const AssetResource("assets/images/avatar.png", packageName: null);
+
   /// asset: assets/images/bg_congratulations.png
   // ignore: non_constant_identifier_names
   final bg_congratulations = const AssetResource(
@@ -422,6 +427,12 @@ class _R_Image {
   const _R_Image();
 
   final asset = const _R_Image_AssetResource();
+
+  /// asset: assets/images/avatar.png
+  // ignore: non_constant_identifier_names
+  AssetImage avatar() {
+    return AssetImage(asset.avatar.keyName);
+  }
 
   /// asset: assets/images/bg_congratulations.png
   // ignore: non_constant_identifier_names

@@ -17,7 +17,7 @@ class Global {
 
   static final isRelease = const bool.fromEnvironment('dart.vm.product');
   static final storage = new FlutterSecureStorage();
-  static final homePageController = PageController();
+  static final homePageController = PageController(initialPage: 1);
 
   static Future init() async {
     await SpUtil.getInstance();
