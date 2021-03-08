@@ -102,30 +102,22 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
           children: [
             // Image|Video source.
             Container(
-              color: Colours.black,
+              height: MediaQuery.of(context).size.width,
               child: Stack(
                 children: [
-                  AspectRatio(
-                    aspectRatio: 345 / 376,
-                    child: Stack(
-                      children: [
-                        Swiper(
-                          itemBuilder: (context, index) {
-                            return _createItemMediaWidget(
-                                goodsDetail.goods[index]);
-                          },
-                          pagination: SwiperPagination(
-                              alignment: Alignment.bottomLeft,
-                              builder: FractionPaginationBuilder(
-                                activeFontSize: 10,
-                                fontSize: 10,
-                                color: Colours.white,
-                                activeColor: Colours.white,
-                              )),
-                          itemCount: goodsDetail.goods.length,
-                        ),
-                      ],
-                    ),
+                  Swiper(
+                    itemBuilder: (context, index) {
+                      return _createItemMediaWidget(goodsDetail.goods[index]);
+                    },
+                    pagination: SwiperPagination(
+                        alignment: Alignment.bottomLeft,
+                        builder: FractionPaginationBuilder(
+                          activeFontSize: 10,
+                          fontSize: 10,
+                          color: Colours.white,
+                          activeColor: Colours.white,
+                        )),
+                    itemCount: goodsDetail.goods.length,
                   ),
                   if (_showLikeAndSold)
                     Positioned(
@@ -333,9 +325,8 @@ Widget _createItemMediaWidget(String sourceUrl) {
       url: sourceUrl,
     );
   } else {
-    return Image.network(
-      sourceUrl,
-      alignment: Alignment.center,
+    return Image(
+      image: NetworkImage(sourceUrl),
       fit: BoxFit.cover,
     );
   }
