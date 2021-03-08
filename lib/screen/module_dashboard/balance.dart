@@ -50,7 +50,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildWidget(_ViewModel _viewModel){
+  Widget _buildWidget(_ViewModel _viewModel) {
     WithdrawInfo withdrawInfo;
     if (_viewModel.withdrawInfoState is WithdrawInfoSuccess) {
       withdrawInfo =
@@ -72,8 +72,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
           Container(
             //height: 220,
             margin: EdgeInsets.only(top: 120, left: 15, right: 15),
-            padding:
-            EdgeInsets.only(left: 24, right: 24, top: 33, bottom: 33),
+            padding: EdgeInsets.only(left: 24, right: 24, top: 33, bottom: 33),
             decoration: BoxDecoration(
               color: Colours.white,
               borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -86,8 +85,8 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                   withdrawInfo == null
                       ? '-'
                       : _viewModel.user.monetaryUnit +
-                      TextUtil.formatDoubleComma3(
-                          withdrawInfo.availableBalance / 100),
+                          TextUtil.formatDoubleComma3(
+                              withdrawInfo.availableBalance / 100),
                   style: TextStyle(
                       color: Colours.color_EA5228,
                       fontSize: 30,
@@ -142,8 +141,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                         : _viewModel.user.monetaryUnit) +
                                     ')',
                                 style: TextStyle(
-                                    color: Colours.color_A9A9A9,
-                                    fontSize: 14),
+                                    color: Colours.color_A9A9A9, fontSize: 14),
                               ),
                               GestureDetector(
                                 onTap: _tips(
@@ -162,11 +160,10 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                               withdrawInfo == null
                                   ? '-'
                                   : _viewModel.user.monetaryUnit +
-                                  TextUtil.formatDoubleComma3(
-                                      withdrawInfo.withdraw / 100),
+                                      TextUtil.formatDoubleComma3(
+                                          withdrawInfo.withdraw / 100),
                               style: TextStyle(
-                                  color: Colours.color_28292A,
-                                  fontSize: 16),
+                                  color: Colours.color_28292A, fontSize: 16),
                             ),
                           ),
                         ],
@@ -183,8 +180,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                             children: [
                               Row(
                                 mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     'Unavailable(' +
@@ -213,8 +209,8 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                   withdrawInfo == null
                                       ? '-'
                                       : _viewModel.user.monetaryUnit +
-                                      TextUtil.formatDoubleComma3(
-                                          withdrawInfo.freeze / 100),
+                                          TextUtil.formatDoubleComma3(
+                                              withdrawInfo.freeze / 100),
                                   style: TextStyle(
                                       color: Colours.color_28292A,
                                       fontSize: 16),
@@ -246,20 +242,14 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
     );
   }
 
-  _withdraw(IdolButtonStatus status) async{
+  _withdraw(IdolButtonStatus status) async {
     if (status == IdolButtonStatus.enable) {
-      String paymentAccount = await _storage.read(key: KeyStore.PAYMENT_ACCOUNT);
-      if (paymentAccount == null || paymentAccount.isEmpty) {
-        _showNeedSetWithdrawAccountDialog(context);
-      } else {
-        IdolRoute.startDashboardWithdraw(context)
-            .then((value){
-              if(value != null){
-                // 通知上层跳转到选品页
-                IdolRoute.popAndExit(context);
-              }
-        });
-      }
+      IdolRoute.startDashboardWithdraw(context).then((value) {
+        if (value != null) {
+          // 通知上层跳转到选品页
+          IdolRoute.popAndExit(context);
+        }
+      });
     }
   }
 
@@ -296,6 +286,7 @@ class _ViewModel {
   _ViewModel(this.withdrawInfoState, this.user);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.withdrawInfoState, (store.state.signInState as SignInSuccess).signInUser);
+    return _ViewModel(store.state.withdrawInfoState,
+        (store.state.signInState as SignInSuccess).signInUser);
   }
 }
