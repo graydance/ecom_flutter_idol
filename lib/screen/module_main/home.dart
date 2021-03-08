@@ -20,7 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin<HomeScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = Global.homePageController.initialPage;
 
   var _pages = <Widget>[
     SupplyMVPPage(),
