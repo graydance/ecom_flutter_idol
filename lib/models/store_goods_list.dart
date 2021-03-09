@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
 import 'package:idol/models/tag.dart';
 
 /// totalPage : 1
@@ -13,7 +16,7 @@ class StoreGoodsList {
   const StoreGoodsList({
     this.totalPage = 1,
     this.currentPage = 1,
-    this.list = const[],
+    this.list = const [],
   });
 
   StoreGoodsList copyWith({
@@ -106,63 +109,25 @@ class StoreGoods {
   final List<Tag> tag;
   final int heatRank;
 
-  const StoreGoods(
-      {this.id = '',
-      this.idolGoodsId = '',
-      this.picture = '',
-      this.width = 0,
-      this.height = 0,
-      this.isSellOut = 0,
-      this.isOffTheShelf = 0,
-      this.interestName = '',
-      this.supplierId = '',
-      this.goodsName = '',
-      this.originalPrice = 0,
-      this.originalPriceStr = '',
-      this.currentPrice = 0,
-      this.currentPriceStr = '',
-      this.discount = '',
-      this.tag = const [],
-      this.heatRank = 0});
-
-  StoreGoods copyWith(
-      {String id,
-      String idolGoodsId,
-      String picture,
-      int width,
-      int height,
-      int isSellOut,
-      int isOffTheShelf,
-      String interestName,
-      String supplierId,
-      String goodsName,
-      int originalPrice,
-      String originalPriceStr,
-      int currentPrice,
-      String currentPriceStr,
-      String discount,
-      List<Tag> tag,
-  int heatRank}) {
-    return StoreGoods(
-      id: id ?? this.id,
-      idolGoodsId: idolGoodsId ?? this.idolGoodsId,
-      picture: picture ?? this.picture,
-      width: width ?? this.width,
-      height: height ?? this.height,
-      isSellOut: isSellOut ?? this.isSellOut,
-      isOffTheShelf: isOffTheShelf ?? this.isOffTheShelf,
-      interestName: interestName ?? this.interestName,
-      supplierId: supplierId ?? this.supplierId,
-      goodsName: goodsName ?? this.goodsName,
-      originalPrice: originalPrice ?? this.originalPrice,
-      originalPriceStr: originalPriceStr ?? this.originalPriceStr,
-      currentPrice: currentPrice ?? this.currentPrice,
-      currentPriceStr: currentPriceStr ?? this.currentPriceStr,
-      discount: discount ?? this.discount,
-      tag: tag ?? this.tag,
-      heatRank: heatRank ?? this.heatRank,
-    );
-  }
+  const StoreGoods({
+    this.id = '',
+    this.idolGoodsId = '',
+    this.picture = '',
+    this.width = 0,
+    this.height = 0,
+    this.isSellOut = 0,
+    this.isOffTheShelf = 0,
+    this.interestName = '',
+    this.supplierId = '',
+    this.goodsName = '',
+    this.originalPrice = 0,
+    this.originalPriceStr = '',
+    this.currentPrice = 0,
+    this.currentPriceStr = '',
+    this.discount = '',
+    this.tag = const [],
+    this.heatRank = 0,
+  });
 
   @override
   bool operator ==(Object other) =>
@@ -207,55 +172,94 @@ class StoreGoods {
       tag.hashCode ^
       heatRank.hashCode;
 
-
-  @override
-  String toString() {
-    return 'StoreGoods{id: $id, idolGoodsId: $idolGoodsId, picture: $picture, width: $width, height: $height, isSellOut: $isSellOut, isOffTheShelf: $isOffTheShelf, interestName: $interestName, supplierId: $supplierId, goodsName: $goodsName, originalPrice: $originalPrice, originalPriceStr: $originalPriceStr, currentPrice: $currentPrice, currentPriceStr: $currentPriceStr, discount: $discount, tag: $tag, heatRank: $heatRank}';
-  }
-
-  factory StoreGoods.fromMap(
-    Map<String, dynamic> map, {
-    String keyMapper(String key),
+  StoreGoods copyWith({
+    String id,
+    String idolGoodsId,
+    String picture,
+    int width,
+    int height,
+    int isSellOut,
+    int isOffTheShelf,
+    String interestName,
+    String supplierId,
+    String goodsName,
+    int originalPrice,
+    String originalPriceStr,
+    int currentPrice,
+    String currentPriceStr,
+    String discount,
+    List<Tag> tag,
+    int heatRank,
   }) {
-    keyMapper ??= (key) => key;
-
     return StoreGoods(
-      id: map[keyMapper('id')] as String,
-      idolGoodsId: map[keyMapper('idolGoodsId')] as String,
-      picture: map[keyMapper('picture')] as String,
-      width: map[keyMapper('width')] as int,
-      height: map[keyMapper('height')] as int,
-      isSellOut: map[keyMapper('isSellOut')] as int,
-      interestName: map[keyMapper('interestName')] as String,
-      isOffTheShelf: map[keyMapper('isOffTheShelf')] as int,
-      supplierId: map[keyMapper('supplierId')] as String,
-      goodsName: map[keyMapper('goodsName')] as String,
-      originalPrice: map[keyMapper('originalPrice')] as int,
-      originalPriceStr: map[keyMapper('originalPriceStr')] as String,
-      currentPrice: map[keyMapper('currentPrice')] as int,
-      discount: map[keyMapper('discount')] as String,
-      tag: (map[keyMapper('tag')] as List)
-          .map((e) => Tag.fromMap((e as Map<String, dynamic>)))
-          .toList(),
-      heatRank: map[keyMapper('heatRank')] as int,
+      id: id ?? this.id,
+      idolGoodsId: idolGoodsId ?? this.idolGoodsId,
+      picture: picture ?? this.picture,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      isSellOut: isSellOut ?? this.isSellOut,
+      isOffTheShelf: isOffTheShelf ?? this.isOffTheShelf,
+      interestName: interestName ?? this.interestName,
+      supplierId: supplierId ?? this.supplierId,
+      goodsName: goodsName ?? this.goodsName,
+      originalPrice: originalPrice ?? this.originalPrice,
+      originalPriceStr: originalPriceStr ?? this.originalPriceStr,
+      currentPrice: currentPrice ?? this.currentPrice,
+      currentPriceStr: currentPriceStr ?? this.currentPriceStr,
+      discount: discount ?? this.discount,
+      tag: tag ?? this.tag,
+      heatRank: heatRank ?? this.heatRank,
     );
   }
 
-  Map<String, dynamic> toMap({
-    String keyMapper(String key),
-  }) {
-    keyMapper ??= (key) => key;
+  Map<String, dynamic> toMap() {
     return {
-      keyMapper('id'): this.id,
-      keyMapper('idolGoodsId'): this.idolGoodsId,
-      keyMapper('picture'): this.picture,
-      keyMapper('width'): this.width,
-      keyMapper('height'): this.height,
-      keyMapper('isSellOut'): this.isSellOut,
-      keyMapper('interestName'): this.interestName,
-      keyMapper('isOffTheShelf'): this.isOffTheShelf,
-      keyMapper('supplierId'): this.supplierId,
-      keyMapper('heatRank'): this.heatRank,
+      'id': id,
+      'idolGoodsId': idolGoodsId,
+      'picture': picture,
+      'width': width,
+      'height': height,
+      'isSellOut': isSellOut,
+      'isOffTheShelf': isOffTheShelf,
+      'interestName': interestName,
+      'supplierId': supplierId,
+      'goodsName': goodsName,
+      'originalPrice': originalPrice,
+      'originalPriceStr': originalPriceStr,
+      'currentPrice': currentPrice,
+      'currentPriceStr': currentPriceStr,
+      'discount': discount,
+      'tag': tag?.map((x) => x?.toMap())?.toList(),
+      'heatRank': heatRank,
     };
   }
+
+  factory StoreGoods.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return StoreGoods(
+      id: map['id'],
+      idolGoodsId: map['idolGoodsId'],
+      picture: map['picture'],
+      width: map['width'],
+      height: map['height'],
+      isSellOut: map['isSellOut'],
+      isOffTheShelf: map['isOffTheShelf'],
+      interestName: map['interestName'],
+      supplierId: map['supplierId'],
+      goodsName: map['goodsName'],
+      originalPrice: map['originalPrice'],
+      originalPriceStr: map['originalPriceStr'],
+      currentPrice: map['currentPrice'],
+      currentPriceStr: map['currentPriceStr'],
+      discount: map['discount'],
+      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x))),
+      heatRank: map['heatRank'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory StoreGoods.fromJson(String source) =>
+      StoreGoods.fromMap(json.decode(source));
 }
