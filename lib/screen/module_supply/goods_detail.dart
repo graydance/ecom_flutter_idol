@@ -66,17 +66,21 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
             ),
           ),
           body: _buildBodyWidget(vm),
-          bottomNavigationBar: // Add to my store.
-              IdolButton(
-            _bottomButtonText,
-            status: _bottomButtonStatus,
-            listener: (status) {
-              if (vm.detail.inMyStore == 1) {
-                ShareManager.showShareGoodsDialog(context, vm.detail.goods[0]);
-              } else {
-                StoreProvider.of(context).dispatch(AddToStoreAction(vm.detail));
-              }
-            },
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: IdolButton(
+              _bottomButtonText,
+              status: _bottomButtonStatus,
+              listener: (status) {
+                if (vm.detail.inMyStore == 1) {
+                  ShareManager.showShareGoodsDialog(
+                      context, vm.detail.goods[0]);
+                } else {
+                  StoreProvider.of(context)
+                      .dispatch(AddToStoreAction(vm.detail));
+                }
+              },
+            ),
           ),
         );
       },
@@ -87,9 +91,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
     GoodsDetail goodsDetail = vm.detail;
     _supplierId = goodsDetail.supplierId;
     _supplierName = goodsDetail.supplierName;
-    _bottomButtonStatus = goodsDetail.inMyStore == 0
-        ? IdolButtonStatus.enable
-        : IdolButtonStatus.disable;
+    _bottomButtonStatus = IdolButtonStatus.enable;
     _bottomButtonText =
         goodsDetail.inMyStore == 0 ? 'Add to my store' : 'Share';
     return SingleChildScrollView(
