@@ -312,13 +312,10 @@ final Middleware<AppState> bestSalesMiddleware =
     DioClient.getInstance()
         .post(ApiPath.bestSales, baseRequest: action.request)
         .whenComplete(() => null)
-        .then((data) => {
-              store
-                  .dispatch(BestSalesSuccessAction(BestSalesList.fromMap(data)))
-            })
+        .then(
+            (data) => {action.completer.complete(BestSalesList.fromMap(data))})
         .catchError((err) {
-      print(err.toString());
-      store.dispatch(BestSalesFailureAction(err.toString()));
+      action.completer.completeError(err.toString());
     });
     next(action);
   }
