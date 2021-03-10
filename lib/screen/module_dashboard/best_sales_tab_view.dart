@@ -146,8 +146,25 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
             height: 20,
           ),
           Text(
-            'Temporarily no data',
-            style: TextStyle(color: Colours.color_0F1015, fontSize: 16),
+            'No sales history Now.\nAdd and Share products now.',
+            style: TextStyle(
+              color: Colours.color_0F1015,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: 28,
+          ),
+          IdolButton(
+            'Add and share',
+            status: IdolButtonStatus.enable,
+            listener: (status) {
+              // go supply.
+              StoreProvider.of<AppState>(context)
+                  .dispatch(ChangeHomePageAction(0));
+            },
           ),
         ],
       ),
