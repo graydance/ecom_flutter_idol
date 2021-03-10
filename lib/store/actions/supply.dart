@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/models/goods_list.dart';
 import 'package:idol/models/models.dart';
@@ -227,21 +229,22 @@ class GoodsDetailFailure implements GoodsDetailState {
 /// GoodsDetailAction
 class GoodsDetailAction {
   final GoodsDetailRequest request;
+  final Completer completer;
 
-  GoodsDetailAction(this.request);
+  GoodsDetailAction(this.request, this.completer);
 }
 
-class GoodsDetailSuccessAction {
-  final GoodsDetail goodsDetail;
+// class GoodsDetailSuccessAction {
+//   final GoodsDetail goodsDetail;
 
-  GoodsDetailSuccessAction(this.goodsDetail);
-}
+//   GoodsDetailSuccessAction(this.goodsDetail);
+// }
 
-class GoodsDetailFailureAction {
-  final String message;
+// class GoodsDetailFailureAction {
+//   final String message;
 
-  GoodsDetailFailureAction(this.message);
-}
+//   GoodsDetailFailureAction(this.message);
+// }
 
 class ChangeHomePageAction {
   final int page;

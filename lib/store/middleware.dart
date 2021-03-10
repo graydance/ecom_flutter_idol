@@ -53,15 +53,6 @@ List<Middleware<AppState>> createStoreMiddleware() {
       EasyLoading.show(status: 'Signing in...');
       next(action);
     }),
-    TypedMiddleware<AppState, GoodsDetailAction>((_, action, next) {
-      EasyLoading.show(status: 'Loading...');
-      next(action);
-    }),
-    TypedMiddleware<AppState, GoodsDetailSuccessAction>((store, action, next) {
-      EasyLoading.dismiss();
-      store.dispatch(ShowGoodsDetailAction(action.goodsDetail));
-      next(action);
-    }),
     TypedMiddleware<AppState, ChangeHomePageAction>((_, action, next) {
       Global.homePageController.jumpToPage(action.page);
       next(action);
@@ -521,10 +512,9 @@ final Middleware<AppState> goodsDetailMiddleware =
         .post(ApiPath.goodsDetail, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) {
-      store.dispatch(GoodsDetailSuccessAction(GoodsDetail.fromMap(data)));
+      action.completer.complete(GoodsDetail.fromMap(data));
     }).catchError((err) {
-      print(err.toString());
-      store.dispatch(GoodsDetailFailureAction(err.toString()));
+      action.completer.completeError(err.toString());
     });
     next(action);
   }

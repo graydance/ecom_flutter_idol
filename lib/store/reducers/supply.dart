@@ -145,23 +145,9 @@ SupplierNewGoodsListFailure _onSupplierNewGoodsListFailure(
 /// GoodsDetailReducer
 final goodsDetailReducer = combineReducers<GoodsDetailState>([
   TypedReducer<GoodsDetailState, GoodsDetailAction>(_onGoodsDetail),
-  TypedReducer<GoodsDetailState, GoodsDetailSuccessAction>(
-      _onGoodsDetailSuccess),
-  TypedReducer<GoodsDetailState, GoodsDetailFailureAction>(
-      _onGoodsDetailFailure),
 ]);
 
 GoodsDetailLoading _onGoodsDetail(
     GoodsDetailState state, GoodsDetailAction action) {
   return GoodsDetailLoading();
-}
-
-GoodsDetailSuccess _onGoodsDetailSuccess(
-    GoodsDetailState state, GoodsDetailSuccessAction action) {
-  return GoodsDetailSuccess(action.goodsDetail);
-}
-
-GoodsDetailFailure _onGoodsDetailFailure(
-    GoodsDetailState state, GoodsDetailFailureAction action) {
-  return GoodsDetailFailure(action.message);
 }

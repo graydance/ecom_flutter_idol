@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
@@ -429,7 +430,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         currency: Global.getUser(context).monetaryUnit,
         model: models[index],
         size: _getSize(models[index]),
-        onTap: () {
+        onTap: () async {
+          final completer = Completer();
           StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
               GoodsDetailRequest(
                   (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
@@ -439,7 +441,19 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                   (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
                       .storeGoodsList
                       .list[index]
-                      .id)));
+                      .id),
+              completer));
+
+          EasyLoading.show();
+          try {
+            final goodsDetail = await completer.future;
+            EasyLoading.dismiss();
+            StoreProvider.of<AppState>(context)
+                .dispatch(ShowGoodsDetailAction(goodsDetail));
+          } catch (error) {
+            EasyLoading.dismiss();
+            EasyLoading.showError(error.toString());
+          }
         },
         onLongPress: () {
           _shareOrRemoveGoods(
