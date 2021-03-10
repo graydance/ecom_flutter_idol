@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
@@ -31,19 +32,30 @@ class _InnerWebViewScreenState extends State<InnerWebViewScreen> {
               _controller = controller;
             },
             onPageFinished: (url) {
+              setState(() {
+                _loadFinish = true;
+              });
               _controller.evaluateJavascript("document.title").then((result) {
                 if (result != null && result.isNotEmpty) {
                   setState(() {
                     _title = result;
-                    _loadFinish = true;
                   });
                 }
               });
             },
+            onWebResourceError: (error) {
+              setState(() {
+                _loadFinish = true;
+              });
+              EasyLoading.showError(error.description);
+            },
           ),
-          Visibility(child: Center(
-            child: IdolLoadingWidget(),
-          ), visible: !_loadFinish,)
+          Visibility(
+            child: Center(
+              child: IdolLoadingWidget(),
+            ),
+            visible: !_loadFinish,
+          )
         ],
       ),
     );
@@ -52,7 +64,9 @@ class _InnerWebViewScreenState extends State<InnerWebViewScreen> {
   @override
   void initState() {
     super.initState();
-    arguments = StoreProvider.of<AppState>(context, listen: false).state.innerWebViewArguments;
+    arguments = StoreProvider.of<AppState>(context, listen: false)
+        .state
+        .innerWebViewArguments;
     _title = arguments.title;
   }
 }
