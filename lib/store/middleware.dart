@@ -68,12 +68,12 @@ List<Middleware<AppState>> createStoreMiddleware() {
     }),
     TypedMiddleware<AppState, SignInSuccessAction>(startHome),
     TypedMiddleware<AppState, SignUpSuccessAction>(startHome),
-    TypedMiddleware<AppState, SignUpSuccessAction>((_, action, next) {
-      EasyLoading.showSuccess(
-        'Congratulations!\n You\'ve opened your store!\n You can check it at the last tab.',
-      );
-      next(action);
-    }),
+    // TypedMiddleware<AppState, SignUpSuccessAction>((_, action, next) {
+    //   EasyLoading.showSuccess(
+    //     'Congratulations!\n You\'ve opened your store!\n You can check it at the last tab.',
+    //   );
+    //   next(action);
+    // }),
     TypedMiddleware<AppState, SignUpFailureAction>((_, action, next) {
       EasyLoading.showError(action.message);
       next(action);
@@ -257,7 +257,6 @@ final Middleware<AppState> signUpSignInMiddleware =
   if (action is SignInAction || action is SignUpAction) {
     DioClient.getInstance()
         .post(ApiPath.login, baseRequest: action.request)
-        .whenComplete(() => null)
         .then((data) {
       // save login user data
       Global.saveToken(User.fromMap(data).token);
@@ -266,14 +265,19 @@ final Middleware<AppState> signUpSignInMiddleware =
           'SignUp/SignIn success, write data to sp >>> email:${action.request.email}, '
           'pwd:${action.request.password}, token:${User.fromMap(data).token}');
       // dispatch
-      store.dispatch(action is SignUpAction
-          ? SignUpSuccessAction(User.fromMap(data))
-          : SignInSuccessAction(User.fromMap(data)));
+      EasyLoading.dismiss();
+      if (action is SignUpAction) {
+        action.completer.complete(User.fromMap(data));
+      } else {
+        store.dispatch(SignInSuccessAction(User.fromMap(data)));
+      }
     }).catchError((err) {
-      print(err.toString());
-      store.dispatch(action is SignUpAction
-          ? SignUpFailureAction(err.toString())
-          : SignInFailureAction(action.request.email, err.toString()));
+      if (action is SignUpAction) {
+        action.completer.completeError(err.toString());
+      } else {
+        store.dispatch(
+            SignInFailureAction(action.request.email, err.toString()));
+      }
     });
     next(action);
   }

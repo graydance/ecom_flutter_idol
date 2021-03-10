@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
@@ -9,6 +13,8 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/utils/keystore.dart';
+import 'package:idol/widgets/dialog_welcome.dart';
 import 'package:redux/redux.dart';
 
 /// 白名单用户注册
@@ -25,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _password;
   String _userName;
   TextEditingController _controller = TextEditingController();
+  final _storage = FlutterSecureStorage();
 
   @override
   void initState() {
@@ -149,8 +156,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 FocusScope.of(context)
                                     .requestFocus(FocusNode());
                                 // sign up
-                                vm._signUp(_signUpSignInArguments.email,
-                                    _password, _userName);
+                                final comleter = Completer();
+                                comleter.future
+                                    .then((user) => _showWelcomeDialog(user))
+                                    .catchError((error) =>
+                                        EasyLoading.showToast(
+                                            error.toString()));
+
+                                StoreProvider.of<AppState>(context).dispatch(
+                                    SignUpAction(
+                                        SignUpRequest(
+                                            _signUpSignInArguments.email,
+                                            _password,
+                                            _userName),
+                                        comleter));
                               }
                             },
                             child: Container(
@@ -258,17 +277,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
     );
   }
+
+  _showWelcomeDialog(User signUpUser) async {
+    // String isShowed = await _storage.read(key: KeyStore.SHOWED_WELCOME_DIALOG);
+    // if ('true' == isShowed) {
+    //   return;
+    // }
+    // _storage.write(key: KeyStore.SHOWED_WELCOME_DIALOG, value: 'true');
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return WelcomeDialog(
+          onClose: () {
+            StoreProvider.of<AppState>(context)
+                .dispatch(SignUpSuccessAction(signUpUser));
+          },
+        );
+      },
+      barrierDismissible: false,
+    );
+  }
 }
 
 class _ViewModel {
   final SignUpState _signUpState;
-  final Function(String email, String password, String username) _signUp;
+  final Future<User> Function(String email, String password, String username)
+      _signUp;
 
   _ViewModel(this._signUpState, this._signUp);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    void _signUp(String email, String password, String username) {
-      store.dispatch(SignUpAction(SignUpRequest(email, password, username)));
+    Future<User> _signUp(String email, String password, String username) {
+      final comleter = Completer();
+      store.dispatch(
+          SignUpAction(SignUpRequest(email, password, username), comleter));
+      return comleter.future;
     }
 
     return _ViewModel(store.state.signUpState, _signUp);
