@@ -153,6 +153,12 @@ class _R_Image_AssetResource {
       "assets/images/dashboard/ic_complete_rewards.png",
       packageName: null);
 
+  /// asset: assets/images/dashboard/ic_welcome_dialog.png
+  // ignore: non_constant_identifier_names
+  final ic_welcome_dialog = const AssetResource(
+      "assets/images/dashboard/ic_welcome_dialog.png",
+      packageName: null);
+
   /// asset: assets/images/ic_share_copy_link.png
   // ignore: non_constant_identifier_names
   final ic_share_copy_link = const AssetResource(
@@ -486,6 +492,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_complete_rewards() {
     return AssetImage(asset.ic_complete_rewards.keyName);
+  }
+
+  /// asset: assets/images/dashboard/ic_welcome_dialog.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_welcome_dialog() {
+    return AssetImage(asset.ic_welcome_dialog.keyName);
   }
 
   /// asset: assets/images/ic_share_copy_link.png

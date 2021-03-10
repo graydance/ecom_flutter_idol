@@ -407,7 +407,7 @@ class _WithdrawScreenState extends State {
                                   width: double.infinity,
                                 ),
                                 Text(
-                                  'We will process the withdraw request within 2 working days.\nThe minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100',
+                                  'We will process the withdraw request within 2 working days.\nThe minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colours.color_B1B2B3,
