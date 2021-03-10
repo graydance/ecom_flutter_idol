@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
 
@@ -24,8 +26,9 @@ class SignUpFailure implements SignUpState {
 
 class SignUpAction {
   final SignUpRequest request;
+  final Completer completer;
 
-  SignUpAction(this.request);
+  SignUpAction(this.request, this.completer);
 }
 
 class SignUpSuccessAction {
@@ -121,16 +124,15 @@ class ValidateEmailFailureAction {
 }
 
 /// UpdatePasswordState
-abstract class UpdatePasswordState{}
+abstract class UpdatePasswordState {}
 
-class UpdatePasswordInitial implements UpdatePasswordState{
+class UpdatePasswordInitial implements UpdatePasswordState {
   const UpdatePasswordInitial();
 }
 
 class UpdatePasswordLoading implements UpdatePasswordState {}
 
-class UpdatePasswordSuccess implements UpdatePasswordState {
-}
+class UpdatePasswordSuccess implements UpdatePasswordState {}
 
 class UpdatePasswordFailure implements UpdatePasswordState {
   final String message;
@@ -145,7 +147,6 @@ class UpdatePasswordAction {
 }
 
 class UpdatePasswordSuccessAction {
-
   UpdatePasswordSuccessAction();
 }
 

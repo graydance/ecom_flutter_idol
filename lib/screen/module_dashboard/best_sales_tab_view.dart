@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/models/models.dart';
@@ -25,7 +27,6 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
   List<BestSales> _bestSalesList = const [];
   RefreshController _refreshController;
   int _type = 0; // 0 最近7天 1 最近30天
-  bool _enablePullUp = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -33,7 +34,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
   @override
   void initState() {
     super.initState();
-    _refreshController = RefreshController();
+    _refreshController = RefreshController(initialRefresh: true);
   }
 
   @override
@@ -41,119 +42,92 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
     super.build(context);
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      onInit: (store) {
-        store.dispatch(BestSalesAction(BestSalesRequest(_type)));
-      },
       distinct: true,
-      onWillChange: (oldVM, newVM) {
-        _onBestSalesStateChanged(
-            newVM == null ? oldVM._bestSalesState : newVM._bestSalesState);
-      },
       builder: (context, vm) {
         return _buildWidget(vm);
       },
     );
   }
 
-  void _onBestSalesStateChanged(BestSalesState state) {
-    if (state is BestSalesSuccess) {
-      if (state.bestSalesList != null && state.bestSalesList.list != null) {
-        _bestSalesList = state.bestSalesList.list;
-      }
-    } else if (state is BestSalesFailure) {
-      EasyLoading.showError(state.message);
-    }
-  }
-
   Widget _buildWidget(_ViewModel vm) {
-    if ((vm._bestSalesState is BestSalesInitial ||
-            vm._bestSalesState is BestSalesLoading) &&
-        _bestSalesList.isEmpty) {
-      return IdolLoadingWidget();
-    } else if (vm._bestSalesState is BestSalesFailure) {
-      return IdolErrorWidget(() {
-        vm._load(_type);
-      });
-    } else {
-      return Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PopupMenuButton<int>(
-              onSelected: (index) {
-                setState(() {
-                  debugPrint('onSelect >>> $index');
-                  _type = index;
-                });
-              },
-              child: Padding(
-                padding:
-                    EdgeInsets.only(left: 16, top: 10, right: 16, bottom: 10),
-                child: Text(
-                  _type == 0 ? 'Last 7 days ▼' : 'Last 30 days ▼',
-                  style: TextStyle(color: Colours.color_555764, fontSize: 12),
-                ),
-              ),
-              itemBuilder: (context) {
-                return <PopupMenuEntry<int>>[
-                  PopupMenuItem(
-                    child: Text(
-                      'Last 7 days',
-                      style:
-                          TextStyle(color: Colours.color_C4C5CD, fontSize: 10),
-                    ),
-                    value: 0,
-                  ),
-                  PopupMenuItem(
-                    child: Text(
-                      'Last 30 days',
-                      style:
-                          TextStyle(color: Colours.color_C4C5CD, fontSize: 10),
-                    ),
-                    value: 1,
-                  ),
-                ].toList();
-              },
-            ),
-            Expanded(
-              child: SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: _enablePullUp,
-                header: MaterialClassicHeader(
-                  color: Colours.color_EA5228,
-                ),
-                child: ListView.separated(
-                  scrollDirection: Axis.vertical,
-                  separatorBuilder: (context, index) {
-                    return Divider(
-                      height: 10,
-                      color: Colors.transparent,
-                    );
-                  },
-                  itemCount:
-                      _bestSalesList.length == 0 ? 1 : _bestSalesList.length,
-                  itemBuilder: (context, index) => _bestSalesList.isEmpty
-                      ? _bestSalesEmptyWidget()
-                      : _BestSalesItem(_bestSalesList[index]),
-                ),
-                onRefresh: () async {
-                  await Future(() {
-                    vm._load(_type);
-                  });
-                },
-                onLoading: () async {
-                  await Future(() {
-                    vm._load(_type);
-                  });
-                },
-                controller: _refreshController,
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PopupMenuButton<int>(
+            onSelected: (index) {
+              _type = index;
+              _refreshController.requestRefresh();
+            },
+            child: Padding(
+              padding:
+                  EdgeInsets.only(left: 16, top: 10, right: 16, bottom: 10),
+              child: Text(
+                _type == 0 ? 'Last 7 days ▼' : 'Last 30 days ▼',
+                style: TextStyle(color: Colours.color_555764, fontSize: 12),
               ),
             ),
-          ],
-        ),
-      );
-    }
+            itemBuilder: (context) {
+              return <PopupMenuEntry<int>>[
+                PopupMenuItem(
+                  child: Text(
+                    'Last 7 days',
+                    style: TextStyle(color: Colours.color_C4C5CD, fontSize: 10),
+                  ),
+                  value: 0,
+                ),
+                PopupMenuItem(
+                  child: Text(
+                    'Last 30 days',
+                    style: TextStyle(color: Colours.color_C4C5CD, fontSize: 10),
+                  ),
+                  value: 1,
+                ),
+              ].toList();
+            },
+          ),
+          Expanded(
+            child: SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              enablePullUp: false,
+              header: MaterialClassicHeader(
+                color: Colours.color_EA5228,
+              ),
+              child: ListView.separated(
+                scrollDirection: Axis.vertical,
+                separatorBuilder: (context, index) {
+                  return Divider(
+                    height: 10,
+                    color: Colors.transparent,
+                  );
+                },
+                itemCount:
+                    _bestSalesList.length == 0 ? 1 : _bestSalesList.length,
+                itemBuilder: (context, index) => _bestSalesList.isEmpty
+                    ? _bestSalesEmptyWidget()
+                    : _BestSalesItem(_bestSalesList[index]),
+              ),
+              onRefresh: () async {
+                final completer = Completer();
+                StoreProvider.of<AppState>(context).dispatch(
+                    BestSalesAction(BestSalesRequest(_type), completer));
+                try {
+                  var list = await completer.future;
+                  _refreshController.refreshCompleted();
+                  setState(() {
+                    _bestSalesList = list;
+                  });
+                } catch (error) {
+                  _refreshController.loadFailed();
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _bestSalesEmptyWidget() {
@@ -172,8 +146,25 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
             height: 20,
           ),
           Text(
-            'Temporarily no data',
-            style: TextStyle(color: Colours.color_0F1015, fontSize: 16),
+            'No sales history Now.\nAdd and Share products now.',
+            style: TextStyle(
+              color: Colours.color_0F1015,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: 28,
+          ),
+          IdolButton(
+            'Add and share',
+            status: IdolButtonStatus.enable,
+            listener: (status) {
+              // go supply.
+              StoreProvider.of<AppState>(context)
+                  .dispatch(ChangeHomePageAction(0));
+            },
           ),
         ],
       ),
@@ -272,16 +263,11 @@ class _BestSalesItemState extends State<_BestSalesItem> {
 
 class _ViewModel {
   final BestSalesState _bestSalesState;
-  Function(int) _load;
 
-  _ViewModel(this._bestSalesState, this._load);
+  _ViewModel(this._bestSalesState);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    void _load(int type) {
-      store.dispatch(BestSalesAction(BestSalesRequest(type)));
-    }
-
-    return _ViewModel(store.state.bestSalesState, _load);
+    return _ViewModel(store.state.bestSalesState);
   }
 
   @override

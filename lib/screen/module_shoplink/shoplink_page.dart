@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
@@ -412,47 +413,57 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   }
 
   Widget _hasGoodsWidget(_ViewModel vm) {
+    final models = (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+        .storeGoodsList
+        .list;
     return StaggeredGridView.countBuilder(
-        padding: EdgeInsets.all(15),
-        itemCount: (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
-            .storeGoodsList
-            .list
-            .length,
-        crossAxisCount: 2,
-        crossAxisSpacing: 15.0,
-        mainAxisSpacing: 15.0,
-        staggeredTileBuilder: (int index) {
-          // return StaggeredTile.count(1, 1.5);
-          return StaggeredTile.count(1, index == 0 ? 1.55 : 1.8);
-        },
-        //physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return ShopLinkGoodsListItem(
-            index,
-            (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
-                .storeGoodsList
-                .list[index],
-            onItemClickCallback: () {
-              StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
-                  GoodsDetailRequest(
-                      (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
-                          .storeGoodsList
-                          .list[index]
-                          .supplierId,
-                      (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
-                          .storeGoodsList
-                          .list[index]
-                          .id)));
-            },
-            onItemLongPressCallback: () {
-              _shareOrRemoveGoods(
-                  vm,
+      padding: const EdgeInsets.all(16),
+      itemCount: (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+          .storeGoodsList
+          .list
+          .length,
+      crossAxisCount: 4,
+      crossAxisSpacing: 4.0,
+      mainAxisSpacing: 4.0,
+      staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+      itemBuilder: (context, index) => _Tile(
+        currency: Global.getUser(context).monetaryUnit,
+        model: models[index],
+        size: _getSize(models[index]),
+        onTap: () async {
+          final completer = Completer();
+          StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
+              GoodsDetailRequest(
                   (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
                       .storeGoodsList
-                      .list[index]);
-            },
-          );
-        });
+                      .list[index]
+                      .supplierId,
+                  (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                      .storeGoodsList
+                      .list[index]
+                      .id),
+              completer));
+
+          EasyLoading.show();
+          try {
+            final goodsDetail = await completer.future;
+            EasyLoading.dismiss();
+            StoreProvider.of<AppState>(context)
+                .dispatch(ShowGoodsDetailAction(goodsDetail));
+          } catch (error) {
+            EasyLoading.dismiss();
+            EasyLoading.showError(error.toString());
+          }
+        },
+        onLongPress: () {
+          _shareOrRemoveGoods(
+              vm,
+              (vm._myInfoGoodsListState as MyInfoGoodsListSuccess)
+                  .storeGoodsList
+                  .list[index]);
+        },
+      ),
+    );
   }
 
   Widget _emptyGoodsWidget() {
@@ -605,8 +616,234 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     });
   }
 
+  _Size _getSize(StoreGoods item) {
+    var screenWidth = (MediaQuery.of(context).size.width - 16 * 2 - 4 * 4) / 2;
+    var height = item.height / item.width * screenWidth;
+    return _Size(screenWidth, height);
+  }
+
   @override
   bool get wantKeepAlive => true;
+}
+
+class _Size {
+  const _Size(this.width, this.height);
+
+  final double width;
+  final double height;
+}
+
+class _Tile extends StatelessWidget {
+  const _Tile({
+    this.currency,
+    this.model,
+    this.size,
+    this.onTap,
+    this.onLongPress,
+  });
+
+  final String currency;
+  final StoreGoods model;
+  final _Size size;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+        ),
+        clipBehavior: Clip.antiAlias,
+        elevation: 0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: size.height,
+              child: Stack(
+                children: [
+                  Image(
+                    image: NetworkImage(model.picture),
+                    fit: BoxFit.cover,
+                  ),
+                  if (model.discount.isNotEmpty)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                          left: 6,
+                          top: 4,
+                          right: 14,
+                          bottom: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFFF68A51),
+                              Color(0xFFEA5228),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              bottomRight: Radius.circular(100)),
+                        ),
+                        child: Text(
+                          '${model.discount} off',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                  Positioned(
+                    left: 6,
+                    bottom: 6,
+                    child: Row(
+                      children: [
+                        Image(
+                          image: R.image.ic_pv(),
+                          width: 12,
+                          height: 8,
+                        ),
+                        SizedBox(
+                          width: 2,
+                        ),
+                        Text(
+                          _formatHeatRank(model.heatRank) ?? '0',
+                          style: TextStyle(
+                            color: Colours.white,
+                            fontSize: 10,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0.2, 0.2),
+                                blurRadius: 3.0,
+                                color: Colours.color_B1B2B3,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 已知问题：web无法同时支持maxLines和ellipsis，详见 https://github.com/flutter/flutter/issues/44802#issuecomment-555707104
+                  Text(
+                    '${model.goodsName}',
+                    style: TextStyle(
+                      color: Color(0xFF555764),
+                      fontSize: 12,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.ideographic,
+                    children: [
+                      Text(
+                        '$currency${model.currentPriceStr}',
+                        style: TextStyle(
+                          color: Color(0xff0F1015),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          textBaseline: TextBaseline.ideographic,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        '$currency${model.originalPriceStr}',
+                        style: TextStyle(
+                          color: Color(0xFF979AA9),
+                          fontSize: 14,
+                          decoration: TextDecoration.lineThrough,
+                          textBaseline: TextBaseline.ideographic,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (model.tag.isNotEmpty)
+                    SizedBox(
+                      height: 8,
+                    ),
+                  Wrap(
+                    spacing: 2,
+                    runSpacing: 2,
+                    children: model.tag
+                        .map(
+                          (e) => TagView(
+                            text: e.name.toUpperCase(),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatHeatRank(int heatRank) {
+    if (heatRank >= 10000) {
+      return (heatRank / 10000).toStringAsFixed(1) + "w";
+    } else if (heatRank >= 1000) {
+      return (heatRank / 1000).toStringAsFixed(1) + "k";
+    } else {
+      return heatRank.toString();
+    }
+  }
+}
+
+class TagView extends StatelessWidget {
+  final String text;
+  const TagView({
+    Key key,
+    @required this.text,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Color(0xFFED8514), width: 1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Color(0xFFED8514),
+            fontSize: 10,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _ViewModel {
