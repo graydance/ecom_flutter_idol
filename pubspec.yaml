@@ -70,6 +70,7 @@ flutter:
   - assets/images/dashboard/bg_withdraw_failure.webp
   - assets/images/dashboard/bg_withdraw_success.webp
   - assets/images/dashboard/ic_complete_rewards.png
+  - assets/images/dashboard/ic_welcome_dialog.png
   - assets/images/ic_share_copy_link.png
   - assets/images/ic_share_download.png
   - assets/images/ic_share_facebook.png

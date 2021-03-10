@@ -36,6 +36,14 @@ typedef OnProductAddedStoreListener = Function(GoodsDetail goodsDetail);
 
 class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
   @override
+  void initState() {
+    super.initState();
+
+    timeago.setLocaleMessages('myEn', MyEnMessages());
+    timeago.setDefaultLocale('myEn');
+  }
+
+  @override
   Widget build(BuildContext context) {
     debugPrint('ProductItemWidget >>> ' + widget.goodsDetail.toString());
     var updateTime =
@@ -311,4 +319,18 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
     });
     // };
   }
+}
+
+class MyEnMessages extends timeago.EnMessages {
+  @override
+  String lessThanOneMinute(int seconds) => '$seconds seconds';
+
+  @override
+  String days(int days) => '$days days';
+
+  @override
+  String aboutAMonth(int days) => 'a month';
+
+  @override
+  String suffixFromNow() => '';
 }

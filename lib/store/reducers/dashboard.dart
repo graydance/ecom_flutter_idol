@@ -49,21 +49,21 @@ WithdrawInfoFailure _onWithdrawInfoFailure(
 /// WithdrawReducer
 final withdrawReducer = combineReducers<WithdrawState>([
   TypedReducer<WithdrawState, WithdrawAction>(_onWithdraw),
-  TypedReducer<WithdrawState, WithdrawSuccessAction>(
-      _onWithdrawSuccess),
-  TypedReducer<WithdrawState, WithdrawFailureAction>(
-      _onWithdrawFailure),
+  TypedReducer<WithdrawState, WithdrawSuccessAction>(_onWithdrawSuccess),
+  TypedReducer<WithdrawState, WithdrawFailureAction>(_onWithdrawFailure),
 ]);
 
-WithdrawLoading _onWithdraw(WithdrawState state, WithdrawAction action){
+WithdrawLoading _onWithdraw(WithdrawState state, WithdrawAction action) {
   return WithdrawLoading();
 }
 
-WithdrawSuccess _onWithdrawSuccess(WithdrawState state, WithdrawSuccessAction action){
+WithdrawSuccess _onWithdrawSuccess(
+    WithdrawState state, WithdrawSuccessAction action) {
   return WithdrawSuccess();
 }
 
-WithdrawFailure _onWithdrawFailure(WithdrawState state, WithdrawFailureAction action){
+WithdrawFailure _onWithdrawFailure(
+    WithdrawState state, WithdrawFailureAction action) {
   return WithdrawFailure(action.message);
 }
 
@@ -76,39 +76,29 @@ final completeRewardsReducer = combineReducers<CompleteRewardsState>([
       _onCompleteRewardsFailure),
 ]);
 
-CompleteRewardsLoading _onCompleteRewards(CompleteRewardsState state, CompleteRewardsAction action){
+CompleteRewardsLoading _onCompleteRewards(
+    CompleteRewardsState state, CompleteRewardsAction action) {
   return CompleteRewardsLoading();
 }
 
-CompleteRewardsSuccess _onCompleteRewardsSuccess(CompleteRewardsState state, CompleteRewardsSuccessAction action){
+CompleteRewardsSuccess _onCompleteRewardsSuccess(
+    CompleteRewardsState state, CompleteRewardsSuccessAction action) {
   return CompleteRewardsSuccess();
 }
 
-CompleteRewardsFailure _onCompleteRewardsFailure(CompleteRewardsState state, CompleteRewardsFailureAction action){
+CompleteRewardsFailure _onCompleteRewardsFailure(
+    CompleteRewardsState state, CompleteRewardsFailureAction action) {
   return CompleteRewardsFailure(action.message);
 }
 
 /// BestSalesReducer
 final bestSalesReducer = combineReducers<BestSalesState>([
   TypedReducer<BestSalesState, BestSalesAction>(_onBestSales),
-  TypedReducer<BestSalesState, BestSalesSuccessAction>(
-      _onBestSalesSuccess),
-  TypedReducer<BestSalesState, BestSalesFailureAction>(
-      _onBestSalesFailure),
 ]);
 
-BestSalesLoading _onBestSales(BestSalesState state, BestSalesAction action){
+BestSalesLoading _onBestSales(BestSalesState state, BestSalesAction action) {
   return BestSalesLoading();
 }
-
-BestSalesSuccess _onBestSalesSuccess(BestSalesState state, BestSalesSuccessAction action){
-  return BestSalesSuccess(action.bestSalesList);
-}
-
-BestSalesFailure _onBestSalesFailure(BestSalesState state, BestSalesFailureAction action){
-  return BestSalesFailure(action.message);
-}
-
 
 /// SalesHistoryReducer
 final salesHistoryReducer = combineReducers<SalesHistoryState>([
@@ -119,14 +109,17 @@ final salesHistoryReducer = combineReducers<SalesHistoryState>([
       _onSalesHistoryFailure),
 ]);
 
-SalesHistoryLoading _onSalesHistory(SalesHistoryState state, SalesHistoryAction action){
+SalesHistoryLoading _onSalesHistory(
+    SalesHistoryState state, SalesHistoryAction action) {
   return SalesHistoryLoading();
 }
 
-SalesHistorySuccess _onSalesHistorySuccess(SalesHistoryState state, SalesHistorySuccessAction action){
+SalesHistorySuccess _onSalesHistorySuccess(
+    SalesHistoryState state, SalesHistorySuccessAction action) {
   return SalesHistorySuccess(action.salesHistoryList);
 }
 
-SalesHistoryFailure _onSalesHistoryFailure(SalesHistoryState state, SalesHistoryFailureAction action){
+SalesHistoryFailure _onSalesHistoryFailure(
+    SalesHistoryState state, SalesHistoryFailureAction action) {
   return SalesHistoryFailure(action.message);
 }

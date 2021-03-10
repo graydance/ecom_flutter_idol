@@ -109,8 +109,8 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
       builder: (context) {
         return TipsGuideDialog(
           KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG,
-          'How to make money\n with MyPik',
-          '1. Select and add products in Supply panel.\n 2. Add Shop Link to your bio in Socials.\n 3. Share great post in your socials. 4. Get your earnings after sales.(we cover all shopping and service)',
+          'How to make money\nwith MyPik',
+          '1. Select and add products in Supply panel.\n2. Add Shop Link to your bio in Socials.\n3. Share great post in your socials.\n4. Get your earnings after sales.(we cover all shopping and service)',
           videoUrls[0],
           buttonText: 'Select Now',
           onTap: () {

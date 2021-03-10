@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/withdraw_info.dart';
@@ -172,21 +174,22 @@ class BestSalesFailure implements BestSalesState {
 /// BestSalesAction
 class BestSalesAction {
   final BaseRequest request;
+  final Completer completer;
 
-  BestSalesAction(this.request);
+  BestSalesAction(this.request, this.completer);
 }
 
-class BestSalesFailureAction {
-  final String message;
+// class BestSalesFailureAction {
+//   final String message;
 
-  BestSalesFailureAction(this.message);
-}
+//   BestSalesFailureAction(this.message);
+// }
 
-class BestSalesSuccessAction {
-  final BestSalesList bestSalesList;
+// class BestSalesSuccessAction {
+//   final BestSalesList bestSalesList;
 
-  BestSalesSuccessAction(this.bestSalesList);
-}
+//   BestSalesSuccessAction(this.bestSalesList);
+// }
 
 /// SalesHistoryState
 abstract class SalesHistoryState {}
