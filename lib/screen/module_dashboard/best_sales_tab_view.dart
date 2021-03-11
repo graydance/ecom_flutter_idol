@@ -132,7 +132,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
 
   Widget _bestSalesEmptyWidget() {
     return Container(
-      margin: EdgeInsets.all(40),
+      margin: EdgeInsets.all(20),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -143,7 +143,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
             height: 195,
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           Text(
             'No sales history Now.\nAdd and Share products now.',
@@ -155,7 +155,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
             textAlign: TextAlign.center,
           ),
           SizedBox(
-            height: 28,
+            height: 12,
           ),
           IdolButton(
             'Add and share',

@@ -124,12 +124,19 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
   Widget _buildCalendarPage(PastSales pastSales) {
     // 当前月份第一天对应的是周几
     int firstDayWeekday = DateTime.parse(pastSales.date + '01').weekday;
+    var calvalues = pastSales.dailySales
+        .asMap()
+        .map((index, value) => MapEntry(index, {
+              "day": index + 1,
+              "value": value,
+            }))
+        .values
+        .toList();
     if (firstDayWeekday != DateTime.sunday) {
       //如果是周日，则无需移动元素。否则填充 firstDayWeekday 个空白占位
       for (int i = 0; i < firstDayWeekday; i++) {
-        pastSales.dailySales.insert(0, '');
+        calvalues.insert(0, {"day": -1, "value": ""});
       }
-      debugPrint("firstDayWeekday: $firstDayWeekday" + pastSales.dailySales.toString());
     }
     return Padding(
       padding: EdgeInsets.all(11),
@@ -139,50 +146,42 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
         mainAxisSpacing: 0.0,
         childAspectRatio: 1.0,
         physics: NeverScrollableScrollPhysics(),
-        children: pastSales.dailySales
-            .asMap()
-            .map((index, dailySale) {
-              return MapEntry(
-                  index,
-                  Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: _isToday(
-                              pastSales.date,
-                              firstDayWeekday == DateTime.sunday
-                                  ? index + 1
-                                  : index + 1 - firstDayWeekday)
-                          ? Colours.color_10EA5228
-                          : Colours.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          (firstDayWeekday == DateTime.sunday
-                                  ? index + 1
-                                  : (index + 1 - firstDayWeekday <= 0 ? '' : index + 1 - firstDayWeekday))
-                              .toString(),
-                          style: TextStyle(
-                            color: Colours.color_575859,
-                            fontSize: 14,
-                          ),
+        children: calvalues
+            .map((day) => Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: _isToday(pastSales.date, day['day'])
+                        ? Colours.color_10EA5228
+                        : Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        (day['day'] as int) > 0 ? day['day'].toString() : '',
+                        style: TextStyle(
+                          color: Colours.color_575859,
+                          fontSize: 14,
                         ),
-                        Text(
-                          Global.getUser(context).monetaryUnit + dailySale,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colours.color_C3C4C6,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ));
-            })
-            .values
+                      ),
+                      ...day['value'] == ""
+                          ? []
+                          : [
+                              Text(
+                                Global.getUser(context).monetaryUnit +
+                                    day['value'],
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colours.color_C3C4C6,
+                                  fontSize: 12,
+                                ),
+                              )
+                            ],
+                    ],
+                  ),
+                ))
             .toList(),
       ),
     );
@@ -192,13 +191,14 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
   // pastSalesDay：dayOfMonth [1,2,3...]
   bool _isToday(String pastSalesDate, int pastSalesDay) {
     String currentYearMonth = DateTime.now().year.toString() +
-        (DateTime.now().month.bitLength == 1
+        (DateTime.now().month < 10
             ? '0' + DateTime.now().month.toString()
             : DateTime.now().month.toString());
-    debugPrint(
-        'currentYearMonth >>> $currentYearMonth, pastSalesDate >>> $pastSalesDate, pastSalesDay >>> $pastSalesDay');
-    return currentYearMonth == pastSalesDate &&
-        DateTime.now().day == pastSalesDay;
+    var result =
+        currentYearMonth == pastSalesDate && DateTime.now().day == pastSalesDay;
+    // debugPrint(
+    //     'currentYearMonth $result >>> $currentYearMonth, pastSalesDate >>> $pastSalesDate, pastSalesDay >>> ${DateTime.now().day} $pastSalesDay');
+    return result;
   }
 
   void _onPageChanged(PastSales pastSales) {
@@ -210,8 +210,8 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
         _selectedMonth = _monthMap[month];
         _selectedMonthSales = Global.getUser(context).monetaryUnit +
             TextUtil.formatDoubleComma3(pastSales.monthSales / 100);
-        debugPrint(
-            'current select year：$_selectedYear, month：$_selectedMonth, monthSales：$_selectedMonthSales');
+        // debugPrint(
+        //     'current select year：$_selectedYear, month：$_selectedMonth, monthSales：$_selectedMonthSales');
       });
     }
   }
