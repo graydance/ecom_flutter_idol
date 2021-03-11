@@ -138,8 +138,10 @@ List<Middleware<AppState>> createStoreMiddleware() {
           .post(ApiPath.addStore, baseRequest: AddStoreRequest(action.goods.id))
           .whenComplete(() => null)
           .then((data) {
+        action.completer.complete();
         store.dispatch(AddToStoreActionSuccessAction(action.goods));
       }).catchError((err) {
+        action.completer.completeError(err.toString());
         store.dispatch(AddToStoreActionFailAction(err.toString()));
       });
       next(action);

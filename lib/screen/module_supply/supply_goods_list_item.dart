@@ -257,7 +257,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
   }
 
   Future _addProductToMyStore(GoodsDetail goodsDetail) async {
-    StoreProvider.of<AppState>(context).dispatch(AddToStoreAction(goodsDetail));
+    StoreProvider.of<AppState>(context)
+        .dispatch(AddToStoreAction(goodsDetail, Completer()));
     // try {
     //   EasyLoading.show(status: 'Loading...');
     //   await DioClient.getInstance()

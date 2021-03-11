@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
+import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/supply.dart';
@@ -12,7 +15,9 @@ import 'package:idol/utils/global.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 /// 产品详情页
 class GoodsDetailScreen extends StatefulWidget {
@@ -21,13 +26,13 @@ class GoodsDetailScreen extends StatefulWidget {
 }
 
 class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
-  String _bottomButtonText = 'Add to my store & share';
-  String _goodsId;
-  String _supplierId = '';
-  String _supplierName = '';
+  GoodsDetail _goodsDetail;
   bool _showLikeAndSold = false;
   IdolButtonStatus _bottomButtonStatus = IdolButtonStatus.normal;
-  GlobalKey<IdolButtonState> _idolButtonStatusKey = GlobalKey();
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: true);
+
   @override
   void initState() {
     super.initState();
@@ -37,284 +42,349 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
+      onInit: (store) => _goodsDetail = store.state.goodsDetailPage,
       builder: (context, vm) {
         return Scaffold(
           appBar: AppBar(
             elevation: 0,
             titleSpacing: 0,
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: Colours.color_444648,
-                ),
-                onPressed: () => IdolRoute.startSupplySearch(context),
-              )
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: Icon(
+            //       Icons.more_vert,
+            //       color: Colours.color_444648,
+            //     ),
+            //     onPressed: () => IdolRoute.startSupplySearch(context),
+            //   )
+            // ],
             title: Text(
-              _supplierName,
-              style: TextStyle(fontSize: 16, color: Colours.color_29292B),
+              _goodsDetail.supplierName,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colours.color_0F1015,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            centerTitle: false,
+            centerTitle: true,
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_ios,
-                color: Colours.color_444648,
-                size: 16,
+                color: Colours.color_0F1015,
+                size: 20,
               ),
               onPressed: () => IdolRoute.pop(context),
             ),
           ),
-          body: _buildBodyWidget(vm),
-          bottomNavigationBar: SafeArea(
-            top: false,
-            child: IdolButton(
-              _bottomButtonText,
-              status: _bottomButtonStatus,
-              listener: (status) {
-                if (vm.detail.inMyStore == 1) {
-                  ShareManager.showShareGoodsDialog(
-                      context, vm.detail.goods[0]);
-                } else {
-                  StoreProvider.of(context)
-                      .dispatch(AddToStoreAction(vm.detail));
-                }
-              },
-            ),
-          ),
+          body: _buildBodyWidget(),
+          // bottomNavigationBar: SafeArea(
+          //   top: false,
+          //   child: IdolButton(
+          //     _bottomButtonText,
+          //     status: _bottomButtonStatus,
+          //     listener: (status) {
+          //       if (vm.detail.inMyStore == 1) {
+          //         ShareManager.showShareGoodsDialog(
+          //             context, vm.detail.goods[0]);
+          //       } else {
+          //         StoreProvider.of(context)
+          //             .dispatch(AddToStoreAction(vm.detail));
+          //       }
+          //     },
+          //   ),
+          // ),
         );
       },
     );
   }
 
-  Widget _buildBodyWidget(_ViewModel vm) {
-    GoodsDetail goodsDetail = vm.detail;
-    _supplierId = goodsDetail.supplierId;
-    _supplierName = goodsDetail.supplierName;
+  Widget _buildBodyWidget() {
+    var updateTime =
+        DateTime.fromMillisecondsSinceEpoch(_goodsDetail.updateTime);
     _bottomButtonStatus = IdolButtonStatus.enable;
-    _bottomButtonText =
-        goodsDetail.inMyStore == 0 ? 'Add to my store' : 'Share';
-    return SingleChildScrollView(
-      child: Container(
-        //padding: EdgeInsets.all(15),
-        color: Colours.color_F8F8F8,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image|Video source.
-            Container(
-              height: MediaQuery.of(context).size.width,
-              child: Stack(
-                children: [
-                  Swiper(
-                    itemBuilder: (context, index) {
-                      return _createItemMediaWidget(goodsDetail.goods[index]);
-                    },
-                    pagination: SwiperPagination(
-                        alignment: Alignment.bottomLeft,
-                        builder: FractionPaginationBuilder(
-                          activeFontSize: 10,
-                          fontSize: 10,
-                          color: Colours.white,
-                          activeColor: Colours.white,
-                        )),
-                    itemCount: goodsDetail.goods.length,
-                  ),
-                  if (_showLikeAndSold)
-                    Positioned(
-                      bottom: 15,
-                      right: 15,
-                      child: Column(
+    // _bottomButtonText =
+    //     goodsDetail.inMyStore == 0 ? 'Add to my store & Share' : 'Share';
+    return SmartRefresher(
+      controller: _refreshController,
+      onRefresh: () async {
+        final completer = Completer();
+        StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
+            GoodsDetailRequest(_goodsDetail.supplierId, _goodsDetail.id),
+            completer));
+
+        try {
+          final goodsDetail = await completer.future;
+          setState(() {
+            _goodsDetail = goodsDetail;
+          });
+          _refreshController.refreshCompleted();
+        } catch (error) {
+          _refreshController.refreshFailed();
+        }
+      },
+      child: SingleChildScrollView(
+        child: Container(
+          //padding: EdgeInsets.all(15),
+          color: Colours.color_F8F8F8,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image|Video source.
+              Container(
+                height: MediaQuery.of(context).size.width,
+                child: Stack(
+                  children: [
+                    Swiper(
+                      itemBuilder: (context, index) {
+                        return _createItemMediaWidget(
+                            _goodsDetail.goods[index]);
+                      },
+                      pagination: SwiperPagination(
+                          alignment: Alignment.bottomLeft,
+                          builder: FractionPaginationBuilder(
+                            activeFontSize: 10,
+                            fontSize: 10,
+                            color: Colours.white,
+                            activeColor: Colours.white,
+                          )),
+                      itemCount: _goodsDetail.goods.length,
+                    ),
+                    if (_showLikeAndSold)
+                      Positioned(
+                        bottom: 15,
+                        right: 15,
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                EasyLoading.showToast(
+                                    '${_goodsDetail.collectNum} Liked');
+                              },
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.favorite,
+                                      size: 20,
+                                      color: Colours.white,
+                                    ),
+                                    Text(
+                                      _formatNum(_goodsDetail.collectNum),
+                                      style: TextStyle(
+                                          color: Colours.white, fontSize: 8),
+                                    )
+                                  ],
+                                ),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colours.color_black20,
+                                ),
+                                //padding: EdgeInsets.all(5),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 16,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                EasyLoading.showToast(
+                                    '${_goodsDetail.soldNum} Sold');
+                              },
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.whatshot,
+                                      size: 20,
+                                      color: Colours.white,
+                                    ),
+                                    Text(
+                                      _formatNum(_goodsDetail.soldNum),
+                                      style: TextStyle(
+                                          color: Colours.white, fontSize: 8),
+                                    )
+                                  ],
+                                ),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colours.color_black20,
+                                ),
+                                // padding: EdgeInsets.all(5),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                color: Colours.white,
+                width: double.infinity,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            alignment: WrapAlignment.start,
+                            spacing: 5,
+                            children: _goodsDetail.tag.map((tag) {
+                              return Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colours.color_ED8514, width: 1),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
+                                ),
+                                child: Text(
+                                  tag.interestName,
+                                  style: TextStyle(
+                                      color: Colours.color_ED8514,
+                                      fontSize: 12),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        Text(
+                          '${timeago.format(updateTime)}',
+                          style: TextStyle(
+                              color: Colours.color_C4C5CD, fontSize: 12),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      _goodsDetail.goodsName,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colours.color_555764,
+                        fontSize: 12,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              EasyLoading.showToast(
-                                  '${goodsDetail.collectNum} Liked');
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.favorite,
-                                    size: 20,
-                                    color: Colours.white,
-                                  ),
-                                  Text(
-                                    _formatNum(goodsDetail.collectNum),
-                                    style: TextStyle(
-                                        color: Colours.white, fontSize: 8),
-                                  )
-                                ],
-                              ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colours.color_black20,
-                              ),
-                              //padding: EdgeInsets.all(5),
-                            ),
+                          TextSpan(
+                            text: Global.getUser(context).monetaryUnit +
+                                    _goodsDetail.earningPriceStr ??
+                                '0.00',
+                            style: TextStyle(
+                                color: Colours.color_EA5228, fontSize: 20),
                           ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              EasyLoading.showToast(
-                                  '${goodsDetail.soldNum} Sold');
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.whatshot,
-                                    size: 20,
-                                    color: Colours.white,
-                                  ),
-                                  Text(
-                                    _formatNum(goodsDetail.soldNum),
-                                    style: TextStyle(
-                                        color: Colours.white, fontSize: 8),
-                                  )
-                                ],
-                              ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colours.color_black20,
-                              ),
-                              // padding: EdgeInsets.all(5),
-                            ),
+                          TextSpan(text: ' '),
+                          TextSpan(
+                            text: 'Earnings Per Sale',
+                            style: TextStyle(
+                                color: Colours.color_C4C5CD, fontSize: 12),
                           ),
                         ],
                       ),
                     ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(15),
-              color: Colours.white,
-              width: double.infinity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Tag
-                  Wrap(
-                    direction: Axis.horizontal,
-                    alignment: WrapAlignment.start,
-                    spacing: 5,
-                    children: goodsDetail.tag.map((tag) {
-                      return Container(
-                        padding: EdgeInsets.only(left: 1, right: 1),
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(color: Colours.color_48B6EF, width: 1),
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                        ),
-                        child: Text(
-                          tag.interestName,
-                          style: TextStyle(
-                              color: Colours.color_48B6EF, fontSize: 12),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      style: DefaultTextStyle.of(context).style,
-                      children: [
-                        TextSpan(
-                          text: Global.getUser(context).monetaryUnit +
-                                  goodsDetail.earningPriceStr ??
-                              '0.00',
-                          style: TextStyle(
-                              color: Colours.color_EA5228, fontSize: 20),
-                        ),
-                        TextSpan(text: ' '),
-                        TextSpan(
-                          text: 'Earnings Per Sale',
-                          style: TextStyle(
-                              color: Colours.color_C4C5CD, fontSize: 12),
-                        ),
-                      ],
+                    // Suggested Price.
+                    RichText(
+                      text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: [
+                          TextSpan(
+                            text: Global.getUser(context).monetaryUnit +
+                                    _goodsDetail.suggestedPriceStr ??
+                                '0.00',
+                            style: TextStyle(
+                                color: Colours.color_0F1015, fontSize: 14),
+                          ),
+                          TextSpan(text: ' '),
+                          TextSpan(
+                            text: 'Suggested Price',
+                            style: TextStyle(
+                                color: Colours.color_C4C5CD, fontSize: 12),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  // Suggested Price.
-                  RichText(
-                    text: TextSpan(
-                      style: DefaultTextStyle.of(context).style,
-                      children: [
-                        TextSpan(
-                          text: Global.getUser(context).monetaryUnit +
-                                  goodsDetail.suggestedPriceStr ??
-                              '0.00',
-                          style: TextStyle(
-                              color: Colours.color_0F1015, fontSize: 14),
-                        ),
-                        TextSpan(text: ' '),
-                        TextSpan(
-                          text: 'Suggested Price',
-                          style: TextStyle(
-                              color: Colours.color_C4C5CD, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-
-            Container(
-              color: Colours.white,
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Product Description',
-                    style: TextStyle(
-                      color: Colours.color_030406,
-                      fontSize: 14,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  // Shopping description.
-                  Html(
-                      data: goodsDetail.goodsDescription,
-                      onLinkTap: (String url) {}),
-                  // Text(
-                  //   goodsDetail.goodsDescription,
-                  //   style: TextStyle(
-                  //     color: Colours.color_555764,
-                  //     fontSize: 14,
-                  //   ),
-                  //   strutStyle: StrutStyle(
-                  //       forceStrutHeight: true,
-                  //       height: 1,
-                  //       leading: 0.2,
-                  //       fontSize: 14),
-                  // ),
-                ],
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: IdolButton(
+                  _goodsDetail.inMyStore == null
+                      ? '--'
+                      : (_goodsDetail.inMyStore == 0
+                          ? 'Add to my store & Share'
+                          : 'Share'),
+                  status: _bottomButtonStatus,
+                  listener: (status) {
+                    if (_goodsDetail.inMyStore == 1) {
+                      ShareManager.showShareGoodsDialog(
+                          context, _goodsDetail.goods[0]);
+                    } else {
+                      final completer = Completer();
+                      completer.future.then((value) {
+                        setState(() {
+                          _goodsDetail = _goodsDetail.copyWith(inMyStore: 1);
+                        });
+                      }).catchError((error) {
+                        print(error);
+                      });
+                      StoreProvider.of<AppState>(context)
+                          .dispatch(AddToStoreAction(_goodsDetail, completer));
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+              Container(
+                color: Colours.white,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 15,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Html(
+                        data: _goodsDetail.goodsDescription,
+                        onLinkTap: (String url) {}),
+                    // Text(
+                    //   goodsDetail.goodsDescription,
+                    //   style: TextStyle(
+                    //     color: Colours.color_555764,
+                    //     fontSize: 14,
+                    //   ),
+                    //   strutStyle: StrutStyle(
+                    //       forceStrutHeight: true,
+                    //       height: 1,
+                    //       leading: 0.2,
+                    //       fontSize: 14),
+                    // ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
