@@ -56,10 +56,36 @@ class _SignInScreenState extends State<SignInScreen>
               image: DecorationImage(
                   image: R.image.bg_login_signup(), fit: BoxFit.cover),
             ),
-            padding: EdgeInsets.only(left: 35, right: 35),
-            child: _showForgotPasswordWidget
-                ? _forgotPasswordWidget()
-                : _signInWidget(vm),
+            child: Column(
+              children: [
+                if (_showForgotPasswordWidget)
+                  SafeArea(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        height: 44,
+                        width: 44,
+                        child: TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _showForgotPasswordWidget = false;
+                            });
+                          },
+                          child: Image(
+                            image: R.image.arrow_left(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 35),
+                  child: _showForgotPasswordWidget
+                      ? _forgotPasswordWidget()
+                      : _signInWidget(vm),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -76,6 +102,9 @@ class _SignInScreenState extends State<SignInScreen>
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.15,
+              ),
               Text(
                 'LOGIN',
                 style: TextStyle(color: Colours.white, fontSize: 26),
@@ -99,6 +128,9 @@ class _SignInScreenState extends State<SignInScreen>
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colours.transparent,
+                  prefix: SizedBox(
+                    width: 42,
+                  ),
                   suffixIcon: GestureDetector(
                     child: Icon(
                       _passwordVisible
@@ -204,21 +236,26 @@ class _SignInScreenState extends State<SignInScreen>
         children: [
           Text(
             'FORGOT PASSWORD',
-            style: TextStyle(color: Colours.white, fontSize: 26),
+            style: TextStyle(
+              color: Colours.white,
+              fontSize: 26,
+            ),
           ),
           SizedBox(
             height: 12,
           ),
           Text(
             'Don\'t worry, it happens to all of us.',
-            style: TextStyle(color: Colours.color_white10, fontSize: 16),
+            style: TextStyle(color: Colors.white, fontSize: 16),
+            textAlign: TextAlign.center,
           ),
           SizedBox(
             height: 20,
           ),
           Text(
             'Enter your email and we\'ll send you a link to reset your password.',
-            style: TextStyle(color: Colours.color_white10, fontSize: 16),
+            style: TextStyle(color: Colors.white, fontSize: 16),
+            textAlign: TextAlign.center,
           ),
           SizedBox(
             height: 80,

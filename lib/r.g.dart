@@ -194,6 +194,11 @@ class _R_Image_AssetResource {
       "assets/images/ic_share_twitter.png",
       packageName: null);
 
+  /// asset: assets/images/main/arrow_left.png
+  // ignore: non_constant_identifier_names
+  final arrow_left = const AssetResource("assets/images/main/arrow_left.png",
+      packageName: null);
+
   /// asset: assets/images/main/bg_login_signup.png
   // ignore: non_constant_identifier_names
   final bg_login_signup = const AssetResource(
@@ -534,6 +539,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_share_twitter() {
     return AssetImage(asset.ic_share_twitter.keyName);
+  }
+
+  /// asset: assets/images/main/arrow_left.png
+  // ignore: non_constant_identifier_names
+  AssetImage arrow_left() {
+    return AssetImage(asset.arrow_left.keyName);
   }
 
   /// asset: assets/images/main/bg_login_signup.png

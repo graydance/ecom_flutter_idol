@@ -77,6 +77,7 @@ flutter:
   - assets/images/ic_share_instagram.png
   - assets/images/ic_share_more.png
   - assets/images/ic_share_twitter.png
+  - assets/images/main/arrow_left.png
   - assets/images/main/bg_login_signup.png
   - assets/images/main/ic_circle_logo.png
   - assets/images/main/ic_password_visibility.png
