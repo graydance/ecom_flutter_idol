@@ -105,6 +105,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
     //     goodsDetail.inMyStore == 0 ? 'Add to my store & Share' : 'Share';
     return SmartRefresher(
       controller: _refreshController,
+      header: MaterialClassicHeader(
+        color: Colours.color_EA5228,
+      ),
       onRefresh: () async {
         final completer = Completer();
         StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(

@@ -1,5 +1,6 @@
 // import 'dart:html';
 import 'dart:io' as io;
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:crop/crop.dart';
@@ -12,14 +13,13 @@ import 'package:idol/widgets/centered_slider_track_shape.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-enum CropType{
+enum CropType {
   custom,
   avatar,
   storeBackground,
 }
 
 class ImageCropScreen extends StatefulWidget {
-
   @override
   _ImageCropScreenState createState() => _ImageCropScreenState();
 }
@@ -40,15 +40,18 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     debugPrint('didChangeDependencies...');
-    imageCropArguments = StoreProvider.of<AppState>(context).state.imageCropArguments;
-    if(imageCropArguments == null || imageCropArguments.filePath == null || imageCropArguments.filePath.isEmpty){
+    imageCropArguments =
+        StoreProvider.of<AppState>(context).state.imageCropArguments;
+    if (imageCropArguments == null ||
+        imageCropArguments.filePath == null ||
+        imageCropArguments.filePath.isEmpty) {
       IdolRoute.pop(context);
     }
     double aspectRatio = 1000 / 667.0;
-    if(CropType.avatar == imageCropArguments.cropType){
+    if (CropType.avatar == imageCropArguments.cropType) {
       aspectRatio = 1;
       shape = BoxShape.circle;
-    }else if(CropType.storeBackground == imageCropArguments.cropType){
+    } else if (CropType.storeBackground == imageCropArguments.cropType) {
       aspectRatio = 16.0 / 9.0;
       shape = BoxShape.rectangle;
     }
@@ -60,7 +63,8 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
     final cropped = await _cropController.crop(pixelRatio: pixelRatio);
     final status = await Permission.storage.request();
     if (status == PermissionStatus.granted) {
-      await _saveScreenShot(cropped).then((result) =>  Navigator.of(context).pop(result));
+      await _saveScreenShot(cropped)
+          .then((result) => Navigator.of(context).pop(result));
     }
   }
 
@@ -105,7 +109,8 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
                 },
                 controller: _cropController,
                 shape: shape,
-                child: Image.file(io.File(imageCropArguments.filePath),
+                child: Image.file(
+                  io.File(imageCropArguments.filePath),
                   fit: BoxFit.cover,
                 ),
                 /* It's very important to set `fit: BoxFit.cover`.
@@ -123,10 +128,10 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
                 ),*/
                 helper: shape == BoxShape.rectangle
                     ? Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                )
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      )
                     : null,
               ),
             ),
@@ -165,62 +170,64 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
                   ),
                 ),
               ),
-              ...(CropType.custom == imageCropArguments.cropType) ? [
-                PopupMenuButton<BoxShape>(
-                  icon: Icon(Icons.crop_free),
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Text("Box"),
-                      value: BoxShape.rectangle,
-                    ),
-                    PopupMenuItem(
-                      child: Text("Oval"),
-                      value: BoxShape.circle,
-                    ),
-                  ],
-                  tooltip: 'Crop Shape',
-                  onSelected: (x) {
-                    setState(() {
-                      shape = x;
-                    });
-                  },
-                ),
-                PopupMenuButton<double>(
-                  icon: Icon(Icons.aspect_ratio),
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Text("Original"),
-                      value: 1000 / 667.0,
-                    ),
-                    PopupMenuDivider(),
-                    PopupMenuItem(
-                      child: Text("16:9"),
-                      value: 16.0 / 9.0,
-                    ),
-                    PopupMenuItem(
-                      child: Text("4:3"),
-                      value: 4.0 / 3.0,
-                    ),
-                    PopupMenuItem(
-                      child: Text("1:1"),
-                      value: 1,
-                    ),
-                    PopupMenuItem(
-                      child: Text("3:4"),
-                      value: 3.0 / 4.0,
-                    ),
-                    PopupMenuItem(
-                      child: Text("9:16"),
-                      value: 9.0 / 16.0,
-                    ),
-                  ],
-                  tooltip: 'Aspect Ratio',
-                  onSelected: (x) {
-                    _cropController.aspectRatio = x;
-                    setState(() {});
-                  },
-                ),
-              ] : [],
+              ...(CropType.custom == imageCropArguments.cropType)
+                  ? [
+                      PopupMenuButton<BoxShape>(
+                        icon: Icon(Icons.crop_free),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: Text("Box"),
+                            value: BoxShape.rectangle,
+                          ),
+                          PopupMenuItem(
+                            child: Text("Oval"),
+                            value: BoxShape.circle,
+                          ),
+                        ],
+                        tooltip: 'Crop Shape',
+                        onSelected: (x) {
+                          setState(() {
+                            shape = x;
+                          });
+                        },
+                      ),
+                      PopupMenuButton<double>(
+                        icon: Icon(Icons.aspect_ratio),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: Text("Original"),
+                            value: 1000 / 667.0,
+                          ),
+                          PopupMenuDivider(),
+                          PopupMenuItem(
+                            child: Text("16:9"),
+                            value: 16.0 / 9.0,
+                          ),
+                          PopupMenuItem(
+                            child: Text("4:3"),
+                            value: 4.0 / 3.0,
+                          ),
+                          PopupMenuItem(
+                            child: Text("1:1"),
+                            value: 1,
+                          ),
+                          PopupMenuItem(
+                            child: Text("3:4"),
+                            value: 3.0 / 4.0,
+                          ),
+                          PopupMenuItem(
+                            child: Text("9:16"),
+                            value: 9.0 / 16.0,
+                          ),
+                        ],
+                        tooltip: 'Aspect Ratio',
+                        onSelected: (x) {
+                          _cropController.aspectRatio = x;
+                          setState(() {});
+                        },
+                      ),
+                    ]
+                  : [],
             ],
           ),
         ],
@@ -232,7 +239,8 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
 Future<dynamic> _saveScreenShot(ui.Image img) async {
   var byteData = await img.toByteData(format: ui.ImageByteFormat.png);
   var buffer = byteData.buffer.asUint8List();
-  final result = await ImageGallerySaver.saveImage(buffer);
+  final result = await ImageGallerySaver.saveImage(buffer,
+      isReturnImagePathOfIOS: Platform.isIOS);
   debugPrint('Image crop result >>> $result');
   return result;
 }
