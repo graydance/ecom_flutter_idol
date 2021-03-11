@@ -122,6 +122,11 @@ class IdolRoute {
     return startSignIn(context, SignUpSignInArguments(email));
   }
 
+  static Future<Object> changeAccount(BuildContext context) {
+    Global.clearAccountInfo();
+    return startValidateEmail(context);
+  }
+
   static Future<Object> startSetPassword(BuildContext context) {
     return Navigator.of(context).pushNamed(RouterPath.setPassword);
   }
