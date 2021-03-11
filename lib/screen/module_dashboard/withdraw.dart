@@ -84,9 +84,9 @@ class _WithdrawScreenState extends State {
           if (withdrawalAmountString.contains('.')) {
             double withdrawalAmountDouble =
                 double.tryParse(withdrawalAmountString);
-            if (withdrawalAmountDouble < 100) {
+            if (withdrawalAmountDouble < 10) {
               _amountTips =
-                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
+                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
@@ -96,9 +96,9 @@ class _WithdrawScreenState extends State {
             }
           } else {
             int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
-            if (withdrawalAmountInt < 100) {
+            if (withdrawalAmountInt < 10) {
               _amountTips =
-                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}100';
+                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
@@ -111,6 +111,42 @@ class _WithdrawScreenState extends State {
           _amountTips = '';
         }
       });
+    });
+  }
+
+  _updateAmountTip() {
+    String withdrawalAmountString = _amountController.text;
+    setState(() {
+      if (withdrawalAmountString.isNotEmpty) {
+        if (withdrawalAmountString.contains('.')) {
+          double withdrawalAmountDouble =
+              double.tryParse(withdrawalAmountString);
+          if (withdrawalAmountDouble < 10) {
+            _amountTips =
+                'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10';
+          } else {
+            // 提现金额+手续费大于 可提现余额，则提示错误信息。
+            _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
+                    _withdrawInfo.withdraw
+                ? ''
+                : 'Not sufficient funds';
+          }
+        } else {
+          int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
+          if (withdrawalAmountInt < 10) {
+            _amountTips =
+                'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10';
+          } else {
+            // 提现金额+手续费大于 可提现余额，则提示错误信息。
+            _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
+                    _withdrawInfo.withdraw
+                ? ''
+                : 'Not sufficient funds';
+          }
+        }
+      } else {
+        _amountTips = '';
+      }
     });
   }
 
@@ -270,12 +306,15 @@ class _WithdrawScreenState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Text(
-                              _accountTips,
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colours.color_ED3544,
+                            Padding(
+                              padding: const EdgeInsets.only(right: 24.0),
+                              child: Text(
+                                _accountTips,
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colours.color_ED3544,
+                                ),
                               ),
                             ),
                           ],
@@ -350,6 +389,7 @@ class _WithdrawScreenState extends State {
                                 child: TextField(
                                   controller: _amountController,
                                   focusNode: _amountFocusNode,
+                                  onChanged: (value) => _updateAmountTip(),
                                   style: TextStyle(
                                       color: Colours.color_B1B2B3,
                                       fontSize: 14),
@@ -369,26 +409,32 @@ class _WithdrawScreenState extends State {
                         Divider(
                           color: Colours.color_E7E8EC,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(right: 24),
-                              child: Text(
-                                _amountTips,
-                                style: TextStyle(
-                                    color: Colours.color_ED3544, fontSize: 9),
-                              ),
-                            ),
-                            // Padding(
-                            //   padding: EdgeInsets.only(right: 24),
-                            //   child: Text(
-                            //     _amountTips,
-                            //     style: TextStyle(
-                            //         color: Colours.color_ED3544, fontSize: 9),
-                            //   ),
-                            // )
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(right: 24.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (_amountTips != null && _amountTips.isNotEmpty)
+                                Text(
+                                  _amountTips,
+                                  style: TextStyle(
+                                    color: Colours.color_ED3544,
+                                    fontSize: 9,
+                                  ),
+                                  textAlign: TextAlign.end,
+                                ),
+                              if (_withdrawTypeId != null &&
+                                  _withdrawTypeId.isNotEmpty)
+                                Text(
+                                  'Transfer fees will charged by $_withdrawTypeName \$${(_serviceCharge / 100.0).toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    color: Colours.color_979AA9,
+                                    fontSize: 11,
+                                  ),
+                                  textAlign: TextAlign.end,
+                                ),
+                            ],
+                          ),
                         ),
                         Padding(
                             padding: EdgeInsets.all(15),

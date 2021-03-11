@@ -255,7 +255,9 @@ class LoadConfigurationAction {}
 
 class AddToStoreAction {
   final GoodsDetail goods;
-  AddToStoreAction(this.goods);
+  final Completer completer;
+
+  AddToStoreAction(this.goods, this.completer);
 }
 
 class AddToStoreActionSuccessAction {

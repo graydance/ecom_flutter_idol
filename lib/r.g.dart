@@ -159,6 +159,12 @@ class _R_Image_AssetResource {
       "assets/images/dashboard/ic_welcome_dialog.png",
       packageName: null);
 
+  /// asset: assets/images/goods_placeholder.png
+  // ignore: non_constant_identifier_names
+  final goods_placeholder = const AssetResource(
+      "assets/images/goods_placeholder.png",
+      packageName: null);
+
   /// asset: assets/images/ic_share_copy_link.png
   // ignore: non_constant_identifier_names
   final ic_share_copy_link = const AssetResource(
@@ -192,6 +198,11 @@ class _R_Image_AssetResource {
   // ignore: non_constant_identifier_names
   final ic_share_twitter = const AssetResource(
       "assets/images/ic_share_twitter.png",
+      packageName: null);
+
+  /// asset: assets/images/main/arrow_left.png
+  // ignore: non_constant_identifier_names
+  final arrow_left = const AssetResource("assets/images/main/arrow_left.png",
       packageName: null);
 
   /// asset: assets/images/main/bg_login_signup.png
@@ -500,6 +511,12 @@ class _R_Image {
     return AssetImage(asset.ic_welcome_dialog.keyName);
   }
 
+  /// asset: assets/images/goods_placeholder.png
+  // ignore: non_constant_identifier_names
+  AssetImage goods_placeholder() {
+    return AssetImage(asset.goods_placeholder.keyName);
+  }
+
   /// asset: assets/images/ic_share_copy_link.png
   // ignore: non_constant_identifier_names
   AssetImage ic_share_copy_link() {
@@ -534,6 +551,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_share_twitter() {
     return AssetImage(asset.ic_share_twitter.keyName);
+  }
+
+  /// asset: assets/images/main/arrow_left.png
+  // ignore: non_constant_identifier_names
+  AssetImage arrow_left() {
+    return AssetImage(asset.arrow_left.keyName);
   }
 
   /// asset: assets/images/main/bg_login_signup.png
