@@ -48,7 +48,7 @@ class _ChangeUserNameDialogState extends State<ChangeUserNameDialog> {
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.only(top: 7, bottom: 7, right: 12),
                   child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       IdolRoute.pop(context);
                     },
                     child: Icon(
@@ -121,7 +121,8 @@ class _ChangeUserNameDialogState extends State<ChangeUserNameDialog> {
                         'Save',
                         width: 160,
                         height: 44,
-                        status: widget.userName == _controller.text.trim()
+                        status: widget.userName == _controller.text.trim() ||
+                                _controller.text.trim().length < 5
                             ? IdolButtonStatus.disable
                             : IdolButtonStatus.enable,
                         listener: (status) {
