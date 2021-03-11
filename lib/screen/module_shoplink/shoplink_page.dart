@@ -654,7 +654,8 @@ class _Tile extends StatelessWidget {
               height: size.height,
               child: Stack(
                 children: [
-                  Image(
+                  FadeInImage(
+                    placeholder: R.image.goods_placeholder(),
                     image: NetworkImage(model.picture),
                     fit: BoxFit.cover,
                   ),

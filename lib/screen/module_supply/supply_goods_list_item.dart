@@ -9,6 +9,7 @@ import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/supply.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
@@ -96,7 +97,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(6)),
               child: Container(
-                color: Colours.black,
                 child: Stack(
                   children: [
                     AspectRatio(
@@ -285,8 +285,9 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         url: sourceUrl,
       );
     } else {
-      return Image.network(
-        sourceUrl,
+      return FadeInImage(
+        placeholder: R.image.goods_placeholder(),
+        image: NetworkImage(sourceUrl),
         alignment: Alignment.center,
         fit: BoxFit.cover,
       );

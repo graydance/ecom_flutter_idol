@@ -8,6 +8,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/request/supply.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/supply.dart';
@@ -400,8 +401,10 @@ Widget _createItemMediaWidget(String sourceUrl) {
       url: sourceUrl,
     );
   } else {
-    return Image(
+    return FadeInImage(
+      placeholder: R.image.goods_placeholder(),
       image: NetworkImage(sourceUrl),
+      alignment: Alignment.center,
       fit: BoxFit.cover,
     );
   }
