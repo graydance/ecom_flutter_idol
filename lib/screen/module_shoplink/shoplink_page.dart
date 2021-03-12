@@ -312,6 +312,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           ),
                           decoration: InputDecoration.collapsed(
                             hintText: 'Tap to add a shop description',
+                            hintStyle: TextStyle(
+                              color: _shopDescIsEditing
+                                  ? Colours.color_black45
+                                  : Colors.white,
+                            ),
                           ).copyWith(counterText: ''),
                           maxLines: null,
                           textInputAction: TextInputAction.done,
