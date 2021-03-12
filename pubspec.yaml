@@ -36,11 +36,10 @@ dependencies:
   timeago: ^3.0.1
   uuid: 3.0.1
   crypto: ^3.0.0
+  cached_network_image: ^2.5.1
   ecomshare:
     git:
       url: 'https://github.com/graydance/ecomshare.git'
-dependency_overrides:
-  flutter_svg: ^0.19.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -18,6 +18,7 @@ import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FollowingGoodsListItem extends StatefulWidget {
   final GoodsDetail goodsDetail;
@@ -105,6 +106,16 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         children: [
                           Swiper(
                             itemBuilder: (context, index) {
+                              if (index + 1 < widget.goodsDetail.goods.length) {
+                                final nextUrl =
+                                    widget.goodsDetail.goods[index + 1];
+                                if (_isVideoSource(nextUrl) == false) {
+                                  precacheImage(
+                                    CachedNetworkImageProvider(nextUrl),
+                                    context,
+                                  );
+                                }
+                              }
                               return _createItemMediaWidget(
                                   widget.goodsDetail.goods[index]);
                             },
@@ -285,10 +296,12 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         url: sourceUrl,
       );
     } else {
-      return FadeInImage(
-        placeholder: R.image.goods_placeholder(),
-        image: NetworkImage(sourceUrl),
-        alignment: Alignment.center,
+      return CachedNetworkImage(
+        placeholder: (context, _) => Image(
+          image: R.image.goods_placeholder(),
+          fit: BoxFit.cover,
+        ),
+        imageUrl: sourceUrl,
         fit: BoxFit.cover,
       );
     }
