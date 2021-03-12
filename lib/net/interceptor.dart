@@ -1,12 +1,17 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/env.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:uuid/uuid.dart';
 
 class TokenInterceptors extends InterceptorsWrapper {
   final Dio dio;
@@ -31,14 +36,29 @@ class TokenInterceptors extends InterceptorsWrapper {
       options.headers[Headers.contentTypeHeader] =
           'application/json; charset=utf-8';
     }
+
+    // Generate a v4 (random) id
+    var nonce = Uuid().v4();
+    var sign = _generateMd5(nonce + signKey);
+    options.headers.addAll({
+      'x-nonce': nonce,
+      'x-version': signVersion,
+      'x-signature': sign,
+    });
     return super.onRequest(options);
+  }
+
+  String _generateMd5(String data) {
+    var content = new Utf8Encoder().convert(data);
+    var digest = md5.convert(content);
+    return digest.toString();
   }
 
   @override
   Future onResponse(Response response) {
     Global.logger.fine(
         "TokenInterceptors RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
-    if(response.data is Map){
+    if (response.data is Map) {
       if (response.data['code'] != 0) {
         int code = response.data['code'];
         if (code != null) {
@@ -47,11 +67,13 @@ class TokenInterceptors extends InterceptorsWrapper {
               // Need login.
               EasyLoading.showError(response.data['msg']);
               BuildContext context = Global.navigatorKey.currentContext;
-              IdolRoute.startSignIn(context, SignUpSignInArguments(Global.getUser(context).email));
+              IdolRoute.startSignIn(context,
+                  SignUpSignInArguments(Global.getUser(context).email));
             }
           } else if (code >= 500) {
             // Unified handling
-            response.data['msg'] = 'The network is busy, please try again later!';
+            response.data['msg'] =
+                'The network is busy, please try again later!';
           }
         } else {
           debugPrint('Data structure error!');
