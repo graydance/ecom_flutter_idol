@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/models/arguments/withdraw_result.dart';
+import 'package:idol/net/request/base.dart';
+import 'package:idol/store/actions/actions.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_rating.dart';
 import 'package:idol/widgets/ui.dart';
@@ -93,7 +95,13 @@ class _WithdrawResultScreenState extends State {
                 //     : [Colours.color_F17F7F, Colours.color_EA4E4E],
                 linearGradientBegin: Alignment.topCenter,
                 linearGradientEnd: Alignment.bottomCenter,
-                listener: (status) => {IdolRoute.popAndExit(context)},
+                listener: (status) {
+                  StoreProvider.of<AppState>(context)
+                      .dispatch(DashboardAction(BaseRequestImpl()));
+                  StoreProvider.of<AppState>(context)
+                      .dispatch(WithdrawInfoAction(BaseRequestImpl()));
+                  IdolRoute.popAndExit(context);
+                },
               ),
             ],
           ),
