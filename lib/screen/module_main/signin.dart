@@ -221,6 +221,21 @@ class _SignInScreenState extends State<SignInScreen>
                   ),
                 ),
               ),
+              SizedBox(
+                height: 20,
+              ),
+              GestureDetector(
+                onTap: () {
+                  IdolRoute.changeAccount(context);
+                },
+                child: Text(
+                  'Change account',
+                  style: TextStyle(
+                      color: Colours.color_white60,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline),
+                ),
+              ),
             ],
           ),
         ),
