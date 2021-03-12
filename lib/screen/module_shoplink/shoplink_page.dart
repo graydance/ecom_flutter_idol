@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -46,8 +47,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   String _userName;
   String _avatar;
   TextEditingController _shopDescController;
+  final _shopDescFocusNode = FocusNode();
   final _picker = ImagePicker();
   bool _editState = true;
+  bool _shopDescIsEditing = false;
 
   @override
   void initState() {
@@ -60,6 +63,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     _avatar = Global.getUser(context).portrait;
     _shopDescController =
         TextEditingController(text: Global.getUser(context).aboutMe ?? '');
+    _shopDescFocusNode.addListener(() {
+      setState(() {
+        _shopDescIsEditing = _shopDescFocusNode.hasFocus;
+      });
+    });
   }
 
   @override
@@ -69,43 +77,48 @@ class _ShopLinkPageState extends State<ShopLinkPage>
       converter: _ViewModel.fromStore,
       builder: (context, vm) {
         debugPrint('>>>>>>>>>>>>>>>>>>>ShopLink build<<<<<<<<<<<<<<<<<<<');
-        return Container(
-          color: Colours.color_F8F8F8,
-          child: Column(
-            //mainAxisSize: MainAxisSize.max,
-            children: [
-              AppBar(
-                title: Text('${Global.getUser(context).userName}\'s Shop'),
-                centerTitle: true,
-                elevation: 0,
-                primary: true,
-                actions: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      color: Colours.color_444648,
-                      size: 20,
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Container(
+            color: Colours.color_F8F8F8,
+            child: Column(
+              //mainAxisSize: MainAxisSize.max,
+              children: [
+                AppBar(
+                  title: Text('${Global.getUser(context).userName}\'s Shop'),
+                  centerTitle: true,
+                  elevation: 0,
+                  primary: true,
+                  actions: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.settings,
+                        color: Colours.color_444648,
+                        size: 20,
+                      ),
+                      onPressed: () => IdolRoute.startSettings(context),
                     ),
-                    onPressed: () => IdolRoute.startSettings(context),
-                  ),
-                ],
-              ),
-              /*Expanded(child: CustomScrollView(
-                shrinkWrap: true,
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: _buildHeaderWidget(),
-                  ),
-                  SliverToBoxAdapter(
-                    child: _buildWidget(vm),
-                  ),
-                ],
-              ),),*/
-              _buildHeaderWidget(),
-              Expanded(
-                child: _buildWidget(vm),
-              ),
-            ],
+                  ],
+                ),
+                /*Expanded(child: CustomScrollView(
+                  shrinkWrap: true,
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: _buildHeaderWidget(),
+                    ),
+                    SliverToBoxAdapter(
+                      child: _buildWidget(vm),
+                    ),
+                  ],
+                ),),*/
+                _buildHeaderWidget(),
+                Expanded(
+                  child: _buildWidget(vm),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -113,201 +126,210 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   }
 
   Widget _buildHeaderWidget() {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          image: DecorationImage(
-            image: _avatar != null && _avatar.length > 0
-                ? NetworkImage(
-                    _avatar,
-                  )
-                : AssetImage('assets/images/avatar.png'),
-            fit: BoxFit.fitWidth,
-          ),
-          border: Border.all(color: Colours.white, width: 1.0),
-          color: Colours.color_F8F8F8,
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        image: DecorationImage(
+          image: _avatar != null && _avatar.length > 0
+              ? NetworkImage(
+                  _avatar,
+                )
+              : AssetImage('assets/images/avatar.png'),
+          fit: BoxFit.fitWidth,
         ),
-        child: ClipRRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-            child: Container(
-              padding: EdgeInsets.only(bottom: 6),
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-                    color: Colours.color_white50,
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Row(
-                          children: [
-                            Text('Link：'),
-                            GestureDetector(
-                              onTap: () {
-                                if (_editState) {
-                                  _showEditUserNameDialog();
-                                } else {
-                                  IdolRoute.startInnerWebView(
-                                      context,
-                                      InnerWebViewArguments(
-                                          '${Global.getUser(context).userName}\'s Shop',
-                                          '$linkDomain$_userName'));
-                                }
-                              },
-                              child: Text(
-                                '$linkDomain$_userName',
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: Colours.color_0F1015,
-                                    fontSize: 14),
-                              ),
-                            ),
-                            Visibility(
-                              visible: _editState,
-                              child: GestureDetector(
-                                child: Image(
-                                  image: R.image.ic_edit(),
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                onTap: () {
-                                  if (_editState) {
-                                    _showEditUserNameDialog();
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        )),
-                        ..._editState
-                            ? []
-                            : [
-                                GestureDetector(
-                                  onTap: () {
-                                    ShareManager.showShareLinkDialog(
-                                        context, '$linkDomain$_userName');
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                        left: 8, right: 8, top: 2, bottom: 2),
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(4)),
-                                      color: Colours.color_48B6EF,
-                                    ),
-                                    child: Text(
-                                      'Copy',
-                                      style: TextStyle(
-                                          color: Colours.white, fontSize: 10),
-                                    ),
-                                  ),
-                                ),
-                              ]
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
+        border: Border.all(color: Colours.white, width: 1.0),
+        color: Colours.color_F8F8F8,
+      ),
+      child: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            padding: EdgeInsets.only(bottom: 6),
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                Container(
+                  padding:
+                      EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+                  color: Colours.color_white50,
+                  child: Row(
+                    children: [
+                      Text('Link：'),
+                      Expanded(
+                        child: GestureDetector(
                           onTap: () {
                             if (_editState) {
-                              _showImagePickerDialog();
+                              _showEditUserNameDialog();
+                            } else {
+                              IdolRoute.startInnerWebView(
+                                  context,
+                                  InnerWebViewArguments(
+                                      '${Global.getUser(context).userName}\'s Shop',
+                                      '$linkDomain$_userName'));
                             }
                           },
-                          child: Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: _avatar != null && _avatar.length > 0
-                                    ? NetworkImage(_avatar)
-                                    : AssetImage('assets/images/avatar.png'),
-                              ),
-                              border:
-                                  Border.all(color: Colours.white, width: 1.0),
-                              color: Colours.color_F8F8F8,
-                            ),
-                            child: _avatar != null && _avatar.length > 0
-                                ? null
-                                : Center(
-                                    child: Text(
-                                    _userName != null && _userName.isNotEmpty
-                                        ? _userName[0].toUpperCase()
-                                        : '',
-                                    style: TextStyle(
-                                        fontSize: 50,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white60),
-                                  )),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          '@$_userName',
-                          style: TextStyle(
-                            color: Colours.white,
-                            fontSize: 14,
-                            shadows: [
-                              Shadow(
-                                  offset: Offset(1.0, 1.0),
-                                  blurRadius: 2.0,
-                                  color: Colours.color_575859),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 30, right: 30),
-                          constraints: BoxConstraints(
-                            minHeight: 30,
-                            maxHeight: 100,
-                          ),
-                          child: Expanded(
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              textAlignVertical: TextAlignVertical.center,
-                              controller: _shopDescController,
-                              maxLength: 512,
-                              maxLines: 5,
-                              enabled: _editState,
-                              style: TextStyle(
+                          child: Text(
+                            '$linkDomain$_userName',
+                            style: TextStyle(
+                                decoration: TextDecoration.underline,
                                 color: Colours.color_0F1015,
-                                fontSize: 12,
-                              ),
-                              cursorColor: Colours.color_EA5228,
-                              decoration: InputDecoration(
-                                isCollapsed: true,
-                                counterText: '',
-                                filled: _editState,
-                                fillColor: Colors.transparent,
-                                hintText: 'Tap to add a shop description',
-                                enabledBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                              ),
-                            ),
+                                fontSize: 14),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Visibility(
+                        visible: _editState,
+                        child: GestureDetector(
+                          child: Image(
+                            image: R.image.ic_edit(),
+                            width: 15,
+                            height: 15,
+                          ),
+                          onTap: () {
+                            if (_editState) {
+                              _showEditUserNameDialog();
+                            }
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          ShareManager.showShareLinkDialog(
+                              context, '$linkDomain$_userName');
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(
+                              left: 8, right: 8, top: 2, bottom: 2),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            color: Colours.color_48B6EF,
+                          ),
+                          child: Text(
+                            'Copy',
+                            style:
+                                TextStyle(color: Colours.white, fontSize: 10),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (_editState) {
+                            _showImagePickerDialog();
+                          }
+                        },
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: _avatar != null && _avatar.length > 0
+                                  ? NetworkImage(_avatar)
+                                  : AssetImage('assets/images/avatar.png'),
+                            ),
+                            border:
+                                Border.all(color: Colours.white, width: 1.0),
+                            color: Colours.color_F8F8F8,
+                          ),
+                          child: _avatar != null && _avatar.length > 0
+                              ? null
+                              : Center(
+                                  child: Text(
+                                  _userName != null && _userName.isNotEmpty
+                                      ? _userName[0].toUpperCase()
+                                      : '',
+                                  style: TextStyle(
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white60),
+                                )),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        '@$_userName',
+                        style: TextStyle(
+                          color: Colours.white,
+                          fontSize: 14,
+                          shadows: [
+                            Shadow(
+                                offset: Offset(1.0, 1.0),
+                                blurRadius: 2.0,
+                                color: Colours.color_575859),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                          minHeight: 24.0,
+                          maxHeight: 84.0,
+                        ),
+                        margin: EdgeInsets.symmetric(
+                          vertical: 6.0,
+                          horizontal: 30,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 6.0,
+                          horizontal: 4.0,
+                        ),
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          textCapitalization: TextCapitalization.sentences,
+                          controller: _shopDescController,
+                          focusNode: _shopDescFocusNode,
+                          maxLength: 512,
+                          style: TextStyle(
+                            color: _shopDescIsEditing
+                                ? Colours.color_0F1015
+                                : Colors.white,
+                            fontSize: 12,
+                            shadows: _shopDescIsEditing
+                                ? []
+                                : [
+                                    Shadow(
+                                        offset: Offset(1.0, 1.0),
+                                        blurRadius: 2.0,
+                                        color: Colours.color_575859),
+                                  ],
+                          ),
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Tap to add a shop description',
+                          ).copyWith(counterText: ''),
+                          maxLines: null,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            StoreProvider.of<AppState>(context)
+                                .dispatch(EditStoreAction(EditStoreRequest(
+                              _userName,
+                              _userName,
+                              _shopDescController.text.trim(),
+                            )));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
