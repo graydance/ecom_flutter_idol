@@ -85,7 +85,10 @@ class ShareManager {
 
   static void _showGuideDialog(BuildContext context, String mediaType,
       String guideVideoUrl, String shareChannel, String imageLocalPath) {
-    Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
+    if (shareChannel != 'Download') {
+      Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
+    }
+
     /*showDialog(
         context: context,
         builder: (context) {
