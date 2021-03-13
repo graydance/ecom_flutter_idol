@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -145,7 +146,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Container(
             padding: EdgeInsets.only(bottom: 6),
-            alignment: Alignment.center,
             child: Column(
               children: [
                 Container(
@@ -154,26 +154,23 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                   color: Colours.color_white50,
                   child: Row(
                     children: [
-                      Text('Link：'),
-                      Expanded(
+                      Flexible(
+                        flex: 2,
                         child: GestureDetector(
                           onTap: () {
-                            if (_editState) {
-                              _showEditUserNameDialog();
-                            } else {
-                              IdolRoute.startInnerWebView(
-                                  context,
-                                  InnerWebViewArguments(
-                                      '${Global.getUser(context).userName}\'s Shop',
-                                      '$linkDomain$_userName'));
-                            }
+                            IdolRoute.startInnerWebView(
+                                context,
+                                InnerWebViewArguments(
+                                    '${Global.getUser(context).userName}\'s Shop',
+                                    '$linkDomain$_userName'));
                           },
                           child: Text(
                             '$linkDomain$_userName',
                             style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Colours.color_0F1015,
-                                fontSize: 14),
+                              color: Colours.color_0F1015,
+                              fontSize: 14,
+                            ),
+                            maxLines: 2,
                           ),
                         ),
                       ),
@@ -182,7 +179,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                         child: GestureDetector(
                           child: Image(
                             image: R.image.ic_edit(),
-                            width: 15,
+                            width: 25,
                             height: 15,
                           ),
                           onTap: () {
@@ -193,7 +190,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                         ),
                       ),
                       SizedBox(
-                        width: 8,
+                        width: 12,
                       ),
                       GestureDetector(
                         onTap: () {
@@ -229,32 +226,43 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             _showImagePickerDialog();
                           }
                         },
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: _avatar != null && _avatar.length > 0
-                                  ? NetworkImage(_avatar)
-                                  : AssetImage('assets/images/avatar.png'),
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: _avatar != null && _avatar.length > 0
+                                      ? NetworkImage(_avatar)
+                                      : AssetImage('assets/images/avatar.png'),
+                                ),
+                                border: Border.all(
+                                    color: Colours.white, width: 1.0),
+                                color: Colours.color_F8F8F8,
+                              ),
+                              child: _avatar != null && _avatar.length > 0
+                                  ? null
+                                  : Center(
+                                      child: Text(
+                                      _userName != null && _userName.isNotEmpty
+                                          ? _userName[0].toUpperCase()
+                                          : '',
+                                      style: TextStyle(
+                                          fontSize: 50,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white60),
+                                    )),
                             ),
-                            border:
-                                Border.all(color: Colours.white, width: 1.0),
-                            color: Colours.color_F8F8F8,
-                          ),
-                          child: _avatar != null && _avatar.length > 0
-                              ? null
-                              : Center(
-                                  child: Text(
-                                  _userName != null && _userName.isNotEmpty
-                                      ? _userName[0].toUpperCase()
-                                      : '',
-                                  style: TextStyle(
-                                      fontSize: 50,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white60),
-                                )),
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Image(
+                                image: R.image.edit_avatar(),
+                              ),
+                            )
+                          ],
                         ),
                       ),
                       SizedBox(
@@ -289,6 +297,12 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           vertical: 6.0,
                           horizontal: 4.0,
                         ),
+                        decoration: BoxDecoration(
+                          color: _shopDescIsEditing
+                              ? Colors.white
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(2)),
+                        ),
                         child: TextField(
                           textAlign: TextAlign.center,
                           textAlignVertical: TextAlignVertical.center,
@@ -312,6 +326,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           ),
                           decoration: InputDecoration.collapsed(
                             hintText: 'Tap to add a shop description',
+                            hintStyle: TextStyle(
+                              color: _shopDescIsEditing
+                                  ? Colours.color_black45
+                                  : Colors.white,
+                            ),
                           ).copyWith(counterText: ''),
                           maxLines: null,
                           textInputAction: TextInputAction.done,
@@ -676,9 +695,12 @@ class _Tile extends StatelessWidget {
               height: size.height,
               child: Stack(
                 children: [
-                  FadeInImage(
-                    placeholder: R.image.goods_placeholder(),
-                    image: NetworkImage(model.picture),
+                  CachedNetworkImage(
+                    placeholder: (context, _) => Image(
+                      image: R.image.goods_placeholder(),
+                      fit: BoxFit.cover,
+                    ),
+                    imageUrl: model.picture,
                     fit: BoxFit.cover,
                   ),
                   if (model.discount.isNotEmpty)

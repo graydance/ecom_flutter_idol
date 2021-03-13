@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -140,6 +141,15 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   children: [
                     Swiper(
                       itemBuilder: (context, index) {
+                        if (index + 1 < _goodsDetail.goods.length) {
+                          final nextUrl = _goodsDetail.goods[index + 1];
+                          if (_isVideoSource(nextUrl) == false) {
+                            precacheImage(
+                              CachedNetworkImageProvider(nextUrl),
+                              context,
+                            );
+                          }
+                        }
                         return _createItemMediaWidget(
                             _goodsDetail.goods[index]);
                       },
@@ -401,10 +411,12 @@ Widget _createItemMediaWidget(String sourceUrl) {
       url: sourceUrl,
     );
   } else {
-    return FadeInImage(
-      placeholder: R.image.goods_placeholder(),
-      image: NetworkImage(sourceUrl),
-      alignment: Alignment.center,
+    return CachedNetworkImage(
+      placeholder: (context, _) => Image(
+        image: R.image.goods_placeholder(),
+        fit: BoxFit.cover,
+      ),
+      imageUrl: sourceUrl,
       fit: BoxFit.cover,
     );
   }
