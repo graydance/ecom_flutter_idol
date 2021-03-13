@@ -60,8 +60,8 @@ class TokenInterceptors extends InterceptorsWrapper {
         "TokenInterceptors RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
     if (response.data is Map) {
       if (response.data['code'] != 0) {
-        int code = response.data['code'];
-        if (code != null) {
+        final code = response.data['code'];
+        if (code != null && code is int) {
           if (code >= 400 && code < 500) {
             if (code == 401 || code == 402) {
               // Need login.
@@ -76,7 +76,7 @@ class TokenInterceptors extends InterceptorsWrapper {
                 'The network is busy, please try again later!';
           }
         } else {
-          debugPrint('Data structure error!');
+          debugPrint('Data structure error!\n${response.data}');
           throw 'Data structure error!';
         }
       }
