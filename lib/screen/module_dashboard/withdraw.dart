@@ -41,6 +41,7 @@ class _WithdrawScreenState extends State {
   String _amountTips = '';
   IdolButtonStatus withdrawButtonStatus = IdolButtonStatus.normal;
 
+  final _minWithdrawalAmount = 10;
   @override
   void initState() {
     super.initState();
@@ -84,9 +85,9 @@ class _WithdrawScreenState extends State {
           if (withdrawalAmountString.contains('.')) {
             double withdrawalAmountDouble =
                 double.tryParse(withdrawalAmountString);
-            if (withdrawalAmountDouble < 10) {
+            if (withdrawalAmountDouble < _minWithdrawalAmount) {
               _amountTips =
-                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10';
+                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}$_minWithdrawalAmount';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
@@ -96,9 +97,9 @@ class _WithdrawScreenState extends State {
             }
           } else {
             int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
-            if (withdrawalAmountInt < 10) {
+            if (withdrawalAmountInt < _minWithdrawalAmount) {
               _amountTips =
-                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10';
+                  'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}$_minWithdrawalAmount';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
@@ -121,9 +122,9 @@ class _WithdrawScreenState extends State {
         if (withdrawalAmountString.contains('.')) {
           double withdrawalAmountDouble =
               double.tryParse(withdrawalAmountString);
-          if (withdrawalAmountDouble < 10) {
+          if (withdrawalAmountDouble < _minWithdrawalAmount) {
             _amountTips =
-                'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10';
+                'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}$_minWithdrawalAmount';
           } else {
             // 提现金额+手续费大于 可提现余额，则提示错误信息。
             _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
@@ -133,9 +134,9 @@ class _WithdrawScreenState extends State {
           }
         } else {
           int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
-          if (withdrawalAmountInt < 10) {
+          if (withdrawalAmountInt < _minWithdrawalAmount) {
             _amountTips =
-                'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}10';
+                'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}$_minWithdrawalAmount';
           } else {
             // 提现金额+手续费大于 可提现余额，则提示错误信息。
             _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
@@ -161,7 +162,7 @@ class _WithdrawScreenState extends State {
         (_amountController.text.contains(".")
                 ? double.tryParse(_amountController.text)
                 : int.tryParse(_amountController.text)) >=
-            100;
+            _minWithdrawalAmount;
     setState(() {
       withdrawButtonStatus =
           enable ? IdolButtonStatus.enable : IdolButtonStatus.disable;
