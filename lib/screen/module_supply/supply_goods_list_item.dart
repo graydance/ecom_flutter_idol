@@ -43,6 +43,16 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
 
     timeago.setLocaleMessages('myEn', MyEnMessages());
     timeago.setDefaultLocale('myEn');
+
+    widget.goodsDetail.goods.forEach((element) {
+      if (_isVideoSource(element)) {
+        return;
+      }
+      precacheImage(
+        CachedNetworkImageProvider(element),
+        context,
+      );
+    });
   }
 
   @override
@@ -106,16 +116,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         children: [
                           Swiper(
                             itemBuilder: (context, index) {
-                              if (index + 1 < widget.goodsDetail.goods.length) {
-                                final nextUrl =
-                                    widget.goodsDetail.goods[index + 1];
-                                if (_isVideoSource(nextUrl) == false) {
-                                  precacheImage(
-                                    CachedNetworkImageProvider(nextUrl),
-                                    context,
-                                  );
-                                }
-                              }
                               return _createItemMediaWidget(
                                   widget.goodsDetail.goods[index]);
                             },

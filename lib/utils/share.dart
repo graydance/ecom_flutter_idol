@@ -45,8 +45,15 @@ class ShareManager {
             'The product is now available in your store.\n share the news with your fans on social media to make money!',
             ShareType.goods,
             (shareChannel) {
-              IdolRoute.pop(context);
-              _downloadPicture(context, imageUrl, shareChannel);
+              EasyLoading.showToast('Capture copied');
+              final shareText =
+                  'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Mypik.shop #Mypik  #supportsmallbusinesses';
+              Clipboard.setData(ClipboardData(text: shareText));
+
+              Future.delayed(Duration(milliseconds: 500), () {
+                IdolRoute.pop(context);
+                _downloadPicture(context, imageUrl, shareChannel);
+              });
             },
             tips:
                 'Tips: Share your own pictures with product can increase 38% Sales.',
