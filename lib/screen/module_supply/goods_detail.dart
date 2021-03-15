@@ -38,6 +38,15 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   @override
   void initState() {
     super.initState();
+    _goodsDetail.goods.forEach((element) {
+      if (_isVideoSource(element)) {
+        return;
+      }
+      precacheImage(
+        CachedNetworkImageProvider(element),
+        context,
+      );
+    });
   }
 
   @override
@@ -78,22 +87,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
             ),
           ),
           body: _buildBodyWidget(),
-          // bottomNavigationBar: SafeArea(
-          //   top: false,
-          //   child: IdolButton(
-          //     _bottomButtonText,
-          //     status: _bottomButtonStatus,
-          //     listener: (status) {
-          //       if (vm.detail.inMyStore == 1) {
-          //         ShareManager.showShareGoodsDialog(
-          //             context, vm.detail.goods[0]);
-          //       } else {
-          //         StoreProvider.of(context)
-          //             .dispatch(AddToStoreAction(vm.detail));
-          //       }
-          //     },
-          //   ),
-          // ),
         );
       },
     );
@@ -141,15 +134,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   children: [
                     Swiper(
                       itemBuilder: (context, index) {
-                        if (index + 1 < _goodsDetail.goods.length) {
-                          final nextUrl = _goodsDetail.goods[index + 1];
-                          if (_isVideoSource(nextUrl) == false) {
-                            precacheImage(
-                              CachedNetworkImageProvider(nextUrl),
-                              context,
-                            );
-                          }
-                        }
                         return _createItemMediaWidget(
                             _goodsDetail.goods[index]);
                       },
