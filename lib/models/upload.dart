@@ -1,78 +1,57 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 @immutable
 class Upload {
   final List<UploadedFile> list;
 
-//<editor-fold desc="Data Methods" defaultstate="collapsed">
-
   const Upload({
-    this.list,
+    this.list = const [],
   });
 
   Upload copyWith({
     List<UploadedFile> list,
   }) {
-    if ((list == null || identical(list, this.list))) {
-      return this;
-    }
-
     return Upload(
       list: list ?? this.list,
     );
   }
 
-  @override
-  String toString() {
-    return 'Upload{list: $list}';
+  Map<String, dynamic> toMap() {
+    return {
+      'list': list?.map((x) => x.toMap())?.toList(),
+    };
   }
 
+  factory Upload.fromMap(Map<String, dynamic> map) {
+    return Upload(
+      list: List<UploadedFile>.from(
+          map['list']?.map((x) => UploadedFile.fromMap(x))),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Upload.fromJson(String source) => Upload.fromMap(json.decode(source));
+
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Upload &&
-          runtimeType == other.runtimeType &&
-          list == other.list);
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Upload && listEquals(other.list, list);
+  }
 
   @override
   int get hashCode => list.hashCode;
 
-  factory Upload.fromMap(
-    Map<String, dynamic> map, {
-    String keyMapper(String key),
-  }) {
-    keyMapper ??= (key) => key;
-
-    return Upload(
-      list: map[keyMapper('list')] != null ?  _convertUploadedFile(map[keyMapper('list')]): const [],
-    );
-  }
-
-  static List<UploadedFile> _convertUploadedFile(List<dynamic> uploadedFileListJson) {
-    List<UploadedFile> uploadedFileList = <UploadedFile>[];
-    uploadedFileListJson.forEach((value) {
-      uploadedFileList.add(UploadedFile.fromMap(value));
-    });
-    return uploadedFileList;
-  }
-
-  Map<String, dynamic> toMap({
-    String keyMapper(String key),
-  }) {
-    keyMapper ??= (key) => key;
-
-// ignore: unnecessary_cast
-    return {
-      keyMapper('list'): this.list,
-    } as Map<String, dynamic>;
-  }
-
-//</editor-fold>
-
+  @override
+  String toString() => 'Upload(list: $list)';
 }
 
 @immutable
-class UploadedFile{
+class UploadedFile {
   final String name;
   final int size;
   final String url;
