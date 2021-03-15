@@ -28,7 +28,7 @@ class GoodsDetailScreen extends StatefulWidget {
 }
 
 class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
-  GoodsDetail _goodsDetail;
+  GoodsDetail _goodsDetail = GoodsDetail();
   bool _showLikeAndSold = false;
   IdolButtonStatus _bottomButtonStatus = IdolButtonStatus.normal;
 
@@ -38,6 +38,10 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
     _goodsDetail.goods.forEach((element) {
       if (_isVideoSource(element)) {
         return;
@@ -47,6 +51,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         context,
       );
     });
+    super.didChangeDependencies();
   }
 
   @override

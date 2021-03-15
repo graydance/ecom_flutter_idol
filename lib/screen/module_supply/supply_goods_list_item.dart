@@ -43,7 +43,10 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
 
     timeago.setLocaleMessages('myEn', MyEnMessages());
     timeago.setDefaultLocale('myEn');
+  }
 
+  @override
+  void didChangeDependencies() {
     widget.goodsDetail.goods.forEach((element) {
       if (_isVideoSource(element)) {
         return;
@@ -53,6 +56,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         context,
       );
     });
+    super.didChangeDependencies();
   }
 
   @override
