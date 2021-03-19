@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -624,25 +625,36 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
-  void _upload(File croppedFile) {
-    DioClient.getInstance().upload(ApiPath.upload, File(croppedFile.path),
-        onSendProgress: (send, total) {
-      EasyLoading.showProgress(send / total, status: 'Uploading...');
-    }).then((data) {
-      debugPrint('upload success >>> $data');
+  void _upload(File croppedFile) async {
+    try {
+      final data = await DioClient.getInstance()
+          .upload(ApiPath.upload, File(croppedFile.path),
+              onSendProgress: (send, total) {
+        EasyLoading.showProgress(send.toDouble() / total.toDouble(),
+            status: 'Uploading...');
+      });
+
       Upload upload = Upload.fromMap(data);
-      if (upload != null && upload.list != null && upload.list.isNotEmpty) {
-        debugPrint('setState refresh picture.');
-        // 上传成功...
-        setState(() {
-          _avatar = upload.list[0].url;
-        });
+      final String url = upload.list.first.url;
+      if (url == null || url.isEmpty) {
+        EasyLoading.dismiss();
+        return EasyLoading.showError('Upload failed');
       }
-    }).catchError((err) {
-      EasyLoading.showError(err.toString());
-    }).whenComplete(() {
+
+      await DioClient.getInstance().post(ApiPath.updateUserInfo,
+          baseRequest: UpdateUserInfoRequest(
+            UpdateUserInfoFieldType.portrait,
+            url,
+          ));
+      setState(() {
+        _avatar = url;
+      });
+
       EasyLoading.dismiss();
-    });
+    } catch (e) {
+      EasyLoading.dismiss();
+      EasyLoading.showError(e.toString());
+    }
   }
 
   _Size _getSize(StoreGoods item) {
