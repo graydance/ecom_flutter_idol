@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:redux/redux.dart';
+
 import 'package:idol/conf.dart';
-import 'package:idol/env.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';
 import 'package:idol/net/api.dart';
@@ -21,7 +25,6 @@ import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'package:idol/screen/module_shoplink/shoplink_goods_list_item.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
@@ -31,9 +34,6 @@ import 'package:idol/widgets/dialog_bottom_sheet.dart';
 import 'package:idol/widgets/dialog_change_username.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:redux/redux.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -624,25 +624,36 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
-  void _upload(File croppedFile) {
-    DioClient.getInstance().upload(ApiPath.upload, File(croppedFile.path),
-        onSendProgress: (send, total) {
-      EasyLoading.showProgress(send / total, status: 'Uploading...');
-    }).then((data) {
-      debugPrint('upload success >>> $data');
+  void _upload(File croppedFile) async {
+    try {
+      final data = await DioClient.getInstance()
+          .upload(ApiPath.upload, File(croppedFile.path),
+              onSendProgress: (send, total) {
+        EasyLoading.showProgress(send.toDouble() / total.toDouble(),
+            status: 'Uploading...');
+      });
+
       Upload upload = Upload.fromMap(data);
-      if (upload != null && upload.list != null && upload.list.isNotEmpty) {
-        debugPrint('setState refresh picture.');
-        // 上传成功...
-        setState(() {
-          _avatar = upload.list[0].url;
-        });
+      final String url = upload.list.first.url;
+      if (url == null || url.isEmpty) {
+        EasyLoading.dismiss();
+        return EasyLoading.showError('Upload failed');
       }
-    }).catchError((err) {
-      EasyLoading.showError(err.toString());
-    }).whenComplete(() {
+
+      await DioClient.getInstance().post(ApiPath.updateUserInfo,
+          baseRequest: UpdateUserInfoRequest(
+            UpdateUserInfoFieldType.portrait,
+            url,
+          ));
+      setState(() {
+        _avatar = url;
+      });
+
       EasyLoading.dismiss();
-    });
+    } catch (e) {
+      EasyLoading.dismiss();
+      EasyLoading.showError(e.toString());
+    }
   }
 
   _Size _getSize(StoreGoods item) {

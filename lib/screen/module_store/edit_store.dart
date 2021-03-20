@@ -11,6 +11,7 @@ import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
+import 'package:idol/net/request/biolinks.dart';
 import 'package:idol/net/request/store.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
@@ -537,35 +538,41 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
     }
   }
 
-  void _upload(File croppedFile, int type) {
-    DioClient.getInstance().upload(ApiPath.upload, File(croppedFile.path),
-        onSendProgress: (send, total) {
-      EasyLoading.showProgress(send / total, status: 'Uploading...');
-    }).then((data) {
-      debugPrint('upload success >>> $data');
+  void _upload(File croppedFile, int type) async {
+    try {
+      final data = await DioClient.getInstance()
+          .upload(ApiPath.upload, File(croppedFile.path),
+              onSendProgress: (send, total) {
+        EasyLoading.showProgress(send.toDouble() / total.toDouble(),
+            status: 'Uploading...');
+      });
+
       Upload upload = Upload.fromMap(data);
-      if (upload != null && upload.list != null && upload.list.isNotEmpty) {
-        // 上传成功...
-        setState(() {
-          debugPrint('setState refresh picture.');
-          if (type == 0) {
-            _storeBackground = upload.list[0].url;
-            _storeBackgroundFile = croppedFile;
-          } else {
-            _portrait = upload.list[0].url;
-            _portraitFile = croppedFile;
-          }
-        });
+      final String url = upload.list.first.url;
+      if (url == null || url.isEmpty) {
+        EasyLoading.dismiss();
+        return EasyLoading.showError('Upload failed');
       }
-    }).catchError((err) {
-      // then | catchError | whenComplete 期待的函数返回类型是Future<Null>
-      // 如果使用单行写法会有隐式return 关键字，如果在执行代码期间出现异常，具体异常不会抛出
-      // 反而会抛出 Unhandled Exception: type 'Future<void>' is not a subtype of type 'Future<Null>?'
-      // 禁止使用 => 后，具体异常便可以抛出。
-      EasyLoading.showError(err.toString());
-    }).whenComplete(() {
+
+      await DioClient.getInstance().post(ApiPath.updateUserInfo,
+          baseRequest: UpdateUserInfoRequest(
+            UpdateUserInfoFieldType.portrait,
+            url,
+          ));
+      setState(() {
+        if (type == 0) {
+          _storeBackground = url;
+          _storeBackgroundFile = croppedFile;
+        } else {
+          _portrait = url;
+          _portraitFile = croppedFile;
+        }
+      });
       EasyLoading.dismiss();
-    });
+    } catch (e) {
+      EasyLoading.dismiss();
+      EasyLoading.showError(e.toString());
+    }
   }
 
   @override
