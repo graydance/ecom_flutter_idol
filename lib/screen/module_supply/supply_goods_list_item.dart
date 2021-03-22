@@ -197,6 +197,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             Row(
               children: [
                 Expanded(
+                  flex: 5,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -251,24 +252,28 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 130,
-                  height: 44,
-                  child: IdolButton(
-                    widget.goodsDetail.inMyStore == 1 ? 'Share' : 'Pik & Sell',
-                    status: IdolButtonStatus.enable,
-                    listener: (status) {
-                      if (status == IdolButtonStatus.enable) {
-                        debounce(() {
-                          if (widget.goodsDetail.inMyStore == 1) {
-                            ShareManager.showShareGoodsDialog(
-                                context, widget.goodsDetail.goods[0]);
-                          } else {
-                            _addProductToMyStore(widget.goodsDetail);
-                          }
-                        }, 1000);
-                      }
-                    },
+                Expanded(
+                  flex: 3,
+                  child: SizedBox(
+                    height: 44,
+                    child: IdolButton(
+                      widget.goodsDetail.inMyStore == 1
+                          ? 'Share to Earn'
+                          : 'Pik & Sell',
+                      status: IdolButtonStatus.enable,
+                      listener: (status) {
+                        if (status == IdolButtonStatus.enable) {
+                          debounce(() {
+                            if (widget.goodsDetail.inMyStore == 1) {
+                              ShareManager.showShareGoodsDialog(
+                                  context, widget.goodsDetail.goods[0]);
+                            } else {
+                              _addProductToMyStore(widget.goodsDetail);
+                            }
+                          }, 1000);
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],
