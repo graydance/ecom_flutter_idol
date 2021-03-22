@@ -154,8 +154,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                   color: Colours.color_white50,
                   child: Row(
                     children: [
-                      Flexible(
-                        flex: 2,
+                      Expanded(
                         child: GestureDetector(
                           onTap: () {
                             IdolRoute.startInnerWebView(
@@ -168,48 +167,58 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             '$linkDomain$_userName',
                             style: TextStyle(
                               color: Colours.color_0F1015,
-                              fontSize: 14,
+                              fontSize: 16,
                             ),
                             maxLines: 2,
                           ),
                         ),
                       ),
-                      Visibility(
-                        visible: _editState,
-                        child: GestureDetector(
-                          child: Image(
-                            image: R.image.ic_edit(),
-                            width: 25,
-                            height: 15,
-                          ),
-                          onTap: () {
-                            if (_editState) {
-                              _showEditUserNameDialog();
-                            }
-                          },
-                        ),
-                      ),
                       SizedBox(
-                        width: 12,
+                        width: 8,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          ShareManager.showShareLinkDialog(
-                              context, '$linkDomain$_userName');
-                        },
-                        child: Container(
-                          padding: EdgeInsets.only(
-                              left: 8, right: 8, top: 2, bottom: 2),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(4)),
-                            color: Colours.color_48B6EF,
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (_editState) {
+                                _showEditUserNameDialog();
+                              }
+                            },
+                            child: Image(
+                              image: R.image.ic_edit(),
+                              width: 25,
+                              height: 15,
+                            ),
                           ),
-                          child: Text(
-                            'Copy',
-                            style:
-                                TextStyle(color: Colours.white, fontSize: 10),
+                          Container(
+                            width: 0.5,
+                            height: 15,
+                            color: Colours.color_0F1015,
+                            margin: const EdgeInsets.only(right: 6),
                           ),
-                        ),
+                          GestureDetector(
+                            onTap: () {
+                              final link = '$linkDomain$_userName';
+                              Clipboard.setData(ClipboardData(text: link));
+                              EasyLoading.showToast('$link\n is Replicated!');
+                              ShareManager.showShareLinkDialog(context, link);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                  left: 8, right: 8, top: 6, bottom: 6),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                color: Colours.color_48B6EF,
+                              ),
+                              child: Text(
+                                'Copy',
+                                style: TextStyle(
+                                    color: Colours.white, fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
