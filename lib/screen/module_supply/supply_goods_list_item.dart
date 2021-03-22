@@ -194,76 +194,89 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
               height: 4,
             ),
             // Current Price
-            RichText(
-              text: TextSpan(
-                style: DefaultTextStyle.of(context).style,
-                children: [
-                  TextSpan(
-                    text: '\$' +
-                        TextUtil.formatDoubleComma3(
-                            widget.goodsDetail.earningPrice / 100),
-                    style: TextStyle(
-                        color: Colours.color_EA5228,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            TextSpan(
+                              text: '\$' +
+                                  TextUtil.formatDoubleComma3(
+                                      widget.goodsDetail.earningPrice / 100),
+                              style: TextStyle(
+                                  color: Colours.color_EA5228,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(text: ' '),
+                            TextSpan(
+                              text: 'Earnings Per Sale',
+                              style: TextStyle(
+                                  color: Colours.color_C4C5CD,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            TextSpan(
+                              text: '\$' +
+                                  TextUtil.formatDoubleComma3(
+                                      widget.goodsDetail.suggestedPrice / 100),
+                              style: TextStyle(
+                                  color: Colours.color_0F1015,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(text: ' '),
+                            TextSpan(
+                              text: 'Suggested Price',
+                              style: TextStyle(
+                                  color: Colours.color_C4C5CD,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  TextSpan(text: ' '),
-                  TextSpan(
-                    text: 'Earnings Per Sale',
-                    style: TextStyle(
-                        color: Colours.color_C4C5CD,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: SizedBox(
+                    height: 44,
+                    child: IdolButton(
+                      widget.goodsDetail.inMyStore == 1
+                          ? 'Share to Earn'
+                          : 'Pik & Sell',
+                      status: IdolButtonStatus.enable,
+                      listener: (status) {
+                        if (status == IdolButtonStatus.enable) {
+                          debounce(() {
+                            if (widget.goodsDetail.inMyStore == 1) {
+                              ShareManager.showShareGoodsDialog(
+                                  context, widget.goodsDetail.goods[0]);
+                            } else {
+                              _addProductToMyStore(widget.goodsDetail);
+                            }
+                          }, 1000);
+                        }
+                      },
+                    ),
                   ),
-                ],
-              ),
-            ),
-            // Suggested Price.
-            RichText(
-              text: TextSpan(
-                style: DefaultTextStyle.of(context).style,
-                children: [
-                  TextSpan(
-                    text: '\$' +
-                        TextUtil.formatDoubleComma3(
-                            widget.goodsDetail.suggestedPrice / 100),
-                    style: TextStyle(
-                        color: Colours.color_0F1015,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(text: ' '),
-                  TextSpan(
-                    text: 'Suggested Price',
-                    style: TextStyle(
-                        color: Colours.color_C4C5CD,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            // Add to my store.
-            IdolButton(
-              widget.goodsDetail.inMyStore == 1
-                  ? 'Share'
-                  : 'Add to my store & Share',
-              status: IdolButtonStatus.enable,
-              listener: (status) {
-                if (status == IdolButtonStatus.enable) {
-                  debounce(() {
-                    if (widget.goodsDetail.inMyStore == 1) {
-                      ShareManager.showShareGoodsDialog(
-                          context, widget.goodsDetail.goods[0]);
-                    } else {
-                      _addProductToMyStore(widget.goodsDetail);
-                    }
-                  }, 1000);
-                }
-              },
+                ),
+              ],
             ),
           ],
         ),
