@@ -108,7 +108,8 @@ class _SupplierGoodsTabViewState extends State<SupplierGoodsTabView>
                   _goodsList[index],
                   onItemClickCallback: () {
                     // goods detail
-                    IdolRoute.startGoodsDetail(context, widget.supplier,_goodsList[index].id);
+                    IdolRoute.startGoodsDetail(
+                        context, widget.supplier, _goodsList[index].id);
                   },
                   onItemShareClickCallback: () {
                     // TODO share
@@ -137,9 +138,9 @@ class _SupplierGoodsTabViewState extends State<SupplierGoodsTabView>
         state is SupplierHotGoodsListSuccess) {
       setState(() {
         if ((state).storeGoodsList.currentPage == 1) {
-          _goodsList = (state).storeGoodsList.list;
+          _goodsList = (state).storeGoodsList.model;
         } else {
-          _goodsList.addAll((state).storeGoodsList.list);
+          _goodsList.addAll((state).storeGoodsList.model);
         }
         _currentPage = (state).storeGoodsList.currentPage;
         _enablePullUp = (state).storeGoodsList.currentPage !=

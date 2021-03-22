@@ -36,6 +36,14 @@ class Global {
         : (signInState as SignInSuccess).signInUser;
   }
 
+  static User getStateUser(AppState state) {
+    SignUpState signUpState = state.signUpState;
+    SignInState signInState = state.signInState;
+    return signUpState is SignUpSuccess
+        ? signUpState.signUpUser
+        : (signInState as SignInSuccess).signInUser;
+  }
+
   static void clearAccountInfo() {
     storage.delete(key: KeyStore.TOKEN);
     storage.delete(key: KeyStore.PASSWORD);
