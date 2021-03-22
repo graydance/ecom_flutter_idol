@@ -137,10 +137,16 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image(
-            image: R.image.bg_default_empty_sales_history_webp(),
-            width: 170,
-            height: 195,
+          GestureDetector(
+            onTap: () {
+              StoreProvider.of<AppState>(context)
+                  .dispatch(ChangeHomePageAction(0));
+            },
+            child: Image(
+              image: R.image.bg_default_empty_sales_history_webp(),
+              width: 170,
+              height: 195,
+            ),
           ),
           SizedBox(
             height: 10,
