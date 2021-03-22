@@ -26,8 +26,8 @@ AppState appReducer(AppState state, action) {
     forYouState: forYouReducer(state.forYouState, action),
     myInfoState: myInfoReducer(state.myInfoState, action),
     editStoreState: editStoreReducer(state.editStoreState, action),
-    myInfoGoodsListState:
-        userDetailGoodsListReducer(state.myInfoGoodsListState, action),
+    // myInfoGoodsListState:
+    //     userDetailGoodsListReducer(state.myInfoGoodsListState, action),
     myInfoGoodsCategoryListState: userDetailGoodsCategoryListReducer(
         state.myInfoGoodsCategoryListState, action),
     supplierInfoState: supplierInfoReducer(state.supplierInfoState, action),
@@ -47,7 +47,6 @@ AppState appReducer(AppState state, action) {
         deleteBioLinksReducer(state.deleteBioLinksState, action),
     updateUserInfoState:
         updateUserInfoReducer(state.updateUserInfoState, action),
-    deleteGoodsState: deleteGoodsReducer(state.deleteGoodsState, action),
     bestSalesState: bestSalesReducer(state.bestSalesState, action),
     salesHistoryState: salesHistoryReducer(state.salesHistoryState, action),
     salesHistoryArguments:
@@ -56,5 +55,6 @@ AppState appReducer(AppState state, action) {
         updatePasswordReducer(state.updatePasswordState, action),
     innerWebViewArguments:
         innerWebViewArgumentsReducer(state.innerWebViewArguments, action),
+    myStoreGoods: myStoreGoodsReducer(state.myStoreGoods, action),
   );
 }

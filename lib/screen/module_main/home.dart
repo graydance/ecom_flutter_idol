@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin<HomeScreen> {
   int _selectedIndex = Global.homePageController.initialPage;
 
-  var _pages = <Widget>[
+  var _pages = [
     SupplyMVPPage(),
     DashboardMVPPage(),
     ShopLinkPage(),
@@ -100,8 +100,7 @@ class _HomeScreenState extends State<HomeScreen>
             StoreProvider.of<AppState>(context)
                 .dispatch(DashboardAction(BaseRequestImpl()));
           } else if (index == 2) {
-            StoreProvider.of<AppState>(context).dispatch(MyInfoGoodsListAction(
-                MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1)));
+            // (_pages[index] as ShopLinkPage).refreshData();
           }
         },
         children: _pages,
