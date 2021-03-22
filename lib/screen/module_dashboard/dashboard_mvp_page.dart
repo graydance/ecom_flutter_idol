@@ -131,7 +131,6 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
     if (_viewModel._dashboardState is DashboardSuccess) {
       var dashboard =
           (_viewModel._dashboardState as DashboardSuccess).dashboard;
-      _showHowToMakeMoneyDialog(true);
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
