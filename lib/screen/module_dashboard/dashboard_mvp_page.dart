@@ -7,6 +7,7 @@ import 'package:idol/conf.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/dashboard.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_dashboard/best_sales_tab_view.dart';
@@ -20,6 +21,7 @@ import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
+import 'package:simple_tooltip/simple_tooltip.dart';
 
 class DashboardMVPPage extends StatefulWidget {
   @override
@@ -32,6 +34,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
         SingleTickerProviderStateMixin {
   TabController _tabController;
   bool _isShowedHowToMakeMoneyDialog = false;
+  bool _isShowEarningTip = false;
   static final _storage = new FlutterSecureStorage();
 
   final List<String> _tabValues = [
@@ -158,68 +161,105 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
                     color: Colours.color_EA5228,
                   ),
                 ),
-                Icon(Icons.keyboard_arrow_right)
+                Icon(
+                  Icons.keyboard_arrow_right,
+                  color: Colours.color_979AA9,
+                )
               ],
             ),
           ),
 
           // Lifetime Earnings
-          Container(
-            margin: EdgeInsets.only(top: 20, bottom: 20),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Lifetime Earnings',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colours.color_A9A9A9,
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isShowEarningTip = !_isShowEarningTip;
+              });
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 20, bottom: 20),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Lifetime Earnings',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colours.color_A9A9A9,
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 8, right: 16),
-                  child: Icon(
-                    Icons.help,
-                    size: 15,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 4,
+                      right: 8,
+                    ),
+                    child: Image(
+                      image: R.image.ic_earnings_tip(),
+                      width: 15,
+                    ),
                   ),
-                ),
-                Text(
-                  Global.getUser(context).monetaryUnit +
-                      _decimalFormat(dashboard.lifetimeEarnings),
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colours.color_EA5228,
-                    fontWeight: FontWeight.bold,
+                  SimpleTooltip(
+                    show: _isShowEarningTip,
+                    tooltipDirection: TooltipDirection.down,
+                    arrowLength: 4,
+                    arrowBaseWidth: 8,
+                    animationDuration: Duration(seconds: 0),
+                    borderWidth: 0,
+                    ballonPadding: const EdgeInsets.all(4),
+                    content: Text(
+                      'The total amount of money you’ve earned on this app.',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                    tooltipTap: () {
+                      setState(() {
+                        _isShowEarningTip = !_isShowEarningTip;
+                      });
+                    },
+                    child: Text(
+                      Global.getUser(context).monetaryUnit +
+                          _decimalFormat(dashboard.lifetimeEarnings),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colours.color_EA5228,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
           // Invite friends to receive extra earnings
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'How to make money with MyPik',
-                style: TextStyle(
-                  color: Colours.color_0F1015,
-                  fontSize: 12,
+          GestureDetector(
+            onTap: () {
+              _showHowToMakeMoneyDialog(false);
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'How to make money with MyPik',
+                  style: TextStyle(
+                    color: Colours.color_0F1015,
+                    fontSize: 12,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  _showHowToMakeMoneyDialog(false);
-                },
-                child: Icon(
-                  Icons.help,
-                  color: Colours.color_0F1015,
-                  size: 15,
+                SizedBox(
+                  width: 4,
                 ),
-              ),
-            ],
+                Image(
+                  image: R.image.ic_help(),
+                  width: 15,
+                ),
+              ],
+            ),
           ),
 
           // Rewards | Past Sales

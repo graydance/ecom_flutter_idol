@@ -733,6 +733,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  simple_tooltip:
+    dependency: "direct main"
+    description:
+      name: simple_tooltip
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.16"
   sky_engine:
     dependency: transitive
     description: flutter

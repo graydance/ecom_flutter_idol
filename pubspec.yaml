@@ -38,6 +38,7 @@ dependencies:
   crypto: ^3.0.0
   cached_network_image: ^2.5.1
   auto_size_text: ^2.1.0
+  simple_tooltip: ^0.1.16
   ecomshare:
     git:
       url: 'https://github.com/graydance/ecomshare.git'
@@ -72,6 +73,8 @@ flutter:
   - assets/images/dashboard/bg_withdraw_failure.webp
   - assets/images/dashboard/bg_withdraw_success.webp
   - assets/images/dashboard/ic_complete_rewards.png
+  - assets/images/dashboard/ic_earnings_tip.png
+  - assets/images/dashboard/ic_help.png
   - assets/images/dashboard/ic_welcome_dialog.png
   - assets/images/goods_placeholder.png
   - assets/images/ic_share_copy_link.png
