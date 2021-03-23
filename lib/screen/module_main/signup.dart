@@ -93,6 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             height: 30,
                           ),
                           TextField(
+                            autofocus: true,
                             maxLines: 1,
                             textAlign: TextAlign.center,
                             style:
