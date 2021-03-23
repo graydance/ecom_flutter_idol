@@ -179,7 +179,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             onTap: () {
                               final link = '$linkDomain$_userName';
                               Clipboard.setData(ClipboardData(text: link));
-                              EasyLoading.showToast('$link\n is Replicated!');
+                              EasyLoading.showToast(
+                                  'Copied\nYou can add the Link to your social bio now.');
                               ShareManager.showShareLinkDialog(context, link);
                             },
                             child: Container(
