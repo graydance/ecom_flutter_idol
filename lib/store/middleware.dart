@@ -152,8 +152,6 @@ List<Middleware<AppState>> createStoreMiddleware() {
     TypedMiddleware<AppState, AddToStoreActionSuccessAction>(
         (store, action, next) {
       EasyLoading.dismiss();
-      ShareManager.showShareGoodsDialog(
-          Global.navigatorKey.currentContext, action.goods.goods[0]);
       store.dispatch(MyInfoGoodsListAction(
           MyInfoGoodsListRequest(Global.getStateUser(store.state).id, 0, 1),
           Completer()));
