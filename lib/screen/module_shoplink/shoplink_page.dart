@@ -52,6 +52,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   bool _editState = true;
   bool _shopDescIsEditing = false;
 
+  // int _lastClickTime = 0;
+
   @override
   void initState() {
     super.initState();
