@@ -83,7 +83,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           },
           child: Scaffold(
             appBar: AppBar(
-              title: Text('${Global.getUser(context).userName}\'s Shop'),
+              title: Text('$_userName\'s Shop'),
               centerTitle: true,
               elevation: 0,
               primary: true,
@@ -138,8 +138,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           onTap: () {
                             IdolRoute.startInnerWebView(
                                 context,
-                                InnerWebViewArguments(
-                                    '${Global.getUser(context).userName}\'s Shop',
+                                InnerWebViewArguments('$_userName\'s Shop',
                                     '$linkDomain$_userName'));
                           },
                           child: Text(
@@ -147,6 +146,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             style: TextStyle(
                               color: Colours.color_0F1015,
                               fontSize: 16,
+                              decoration: TextDecoration.underline,
                             ),
                             maxLines: 2,
                           ),
