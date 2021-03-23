@@ -336,8 +336,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   _goodsDetail.inMyStore == null
                       ? '--'
                       : (_goodsDetail.inMyStore == 0
-                          ? 'Add to my store & Share'
-                          : 'Share'),
+                          ? 'Pik & Sell'
+                          : 'Share to Earn'),
                   status: _bottomButtonStatus,
                   listener: (status) {
                     if (_goodsDetail.inMyStore == 1) {
