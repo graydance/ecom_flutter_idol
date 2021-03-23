@@ -44,6 +44,9 @@ class Colours {
   /// 背景色
   static const Color color_F8F8F8 = Color(0xFFF8F8F8);
 
+  // 说明色
+  static const Color color_636365 = Color(0xFF626365);
+
   /// Other
   static const Color colorPrimary = white;
   static const Color colorPrimaryVariant = white;
