@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/net/request/base.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin<HomeScreen> {
   int _selectedIndex = Global.homePageController.initialPage;
+  int _lastClickTime = 0;
 
   var _pages = [
     SupplyMVPPage(),
@@ -81,7 +83,23 @@ class _HomeScreenState extends State<HomeScreen>
       builder: (context, vm) => Scaffold(
         extendBodyBehindAppBar: true,
         extendBody: false,
-        body: _createBody(),
+        body: WillPopScope(
+          child: _createBody(),
+          onWillPop: () async {
+            var durTime =
+                (DateTime.now().microsecondsSinceEpoch - _lastClickTime) / 1000;
+            debugPrint("${durTime}");
+            if (durTime > 2000) {
+              _lastClickTime = DateTime.now().microsecondsSinceEpoch;
+              EasyLoading.showToast("Tap again to exit");
+              debugPrint("first click");
+              return false;
+            } else {
+              debugPrint("second click");
+              return true;
+            }
+          },
+        ),
         bottomNavigationBar: _createBottomNavigationBar(),
       ),
     );

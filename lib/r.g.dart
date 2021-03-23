@@ -153,6 +153,17 @@ class _R_Image_AssetResource {
       "assets/images/dashboard/ic_complete_rewards.png",
       packageName: null);
 
+  /// asset: assets/images/dashboard/ic_earnings_tip.png
+  // ignore: non_constant_identifier_names
+  final ic_earnings_tip = const AssetResource(
+      "assets/images/dashboard/ic_earnings_tip.png",
+      packageName: null);
+
+  /// asset: assets/images/dashboard/ic_help.png
+  // ignore: non_constant_identifier_names
+  final ic_help = const AssetResource("assets/images/dashboard/ic_help.png",
+      packageName: null);
+
   /// asset: assets/images/dashboard/ic_welcome_dialog.png
   // ignore: non_constant_identifier_names
   final ic_welcome_dialog = const AssetResource(
@@ -509,6 +520,18 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_complete_rewards() {
     return AssetImage(asset.ic_complete_rewards.keyName);
+  }
+
+  /// asset: assets/images/dashboard/ic_earnings_tip.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_earnings_tip() {
+    return AssetImage(asset.ic_earnings_tip.keyName);
+  }
+
+  /// asset: assets/images/dashboard/ic_help.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_help() {
+    return AssetImage(asset.ic_help.keyName);
   }
 
   /// asset: assets/images/dashboard/ic_welcome_dialog.png

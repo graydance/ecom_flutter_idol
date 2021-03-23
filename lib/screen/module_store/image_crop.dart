@@ -88,12 +88,11 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
           ),
           onPressed: () => IdolRoute.pop(context),
         ),
-        actions: <Widget>[
-          IconButton(
+        actions: [
+          TextButton(
             onPressed: _cropImage,
-            tooltip: 'Crop',
-            icon: Icon(Icons.crop),
-          )
+            child: Text('Save'),
+          ),
         ],
       ),
       body: Column(
