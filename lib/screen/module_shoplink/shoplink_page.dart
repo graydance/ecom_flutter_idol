@@ -759,10 +759,9 @@ class _Tile extends StatelessWidget {
                             fontSize: 10,
                             shadows: [
                               Shadow(
-                                offset: Offset(0.2, 0.2),
-                                blurRadius: 3.0,
-                                color: Colours.color_B1B2B3,
-                              ),
+                                  offset: Offset(1.0, 1.0),
+                                  blurRadius: 2.0,
+                                  color: Colours.color_575859),
                             ],
                           ),
                         ),
