@@ -21,9 +21,9 @@ class _GuideScreenState extends State<GuideScreen> {
   ];
 
   static const List<String> guideDesc = [
-    'Discount for a limited time\n to obtain more goods at a more favorable',
-    'Selected global major suppliers,\n to provide better service, a large number\n of goods arbitrary selection.',
-    'We can guarantee a much higher revenue compared with others.',
+    'Start,grow and boost your\n online business with Mypik.shop\n ',
+    'With our free, Easy-to-Use\n Tools, build-in supply\n chains,after-sale service',
+    'With our free, Easy-to-Use\n Tools, build-in supply\n chains,after-sale service',
   ];
 
   static const List<String> guideClick = [
@@ -36,111 +36,111 @@ class _GuideScreenState extends State<GuideScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    debugPrint("$height");
     return Scaffold(
         body: Stack(
       children: [
         Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: R.image.launch_background_webp(), fit: BoxFit.cover),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: 350,
-                  padding:
-                      EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 30),
-                  color: Colours.color_white20,
-                  child: Swiper(
-                    itemCount: guideTitle.length,
-                    autoplay: false,
-                    viewportFraction: 1,
-                    loop: false,
-                    outer: true,
-                    scale: 1,
-                    controller: controllrer,
-                    onIndexChanged: (index) {
-                      setState(() {
-                        _showGetStarted = index == guideTitle.length - 1;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      return _createSwiperItem(index, context, controllrer);
-                    },
-                    pagination: SwiperPagination(
-                      alignment: Alignment.bottomCenter,
-                      builder: RoundRectSwiperPaginationBuilder(
-                          //点之间的间隔
-                          space: 5,
-                          // 没选中时的大小
-                          size: Size(28, 3),
-                          // 选中时的大小
-                          activeSize: Size(28, 3),
-                          // 没选中时的颜色
-                          color: Colours.color_black45,
-                          //选中时的颜色
-                          activeColor: Colors.white),
-                    ),
-                  ),
-                ),
-                // Container(
-                //   decoration: BoxDecoration(
-                //     color: Colours.color_white30,
-                //     borderRadius: BorderRadius.all(
-                //       Radius.circular(4),
-                //     ),
-                //   ),
-                //   padding:
-                //       EdgeInsets.only(left: 30, top: 12, right: 30, bottom: 12),
-                //   margin: EdgeInsets.only(left: 90, right: 90, top: 50),
-                //   child: Text(
-                //     'GET STARTED!',
-                //     style: TextStyle(fontSize: 18, color: Colours.color_FFFFF0),
-                //   ),
-                // ),
-              ],
+            decoration: BoxDecoration(
+              image:
+                  DecorationImage(image: R.image.guid_bg(), fit: BoxFit.cover),
             ),
-          ),
-        ),
+            child: Swiper(
+              itemCount: guideTitle.length,
+              autoplay: false,
+              viewportFraction: 1,
+              loop: false,
+              outer: false,
+              scale: 1,
+              controller: controllrer,
+              onIndexChanged: (index) {
+                setState(() {
+                  _showGetStarted = index == guideTitle.length - 1;
+                });
+              },
+              itemBuilder: (context, index) {
+                return _createSwiperItem(index, context, controllrer);
+              },
+              pagination: SwiperPagination(
+                alignment: Alignment.center,
+                margin: EdgeInsets.fromLTRB(0, 340, 0, 0),
+                builder: RoundRectSwiperPaginationBuilder(
+                    //点之间的间隔
+                    space: 5,
+                    // 没选中时的大小
+                    size: Size(30, 4),
+                    // 选中时的大小
+                    activeSize: Size(30, 4),
+                    // 没选中时的颜色
+                    color: Colours.color_black45,
+                    //选中时的颜色
+                    activeColor: Colors.white),
+              ),
+            )),
         Column(
           children: [
             Spacer(),
             Center(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0, 0, 0, 36),
-                child: Column(
-                  children: [
-                    Text(
-                      "By signing up, you also agree with our ",
-                      style:
-                          TextStyle(color: Colours.color_636365, fontSize: 12),
-                    ),
-                    RichText(
-                        text: TextSpan(children: [
-                      TextSpan(
-                          text: "Terms of Use",
-                          style: TextStyle(
-                              color: Colours.color_4E9AE3, fontSize: 12),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () => print('click1')),
-                      TextSpan(
-                        text: " and ",
-                        style: TextStyle(
-                            color: Colours.color_636365, fontSize: 12),
-                      ),
-                      TextSpan(
-                          text: "Privacy Policy",
-                          style: TextStyle(
-                              color: Colours.color_4E9AE3, fontSize: 12),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () => print('click2'))
-                    ]))
-                  ],
-                ),
-              ),
-            )
+                child: Visibility(
+                    maintainState: true,
+                    maintainAnimation: true,
+                    maintainSize: true,
+                    visible: _showGetStarted,
+                    child: GestureDetector(
+                      onTap: () {
+                        IdolRoute.startValidateEmail(context);
+                      },
+                      child: Container(
+                          margin: EdgeInsets.fromLTRB(0, 0, 0, 60),
+                          decoration: BoxDecoration(
+                            color: Colours.color_white30,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(4),
+                            ),
+                          ),
+                          padding: EdgeInsets.only(
+                              left: 30, top: 12, right: 30, bottom: 12),
+                          child: Text(
+                            'GET STARTED!',
+                            style: TextStyle(color: Colors.white),
+                          )),
+                    )))
+            // Center(
+            //   child: Container(
+            //     margin: EdgeInsets.fromLTRB(0, 0, 0, 36),
+            //     child: Column(
+            //       children: [
+            //         Text(
+            //           "By signing up, you also agree with our ",
+            //           style:
+            //               TextStyle(color: Colours.color_636365, fontSize: 12),
+            //         ),
+            //         RichText(
+            //             text: TextSpan(children: [
+            //           TextSpan(
+            //               text: "Terms of Use",
+            //               style: TextStyle(
+            //                   color: Colours.color_4E9AE3, fontSize: 12),
+            //               recognizer: TapGestureRecognizer()
+            //                 ..onTap = () => print('click1')),
+            //           TextSpan(
+            //             text: " and ",
+            //             style: TextStyle(
+            //                 color: Colours.color_636365, fontSize: 12),
+            //           ),
+            //           TextSpan(
+            //               text: "Privacy Policy",
+            //               style: TextStyle(
+            //                   color: Colours.color_4E9AE3, fontSize: 12),
+            //               recognizer: TapGestureRecognizer()
+            //                 ..onTap = () => print('click2'))
+            //         ]))
+            //       ],
+            //     ),
+            //   ),
+            // )
           ],
         )
       ],
@@ -150,57 +150,74 @@ class _GuideScreenState extends State<GuideScreen> {
   Widget _createSwiperItem(
       int index, BuildContext context, SwiperController controllrer) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 64, 16, 0),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            guideTitle[index],
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colours.white,
-                fontSize: 26,
-                fontWeight: FontWeight.bold),
+          Image(
+            image: _getCurImage(index),
+            height: 120,
+            fit: BoxFit.contain,
           ),
           SizedBox(
-            height: 28,
+            height: 100,
           ),
           Text(
             guideDesc[index],
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colours.color_white70, fontSize: 14),
+            style: TextStyle(
+                color: Colours.white,
+                fontSize: 20,
+                fontWeight: FontWeight.normal),
           ),
-          GestureDetector(
-            onTap: () {
-              if (index == 2)
-                IdolRoute.startValidateEmail(context);
-              else
-                controllrer.next(animation: true);
-            },
-            child: Container(
-              margin: EdgeInsets.fromLTRB(0, 35, 0, 0),
-              //设置 child 居中
-              alignment: Alignment(0, 0),
-              height: 22,
-              width: 76,
-              //边框设置
-              decoration: new BoxDecoration(
-                //背景
-                color: Colors.transparent,
-                //设置四周圆角 角度 这里的角度应该为 父Container height 的一半
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                //设置四周边框
-                border: new Border.all(width: 1, color: Colors.white),
-              ),
-              child: Text(guideClick[index],
-                  textAlign: TextAlign.center,
-                  style: new TextStyle(color: Colors.white, fontSize: 12)),
-            ),
-          ),
+          // Text(
+          //   guideDesc[index],
+          //   textAlign: TextAlign.center,
+          //   style: TextStyle(color: Colours.color_white70, fontSize: 14),
+          // ),
+          // GestureDetector(
+          //   onTap: () {
+          //     if (index == 2)
+          //       IdolRoute.startValidateEmail(context);
+          //     else
+          //       controllrer.next(animation: true);
+          //   },
+          //   child: Container(
+          //     margin: EdgeInsets.fromLTRB(0, 35, 0, 0),
+          //     //设置 child 居中
+          //     alignment: Alignment(0, 0),
+          //     height: 22,
+          //     width: 76,
+          //     //边框设置
+          //     decoration: new BoxDecoration(
+          //       //背景
+          //       color: Colors.transparent,
+          //       //设置四周圆角 角度 这里的角度应该为 父Container height 的一半
+          //       borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          //       //设置四周边框
+          //       border: new Border.all(width: 1, color: Colors.white),
+          //     ),
+          //     child: Text(guideClick[index],
+          //         textAlign: TextAlign.center,
+          //         style: new TextStyle(color: Colors.white, fontSize: 12)),
+          //   ),
+          // ),
         ],
       ),
     );
+  }
+}
+
+_getCurImage(int index) {
+  switch (index) {
+    case 0:
+      return R.image.guid_1();
+    case 1:
+      return R.image.guid_2();
+    case 2:
+      return R.image.guid_3();
+    case 3:
+      return null;
   }
 }
 
