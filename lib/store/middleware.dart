@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/conf.dart';
@@ -6,6 +8,7 @@ import 'package:idol/models/validate_email.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
 import 'package:idol/net/request/base.dart';
+import 'package:idol/net/request/store.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
@@ -30,7 +33,6 @@ List<Middleware<AppState>> createStoreMiddleware() {
     TypedMiddleware<AppState, ForYouAction>(supplyGoodsListMiddleware),
     TypedMiddleware<AppState, MyInfoAction>(myInfoMiddleware),
     TypedMiddleware<AppState, EditStoreAction>(editStoreMiddleware),
-    TypedMiddleware<AppState, MyInfoGoodsListAction>(storeGoodsListMiddleware),
     TypedMiddleware<AppState, MyInfoGoodsCategoryListAction>(
         storeGoodsListMiddleware),
     TypedMiddleware<AppState, SupplierInfoAction>(supplierInfoMiddleware),
@@ -147,23 +149,12 @@ List<Middleware<AppState>> createStoreMiddleware() {
       next(action);
     }),
 
-    TypedMiddleware<AppState, DeleteGoodsAction>((store, action, next) {
-      EasyLoading.show(status: 'Loading...');
-      next(action);
-    }),
-    TypedMiddleware<AppState, DeleteGoodsSuccessAction>((store, action, next) {
-      EasyLoading.dismiss();
-      next(action);
-    }),
-    TypedMiddleware<AppState, DeleteGoodsFailureAction>((store, action, next) {
-      EasyLoading.showError(action.message);
-      next(action);
-    }),
     TypedMiddleware<AppState, AddToStoreActionSuccessAction>(
         (store, action, next) {
       EasyLoading.dismiss();
-      ShareManager.showShareGoodsDialog(
-          Global.navigatorKey.currentContext, action.goods.goods[0]);
+      store.dispatch(MyInfoGoodsListAction(
+          MyInfoGoodsListRequest(Global.getStateUser(store.state).id, 0, 1),
+          Completer()));
       next(action);
     }),
     TypedMiddleware<AppState, AddToStoreActionFailAction>(
@@ -176,6 +167,8 @@ List<Middleware<AppState>> createStoreMiddleware() {
       Global.navigatorKey.currentState.pushNamed(RouterPath.goodsDetail);
       next(action);
     }),
+    TypedMiddleware<AppState, MyInfoGoodsListAction>(
+        fetchStoreGoodsListMiddleware),
   ];
 }
 
@@ -444,20 +437,38 @@ final Middleware<AppState> editStoreMiddleware =
 
 final Middleware<AppState> storeGoodsListMiddleware =
     (Store<AppState> store, action, NextDispatcher next) {
-  if (action is MyInfoGoodsListAction ||
-      action is MyInfoGoodsCategoryListAction) {
+  if (action is MyInfoGoodsCategoryListAction) {
     DioClient.getInstance()
         .post(ApiPath.storeGoodsList, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) {
-      store.dispatch(action is MyInfoGoodsListAction
-          ? MyInfoGoodsListSuccessAction(StoreGoodsList.fromMap(data))
-          : MyInfoGoodsCategoryListSuccessAction(StoreGoodsList.fromMap(data)));
+      store.dispatch(
+          MyInfoGoodsCategoryListSuccessAction(StoreGoodsList.fromMap(data)));
     }).catchError((err) {
       print(err.toString());
-      store.dispatch(action is MyInfoGoodsListAction
-          ? MyInfoGoodsListFailureAction(err.toString())
-          : MyInfoGoodsCategoryListFailureAction(err.toString()));
+      store.dispatch(MyInfoGoodsCategoryListFailureAction(err.toString()));
+    });
+    next(action);
+  }
+};
+
+final Middleware<AppState> fetchStoreGoodsListMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is MyInfoGoodsListAction) {
+    DioClient.getInstance()
+        .post(ApiPath.storeGoodsList, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data) {
+      final model = StoreGoodsList.fromMap(data);
+      if (model.currentPage == 1) {
+        store.dispatch(OnUpdateMyStoreGoods(model));
+      } else {
+        store.dispatch(OnUpdateMyStoreGoods(model.copyWith(
+            list: [...store.state.myStoreGoods.list, ...model.list])));
+      }
+      action.completer.complete(model);
+    }).catchError((err) {
+      action.completer.completeError(err.toString());
     });
     next(action);
   }
@@ -607,10 +618,15 @@ final Middleware<AppState> deleteGoodsMiddleware =
         .post(ApiPath.deleteGoods, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) {
-      store.dispatch(DeleteGoodsSuccessAction(action.request.goodsId));
+      final list = store.state.myStoreGoods.list
+          .where((goods) => goods.id != action.request.goodsId)
+          .toList();
+      store.dispatch(
+          OnUpdateMyStoreGoods(store.state.myStoreGoods.copyWith(list: list)));
+      action.completer.complete();
     }).catchError((err) {
       print(err.toString());
-      store.dispatch(DeleteGoodsFailureAction(err.toString()));
+      action.completer.completeError(err.toString());
     });
     next(action);
   }

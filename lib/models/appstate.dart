@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
+
 import 'package:idol/models/arguments/rewards_detail.dart';
 import 'package:idol/models/arguments/supplier_detail.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/main.dart';
-import 'package:meta/meta.dart';
+
 import 'arguments/arguments.dart';
 
 @immutable
@@ -21,7 +24,6 @@ class AppState {
   final ForYouState forYouState;
   final MyInfoState myInfoState;
   final EditStoreState editStoreState;
-  final MyInfoGoodsListState myInfoGoodsListState;
   final MyInfoGoodsCategoryListState myInfoGoodsCategoryListState;
   final ImageCropArguments imageCropArguments;
   final SupplierDetailArguments supplierDetailArguments;
@@ -46,6 +48,8 @@ class AppState {
   final InnerWebViewArguments innerWebViewArguments;
   final GoodsDetail goodsDetailPage;
 
+  final StoreGoodsList myStoreGoods;
+
   AppState({
     this.goodsDetailPage = const GoodsDetail(),
     this.signUpState = const SignUpInitial(),
@@ -61,7 +65,6 @@ class AppState {
     this.forYouState = const ForYouInitial(),
     this.myInfoState = const MyInfoInitial(),
     this.editStoreState = const EditStoreInitial(),
-    this.myInfoGoodsListState = const MyInfoGoodsListInitial(),
     this.myInfoGoodsCategoryListState = const MyInfoGoodsCategoryListInitial(),
     this.imageCropArguments = const ImageCropArguments(''),
     this.supplierDetailArguments = const SupplierDetailArguments('', ''),
@@ -84,6 +87,7 @@ class AppState {
     this.homeTabArguments = const HomeTabArguments(),
     this.updatePasswordState = const UpdatePasswordInitial(),
     this.innerWebViewArguments = const InnerWebViewArguments('', ''),
+    this.myStoreGoods = const StoreGoodsList(),
   });
 
   AppState copyWith({
@@ -101,7 +105,6 @@ class AppState {
     ForYouState forYouState,
     MyInfoState myInfoState,
     EditStoreState editStoreState,
-    MyInfoGoodsListState myInfoGoodsListState,
     MyInfoGoodsCategoryListState myInfoGoodsCategoryListState,
     ImageCropArguments imageCropArguments,
     SupplierDetailArguments supplierDetailArguments,
@@ -124,6 +127,7 @@ class AppState {
     HomeTabArguments homeTabArguments,
     UpdatePasswordState updatePasswordState,
     InnerWebViewArguments innerWebViewArguments,
+    List<StoreGoods> myStoreGoods,
   }) {
     if ((goodsDetailPage == null ||
             identical(goodsDetailPage, this.goodsDetailPage)) &&
@@ -149,8 +153,6 @@ class AppState {
         (myInfoState == null || identical(myInfoState, this.myInfoState)) &&
         (editStoreState == null ||
             identical(editStoreState, this.editStoreState)) &&
-        (myInfoGoodsListState == null ||
-            identical(myInfoGoodsListState, this.myInfoGoodsListState)) &&
         (myInfoGoodsCategoryListState == null ||
             identical(myInfoGoodsCategoryListState,
                 this.myInfoGoodsCategoryListState)) &&
@@ -197,7 +199,9 @@ class AppState {
         (updatePasswordState == null ||
             identical(updatePasswordState, this.updatePasswordState)) &&
         (innerWebViewArguments == null ||
-            identical(innerWebViewArguments, this.innerWebViewArguments))) {
+            identical(innerWebViewArguments, this.innerWebViewArguments) &&
+                (myStoreGoods == null ||
+                    identical(myStoreGoods, this.myStoreGoods)))) {
       return this;
     }
 
@@ -219,7 +223,6 @@ class AppState {
       forYouState: forYouState ?? this.forYouState,
       myInfoState: myInfoState ?? this.myInfoState,
       editStoreState: editStoreState ?? this.editStoreState,
-      myInfoGoodsListState: myInfoGoodsListState ?? this.myInfoGoodsListState,
       myInfoGoodsCategoryListState:
           myInfoGoodsCategoryListState ?? this.myInfoGoodsCategoryListState,
       imageCropArguments: imageCropArguments ?? this.imageCropArguments,
@@ -249,89 +252,92 @@ class AppState {
       updatePasswordState: updatePasswordState ?? this.updatePasswordState,
       innerWebViewArguments:
           innerWebViewArguments ?? this.innerWebViewArguments,
+      myStoreGoods: myStoreGoods ?? this.myStoreGoods,
     );
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AppState &&
-          goodsDetailPage == other.goodsDetailPage &&
-          runtimeType == other.runtimeType &&
-          signUpState == other.signUpState &&
-          signInState == other.signInState &&
-          dashboardState == other.dashboardState &&
-          withdrawInfoState == other.withdrawInfoState &&
-          withdrawState == other.withdrawState &&
-          completeRewardsState == other.completeRewardsState &&
-          withdrawVerifyArguments == other.withdrawVerifyArguments &&
-          withdrawResultArguments == other.withdrawResultArguments &&
-          rewardsDetailArguments == other.rewardsDetailArguments &&
-          followingState == other.followingState &&
-          forYouState == other.forYouState &&
-          myInfoState == other.myInfoState &&
-          editStoreState == other.editStoreState &&
-          myInfoGoodsListState == other.myInfoGoodsListState &&
-          myInfoGoodsCategoryListState == other.myInfoGoodsCategoryListState &&
-          imageCropArguments == other.imageCropArguments &&
-          supplierDetailArguments == other.supplierDetailArguments &&
-          supplierInfoState == other.supplierInfoState &&
-          supplierHotGoodsListState == other.supplierHotGoodsListState &&
-          supplierNewGoodsListState == other.supplierNewGoodsListState &&
-          goodsDetailState == other.goodsDetailState &&
-          goodsDetailArguments == other.goodsDetailArguments &&
-          bioLinksState == other.bioLinksState &&
-          addBioLinksState == other.addBioLinksState &&
-          editBioLinksState == other.editBioLinksState &&
-          deleteBioLinksState == other.deleteBioLinksState &&
-          updateUserInfoState == other.updateUserInfoState &&
-          deleteGoodsState == other.deleteGoodsState &&
-          validateEmailState == other.validateEmailState &&
-          signUpSignInArguments == other.signUpSignInArguments &&
-          bestSalesState == other.bestSalesState &&
-          salesHistoryState == other.salesHistoryState &&
-          salesHistoryArguments == other.salesHistoryArguments &&
-          homeTabArguments == other.homeTabArguments &&
-          updatePasswordState == other.updatePasswordState &&
-          innerWebViewArguments == other.innerWebViewArguments;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is AppState &&
+        other.signUpState == signUpState &&
+        other.signInState == signInState &&
+        other.dashboardState == dashboardState &&
+        other.withdrawInfoState == withdrawInfoState &&
+        other.withdrawState == withdrawState &&
+        other.completeRewardsState == completeRewardsState &&
+        other.withdrawVerifyArguments == withdrawVerifyArguments &&
+        other.withdrawResultArguments == withdrawResultArguments &&
+        other.rewardsDetailArguments == rewardsDetailArguments &&
+        other.followingState == followingState &&
+        other.forYouState == forYouState &&
+        other.myInfoState == myInfoState &&
+        other.editStoreState == editStoreState &&
+        other.myInfoGoodsCategoryListState == myInfoGoodsCategoryListState &&
+        other.imageCropArguments == imageCropArguments &&
+        other.supplierDetailArguments == supplierDetailArguments &&
+        other.supplierInfoState == supplierInfoState &&
+        other.supplierHotGoodsListState == supplierHotGoodsListState &&
+        other.supplierNewGoodsListState == supplierNewGoodsListState &&
+        other.goodsDetailState == goodsDetailState &&
+        other.goodsDetailArguments == goodsDetailArguments &&
+        other.bioLinksState == bioLinksState &&
+        other.addBioLinksState == addBioLinksState &&
+        other.editBioLinksState == editBioLinksState &&
+        other.deleteBioLinksState == deleteBioLinksState &&
+        other.updateUserInfoState == updateUserInfoState &&
+        other.deleteGoodsState == deleteGoodsState &&
+        other.validateEmailState == validateEmailState &&
+        other.signUpSignInArguments == signUpSignInArguments &&
+        other.bestSalesState == bestSalesState &&
+        other.salesHistoryState == salesHistoryState &&
+        other.salesHistoryArguments == salesHistoryArguments &&
+        other.homeTabArguments == homeTabArguments &&
+        other.updatePasswordState == updatePasswordState &&
+        other.innerWebViewArguments == innerWebViewArguments &&
+        other.goodsDetailPage == goodsDetailPage &&
+        other.myStoreGoods == myStoreGoods;
+  }
 
   @override
-  int get hashCode =>
-      goodsDetailPage.hashCode ^
-      signUpState.hashCode ^
-      signInState.hashCode ^
-      dashboardState.hashCode ^
-      withdrawInfoState.hashCode ^
-      withdrawState.hashCode ^
-      completeRewardsState.hashCode ^
-      withdrawVerifyArguments.hashCode ^
-      withdrawResultArguments.hashCode ^
-      rewardsDetailArguments.hashCode ^
-      followingState.hashCode ^
-      forYouState.hashCode ^
-      myInfoState.hashCode ^
-      editStoreState.hashCode ^
-      myInfoGoodsListState.hashCode ^
-      myInfoGoodsCategoryListState.hashCode ^
-      imageCropArguments.hashCode ^
-      supplierDetailArguments.hashCode ^
-      supplierInfoState.hashCode ^
-      supplierHotGoodsListState.hashCode ^
-      supplierNewGoodsListState.hashCode ^
-      goodsDetailState.hashCode ^
-      goodsDetailArguments.hashCode ^
-      bioLinksState.hashCode ^
-      addBioLinksState.hashCode ^
-      editBioLinksState.hashCode ^
-      deleteBioLinksState.hashCode ^
-      updateUserInfoState.hashCode ^
-      deleteGoodsState.hashCode ^
-      validateEmailState.hashCode ^
-      signUpSignInArguments.hashCode ^
-      bestSalesState.hashCode ^
-      salesHistoryState.hashCode ^
-      salesHistoryArguments.hashCode ^
-      homeTabArguments.hashCode ^
-      updatePasswordState.hashCode ^
-      innerWebViewArguments.hashCode;
+  int get hashCode {
+    return signUpState.hashCode ^
+        signInState.hashCode ^
+        dashboardState.hashCode ^
+        withdrawInfoState.hashCode ^
+        withdrawState.hashCode ^
+        completeRewardsState.hashCode ^
+        withdrawVerifyArguments.hashCode ^
+        withdrawResultArguments.hashCode ^
+        rewardsDetailArguments.hashCode ^
+        followingState.hashCode ^
+        forYouState.hashCode ^
+        myInfoState.hashCode ^
+        editStoreState.hashCode ^
+        myInfoGoodsCategoryListState.hashCode ^
+        imageCropArguments.hashCode ^
+        supplierDetailArguments.hashCode ^
+        supplierInfoState.hashCode ^
+        supplierHotGoodsListState.hashCode ^
+        supplierNewGoodsListState.hashCode ^
+        goodsDetailState.hashCode ^
+        goodsDetailArguments.hashCode ^
+        bioLinksState.hashCode ^
+        addBioLinksState.hashCode ^
+        editBioLinksState.hashCode ^
+        deleteBioLinksState.hashCode ^
+        updateUserInfoState.hashCode ^
+        deleteGoodsState.hashCode ^
+        validateEmailState.hashCode ^
+        signUpSignInArguments.hashCode ^
+        bestSalesState.hashCode ^
+        salesHistoryState.hashCode ^
+        salesHistoryArguments.hashCode ^
+        homeTabArguments.hashCode ^
+        updatePasswordState.hashCode ^
+        innerWebViewArguments.hashCode ^
+        goodsDetailPage.hashCode ^
+        myStoreGoods.hashCode;
+  }
 }

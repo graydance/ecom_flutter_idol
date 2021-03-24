@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/net/api.dart';
@@ -100,9 +101,10 @@ class IdolButtonState extends State<IdolButton> {
               color: Colours.transparent,
               highlightElevation: 0,
               elevation: 0,
-              child: Text(
+              child: AutoSizeText(
                 widget.isPartialRefresh ? _text : widget.text,
                 style: TextStyle(color: Colours.white, fontSize: 16),
+                maxLines: 1,
               ),
             ),
           )
@@ -126,9 +128,10 @@ class IdolButtonState extends State<IdolButton> {
               color: Colours.transparent,
               highlightElevation: 0,
               elevation: 0,
-              child: Text(
+              child: AutoSizeText(
                 widget.isPartialRefresh ? _text : widget.text,
                 style: TextStyle(color: Colours.white, fontSize: 16),
+                maxLines: 1,
               ),
             ),
           );
@@ -350,7 +353,6 @@ enum FollowButtonStyle {
 
 /// EditPage/Save Button
 class EditButton extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => EditButtonState();
 
@@ -364,11 +366,12 @@ class EditButtonState extends State<EditButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-
-      },
+      onTap: () {},
       child: Container(
-        padding: EdgeInsets.only(left: 16, right: 16,),
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+        ),
         height: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

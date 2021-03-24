@@ -18,7 +18,7 @@ class ShareManager {
           return ShareDialog(
             'How to sales on socials',
             videoUrls[0],
-            '1. Go to my Social account\n 2. Edit profile\n 3. Paste your Shop Link into Bio\n 4. Notice your fans with great post',
+            '1. Go to my Social account;\n2. Edit profile;\n3. Paste your Shop Link into Bio;\n4. Notice your fans with great post.',
             ShareType.link,
             (channel) {
               if ('Copy Link' == channel) {

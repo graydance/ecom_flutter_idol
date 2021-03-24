@@ -1,24 +1,20 @@
 import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
-import 'package:idol/net/api.dart';
-import 'package:idol/net/api_path.dart';
-import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
-import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:idol/utils/global.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import 'package:cached_network_image/cached_network_image.dart';
 
 class FollowingGoodsListItem extends StatefulWidget {
   final GoodsDetail goodsDetail;
@@ -37,6 +33,8 @@ class FollowingGoodsListItem extends StatefulWidget {
 typedef OnProductAddedStoreListener = Function(GoodsDetail goodsDetail);
 
 class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
+  double _messageBarHeight = 0;
+
   @override
   void initState() {
     super.initState();
@@ -134,6 +132,19 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                             itemCount: widget.goodsDetail.goods.length,
                           ),
                         ],
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: MessageBar(
+                        height: _messageBarHeight,
+                        onTap: () {
+                          _hideMessageBar();
+                          ShareManager.showShareGoodsDialog(
+                              context, widget.goodsDetail.goods[0]);
+                        },
                       ),
                     ),
                   ],
@@ -263,14 +274,12 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                       status: IdolButtonStatus.enable,
                       listener: (status) {
                         if (status == IdolButtonStatus.enable) {
-                          debounce(() {
-                            if (widget.goodsDetail.inMyStore == 1) {
-                              ShareManager.showShareGoodsDialog(
-                                  context, widget.goodsDetail.goods[0]);
-                            } else {
-                              _addProductToMyStore(widget.goodsDetail);
-                            }
-                          }, 1000);
+                          if (widget.goodsDetail.inMyStore == 1) {
+                            ShareManager.showShareGoodsDialog(
+                                context, widget.goodsDetail.goods[0]);
+                          } else {
+                            _addProductToMyStore(widget.goodsDetail);
+                          }
                         }
                       },
                     ),
@@ -284,9 +293,28 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
     );
   }
 
+  _showMessageBar() {
+    setState(() {
+      _messageBarHeight = 60;
+    });
+    Future.delayed(Duration(seconds: 4)).then((value) {
+      _hideMessageBar();
+    });
+  }
+
+  _hideMessageBar() {
+    setState(() {
+      _messageBarHeight = 0;
+    });
+  }
+
   Future _addProductToMyStore(GoodsDetail goodsDetail) async {
-    StoreProvider.of<AppState>(context)
-        .dispatch(AddToStoreAction(goodsDetail, Completer()));
+    final completer = Completer();
+    StoreProvider.of<AppState>(context).dispatch(AddToStoreAction(
+      goodsDetail,
+      completer,
+    ));
+    completer.future.then((value) => _showMessageBar());
     // try {
     //   EasyLoading.show(status: 'Loading...');
     //   await DioClient.getInstance()
@@ -340,16 +368,85 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         url.contains('.mkv'));
   }
 
-  Timer _debounce;
+  // Timer _debounce;
 
-  void debounce(Function fn, [int t = 30]) {
-    // return () {
-    // 还在时间之内，抛弃上一次
-    if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(Duration(milliseconds: t), () {
-      fn();
-    });
-    // };
+  // void debounce(Function fn, [int t = 30]) {
+  //   // return () {
+  //   // 还在时间之内，抛弃上一次
+  //   if (_debounce?.isActive ?? false) _debounce.cancel();
+  //   _debounce = Timer(Duration(milliseconds: t), () {
+  //     fn();
+  //   });
+  //   // };
+  // }
+}
+
+class MessageBar extends StatefulWidget {
+  final double height;
+  final VoidCallback onTap;
+  const MessageBar({
+    Key key,
+    this.height = 60,
+    this.onTap,
+  }) : super(key: key);
+
+  @override
+  _MessageBarState createState() => _MessageBarState();
+}
+
+class _MessageBarState extends State<MessageBar> {
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      height: widget.height,
+      width: double.infinity,
+      duration: Duration(milliseconds: 500),
+      decoration: BoxDecoration(
+        color: Colours.color_0F1015.withAlpha(200),
+      ),
+      curve: Curves.fastOutSlowIn,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Added to listing successfully',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+                maxLines: 2,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                if (widget.onTap != null) widget.onTap();
+              },
+              child: Row(
+                children: [
+                  Text(
+                    'Go to Share',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xffEA5228),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios_sharp,
+                    size: 14,
+                    color: Color(0xffEA5228),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 

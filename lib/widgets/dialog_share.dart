@@ -129,10 +129,9 @@ class _ShareDialogState extends State<ShareDialog> {
     }
     if (!mounted) return;
     setState(() {
-      if (supportChannels.length > 1 &&
-          'System' == supportChannels[supportChannels.length - 1]) {
-        supportChannels.insert(supportChannels.length - 2,
-            widget.shareType == ShareType.link ? 'Copy Link' : 'Download');
+      if (supportChannels.length > 1 && 'System' == supportChannels.last) {
+        supportChannels
+            .add(widget.shareType == ShareType.link ? 'Copy Link' : 'Download');
       }
       _supportShareChannels = supportChannels;
       debugPrint('Share channels >>> ${_supportShareChannels.toString()}');

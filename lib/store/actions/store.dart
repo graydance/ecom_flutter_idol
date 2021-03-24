@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:idol/models/store_goods_list.dart';
 import 'package:idol/models/user.dart';
 import 'package:idol/net/request/base.dart';
@@ -43,32 +45,39 @@ class MyInfoFailureAction {
   MyInfoFailureAction(this.message);
 }
 
-/// MyInfoGoodsListState
-abstract class MyInfoGoodsListState {}
+// /// MyInfoGoodsListState
+// abstract class MyInfoGoodsListState {}
 
-class MyInfoGoodsListInitial implements MyInfoGoodsListState {
-  const MyInfoGoodsListInitial();
-}
+// class MyInfoGoodsListInitial implements MyInfoGoodsListState {
+//   const MyInfoGoodsListInitial();
+// }
 
-class MyInfoGoodsListLoading implements MyInfoGoodsListState {}
+// class MyInfoGoodsListLoading implements MyInfoGoodsListState {}
 
-class MyInfoGoodsListSuccess implements MyInfoGoodsListState {
-  final StoreGoodsList storeGoodsList;
+// class MyInfoGoodsListSuccess implements MyInfoGoodsListState {
+//   final StoreGoodsList storeGoodsList;
 
-  MyInfoGoodsListSuccess(this.storeGoodsList);
-}
+//   MyInfoGoodsListSuccess(this.storeGoodsList);
+// }
 
-class MyInfoGoodsListFailure implements MyInfoGoodsListState {
-  final String message;
+// class MyInfoGoodsListFailure implements MyInfoGoodsListState {
+//   final String message;
 
-  MyInfoGoodsListFailure(this.message);
-}
+//   MyInfoGoodsListFailure(this.message);
+// }
 
 /// MyInfoGoodsListAction
 class MyInfoGoodsListAction {
   final MyInfoGoodsListRequest request;
+  final Completer completer;
 
-  MyInfoGoodsListAction(this.request);
+  MyInfoGoodsListAction(this.request, this.completer);
+}
+
+class OnUpdateMyStoreGoods {
+  final StoreGoodsList model;
+
+  OnUpdateMyStoreGoods(this.model);
 }
 
 class MyInfoGoodsListSuccessAction {
@@ -205,16 +214,7 @@ class DeleteGoodsFailure implements DeleteGoodsState {
 /// DeleteGoodsAction
 class DeleteGoodsAction {
   final DeleteGoodsRequest request;
+  final Completer completer;
 
-  DeleteGoodsAction(this.request);
-}
-
-class DeleteGoodsSuccessAction {
-  final String goodsId;
-  DeleteGoodsSuccessAction(this.goodsId);
-}
-
-class DeleteGoodsFailureAction {
-  final String message;
-  DeleteGoodsFailureAction(this.message);
+  DeleteGoodsAction(this.request, this.completer);
 }
