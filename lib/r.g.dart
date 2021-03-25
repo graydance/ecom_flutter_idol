@@ -176,6 +176,26 @@ class _R_Image_AssetResource {
       "assets/images/goods_placeholder.png",
       packageName: null);
 
+  /// asset: assets/images/guid_1.png
+  // ignore: non_constant_identifier_names
+  final guid_1 =
+      const AssetResource("assets/images/guid_1.png", packageName: null);
+
+  /// asset: assets/images/guid_2.png
+  // ignore: non_constant_identifier_names
+  final guid_2 =
+      const AssetResource("assets/images/guid_2.png", packageName: null);
+
+  /// asset: assets/images/guid_3.png
+  // ignore: non_constant_identifier_names
+  final guid_3 =
+      const AssetResource("assets/images/guid_3.png", packageName: null);
+
+  /// asset: assets/images/guid_bg.png
+  // ignore: non_constant_identifier_names
+  final guid_bg =
+      const AssetResource("assets/images/guid_bg.png", packageName: null);
+
   /// asset: assets/images/ic_share_copy_link.png
   // ignore: non_constant_identifier_names
   final ic_share_copy_link = const AssetResource(
@@ -544,6 +564,30 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage goods_placeholder() {
     return AssetImage(asset.goods_placeholder.keyName);
+  }
+
+  /// asset: assets/images/guid_1.png
+  // ignore: non_constant_identifier_names
+  AssetImage guid_1() {
+    return AssetImage(asset.guid_1.keyName);
+  }
+
+  /// asset: assets/images/guid_2.png
+  // ignore: non_constant_identifier_names
+  AssetImage guid_2() {
+    return AssetImage(asset.guid_2.keyName);
+  }
+
+  /// asset: assets/images/guid_3.png
+  // ignore: non_constant_identifier_names
+  AssetImage guid_3() {
+    return AssetImage(asset.guid_3.keyName);
+  }
+
+  /// asset: assets/images/guid_bg.png
+  // ignore: non_constant_identifier_names
+  AssetImage guid_bg() {
+    return AssetImage(asset.guid_bg.keyName);
   }
 
   /// asset: assets/images/ic_share_copy_link.png

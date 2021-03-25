@@ -77,6 +77,10 @@ flutter:
   - assets/images/dashboard/ic_help.png
   - assets/images/dashboard/ic_welcome_dialog.png
   - assets/images/goods_placeholder.png
+  - assets/images/guid_1.png
+  - assets/images/guid_2.png
+  - assets/images/guid_3.png
+  - assets/images/guid_bg.png
   - assets/images/ic_share_copy_link.png
   - assets/images/ic_share_download.png
   - assets/images/ic_share_facebook.png
@@ -123,3 +127,4 @@ flutter:
   - assets/images/supply/ic_tab_supplier_new_product_unselected.png
   - assets/images/supply/pause.png
   - assets/images/supply/play.png
+  - assets/image/
