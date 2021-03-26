@@ -3,13 +3,18 @@ import 'package:ecomshare/ecomshare.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/router.dart';
+import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
 import 'package:idol/widgets/dialog_share.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ShareManager {
+  static final _storage = new FlutterSecureStorage();
+
   /// 分享Link
   static void showShareLinkDialog(BuildContext context, String link) {
     showModalBottomSheet(
@@ -31,7 +36,12 @@ class ShareManager {
               IdolRoute.pop(context);
             },
           );
-        });
+        }).whenComplete(() async {
+      String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+      if (step == "4") {
+        Global.tokGoods.currentState.show();
+      }
+    });
   }
 
   /// 分享商品

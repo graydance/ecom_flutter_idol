@@ -8,7 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:idol/utils/keystore.dart';
+import 'package:idol/widgets/SpeechBubble.dart';
+import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
@@ -53,7 +57,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   bool _shopDescIsEditing = false;
 
   // int _lastClickTime = 0;
-
+  final _storage = new FlutterSecureStorage();
   @override
   void initState() {
     super.initState();
@@ -177,26 +181,34 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             color: Colours.color_0F1015,
                             margin: const EdgeInsets.only(right: 6),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              final link = '$linkDomain$_userName';
-                              Clipboard.setData(ClipboardData(text: link));
-                              EasyLoading.showToast(
-                                  'Copied\nYou can add the Link to your social bio now.');
-                              ShareManager.showShareLinkDialog(context, link);
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  left: 8, right: 8, top: 6, bottom: 6),
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                                color: Colours.color_48B6EF,
-                              ),
-                              child: Text(
-                                'Copy',
-                                style: TextStyle(
-                                    color: Colours.white, fontSize: 14),
+                          TutorialOverlay(
+                            bubbleText: "Click to share shop link.",
+                            bubbleWidth: 100,
+                            bubbleNipPosition: NipLocation.TOP_RIGHT,
+                            handPosition: Position.LEFT,
+                            key: Global.tokCopy,
+                            builder: (ctx) => GestureDetector(
+                              onTap: () {
+                                Global.tokCopy.currentState.hide();
+                                final link = '$linkDomain$_userName';
+                                Clipboard.setData(ClipboardData(text: link));
+                                EasyLoading.showToast(
+                                    'Copied\nYou can add the Link to your social bio now.');
+                                ShareManager.showShareLinkDialog(context, link);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(
+                                    left: 8, right: 8, top: 6, bottom: 6),
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
+                                  color: Colours.color_48B6EF,
+                                ),
+                                child: Text(
+                                  'Copy',
+                                  style: TextStyle(
+                                      color: Colours.white, fontSize: 14),
+                                ),
                               ),
                             ),
                           ),
@@ -404,7 +416,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
       ),
       onRefresh: () async {
         vm.fetchMyInfo();
-
         final Completer completer = Completer();
         StoreProvider.of<AppState>(context).dispatch(
           MyInfoGoodsListAction(
@@ -414,6 +425,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
 
         try {
           final StoreGoodsList model = await completer.future;
+          String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+          if (step == "2" && model.list.length == 0) {
+            Global.tokAddAndShare.currentState.show();
+          }
           _currentPage = 1;
           _refreshController.refreshCompleted(resetFooterState: true);
           if (_currentPage >= model.totalPage) {
@@ -459,6 +474,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   }
 
   Widget _hasGoodsWidget(_ViewModel vm) {
+    debugPrint("-----");
     return SliverPadding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 14),
       sliver: SliverStaggeredGrid.countBuilder(
@@ -471,7 +487,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           currency: Global.getUser(context).monetaryUnit,
           model: vm.models[index],
           size: _getSize(vm.models[index]),
+          idx: index,
           onTap: () async {
+            _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
+            Global.tokGoods.currentState.hide();
             final completer = Completer();
             StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
                 GoodsDetailRequest(
@@ -490,6 +509,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             }
           },
           onLongPress: () {
+            _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
+            Global.tokGoods.currentState.hide();
             _shareOrRemoveGoods(vm, vm.models[index]);
           },
         ),
@@ -519,15 +540,24 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           SizedBox(
             height: 28,
           ),
-          IdolButton(
-            'Add and share',
-            status: IdolButtonStatus.enable,
-            listener: (status) {
-              // go supply.
-              StoreProvider.of<AppState>(context)
-                  .dispatch(ChangeHomePageAction(0));
-            },
-          ),
+          TutorialOverlay(
+              key: Global.tokAddAndShare,
+              bubbleText: 'Your shop is empty now,click to add first items.',
+              builder: (ctx) => IdolButton(
+                    'Add and share',
+                    status: IdolButtonStatus.enable,
+                    listener: (status) async {
+                      Global.tokAddAndShare.currentState.hide();
+                      await _storage.write(
+                          key: KeyStore.GUIDE_STEP, value: "3");
+                      // Future.delayed(Duration(milliseconds: 2000), () {
+                      //   Global.tokPikAndSell.currentState.show();
+                      // });
+                      // // go supply.
+                      StoreProvider.of<AppState>(context)
+                          .dispatch(ChangeHomePageAction(0));
+                    },
+                  )),
         ],
       ),
     );
@@ -672,6 +702,7 @@ class _Tile extends StatelessWidget {
     this.size,
     this.onTap,
     this.onLongPress,
+    this.idx,
   });
 
   final String currency;
@@ -679,164 +710,186 @@ class _Tile extends StatelessWidget {
   final _Size size;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
+  final int idx;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      onLongPress: onLongPress,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        ),
-        clipBehavior: Clip.antiAlias,
-        elevation: 0,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: size.height,
-              child: Stack(
-                children: [
-                  CachedNetworkImage(
-                    placeholder: (context, _) => Image(
-                      image: R.image.goods_placeholder(),
-                      fit: BoxFit.cover,
-                    ),
-                    imageUrl: model.picture,
-                    fit: BoxFit.cover,
-                  ),
-                  if (model.discount.isNotEmpty)
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          left: 6,
-                          top: 4,
-                          right: 14,
-                          bottom: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFFF68A51),
-                              Color(0xFFEA5228),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(5),
-                              bottomRight: Radius.circular(100)),
-                        ),
-                        child: Text(
-                          '${model.discount} off',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ),
-                  Positioned(
-                    left: 6,
-                    bottom: 6,
-                    child: Row(
-                      children: [
-                        Image(
-                          image: R.image.ic_pv(),
-                          width: 12,
-                          height: 8,
-                        ),
-                        SizedBox(
-                          width: 2,
-                        ),
-                        Text(
-                          _formatHeatRank(model.heatRank) ?? '0',
-                          style: TextStyle(
-                            color: Colours.white,
-                            fontSize: 10,
-                            shadows: [
-                              Shadow(
-                                  offset: Offset(1.0, 1.0),
-                                  blurRadius: 2.0,
-                                  color: Colours.color_575859),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+    return this.idx == 0
+        ? TutorialOverlay(
+            key: Global.tokGoods,
+            bubbleText: "Tap and hold to share/remove.",
+            builder: (ctx) => GestureDetector(
+              onTap: onTap,
+              onLongPress: onLongPress,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                ),
+                clipBehavior: Clip.antiAlias,
+                elevation: 0,
+                child: _GoodsItem(),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 已知问题：web无法同时支持maxLines和ellipsis，详见 https://github.com/flutter/flutter/issues/44802#issuecomment-555707104
-                  Text(
-                    '${model.goodsName}',
-                    style: TextStyle(
-                      color: Color(0xFF555764),
-                      fontSize: 12,
+          )
+        : GestureDetector(
+            onTap: onTap,
+            onLongPress: onLongPress,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              ),
+              clipBehavior: Clip.antiAlias,
+              elevation: 0,
+              child: _GoodsItem(),
+            ),
+          );
+  }
+
+  Widget _GoodsItem() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          height: size.height,
+          child: Stack(
+            children: [
+              CachedNetworkImage(
+                placeholder: (context, _) => Image(
+                  image: R.image.goods_placeholder(),
+                  fit: BoxFit.cover,
+                ),
+                imageUrl: model.picture,
+                fit: BoxFit.cover,
+              ),
+              if (model.discount.isNotEmpty)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      left: 6,
+                      top: 4,
+                      right: 14,
+                      bottom: 4,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.ideographic,
-                    children: [
-                      Text(
-                        '$currency${model.currentPriceStr}',
-                        style: TextStyle(
-                          color: Color(0xff0F1015),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          textBaseline: TextBaseline.ideographic,
-                        ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFFF68A51),
+                          Color(0xFFEA5228),
+                        ],
                       ),
-                      SizedBox(
-                        width: 8,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(5),
+                          bottomRight: Radius.circular(100)),
+                    ),
+                    child: Text(
+                      '${model.discount} off',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
                       ),
-                      Text(
-                        '$currency${model.originalPriceStr}',
-                        style: TextStyle(
-                          color: Color(0xFF979AA9),
-                          fontSize: 14,
-                          decoration: TextDecoration.lineThrough,
-                          textBaseline: TextBaseline.ideographic,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                  if (model.tag.isNotEmpty)
-                    SizedBox(
+                ),
+              Positioned(
+                left: 6,
+                bottom: 6,
+                child: Row(
+                  children: [
+                    Image(
+                      image: R.image.ic_pv(),
+                      width: 12,
                       height: 8,
                     ),
-                  Wrap(
-                    spacing: 2,
-                    runSpacing: 2,
-                    children: model.tag
-                        .map(
-                          (e) => TagView(
-                            text: e.name.toUpperCase(),
-                          ),
-                        )
-                        .toList(),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Text(
+                      _formatHeatRank(model.heatRank) ?? '0',
+                      style: TextStyle(
+                        color: Colours.white,
+                        fontSize: 10,
+                        shadows: [
+                          Shadow(
+                              offset: Offset(1.0, 1.0),
+                              blurRadius: 2.0,
+                              color: Colours.color_575859),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 已知问题：web无法同时支持maxLines和ellipsis，详见 https://github.com/flutter/flutter/issues/44802#issuecomment-555707104
+              Text(
+                '${model.goodsName}',
+                style: TextStyle(
+                  color: Color(0xFF555764),
+                  fontSize: 12,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.ideographic,
+                children: [
+                  Text(
+                    '$currency${model.currentPriceStr}',
+                    style: TextStyle(
+                      color: Color(0xff0F1015),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      textBaseline: TextBaseline.ideographic,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    '$currency${model.originalPriceStr}',
+                    style: TextStyle(
+                      color: Color(0xFF979AA9),
+                      fontSize: 14,
+                      decoration: TextDecoration.lineThrough,
+                      textBaseline: TextBaseline.ideographic,
+                    ),
                   ),
                 ],
               ),
-            )
-          ],
-        ),
-      ),
+              if (model.tag.isNotEmpty)
+                SizedBox(
+                  height: 8,
+                ),
+              Wrap(
+                spacing: 2,
+                runSpacing: 2,
+                children: model.tag
+                    .map(
+                      (e) => TagView(
+                        text: e.name.toUpperCase(),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
