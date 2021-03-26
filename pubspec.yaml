@@ -38,7 +38,7 @@ dependencies:
   crypto: ^3.0.0
   cached_network_image: ^2.5.1
   auto_size_text: ^2.1.0
-  simple_tooltip: ^0.1.16
+  super_tooltip: ^1.0.1
   ecomshare:
     git:
       url: 'https://github.com/graydance/ecomshare.git'
@@ -77,6 +77,10 @@ flutter:
   - assets/images/dashboard/ic_help.png
   - assets/images/dashboard/ic_welcome_dialog.png
   - assets/images/goods_placeholder.png
+  - assets/images/guid_1.png
+  - assets/images/guid_2.png
+  - assets/images/guid_3.png
+  - assets/images/guid_bg.png
   - assets/images/ic_share_copy_link.png
   - assets/images/ic_share_download.png
   - assets/images/ic_share_facebook.png
@@ -123,3 +127,4 @@ flutter:
   - assets/images/supply/ic_tab_supplier_new_product_unselected.png
   - assets/images/supply/pause.png
   - assets/images/supply/play.png
+  - assets/image/

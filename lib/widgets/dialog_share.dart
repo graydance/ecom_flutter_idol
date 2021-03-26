@@ -294,7 +294,7 @@ class _ShareDialogState extends State<ShareDialog> {
           Container(
               margin: EdgeInsets.only(left: 50, right: 50, top: 10, bottom: 10),
               decoration: BoxDecoration(
-                color: Colours.black,
+                color: Colours.color_F8F8F8,
                 borderRadius: BorderRadius.all(
                   Radius.circular(2),
                 ),
