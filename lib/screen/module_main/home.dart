@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/net/request/base.dart';
@@ -9,6 +10,9 @@ import 'package:idol/r.g.dart';
 import 'package:idol/screen/screens.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
+import 'package:idol/widgets/SpeechBubble.dart';
+import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -23,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin<HomeScreen> {
   int _selectedIndex = Global.homePageController.initialPage;
   int _lastClickTime = 0;
+  final _storage = new FlutterSecureStorage();
 
   var _pages = [
     SupplyMVPPage(),
@@ -58,15 +63,28 @@ class _HomeScreenState extends State<HomeScreen>
   ];
 
   Widget _buildNavigationBarItemIcon(int index, bool active) {
-    return Image(
-      image: active ? _tabIconSelectedPaths[index] : _tabIconNormalPaths[index],
-      width: 30,
-      height: 30,
-    );
+    return Column(children: [
+      Image(
+        image:
+            active ? _tabIconSelectedPaths[index] : _tabIconNormalPaths[index],
+        width: 30,
+        height: 30,
+      ),
+      Text(
+        _titles[index],
+        style: active
+            ? Theme.of(context).textTheme.caption.copyWith(color: Colors.black)
+            : Theme.of(context).textTheme.caption,
+      )
+    ]);
   }
 
   @override
   void initState() {
+    // Future.delayed(Duration(milliseconds: 100), () {
+    //   Global.tokShopLink.currentState.show();
+    // });
+    _guideInit();
     super.initState();
   }
 
@@ -127,6 +145,13 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  void _guideInit() async {
+    String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+    if (step == "1" || step == "4") {
+      Global.tokShopLink.currentState.show();
+    }
+  }
+
   Widget _createBottomNavigationBar() {
     return Container(
       decoration: BoxDecoration(
@@ -155,7 +180,31 @@ class _HomeScreenState extends State<HomeScreen>
             label: _titles[1],
           ),
           BottomNavigationBarItem(
-            icon: _buildNavigationBarItemIcon(2, false), // Inbox
+            icon: TutorialOverlay(
+                key: Global.tokShopLink,
+                handPosition: Position.LEFT,
+                bubbleText: 'Click to check shopfront.',
+                bubbleNipPosition: NipLocation.BOTTOM_RIGHT,
+                clipCircle: true,
+                clipBg: Colors.white,
+                bubbleWidth: 100,
+                clipPadding: 10,
+                clipCircleOnTap: () async {
+                  Global.tokShopLink.currentState.hide();
+                  String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+                  if (step == "1") {
+                    await _storage.write(key: KeyStore.GUIDE_STEP, value: "2");
+                  } else {
+                    await _storage.write(key: KeyStore.GUIDE_STEP, value: "4");
+                    Future.delayed(Duration(milliseconds: 200), () {
+                      Global.tokCopy.currentState.show();
+                    });
+                  }
+
+                  Global.homePageController.jumpToPage(2);
+                },
+                builder: (ctx) =>
+                    _buildNavigationBarItemIcon(2, false)), // Inbox
             activeIcon: _buildNavigationBarItemIcon(2, true),
             label: _titles[2],
           ),
@@ -171,12 +220,12 @@ class _HomeScreenState extends State<HomeScreen>
           ),*/
         ],
         type: BottomNavigationBarType.fixed,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         unselectedItemColor: Colours.color_979AA9,
-        unselectedFontSize: 12,
+        unselectedFontSize: 0,
         selectedItemColor: Colours.color_0F1015,
-        selectedFontSize: 12,
+        selectedFontSize: 0,
         currentIndex: _selectedIndex,
         onTap: (index) => Global.homePageController.jumpToPage(index),
       ),
