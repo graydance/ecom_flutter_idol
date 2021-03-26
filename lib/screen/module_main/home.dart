@@ -12,6 +12,7 @@ import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/widgets/SpeechBubble.dart';
+import 'package:idol/widgets/dialog_welcome.dart';
 import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -137,6 +138,20 @@ class _HomeScreenState extends State<HomeScreen>
                 .dispatch(DashboardAction(BaseRequestImpl()));
           } else if (index == 2) {
             // (_pages[index] as ShopLinkPage).refreshData();
+          } else if (index == 0) {
+            _storage.read(key: KeyStore.GUIDE_STEP).then((value) => value == "5"
+                ? showDialog(
+                    context: context,
+                    builder: (context) {
+                      return FirstDialog(
+                        onClose: () {
+                          _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+                        },
+                      );
+                    },
+                    barrierDismissible: false,
+                  )
+                : "");
           }
         },
         children: _pages,
