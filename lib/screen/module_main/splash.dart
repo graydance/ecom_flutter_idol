@@ -76,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
       debugPrint('User is not logged in. will jump to Sign Up/Sign In.');
       // sing up/sign in.
       Future.delayed(Duration(seconds: 2), () {
-        isFirstRun != null &&
+        isFirstRun == null ||
                 bool.fromEnvironment(isFirstRun, defaultValue: true)
             ? IdolRoute.startGuide(context)
             : IdolRoute.startValidateEmail(context);
