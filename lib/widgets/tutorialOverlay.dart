@@ -53,6 +53,7 @@ class TutorialOverlayState extends State<TutorialOverlay> {
   }
 
   show() {
+    initOverlay(context);
     Overlay.of(widget.key.currentContext).insertAll(tutorialOverlays);
     WidgetsBinding.instance.addPostFrameCallback(adjustBubble);
   }
@@ -87,132 +88,133 @@ class TutorialOverlayState extends State<TutorialOverlay> {
     Overlay.of(context).setState(() {});
   }
 
-  initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (tutorialOverlays.length == 0) {
-        var screensize = MediaQuery.of(context).size;
-        OverlayEntry bgEntry = OverlayEntry(
-            builder: (ctx) => Positioned(
-                left: 0,
-                top: 0,
-                width: screensize.width,
-                height: screensize.height,
-                child: Container(
-                  color: Color.fromRGBO(0, 0, 0, 0.5),
-                )));
-        tutorialOverlays.add(bgEntry);
+  initOverlay(context) {
+    if (tutorialOverlays.length == 0) {
+      var screensize = MediaQuery.of(context).size;
+      OverlayEntry bgEntry = OverlayEntry(
+          builder: (ctx) => Positioned(
+              left: 0,
+              top: 0,
+              width: screensize.width,
+              height: screensize.height,
+              child: Container(
+                color: Color.fromRGBO(0, 0, 0, 0.5),
+              )));
+      tutorialOverlays.add(bgEntry);
 
-        final RenderBox renderBoxTarget =
-            builderKey.currentContext.findRenderObject();
-        targetSize = renderBoxTarget.size;
-        positionTarget = renderBoxTarget.localToGlobal(Offset.zero);
-        OverlayEntry targetEntry = OverlayEntry(
-            builder: (ctx) => Positioned(
-                left: positionTarget.dx - widget.clipPadding,
-                top: positionTarget.dy - widget.clipPadding,
-                width: targetSize.width + 2 * widget.clipPadding,
-                height: targetSize.height + 2 * widget.clipPadding,
-                child: widget.clipCircle
-                    ? Center(
-                        child: ClipOval(
-                          child: Container(
-                            width: min(targetSize.width, targetSize.height) +
-                                2 * widget.clipPadding,
-                            height: min(targetSize.width, targetSize.height) +
-                                2 * widget.clipPadding,
-                            color: widget.clipBg,
-                            child: Center(
-                                child: GestureDetector(
-                                    onTap: () {
-                                      widget.clipCircleOnTap != null &&
-                                          widget.clipCircleOnTap();
-                                    },
-                                    child: SizedBox(
-                                      width: targetSize.width,
-                                      height: targetSize.height,
-                                      child: widget.builder(ctx),
-                                    ))),
-                          ),
+      final RenderBox renderBoxTarget =
+          builderKey.currentContext.findRenderObject();
+      targetSize = renderBoxTarget.size;
+      positionTarget = renderBoxTarget.localToGlobal(Offset.zero);
+      OverlayEntry targetEntry = OverlayEntry(
+          builder: (ctx) => Positioned(
+              left: positionTarget.dx - widget.clipPadding,
+              top: positionTarget.dy - widget.clipPadding,
+              width: targetSize.width + 2 * widget.clipPadding,
+              height: targetSize.height + 2 * widget.clipPadding,
+              child: widget.clipCircle
+                  ? Center(
+                      child: ClipOval(
+                        child: Container(
+                          width: min(targetSize.width, targetSize.height) +
+                              2 * widget.clipPadding,
+                          height: min(targetSize.width, targetSize.height) +
+                              2 * widget.clipPadding,
+                          color: widget.clipBg,
+                          child: Center(
+                              child: GestureDetector(
+                                  onTap: () {
+                                    if (widget.clipCircleOnTap != null)
+                                      widget.clipCircleOnTap();
+                                  },
+                                  child: SizedBox(
+                                    width: targetSize.width,
+                                    height: targetSize.height,
+                                    child: widget.builder(ctx),
+                                  ))),
                         ),
-                      )
-                    : widget.builder(ctx)));
-        tutorialOverlays.add(targetEntry);
+                      ),
+                    )
+                  : widget.builder(ctx)));
+      tutorialOverlays.add(targetEntry);
 
-        controller = AnimationController(
-          duration: Duration(milliseconds: 300),
-          vsync: Overlay.of(context),
-        );
-        final Animation curve =
-            CurvedAnimation(parent: controller, curve: Curves.easeOut);
-        controller
-          ..forward()
-          ..addListener(() {
-            if (!controller.isAnimating) {
-              if (controller.value == 0) {
-                controller.forward();
-              } else {
-                controller.reverse();
-              }
+      controller = AnimationController(
+        duration: Duration(milliseconds: 300),
+        vsync: Overlay.of(context),
+      );
+      final Animation curve =
+          CurvedAnimation(parent: controller, curve: Curves.easeOut);
+      controller
+        ..forward()
+        ..addListener(() {
+          if (!controller.isAnimating) {
+            if (controller.value == 0) {
+              controller.forward();
+            } else {
+              controller.reverse();
             }
-          });
-        OverlayEntry handEntry = OverlayEntry(
-            builder: (ctx) => Positioned(
-                left: widget.handPosition == Position.BOTTOM_RIGHT
-                    ? (positionTarget.dx +
-                        targetSize.width / 2 -
-                        HAND_POSITION_OFFSET.dx)
-                    : (positionTarget.dx - targetSize.width),
-                top: widget.handPosition == Position.BOTTOM_RIGHT
-                    ? (positionTarget.dy +
-                        targetSize.height -
-                        HAND_POSITION_OFFSET.dy)
-                    : positionTarget.dy,
-                height: widget.handPosition == Position.BOTTOM_RIGHT
-                    ? null
-                    : targetSize.height,
-                width: widget.handPosition == Position.BOTTOM_RIGHT
-                    ? targetSize.width
-                    : null,
-                child: AnimatedBuilder(
-                    animation: curve,
-                    builder: (context, child) => Transform.translate(
-                          offset: Position.BOTTOM_RIGHT == widget.handPosition
-                              ? Offset(0, curve.value * 15)
-                              : Offset(-curve.value * 15, 0),
-                          child: child,
-                        ),
-                    child: Image.asset(
-                      widget.handPosition == Position.BOTTOM_RIGHT
-                          ? 'assets/image/hand_rb.png'
-                          : 'assets/image/hand_lb.png',
-                      width: 40,
-                      height: 51,
-                    ))));
-        tutorialOverlays.add(handEntry);
+          }
+        });
+      OverlayEntry handEntry = OverlayEntry(
+          builder: (ctx) => Positioned(
+              left: widget.handPosition == Position.BOTTOM_RIGHT
+                  ? (positionTarget.dx +
+                      targetSize.width / 2 -
+                      HAND_POSITION_OFFSET.dx)
+                  : (positionTarget.dx - targetSize.width),
+              top: widget.handPosition == Position.BOTTOM_RIGHT
+                  ? (positionTarget.dy +
+                      targetSize.height -
+                      HAND_POSITION_OFFSET.dy)
+                  : positionTarget.dy,
+              height: widget.handPosition == Position.BOTTOM_RIGHT
+                  ? null
+                  : targetSize.height,
+              width: widget.handPosition == Position.BOTTOM_RIGHT
+                  ? targetSize.width
+                  : null,
+              child: AnimatedBuilder(
+                  animation: curve,
+                  builder: (context, child) => Transform.translate(
+                        offset: Position.BOTTOM_RIGHT == widget.handPosition
+                            ? Offset(0, curve.value * 15)
+                            : Offset(-curve.value * 15, 0),
+                        child: child,
+                      ),
+                  child: Image.asset(
+                    widget.handPosition == Position.BOTTOM_RIGHT
+                        ? 'assets/image/hand_rb.png'
+                        : 'assets/image/hand_lb.png',
+                    width: 40,
+                    height: 51,
+                  ))));
+      tutorialOverlays.add(handEntry);
 
-        bubbleEntry = OverlayEntry(
-            builder: (ctx) => Positioned(
-                left: _bubbleLeft(positionTarget, targetSize),
-                top: _bubbleTop(positionTarget, targetSize, targetSize),
-                width: _bubbleWidth(targetSize),
-                // height: targetSize.height,
-                child: SpeechBubble(
-                  key: bubbleEntryKey,
-                  nipHeight: BUBBLE_NIP_HEIGHT,
-                  nipLocation: widget.bubbleNipPosition,
-                  color: Colors.black,
-                  child: Text(
-                    widget.bubbleText,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        .copyWith(color: Colors.white),
-                  ),
-                )));
-        tutorialOverlays.add(bubbleEntry);
-      }
-    });
+      bubbleEntry = OverlayEntry(
+          builder: (ctx) => Positioned(
+              left: _bubbleLeft(positionTarget, targetSize),
+              top: _bubbleTop(positionTarget, targetSize, targetSize),
+              width: _bubbleWidth(targetSize),
+              // height: targetSize.height,
+              child: SpeechBubble(
+                key: bubbleEntryKey,
+                nipHeight: BUBBLE_NIP_HEIGHT,
+                nipLocation: widget.bubbleNipPosition,
+                color: Colors.black,
+                child: Text(
+                  widget.bubbleText,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      .copyWith(color: Colors.white),
+                ),
+              )));
+      tutorialOverlays.add(bubbleEntry);
+    }
+  }
+
+  initState() {
     super.initState();
   }
 
