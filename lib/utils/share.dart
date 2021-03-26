@@ -7,6 +7,7 @@ import 'package:idol/conf.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/router.dart';
 import 'package:idol/widgets/dialog_share.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ShareManager {
@@ -36,9 +37,11 @@ class ShareManager {
 
   /// 分享商品
   static void showShareGoodsDialog(BuildContext context, String imageUrl) {
-    showModalBottomSheet(
+    showMaterialModalBottomSheet(
+        expand: false,
         context: context,
-        builder: (BuildContext context) {
+        backgroundColor: Colors.transparent,
+        builder: (context) {
           return ShareDialog(
             'Share great posts in feed',
             imageUrl,
