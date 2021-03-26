@@ -142,8 +142,12 @@ class _ShareDialogState extends State<ShareDialog> {
   Widget build(BuildContext context) {
     return Material(
         type: MaterialType.transparency,
-        child: SingleChildScrollView(
-          child: _createShareWidget(),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: _createShareWidget(),
+          ),
         ));
   }
 
@@ -174,7 +178,7 @@ class _ShareDialogState extends State<ShareDialog> {
           topRight: Radius.circular(12),
         ),
       ),
-      padding: EdgeInsets.only(bottom: 60, left: 30, right: 30),
+      padding: EdgeInsets.only(bottom: 30, left: 30, right: 30),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -259,7 +263,7 @@ class _ShareDialogState extends State<ShareDialog> {
 
   Widget _createLinkShareWidget() {
     return Container(
-      padding: EdgeInsets.only(bottom: 60),
+      padding: EdgeInsets.only(bottom: 30),
       decoration: BoxDecoration(
         color: Colours.white,
         borderRadius: BorderRadius.only(
@@ -268,7 +272,7 @@ class _ShareDialogState extends State<ShareDialog> {
         ),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(

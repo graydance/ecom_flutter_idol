@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -21,7 +23,7 @@ import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:simple_tooltip/simple_tooltip.dart';
+import 'package:super_tooltip/super_tooltip.dart';
 
 class DashboardMVPPage extends StatefulWidget {
   @override
@@ -34,8 +36,10 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
         SingleTickerProviderStateMixin {
   TabController _tabController;
   bool _isShowedHowToMakeMoneyDialog = false;
-  bool _isShowEarningTip = false;
+
   static final _storage = new FlutterSecureStorage();
+  SuperTooltip _tooltip;
+  Timer _toopTipTimer;
 
   final List<String> _tabValues = [
     'Past Sales',
@@ -67,22 +71,25 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
                 ? newVM._completeRewardsState
                 : oldVM._completeRewardsState);
       },
-      builder: (context, vm) => Container(
-        color: Colours.color_F8F8F8,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            AppBar(
-              title: Text('Dashboard'),
-              centerTitle: true,
-              elevation: 0,
-              primary: true,
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Expanded(child: _createChildWidgetByState(vm)),
-          ],
+      builder: (context, vm) => WillPopScope(
+        onWillPop: _willPopCallback,
+        child: Container(
+          color: Colours.color_F8F8F8,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              AppBar(
+                title: Text('Dashboard'),
+                centerTitle: true,
+                elevation: 0,
+                primary: true,
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Expanded(child: _createChildWidgetByState(vm)),
+            ],
+          ),
         ),
       ),
     );
@@ -130,6 +137,69 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
     );
   }
 
+  Future<bool> _willPopCallback() async {
+    // If the tooltip is open we don't pop the page on a backbutton press
+    // but close the ToolTip
+    if (_tooltip.isOpen) {
+      _tooltip.close();
+      _cancelToolTipTimer();
+      return false;
+    }
+    return true;
+  }
+
+  void _showEarningTip(BuildContext context) {
+    _cancelToolTipTimer();
+
+    if (_tooltip != null && _tooltip.isOpen) {
+      _tooltip.close();
+      return;
+    }
+
+    var renderBox = context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    var targetGlobalCenter = renderBox
+        .localToGlobal(renderBox.size.center(Offset.zero), ancestor: overlay);
+
+    // We create the tooltip on the first use
+    _tooltip = SuperTooltip(
+      popupDirection: TooltipDirection.down,
+      arrowTipDistance: 20.0,
+      arrowBaseWidth: 8.0,
+      arrowLength: 4.0,
+      borderWidth: 0,
+      borderColor: Colors.white,
+      shadowColor: Colours.color_black15,
+      maxWidth: 200.0,
+      showCloseButton: ShowCloseButton.none,
+      hasShadow: true,
+      touchThrougArea: Rect.fromLTWH(targetGlobalCenter.dx - 70,
+          targetGlobalCenter.dy + 100, 140.0, 160.0),
+      touchThroughAreaShape: ClipAreaShape.rectangle,
+      content: Text(
+        'The total amount of money you’ve earned on this app.',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 12,
+          decoration: TextDecoration.none,
+        ),
+        softWrap: true,
+      ),
+    );
+
+    _tooltip.show(context);
+    _toopTipTimer = Timer(Duration(seconds: 3), () {
+      if (_tooltip != null && _tooltip.isOpen) {
+        _tooltip.close();
+      }
+    });
+  }
+
+  _cancelToolTipTimer() {
+    if (_toopTipTimer != null) _toopTipTimer.cancel();
+  }
+
   Widget _createChildWidgetByState(_ViewModel _viewModel) {
     if (_viewModel._dashboardState is DashboardSuccess) {
       var dashboard =
@@ -170,58 +240,36 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
           ),
 
           // Lifetime Earnings
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _isShowEarningTip = !_isShowEarningTip;
-              });
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 20, bottom: 20),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Lifetime Earnings',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colours.color_A9A9A9,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 4,
-                      right: 8,
-                    ),
-                    child: Image(
-                      image: R.image.ic_earnings_tip(),
-                      width: 15,
-                    ),
-                  ),
-                  SimpleTooltip(
-                    show: _isShowEarningTip,
-                    tooltipDirection: TooltipDirection.down,
-                    arrowLength: 4,
-                    arrowBaseWidth: 8,
-                    animationDuration: Duration(seconds: 0),
-                    borderWidth: 0,
-                    ballonPadding: const EdgeInsets.all(4),
-                    content: Text(
-                      'The total amount of money you’ve earned on this app.',
+          Builder(
+            builder: (ctx) => GestureDetector(
+              onTap: () {
+                _showEarningTip(ctx);
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 20, bottom: 20),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Lifetime Earnings',
                       style: TextStyle(
-                        color: Colors.black,
                         fontSize: 12,
-                        decoration: TextDecoration.none,
+                        color: Colours.color_A9A9A9,
                       ),
                     ),
-                    tooltipTap: () {
-                      setState(() {
-                        _isShowEarningTip = !_isShowEarningTip;
-                      });
-                    },
-                    child: Text(
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 4,
+                        right: 8,
+                      ),
+                      child: Image(
+                        image: R.image.ic_earnings_tip(),
+                        width: 15,
+                      ),
+                    ),
+                    Text(
                       Global.getUser(context).monetaryUnit +
                           _decimalFormat(dashboard.lifetimeEarnings),
                       style: TextStyle(
@@ -230,8 +278,8 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
