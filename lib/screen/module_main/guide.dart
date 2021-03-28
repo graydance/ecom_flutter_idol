@@ -23,7 +23,7 @@ class _GuideScreenState extends State<GuideScreen> {
   static const List<String> guideDesc = [
     'Start,grow and boost your\n online business with Mypik.shop\n ',
     'With our free, Easy-to-Use\n Tools, build-in supply\n chains,after-sale service',
-    'With our free, Easy-to-Use\n Tools, build-in supply\n chains,after-sale service',
+    'Start selling today in your socials -\n No Inventory Required, risk-free',
   ];
 
   static const List<String> guideClick = [

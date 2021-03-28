@@ -39,6 +39,7 @@ dependencies:
   cached_network_image: ^2.5.1
   auto_size_text: ^2.1.0
   super_tooltip: ^1.0.1
+  modal_bottom_sheet: ^1.0.0+1
   ecomshare:
     git:
       url: 'https://github.com/graydance/ecomshare.git'
@@ -104,6 +105,7 @@ flutter:
   - assets/images/main/ic_tab_supply_selected.png
   - assets/images/main/ic_whatsapp.png
   - assets/images/main/launch_background.webp
+  - assets/images/new_guid.png
   - assets/images/shoplink/edit_avatar.png
   - assets/images/shoplink/ic_change_avatar.png
   - assets/images/shoplink/ic_edit.png

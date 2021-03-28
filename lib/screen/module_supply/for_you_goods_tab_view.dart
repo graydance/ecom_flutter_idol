@@ -1,3 +1,5 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -23,7 +25,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
-
   @override
   bool get wantKeepAlive => true;
 
@@ -31,6 +32,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
   void initState() {
     super.initState();
     _refreshController = RefreshController();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
   }
 
   @override
@@ -74,6 +76,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
             itemCount:
                 (vm._forYouState as ForYouSuccess).goodsDetailList.list.length,
             itemBuilder: (context, index) => FollowingGoodsListItem(
+              idx: index,
               goodsDetail: (vm._forYouState as ForYouSuccess)
                   .goodsDetailList
                   .list[index],
