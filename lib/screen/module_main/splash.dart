@@ -60,6 +60,10 @@ class _SplashScreenState extends State<SplashScreen> {
     String email;
     String password;
     try {
+      String guideStep = await _storage.read(key: KeyStore.GUIDE_STEP);
+      if (guideStep == null) {
+        await _storage.write(key: KeyStore.GUIDE_STEP, value: "1");
+      }
       isFirstRun = await _storage.read(key: KeyStore.IS_FIRST_RUN);
       signedIn = await _storage.read(key: KeyStore.TOKEN);
       email = await _storage.read(key: KeyStore.EMAIL);

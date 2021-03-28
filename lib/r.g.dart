@@ -331,6 +331,11 @@ class _R_Image_AssetResource {
       "assets/images/main/launch_background.webp",
       packageName: null);
 
+  /// asset: assets/images/new_guid.png
+  // ignore: non_constant_identifier_names
+  final new_guid =
+      const AssetResource("assets/images/new_guid.png", packageName: null);
+
   /// asset: assets/images/shoplink/edit_avatar.png
   // ignore: non_constant_identifier_names
   final edit_avatar = const AssetResource(
@@ -726,6 +731,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage launch_background_webp() {
     return AssetImage(asset.launch_background_webp.keyName);
+  }
+
+  /// asset: assets/images/new_guid.png
+  // ignore: non_constant_identifier_names
+  AssetImage new_guid() {
+    return AssetImage(asset.new_guid.keyName);
   }
 
   /// asset: assets/images/shoplink/edit_avatar.png

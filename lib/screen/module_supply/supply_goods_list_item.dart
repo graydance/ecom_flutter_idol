@@ -4,7 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
+import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:idol/models/appstate.dart';
@@ -18,10 +22,12 @@ import 'package:idol/widgets/video_player_widget.dart';
 
 class FollowingGoodsListItem extends StatefulWidget {
   final GoodsDetail goodsDetail;
+  final int idx;
   final OnProductAddedStoreListener onProductAddedStoreListener;
 
   const FollowingGoodsListItem(
       {Key key,
+      this.idx,
       this.goodsDetail = const GoodsDetail(),
       this.onProductAddedStoreListener})
       : super(key: key);
@@ -34,13 +40,19 @@ typedef OnProductAddedStoreListener = Function(GoodsDetail goodsDetail);
 
 class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
   double _messageBarHeight = 0;
-
+  final _storage = new FlutterSecureStorage();
   @override
   void initState() {
     super.initState();
 
     timeago.setLocaleMessages('myEn', MyEnMessages());
     timeago.setDefaultLocale('myEn');
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+      if (step == "3") {
+        Global.tokPikAndSell.currentState.show();
+      }
+    });
   }
 
   @override
@@ -62,6 +74,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
     debugPrint('ProductItemWidget >>> ' + widget.goodsDetail.toString());
     var updateTime =
         DateTime.fromMillisecondsSinceEpoch(widget.goodsDetail.updateTime);
+
     return GestureDetector(
       onTap: () {
         StoreProvider.of<AppState>(context)
@@ -267,22 +280,51 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                   flex: 3,
                   child: SizedBox(
                     height: 44,
-                    child: IdolButton(
-                      widget.goodsDetail.inMyStore == 1
-                          ? 'Share to Earn'
-                          : 'Pik & Sell',
-                      status: IdolButtonStatus.enable,
-                      listener: (status) {
-                        if (status == IdolButtonStatus.enable) {
-                          if (widget.goodsDetail.inMyStore == 1) {
-                            ShareManager.showShareGoodsDialog(
-                                context, widget.goodsDetail.goods[0]);
-                          } else {
-                            _addProductToMyStore(widget.goodsDetail);
-                          }
-                        }
-                      },
-                    ),
+                    child: widget.idx == 0
+                        ? TutorialOverlay(
+                            key: Global.tokPikAndSell,
+                            bubbleText:
+                                'Click to add first item to your listing.',
+                            builder: (ctx) => IdolButton(
+                                  widget.goodsDetail.inMyStore == 1
+                                      ? 'Share to Earn'
+                                      : 'Pik & Sell',
+                                  status: IdolButtonStatus.enable,
+                                  listener: (status) async {
+                                    String step = await _storage.read(
+                                        key: KeyStore.GUIDE_STEP);
+                                    if (step == "3") {
+                                      Global.tokPikAndSell.currentState.hide();
+                                      Global.tokShopLink.currentState.show();
+                                    }
+                                    if (status == IdolButtonStatus.enable) {
+                                      if (widget.goodsDetail.inMyStore == 1) {
+                                        ShareManager.showShareGoodsDialog(
+                                            context,
+                                            widget.goodsDetail.goods[0]);
+                                      } else {
+                                        _addProductToMyStore(
+                                            widget.goodsDetail);
+                                      }
+                                    }
+                                  },
+                                ))
+                        : IdolButton(
+                            widget.goodsDetail.inMyStore == 1
+                                ? 'Share to Earn'
+                                : 'Pik & Sell',
+                            status: IdolButtonStatus.enable,
+                            listener: (status) {
+                              if (status == IdolButtonStatus.enable) {
+                                if (widget.goodsDetail.inMyStore == 1) {
+                                  ShareManager.showShareGoodsDialog(
+                                      context, widget.goodsDetail.goods[0]);
+                                } else {
+                                  _addProductToMyStore(widget.goodsDetail);
+                                }
+                              }
+                            },
+                          ),
                   ),
                 ),
               ],

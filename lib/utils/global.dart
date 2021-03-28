@@ -5,6 +5,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:logging/logging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -14,6 +15,11 @@ class Global {
 
   static final GlobalKey<NavigatorState> navigatorKey =
       new GlobalKey<NavigatorState>();
+  static final tokAddAndShare = GlobalKey<TutorialOverlayState>();
+  static final tokShopLink = GlobalKey<TutorialOverlayState>();
+  static final tokPikAndSell = GlobalKey<TutorialOverlayState>();
+  static final tokCopy = GlobalKey<TutorialOverlayState>();
+  static final tokGoods = GlobalKey<TutorialOverlayState>();
 
   static final isRelease = const bool.fromEnvironment('dart.vm.product');
   static final storage = new FlutterSecureStorage();
