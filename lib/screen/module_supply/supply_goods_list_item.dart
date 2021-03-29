@@ -293,8 +293,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                   listener: (status) async {
                                     String step = await _storage.read(
                                         key: KeyStore.GUIDE_STEP);
+                                    Global.tokPikAndSell.currentState.hide();
                                     if (step == "3") {
-                                      Global.tokPikAndSell.currentState.hide();
                                       Global.tokShopLink.currentState.show();
                                     }
                                     if (status == IdolButtonStatus.enable) {
