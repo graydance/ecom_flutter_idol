@@ -428,6 +428,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           String step = await _storage.read(key: KeyStore.GUIDE_STEP);
           if (step == "2" && model.list.length == 0) {
             Global.tokAddAndShare.currentState.show();
+          } else {
+            await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
           }
           _currentPage = 1;
           _refreshController.refreshCompleted(resetFooterState: true);
@@ -489,8 +491,13 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           size: _getSize(vm.models[index]),
           idx: index,
           onTap: () async {
-            _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
-            Global.tokGoods.currentState.hide();
+            if (await _storage.read(key: KeyStore.GUIDE_STEP) == "4") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
+              Global.tokGoods.currentState.hide();
+              Global.homePageController.jumpToPage(0);
+              return;
+            }
+
             final completer = Completer();
             StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
                 GoodsDetailRequest(
@@ -508,8 +515,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               EasyLoading.showError(error.toString());
             }
           },
-          onLongPress: () {
-            _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
+          onLongPress: () async {
+            await _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
             Global.tokGoods.currentState.hide();
             _shareOrRemoveGoods(vm, vm.models[index]);
           },
