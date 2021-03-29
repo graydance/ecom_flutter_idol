@@ -92,8 +92,8 @@ class _WithdrawScreenState extends State {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
                       _withdrawInfo.withdraw
-                  ? ''
-                  : 'Not sufficient funds';
+                  ? 'Not sufficient funds'
+                  : '';
             }
           } else {
             int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
@@ -104,8 +104,8 @@ class _WithdrawScreenState extends State {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
               _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
                       _withdrawInfo.withdraw
-                  ? ''
-                  : 'Not sufficient funds';
+                  ? 'Not sufficient funds'
+                  : '';
             }
           }
         } else {
@@ -129,8 +129,8 @@ class _WithdrawScreenState extends State {
             // 提现金额+手续费大于 可提现余额，则提示错误信息。
             _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
                     _withdrawInfo.withdraw
-                ? ''
-                : 'Not sufficient funds';
+                ? 'Not sufficient funds'
+                : '';
           }
         } else {
           int withdrawalAmountInt = int.tryParse(withdrawalAmountString);
@@ -141,8 +141,8 @@ class _WithdrawScreenState extends State {
             // 提现金额+手续费大于 可提现余额，则提示错误信息。
             _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
                     _withdrawInfo.withdraw
-                ? ''
-                : 'Not sufficient funds';
+                ? 'Not sufficient funds'
+                : '';
           }
         }
       } else {
