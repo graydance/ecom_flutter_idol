@@ -47,12 +47,14 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
 
     timeago.setLocaleMessages('myEn', MyEnMessages());
     timeago.setDefaultLocale('myEn');
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      String step = await _storage.read(key: KeyStore.GUIDE_STEP);
-      if (step == "3") {
-        Global.tokPikAndSell.currentState.show();
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+    //   if (step == "3") {
+    //     Future.delayed(Duration(milliseconds: 300), () {
+    //       Global.tokPikAndSell.currentState.show();
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -291,20 +293,21 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                       : 'Pik & Sell',
                                   status: IdolButtonStatus.enable,
                                   listener: (status) async {
+                                    Global.tokPikAndSell.currentState.hide();
                                     String step = await _storage.read(
                                         key: KeyStore.GUIDE_STEP);
-                                    if (step == "3") {
-                                      Global.tokPikAndSell.currentState.hide();
-                                      Global.tokShopLink.currentState.show();
-                                    }
                                     if (status == IdolButtonStatus.enable) {
                                       if (widget.goodsDetail.inMyStore == 1) {
                                         ShareManager.showShareGoodsDialog(
                                             context,
                                             widget.goodsDetail.goods[0]);
                                       } else {
-                                        _addProductToMyStore(
+                                        await _addProductToMyStore(
                                             widget.goodsDetail);
+                                        if (step == "3") {
+                                          Global.tokShopLink.currentState
+                                              .show();
+                                        }
                                       }
                                     }
                                   },
