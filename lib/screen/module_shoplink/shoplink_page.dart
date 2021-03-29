@@ -428,6 +428,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           String step = await _storage.read(key: KeyStore.GUIDE_STEP);
           if (step == "2" && model.list.length == 0) {
             Global.tokAddAndShare.currentState.show();
+          } else {
+            await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
           }
           _currentPage = 1;
           _refreshController.refreshCompleted(resetFooterState: true);
