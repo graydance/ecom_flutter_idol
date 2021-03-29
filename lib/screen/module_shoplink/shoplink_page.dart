@@ -516,8 +516,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             }
           },
           onLongPress: () async {
-            await _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
-            Global.tokGoods.currentState.hide();
+            if (await _storage.read(key: KeyStore.GUIDE_STEP) == "4") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
+              Global.tokGoods.currentState.hide();
+            }
             _shareOrRemoveGoods(vm, vm.models[index]);
           },
         ),
