@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/env.dart';
 import 'package:idol/models/arguments/arguments.dart';
@@ -171,7 +174,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             'Please check whether you have email application installed');
         break;
       case 2:
-        _launcherURL(whatsAppUri,
+        final uri = Platform.isIOS ? whatsAppUri2 : whatsAppUri;
+        _launcherURL(uri,
             'Please check whether you have WhatsApp application installed');
         break;
       case 3:
@@ -191,5 +195,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _launcherURL(String url, String errorMsg) async =>
-      await canLaunch(url) ? launch(url) : throw errorMsg;
+      await canLaunch(url) ? launch(url) : EasyLoading.showToast(errorMsg);
 }
