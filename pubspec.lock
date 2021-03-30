@@ -328,13 +328,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.0"
-  flutter_secure_storage:
-    dependency: "direct main"
-    description:
-      name: flutter_secure_storage
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.3.5"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -699,7 +692,7 @@ packages:
     source: hosted
     version: "0.6.5+4"
   shared_preferences:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.flutter-io.cn"
