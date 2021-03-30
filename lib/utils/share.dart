@@ -60,7 +60,7 @@ class ShareManager {
             (shareChannel) {
               EasyLoading.showToast('Capture copied');
               final shareText =
-                  'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Mypik.shop #Mypik  #supportsmallbusinesses';
+                  'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Olaak.com #Olaak  #supportsmallbusinesses';
               Clipboard.setData(ClipboardData(text: shareText));
 
               Future.delayed(Duration(milliseconds: 500), () {

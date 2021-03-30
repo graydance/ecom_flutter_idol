@@ -179,7 +179,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             'Please check whether you have WhatsApp application installed');
         break;
       case 3:
-        LaunchReview.launch(androidAppId: "me.hookar.idol", iOSAppId: iosAppId);
+        LaunchReview.launch(androidAppId: androidAppId, iOSAppId: iosAppId);
         break;
       case 4:
         IdolRoute.startInnerWebView(
