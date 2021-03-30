@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/widgets/SpeechBubble.dart';
@@ -183,7 +183,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           ),
                           TutorialOverlay(
                             bubbleText: "Click to share shop link.",
-                            bubbleWidth: 100,
+                            bubbleWidth: 200,
                             bubbleNipPosition: NipLocation.TOP_RIGHT,
                             handPosition: Position.LEFT,
                             key: Global.tokCopy,
@@ -428,6 +428,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           String step = await _storage.read(key: KeyStore.GUIDE_STEP);
           if (step == "2" && model.list.length == 0) {
             Global.tokAddAndShare.currentState.show();
+          } else {
+            await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
           }
           _currentPage = 1;
           _refreshController.refreshCompleted(resetFooterState: true);
@@ -514,8 +516,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             }
           },
           onLongPress: () async {
-            await _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
-            Global.tokGoods.currentState.hide();
+            if (await _storage.read(key: KeyStore.GUIDE_STEP) == "4") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
+              Global.tokGoods.currentState.hide();
+            }
             _shareOrRemoveGoods(vm, vm.models[index]);
           },
         ),

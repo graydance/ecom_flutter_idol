@@ -1,4 +1,4 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/share.dart';
 import 'package:flutter/material.dart';

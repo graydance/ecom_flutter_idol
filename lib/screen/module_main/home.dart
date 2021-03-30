@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/net/request/base.dart';
@@ -202,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen>
                 bubbleNipPosition: NipLocation.BOTTOM_RIGHT,
                 clipCircle: true,
                 clipBg: Colors.white,
-                bubbleWidth: 100,
+                bubbleWidth: 200,
                 clipPadding: 10,
                 clipCircleOnTap: () async {
                   Global.tokShopLink.currentState.hide();

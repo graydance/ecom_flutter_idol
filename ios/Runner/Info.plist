@@ -57,6 +57,7 @@
 		<string>instagram</string>
 		<string>instagram-stories</string>
 		<string>twitter</string>
+		<string>whatsapp</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

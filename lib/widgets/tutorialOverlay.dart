@@ -73,7 +73,7 @@ class TutorialOverlayState extends State<TutorialOverlay> {
               key: bubbleEntryKey,
               nipHeight: BUBBLE_NIP_HEIGHT,
               nipLocation: widget.bubbleNipPosition,
-              color: Colors.black,
+              color: Color.fromRGBO(0, 0, 0, 0.59),
               child: Text(
                 widget.bubbleText,
                 textAlign: TextAlign.center,
@@ -200,7 +200,7 @@ class TutorialOverlayState extends State<TutorialOverlay> {
                 key: bubbleEntryKey,
                 nipHeight: BUBBLE_NIP_HEIGHT,
                 nipLocation: widget.bubbleNipPosition,
-                color: Colors.black,
+                color: Color.fromRGBO(0, 0, 0, 0.59),
                 child: Text(
                   widget.bubbleText,
                   textAlign: TextAlign.center,
@@ -229,6 +229,13 @@ class TutorialOverlayState extends State<TutorialOverlay> {
         return offset.dx - widget.bubbleWidth + size.width;
       case NipLocation.TOP_LEFT:
         return offset.dx;
+      case NipLocation.BOTTOM_RIGHT:
+        return widget.bubbleWidth > 0
+            ? offset.dx -
+                widget.bubbleWidth +
+                size.width / 2 +
+                widget.clipPadding / 2
+            : offset.dx;
       default:
         return widget.bubbleWidth > 0
             ? offset.dx - widget.clipPadding * 2 - size.width + defaultNipHeight
