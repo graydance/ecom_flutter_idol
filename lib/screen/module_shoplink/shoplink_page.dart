@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/widgets/SpeechBubble.dart';

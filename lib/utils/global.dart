@@ -5,9 +5,9 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:logging/logging.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// 存储一些全局公共参数或初始化一些配置
 class Global {

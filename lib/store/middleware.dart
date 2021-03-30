@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/models/biolinks.dart';
 import 'package:idol/models/validate_email.dart';
