@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/models/biolinks.dart';
 import 'package:idol/models/validate_email.dart';
@@ -13,6 +14,7 @@ import 'package:idol/net/request/supply.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/dialog_message.dart';
 import 'package:redux/redux.dart';
@@ -49,6 +51,16 @@ List<Middleware<AppState>> createStoreMiddleware() {
     TypedMiddleware<AppState, DeleteGoodsAction>(deleteGoodsMiddleware),
     TypedMiddleware<AppState, BestSalesAction>(bestSalesMiddleware),
     TypedMiddleware<AppState, SalesHistoryAction>(salesHistoryMiddleware),
+    TypedMiddleware<AppState, ForYouSuccessAction>((_, action, next) async {
+      next(action);
+      final _storage = new FlutterSecureStorage();
+      String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+      if (step == "3") {
+        Future.delayed(Duration(milliseconds: 300), () {
+          Global.tokPikAndSell.currentState.show();
+        });
+      }
+    }),
 
     //Add by wesley
     TypedMiddleware<AppState, SignInAction>((_, action, next) {
