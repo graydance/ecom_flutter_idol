@@ -183,7 +183,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           ),
                           TutorialOverlay(
                             bubbleText: "Click to share shop link.",
-                            bubbleWidth: 100,
+                            bubbleWidth: 200,
                             bubbleNipPosition: NipLocation.TOP_RIGHT,
                             handPosition: Position.LEFT,
                             key: Global.tokCopy,
