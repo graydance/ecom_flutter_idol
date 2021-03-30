@@ -202,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen>
                 bubbleNipPosition: NipLocation.BOTTOM_RIGHT,
                 clipCircle: true,
                 clipBg: Colors.white,
-                bubbleWidth: 100,
+                bubbleWidth: 200,
                 clipPadding: 10,
                 clipCircleOnTap: () async {
                   Global.tokShopLink.currentState.hide();
