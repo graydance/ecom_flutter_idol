@@ -142,11 +142,15 @@ class _ShareDialogState extends State<ShareDialog> {
   Widget build(BuildContext context) {
     return Material(
         type: MaterialType.transparency,
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: _createShareWidget(),
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          child: Container(
+            color: Colours.white,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
+              child: _createShareWidget(),
+            ),
           ),
         ));
   }
