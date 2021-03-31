@@ -96,23 +96,24 @@ class ForgotPasswordScreen extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            child: SafeArea(
-              child: SizedBox(
-                width: 44,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Image(
-                    image: R.image.arrow_left(),
+          if (Navigator.of(context).canPop())
+            Positioned(
+              top: 0,
+              left: 0,
+              child: SafeArea(
+                child: SizedBox(
+                  width: 44,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Image(
+                      image: R.image.arrow_left(),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

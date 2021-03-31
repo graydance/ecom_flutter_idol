@@ -32,7 +32,8 @@ class IndexScreen extends StatelessWidget {
                   ),
                   _buildButton(
                     context,
-                    () => IdolRoute.startValidateEmail(context),
+                    () => Navigator.of(context)
+                        .pushNamed(RouterPath.validateEmail),
                     'LOG IN',
                   ),
                   _buildButton(

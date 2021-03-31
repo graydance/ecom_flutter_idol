@@ -248,6 +248,18 @@ class _R_Image_AssetResource {
       "assets/images/main/double_arrow_down.png",
       packageName: null);
 
+  /// asset: assets/images/main/eyes_visibility.png
+  // ignore: non_constant_identifier_names
+  final eyes_visibility = const AssetResource(
+      "assets/images/main/eyes_visibility.png",
+      packageName: null);
+
+  /// asset: assets/images/main/eyes_visibility_off.png
+  // ignore: non_constant_identifier_names
+  final eyes_visibility_off = const AssetResource(
+      "assets/images/main/eyes_visibility_off.png",
+      packageName: null);
+
   /// asset: assets/images/main/ic_index_logo.png
   // ignore: non_constant_identifier_names
   final ic_index_logo = const AssetResource(
@@ -659,6 +671,18 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage double_arrow_down() {
     return AssetImage(asset.double_arrow_down.keyName);
+  }
+
+  /// asset: assets/images/main/eyes_visibility.png
+  // ignore: non_constant_identifier_names
+  AssetImage eyes_visibility() {
+    return AssetImage(asset.eyes_visibility.keyName);
+  }
+
+  /// asset: assets/images/main/eyes_visibility_off.png
+  // ignore: non_constant_identifier_names
+  AssetImage eyes_visibility_off() {
+    return AssetImage(asset.eyes_visibility_off.keyName);
   }
 
   /// asset: assets/images/main/ic_index_logo.png

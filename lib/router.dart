@@ -109,7 +109,7 @@ class IdolRoute {
   }
 
   static Future<Object> startValidateEmail(BuildContext context) {
-    return Navigator.of(context).pushNamed(RouterPath.validateEmail);
+    return Navigator.of(context).pushReplacementNamed(RouterPath.validateEmail);
   }
 
   static Future<Object> startSignUp(

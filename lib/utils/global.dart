@@ -113,3 +113,13 @@ class Global {
   static void launchURL(String url, String errorMsg) async =>
       await canLaunch(url) ? launch(url) : EasyLoading.showToast(errorMsg);
 }
+
+bool validatePassowrd(String text) {
+  if (text == null) return false;
+  return RegExp(r"(?=.{8,}).*").hasMatch(text.trim());
+}
+
+bool validateUserName(String text) {
+  if (text == null) return false;
+  return RegExp(r"^[a-z][a-z0-9_]{4,51}$").hasMatch(text.trim());
+}
