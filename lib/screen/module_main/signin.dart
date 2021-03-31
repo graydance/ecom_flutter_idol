@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
@@ -21,8 +21,8 @@ class _SignInScreenState extends State<SignInScreen>
   SignUpSignInArguments _signUpSignInArguments;
   bool _passwordVisible = false;
   TextEditingController _passwordController;
-  bool _showForgotPasswordWidget = false;
   bool _enableSignIn = false;
+  String _error = '';
 
   @override
   void initState() {
@@ -33,8 +33,7 @@ class _SignInScreenState extends State<SignInScreen>
     _passwordController = TextEditingController();
     _passwordController.addListener(() {
       setState(() {
-        _enableSignIn = _passwordController.text != null &&
-            _passwordController.text.trim().isNotEmpty;
+        _enableSignIn = validatePassowrd(_passwordController.text);
       });
     });
   }
@@ -51,40 +50,20 @@ class _SignInScreenState extends State<SignInScreen>
       converter: _ViewModel.fromStore,
       builder: (context, vm) {
         return Scaffold(
-          body: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: R.image.bg_login_signup(), fit: BoxFit.cover),
-            ),
-            child: Column(
-              children: [
-                if (_showForgotPasswordWidget)
-                  SafeArea(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                        height: 44,
-                        width: 44,
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _showForgotPasswordWidget = false;
-                            });
-                          },
-                          child: Image(
-                            image: R.image.arrow_left(),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 35),
-                  child: _showForgotPasswordWidget
-                      ? _forgotPasswordWidget()
-                      : _signInWidget(vm),
-                ),
-              ],
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Container(
+              height: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: R.image.bg_login_signup(), fit: BoxFit.cover),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 35),
+                child: _signInWidget(vm),
+              ),
             ),
           ),
         );
@@ -94,196 +73,148 @@ class _SignInScreenState extends State<SignInScreen>
   }
 
   Widget _signInWidget(_ViewModel vm) {
-    return Center(
-      child: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-              ),
-              Text(
-                'LOGIN',
-                style: TextStyle(color: Colours.white, fontSize: 26),
-              ),
-              SizedBox(
-                height: 70,
-              ),
-              Text(
-                _signUpSignInArguments.email,
-                style: TextStyle(fontSize: 20, color: Colours.white),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              TextField(
-                autofocus: true,
-                maxLines: 1,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colours.white, fontSize: 20),
-                controller: _passwordController,
-                obscureText: !_passwordVisible,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colours.transparent,
-                  prefix: SizedBox(
-                    width: 42,
-                  ),
-                  suffixIcon: GestureDetector(
-                    child: Icon(
-                      _passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      size: 22,
-                      color: Colours.color_white60,
-                    ),
-                    onTap: () {
-                      _changePasswordVisibility();
-                    },
-                  ),
-                  hintText: 'Password',
-                  hintStyle: TextStyle(color: Colours.color_white60),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colours.color_white60,
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colours.color_white60,
-                    ),
-                  ),
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colours.color_white60,
-                    ),
-                  ),
-                  counterStyle:
-                      TextStyle(fontSize: 12, color: Colours.color_white10),
-                  // errorText: '',
-                  // // 无法确定网络错误还是服务端返回的错误信息 _errorText,
-                  // errorMaxLines: 1,
-                  // errorStyle:
-                  //     TextStyle(color: Colours.color_ED3544, fontSize: 12),
-                ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _showForgotPasswordWidget = true;
-                  });
-                },
-                child: Text(
-                  'Forgot your password',
-                  style: TextStyle(
-                      color: Colours.color_white60,
-                      fontSize: 12,
-                      decoration: TextDecoration.underline),
-                ),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              GestureDetector(
-                onTap: () {
-                  // sign in
-                  if (_enableSignIn) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    vm._signIn(_signUpSignInArguments.email,
-                        _passwordController.text.trim());
-                  }
-                },
-                child: Container(
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(
-                    left: 60,
-                    right: 60,
-                  ),
-                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                  decoration: BoxDecoration(
-                    color: _enableSignIn
-                        ? Colours.color_white40
-                        : Colours.transparent,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(4),
-                    ),
-                    border: Border.all(color: Colours.color_white40),
-                  ),
-                  child: Text(
-                    'LOGIN',
-                    style: TextStyle(color: Colours.white, fontSize: 18),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              GestureDetector(
-                onTap: () {
-                  IdolRoute.changeAccount(context);
-                },
-                child: Text(
-                  'Change account',
-                  style: TextStyle(
-                      color: Colours.color_white60,
-                      fontSize: 12,
-                      decoration: TextDecoration.underline),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _forgotPasswordWidget() {
-    return Center(
+    return SingleChildScrollView(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.15,
+          ),
           Text(
-            'FORGOT PASSWORD',
-            style: TextStyle(
-              color: Colours.white,
-              fontSize: 26,
+            'LOG IN',
+            style: TextStyle(color: Colours.white, fontSize: 26),
+          ),
+          SizedBox(
+            height: 70,
+          ),
+          Text(
+            _signUpSignInArguments.email,
+            style: TextStyle(fontSize: 20, color: Colours.white),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          TextField(
+            onChanged: (value) {
+              setState(() {
+                final msg = 'Make sure it\'s at least 8 characters';
+                _error = validatePassowrd(value) ? '' : msg;
+              });
+            },
+            autofocus: true,
+            maxLines: 1,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colours.white, fontSize: 20),
+            controller: _passwordController,
+            obscureText: !_passwordVisible,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colours.transparent,
+              prefix: SizedBox(
+                width: 50,
+              ),
+              suffixIcon: GestureDetector(
+                child: Image(
+                  image: _passwordVisible
+                      ? R.image.eyes_visibility()
+                      : R.image.eyes_visibility_off(),
+                ),
+                onTap: () {
+                  _changePasswordVisibility();
+                },
+              ),
+              hintText: 'Password',
+              hintStyle: TextStyle(color: Colours.color_white60),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colours.color_white60,
+                ),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colours.color_white60,
+                ),
+              ),
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colours.color_white60,
+                ),
+              ),
+            ),
+          ),
+          if (_error.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                _error,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          SizedBox(
+            height: 40,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(RouterPath.forgotPassword);
+            },
+            child: Text(
+              'Forgot your password',
+              style: TextStyle(
+                  color: Colours.color_white60,
+                  fontSize: 12,
+                  decoration: TextDecoration.underline),
             ),
           ),
           SizedBox(
-            height: 12,
+            height: 8,
           ),
-          Text(
-            'Don\'t worry, it happens to all of us.',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-            textAlign: TextAlign.center,
+          GestureDetector(
+            onTap: () {
+              // sign in
+              if (_enableSignIn) {
+                FocusScope.of(context).requestFocus(FocusNode());
+                vm._signIn(_signUpSignInArguments.email,
+                    _passwordController.text.trim());
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(
+                left: 60,
+                right: 60,
+              ),
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color:
+                    _enableSignIn ? Colours.color_white40 : Colours.transparent,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(4),
+                ),
+                border: Border.all(color: Colours.color_white40),
+              ),
+              child: Text(
+                'LOGIN',
+                style: TextStyle(color: Colours.white, fontSize: 18),
+              ),
+            ),
           ),
           SizedBox(
             height: 20,
           ),
-          Text(
-            'Enter your email and we\'ll send you a link to reset your password.',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 80,
-          ),
           GestureDetector(
             onTap: () {
-              // TODO Link WhatsApp
+              IdolRoute.changeAccount(context);
             },
-            child: Image(
-              image: R.image.ic_whatsapp(),
-              width: 60,
-              height: 60,
+            child: Text(
+              'Change account',
+              style: TextStyle(
+                  color: Colours.color_white60,
+                  fontSize: 12,
+                  decoration: TextDecoration.underline),
             ),
           ),
         ],

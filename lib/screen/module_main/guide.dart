@@ -21,9 +21,9 @@ class _GuideScreenState extends State<GuideScreen> {
   ];
 
   static const List<String> guideDesc = [
-    'Start,grow and boost your\n online business with Mypik.shop\n ',
-    'With our free, Easy-to-Use\n Tools, build-in supply\n chains,after-sale service',
-    'Start selling today in your socials -\n No Inventory Required, risk-free',
+    'Start, grow and boost your\nonline business with Olaak.com\n',
+    'With our free, Easy-to-Use\nTools, build-in supply\nchains, after-sale service',
+    'Start selling today in your socials -\nNo Inventory Required, risk-free',
   ];
 
   static const List<String> guideClick = [
@@ -90,7 +90,7 @@ class _GuideScreenState extends State<GuideScreen> {
                     visible: _showGetStarted,
                     child: GestureDetector(
                       onTap: () {
-                        IdolRoute.startValidateEmail(context);
+                        IdolRoute.startIndex(context);
                       },
                       child: Container(
                           margin: EdgeInsets.fromLTRB(0, 0, 0, 60),
