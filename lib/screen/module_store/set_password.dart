@@ -146,8 +146,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
             ),
             TextButton(
               onPressed: () {
-                _launcherURL(whatsAppUri,
-                    'Please check whether you have WhatsApp application installed');
+                Global.launchWhatsApp();
               },
               child: Text(
                 'Forgot password',
@@ -162,9 +161,6 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       ),
     );
   }
-
-  void _launcherURL(String url, String errorMsg) async =>
-      await canLaunch(url) ? launch(url) : throw errorMsg;
 
   TextField _createTextField(int index) {
     return TextField(

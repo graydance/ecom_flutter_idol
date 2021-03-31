@@ -90,7 +90,7 @@ class _GuideScreenState extends State<GuideScreen> {
                     visible: _showGetStarted,
                     child: GestureDetector(
                       onTap: () {
-                        IdolRoute.startValidateEmail(context);
+                        IdolRoute.startIndex(context);
                       },
                       child: Container(
                           margin: EdgeInsets.fromLTRB(0, 0, 0, 60),

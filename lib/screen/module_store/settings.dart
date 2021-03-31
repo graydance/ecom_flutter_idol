@@ -8,6 +8,7 @@ import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
+import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:launch_review/launch_review.dart';
@@ -170,13 +171,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         IdolRoute.startSetPassword(context);
         break;
       case 1:
-        _launcherURL(emailUsUri,
+        Global.launchURL(emailUsUri,
             'Please check whether you have email application installed');
         break;
       case 2:
-        final uri = Platform.isIOS ? whatsAppUri2 : whatsAppUri;
-        _launcherURL(uri,
-            'Please check whether you have WhatsApp application installed');
+        Global.launchWhatsApp();
         break;
       case 3:
         LaunchReview.launch(androidAppId: androidAppId, iOSAppId: iosAppId);
@@ -193,7 +192,4 @@ class _SettingsScreenState extends State<SettingsScreen> {
         break;
     }
   }
-
-  void _launcherURL(String url, String errorMsg) async =>
-      await canLaunch(url) ? launch(url) : EasyLoading.showToast(errorMsg);
 }

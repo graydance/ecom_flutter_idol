@@ -106,7 +106,8 @@ List<Middleware<AppState>> createStoreMiddleware() {
               return IdolMessageDialog(
                 'You have not been invited,\n please contact the customer\n service staff WhatsApp\n +1 6625080411',
                 onTap: () {
-                  IdolRoute.pop(Global.navigatorKey.currentContext);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      RouterPath.joinus, (route) => route.isFirst);
                 },
                 onClose: () {
                   IdolRoute.pop(Global.navigatorKey.currentContext);

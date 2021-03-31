@@ -22,3 +22,6 @@ export './module_supply/goods_detail.dart';
 export './module_supply/supplier_detail.dart';
 export './module_shoplink/shoplink_page.dart';
 export './module_main/web.dart';
+export './module_main/index_screen.dart';
+export './module_main/join_us_screen.dart';
+export './module_main/forgot_password_screen.dart';

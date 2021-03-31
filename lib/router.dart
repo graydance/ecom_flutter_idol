@@ -30,6 +30,9 @@ class RouterPath {
   static const String supply$Search = '/supply/search';
   static const String settings = '/settings';
   static const String store$EditStore = '/store/edit_store';
+  static const String index = '/index';
+  static const String joinus = '/join_us';
+  static const String forgotPassword = '/forgot_password';
 }
 
 enum Command {
@@ -59,6 +62,9 @@ class IdolRoute {
       RouterPath.store$EditStore: (context) => EditStoreScreen(),
       RouterPath.supply$SupplierDetail: (context) => SupplierDetailScreen(),
       RouterPath.goodsDetail: (context) => GoodsDetailScreen(),
+      RouterPath.index: (context) => IndexScreen(),
+      RouterPath.joinus: (context) => JoinUsScreen(),
+      RouterPath.forgotPassword: (context) => ForgotPasswordScreen(),
     };
   }
 
@@ -94,8 +100,16 @@ class IdolRoute {
     return Navigator.of(context).pushReplacementNamed(RouterPath.guide);
   }
 
+  static Future<Object> startIndex(BuildContext context) {
+    return Navigator.of(context).pushReplacementNamed(RouterPath.index);
+  }
+
+  static Future<Object> startJoinUs(BuildContext context) {
+    return Navigator.of(context).pushNamed(RouterPath.joinus);
+  }
+
   static Future<Object> startValidateEmail(BuildContext context) {
-    return Navigator.of(context).pushReplacementNamed(RouterPath.validateEmail);
+    return Navigator.of(context).pushNamed(RouterPath.validateEmail);
   }
 
   static Future<Object> startSignUp(

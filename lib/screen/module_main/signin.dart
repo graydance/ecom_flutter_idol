@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
 import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
@@ -21,7 +21,6 @@ class _SignInScreenState extends State<SignInScreen>
   SignUpSignInArguments _signUpSignInArguments;
   bool _passwordVisible = false;
   TextEditingController _passwordController;
-  bool _showForgotPasswordWidget = false;
   bool _enableSignIn = false;
 
   @override
@@ -58,31 +57,9 @@ class _SignInScreenState extends State<SignInScreen>
             ),
             child: Column(
               children: [
-                if (_showForgotPasswordWidget)
-                  SafeArea(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                        height: 44,
-                        width: 44,
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _showForgotPasswordWidget = false;
-                            });
-                          },
-                          child: Image(
-                            image: R.image.arrow_left(),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 35),
-                  child: _showForgotPasswordWidget
-                      ? _forgotPasswordWidget()
-                      : _signInWidget(vm),
+                  child: _signInWidget(vm),
                 ),
               ],
             ),
@@ -106,7 +83,7 @@ class _SignInScreenState extends State<SignInScreen>
                 height: MediaQuery.of(context).size.height * 0.15,
               ),
               Text(
-                'LOGIN',
+                'LOG IN',
                 style: TextStyle(color: Colours.white, fontSize: 26),
               ),
               SizedBox(
@@ -175,9 +152,7 @@ class _SignInScreenState extends State<SignInScreen>
               ),
               GestureDetector(
                 onTap: () {
-                  setState(() {
-                    _showForgotPasswordWidget = true;
-                  });
+                  Navigator.of(context).pushNamed(RouterPath.forgotPassword);
                 },
                 child: Text(
                   'Forgot your password',
@@ -240,53 +215,6 @@ class _SignInScreenState extends State<SignInScreen>
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _forgotPasswordWidget() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'FORGOT PASSWORD',
-            style: TextStyle(
-              color: Colours.white,
-              fontSize: 26,
-            ),
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          Text(
-            'Don\'t worry, it happens to all of us.',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            'Enter your email and we\'ll send you a link to reset your password.',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 80,
-          ),
-          GestureDetector(
-            onTap: () {
-              // TODO Link WhatsApp
-            },
-            child: Image(
-              image: R.image.ic_whatsapp(),
-              width: 60,
-              height: 60,
-            ),
-          ),
-        ],
       ),
     );
   }
