@@ -55,12 +55,12 @@ class ShareManager {
           return ShareDialog(
             'Share great posts in feed',
             imageUrl,
-            'The product is now available in your store.\n share the news with your fans on social media to make money!',
+            'The product is now available in your store.\nShare the news with your fans on social media to make money!',
             ShareType.goods,
             (shareChannel) {
               EasyLoading.showToast('Capture copied');
               final shareText =
-                  'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Mypik.shop #Mypik  #supportsmallbusinesses';
+                  'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Olaak.com #Olaak  #supportsmallbusinesses';
               Clipboard.setData(ClipboardData(text: shareText));
 
               Future.delayed(Duration(milliseconds: 500), () {

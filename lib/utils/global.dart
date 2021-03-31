@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:logging/logging.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 存储一些全局公共参数或初始化一些配置
 class Global {
@@ -99,4 +103,23 @@ class Global {
       ..userInteractions = true
       ..dismissOnTap = false;
   }
+
+  static void launchWhatsApp() {
+    final uri = Platform.isIOS ? whatsAppUri2 : whatsAppUri;
+    launchURL(
+        uri, 'Please check whether you have WhatsApp application installed');
+  }
+
+  static void launchURL(String url, String errorMsg) async =>
+      await canLaunch(url) ? launch(url) : EasyLoading.showToast(errorMsg);
+}
+
+bool validatePassowrd(String text) {
+  if (text == null) return false;
+  return RegExp(r"(?=.{8,}).*").hasMatch(text.trim());
+}
+
+bool validateUserName(String text) {
+  if (text == null) return false;
+  return RegExp(r"^[a-z][a-z0-9_]{4,51}$").hasMatch(text.trim());
 }

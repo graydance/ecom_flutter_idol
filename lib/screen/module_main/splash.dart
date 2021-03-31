@@ -38,15 +38,13 @@ class _SplashScreenState extends State<SplashScreen> {
               decoration: BoxDecoration(
                 color: Colours.transparent,
                 image: DecorationImage(
-                    image: R.image.launch_background_webp(), fit: BoxFit.cover),
+                    image: R.image.bg_login_signup(), fit: BoxFit.cover),
               ),
               child: Center(
-                child: ClipOval(
-                  child: Image(
-                    image: R.image.ic_circle_logo(),
-                    width: 150,
-                    height: 150,
-                  ),
+                child: Image(
+                  image: R.image.ic_index_logo(),
+                  width: 150,
+                  height: 150,
                 ),
               ),
             );
@@ -83,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
         isFirstRun == null ||
                 bool.fromEnvironment(isFirstRun, defaultValue: true)
             ? IdolRoute.startGuide(context)
-            : IdolRoute.startValidateEmail(context);
+            : IdolRoute.startIndex(context);
       });
     }
   }

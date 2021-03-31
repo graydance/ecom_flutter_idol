@@ -551,7 +551,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           ),
           TutorialOverlay(
               key: Global.tokAddAndShare,
-              bubbleText: 'Your shop is empty now,click to add first items.',
+              bubbleText: 'Your shop is empty now, click to add first items.',
               builder: (ctx) => IdolButton(
                     'Add and share',
                     status: IdolButtonStatus.enable,

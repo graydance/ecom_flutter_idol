@@ -28,7 +28,7 @@ class _SupplyMVPPageState extends State<SupplyMVPPage>
               AppBar(
                 elevation: 0,
                 title: Text(
-                  'MyPik',
+                  'Olaak',
                   style: TextStyle(color: Colours.color_0F1015, fontSize: 20),
                 ),
                 centerTitle: true,

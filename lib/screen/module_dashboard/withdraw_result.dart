@@ -52,7 +52,7 @@ class _WithdrawResultScreenState extends State {
                   debugPrint('rate：' + rateValue);
                   if (double.tryParse(rateValue) >= 8) {
                     LaunchReview.launch(
-                        androidAppId: "me.hookar.idol", iOSAppId: iosAppId);
+                        androidAppId: androidAppId, iOSAppId: iosAppId);
                   } else {
                     EasyLoading.showToast(
                         'Thank you for your comment, we will do better.');
