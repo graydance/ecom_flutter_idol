@@ -1,17 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "LaunchImage.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "登录背景@2x.png",
+      "filename" : "logo@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "登录背景@3x.png",
+      "filename" : "logo@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
