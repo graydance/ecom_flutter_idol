@@ -74,12 +74,22 @@
 	<array>
 		<string>_dartobservatory._tcp</string>
 	</array>
+	<key>NSCalendarsUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the calendars to share your sales infomation</string>
 	<key>NSCameraUsageDescription</key>
-	<string>For share your product photo</string>
+	<string>${PRODUCT_NAME} uses the camera to share your product photo</string>
+	<key>NSContactsUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the contacts to share your product photo</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>${PRODUCT_NAME} uses the local network to discover Cast-enabled devices on your WiFi network.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the location to recommend products</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Please allow to uses motion</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>For share your product photo</string>
+	<string>${PRODUCT_NAME} uses the photo to share your product photo</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Please allow to uses speech recognition</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -99,5 +109,7 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
+	<key>kTCCServiceMediaLibrary</key>
+	<string>${PRODUCT_NAME} uses the music to share your product medias</string>
 </dict>
 </plist>
