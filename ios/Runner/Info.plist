@@ -109,7 +109,7 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
-	<key>kTCCServiceMediaLibrary</key>
+	<key>NSAppleMusicUsageDescription</key>
 	<string>${PRODUCT_NAME} uses the music to share your product medias</string>
 </dict>
 </plist>
