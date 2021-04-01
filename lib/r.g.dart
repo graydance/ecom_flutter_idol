@@ -242,10 +242,28 @@ class _R_Image_AssetResource {
       "assets/images/main/bg_login_signup.png",
       packageName: null);
 
-  /// asset: assets/images/main/ic_circle_logo.png
+  /// asset: assets/images/main/double_arrow_down.png
   // ignore: non_constant_identifier_names
-  final ic_circle_logo = const AssetResource(
-      "assets/images/main/ic_circle_logo.png",
+  final double_arrow_down = const AssetResource(
+      "assets/images/main/double_arrow_down.png",
+      packageName: null);
+
+  /// asset: assets/images/main/eyes_visibility.png
+  // ignore: non_constant_identifier_names
+  final eyes_visibility = const AssetResource(
+      "assets/images/main/eyes_visibility.png",
+      packageName: null);
+
+  /// asset: assets/images/main/eyes_visibility_off.png
+  // ignore: non_constant_identifier_names
+  final eyes_visibility_off = const AssetResource(
+      "assets/images/main/eyes_visibility_off.png",
+      packageName: null);
+
+  /// asset: assets/images/main/ic_index_logo.png
+  // ignore: non_constant_identifier_names
+  final ic_index_logo = const AssetResource(
+      "assets/images/main/ic_index_logo.png",
       packageName: null);
 
   /// asset: assets/images/main/ic_password_visibility.png
@@ -329,6 +347,12 @@ class _R_Image_AssetResource {
   // ignore: non_constant_identifier_names
   final launch_background_webp = const AssetResource(
       "assets/images/main/launch_background.webp",
+      packageName: null);
+
+  /// asset: assets/images/main/whatsapp_small.png
+  // ignore: non_constant_identifier_names
+  final whatsapp_small = const AssetResource(
+      "assets/images/main/whatsapp_small.png",
       packageName: null);
 
   /// asset: assets/images/new_guid.png
@@ -643,10 +667,28 @@ class _R_Image {
     return AssetImage(asset.bg_login_signup.keyName);
   }
 
-  /// asset: assets/images/main/ic_circle_logo.png
+  /// asset: assets/images/main/double_arrow_down.png
   // ignore: non_constant_identifier_names
-  AssetImage ic_circle_logo() {
-    return AssetImage(asset.ic_circle_logo.keyName);
+  AssetImage double_arrow_down() {
+    return AssetImage(asset.double_arrow_down.keyName);
+  }
+
+  /// asset: assets/images/main/eyes_visibility.png
+  // ignore: non_constant_identifier_names
+  AssetImage eyes_visibility() {
+    return AssetImage(asset.eyes_visibility.keyName);
+  }
+
+  /// asset: assets/images/main/eyes_visibility_off.png
+  // ignore: non_constant_identifier_names
+  AssetImage eyes_visibility_off() {
+    return AssetImage(asset.eyes_visibility_off.keyName);
+  }
+
+  /// asset: assets/images/main/ic_index_logo.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_index_logo() {
+    return AssetImage(asset.ic_index_logo.keyName);
   }
 
   /// asset: assets/images/main/ic_password_visibility.png
@@ -731,6 +773,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage launch_background_webp() {
     return AssetImage(asset.launch_background_webp.keyName);
+  }
+
+  /// asset: assets/images/main/whatsapp_small.png
+  // ignore: non_constant_identifier_names
+  AssetImage whatsapp_small() {
+    return AssetImage(asset.whatsapp_small.keyName);
   }
 
   /// asset: assets/images/new_guid.png

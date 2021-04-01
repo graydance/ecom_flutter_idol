@@ -130,7 +130,7 @@ class FirstDialog extends StatelessWidget {
                   height: 20,
                 ),
                 Text(
-                  'Congratulations on the first step!\nStart making money with mypik.',
+                  'Congratulations on the first step!\nStart making money with Olaak.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,

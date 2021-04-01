@@ -4,7 +4,7 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/base.dart';
@@ -119,7 +119,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
       builder: (context) {
         return TipsGuideDialog(
           KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG,
-          'How to make money\nwith MyPik',
+          'How to make money\nwith Olaak',
           '1. Select and add products in Supply panel.\n2. Add Shop Link to your bio in Socials.\n3. Share great post in your socials.\n4. Get your earnings after sales.(we cover all shopping and service)',
           videoUrls[0],
           buttonText: 'Select Now',
@@ -293,7 +293,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'How to make money with MyPik',
+                  'How to make money with Olaak',
                   style: TextStyle(
                     color: Colours.color_0F1015,
                     fontSize: 12,
@@ -314,7 +314,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
           Expanded(
             child: Container(
               margin: EdgeInsets.only(top: 33),
-              padding: EdgeInsets.only(top: 20, left: 0, right: 0, bottom: 40),
+              padding: EdgeInsets.only(top: 20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 gradient: LinearGradient(
@@ -341,25 +341,20 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                      left: 0,
-                    ),
-                    child: TabBar(
-                      tabs: _tabValues.map((title) {
-                        return Text(
-                          title,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        );
-                      }).toList(),
-                      isScrollable: true,
-                      controller: _tabController,
-                      indicatorColor: Colours.color_EA5228,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      unselectedLabelColor: Colours.color_B1B1B3,
-                      labelColor: Colours.color_29292B,
-                      labelStyle: TextStyle(fontSize: 16),
-                    ),
+                  TabBar(
+                    tabs: _tabValues.map((title) {
+                      return Text(
+                        title,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      );
+                    }).toList(),
+                    isScrollable: true,
+                    controller: _tabController,
+                    indicatorColor: Colours.color_EA5228,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    unselectedLabelColor: Colours.color_B1B1B3,
+                    labelColor: Colours.color_29292B,
+                    labelStyle: TextStyle(fontSize: 16),
                   ),
                   Expanded(
                     child: TabBarView(

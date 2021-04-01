@@ -30,7 +30,7 @@ dependencies:
   url_launcher: ^5.7.10
   launch_review: ^2.0.0
   webview_flutter: ^1.0.7
-  flutter_secure_storage: ^3.3.5
+  shared_preferences: ^2.0.5
   share: ^0.6.5+4
   flutter_html: ^1.3.0
   timeago: ^3.0.1
@@ -90,7 +90,10 @@ flutter:
   - assets/images/ic_share_twitter.png
   - assets/images/main/arrow_left.png
   - assets/images/main/bg_login_signup.png
-  - assets/images/main/ic_circle_logo.png
+  - assets/images/main/double_arrow_down.png
+  - assets/images/main/eyes_visibility.png
+  - assets/images/main/eyes_visibility_off.png
+  - assets/images/main/ic_index_logo.png
   - assets/images/main/ic_password_visibility.png
   - assets/images/main/ic_password_visibility_off.png
   - assets/images/main/ic_tab_biolinks_normal.png
@@ -105,6 +108,7 @@ flutter:
   - assets/images/main/ic_tab_supply_selected.png
   - assets/images/main/ic_whatsapp.png
   - assets/images/main/launch_background.webp
+  - assets/images/main/whatsapp_small.png
   - assets/images/new_guid.png
   - assets/images/shoplink/edit_avatar.png
   - assets/images/shoplink/ic_change_avatar.png

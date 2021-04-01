@@ -3,15 +3,17 @@ import 'package:ecomshare/ecomshare.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/widgets/dialog_share.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ShareManager {
   static final _storage = new FlutterSecureStorage();
@@ -55,12 +57,12 @@ class ShareManager {
           return ShareDialog(
             'Share great posts in feed',
             imageUrl,
-            'The product is now available in your store.\n share the news with your fans on social media to make money!',
+            'The product is now available in your store.\nShare the news with your fans on social media to make money!',
             ShareType.goods,
             (shareChannel) {
               EasyLoading.showToast('Capture copied');
               final shareText =
-                  'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Mypik.shop #Mypik  #supportsmallbusinesses';
+                  'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Olaak.com #Olaak  #supportsmallbusinesses';
               Clipboard.setData(ClipboardData(text: shareText));
 
               Future.delayed(Duration(milliseconds: 500), () {
@@ -89,7 +91,7 @@ class ShareManager {
       debugPrint(e);
       return;
     }
-    DioClient.getInstance().download(imageUrl, savePath).then((savePath) {
+    DioClient.getInstance().download(imageUrl, savePath).then((savePath) async {
       EasyLoading.dismiss();
       _showGuideDialog(
         context,
@@ -104,9 +106,15 @@ class ShareManager {
   }
 
   static void _showGuideDialog(BuildContext context, String mediaType,
-      String guideVideoUrl, String shareChannel, String imageLocalPath) {
+      String guideVideoUrl, String shareChannel, String imageLocalPath) async {
     if (shareChannel != 'Download') {
       Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
+    } else {
+      debugPrint("...");
+      if (await Permission.storage.request().isGranted) {
+        // Either the permission was already granted before or the user just granted it.
+        ImageGallerySaver.saveFile(imageLocalPath);
+      }
     }
 
     /*showDialog(

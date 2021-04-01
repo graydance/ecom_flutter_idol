@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/models/biolinks.dart';
 import 'package:idol/models/validate_email.dart';
@@ -106,7 +106,8 @@ List<Middleware<AppState>> createStoreMiddleware() {
               return IdolMessageDialog(
                 'You have not been invited,\n please contact the customer\n service staff WhatsApp\n +1 6625080411',
                 onTap: () {
-                  IdolRoute.pop(Global.navigatorKey.currentContext);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      RouterPath.joinus, (route) => route.isFirst);
                 },
                 onClose: () {
                   IdolRoute.pop(Global.navigatorKey.currentContext);

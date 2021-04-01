@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/widgets/SpeechBubble.dart';
@@ -183,7 +183,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           ),
                           TutorialOverlay(
                             bubbleText: "Click to share shop link.",
-                            bubbleWidth: 100,
+                            bubbleWidth: 200,
                             bubbleNipPosition: NipLocation.TOP_RIGHT,
                             handPosition: Position.LEFT,
                             key: Global.tokCopy,
@@ -551,7 +551,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           ),
           TutorialOverlay(
               key: Global.tokAddAndShare,
-              bubbleText: 'Your shop is empty now,click to add first items.',
+              bubbleText: 'Your shop is empty now, click to add first items.',
               builder: (ctx) => IdolButton(
                     'Add and share',
                     status: IdolButtonStatus.enable,
