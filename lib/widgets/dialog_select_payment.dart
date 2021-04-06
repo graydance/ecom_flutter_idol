@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/widgets/NetworkImageSSL.dart';
 import 'package:idol/widgets/button.dart';
 
 /// 选择支付方式弹窗
@@ -11,11 +12,11 @@ class SelectPaymentMethodsDialog extends StatefulWidget {
   final Function(int index, WithdrawType type) onItemSelected;
 
   const SelectPaymentMethodsDialog(
-      this.withdrawType, {
-        this.defaultSelectedIndex = -1,
-        this.onClose,
-        this.onItemSelected,
-      });
+    this.withdrawType, {
+    this.defaultSelectedIndex = -1,
+    this.onClose,
+    this.onItemSelected,
+  });
 
   @override
   State<StatefulWidget> createState() => _SelectPaymentMethodsDialogState();
@@ -87,10 +88,10 @@ class _SelectPaymentMethodsDialogState
                     status: IdolButtonStatus.enable,
                     width: 100,
                     height: 36, listener: (status) {
-                      debugPrint(
-                          '_selectedItemIndex：$_selectedItemIndex, _withdrawType：$_withdrawType');
-                      widget.onItemSelected(_selectedItemIndex, _withdrawType);
-                    }),
+                  debugPrint(
+                      '_selectedItemIndex：$_selectedItemIndex, _withdrawType：$_withdrawType');
+                  widget.onItemSelected(_selectedItemIndex, _withdrawType);
+                }),
               ],
             ),
           ),
@@ -103,65 +104,65 @@ class _SelectPaymentMethodsDialogState
     return widget.withdrawType
         .asMap()
         .map((key, value) {
-      return MapEntry(
-        key,
-        Center(
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedItemIndex = key;
-                _withdrawType = value;
-              });
-            },
-            child: Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10, top: 5, right: 10, bottom: 5),
-                  decoration: BoxDecoration(
-                    color: Colours.white,
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
-                    border: Border.all(
-                        color: _selected(key)
-                            ? Colours.color_4E9AE3
-                            : Colours.white,
-                        width: 1),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colours.color_40A2A2A2,
-                          offset: Offset(1.0, 1.0),
-                          blurRadius: 2,
-                          spreadRadius: 0.5),
-                    ],
-                  ),
-                  child: Image(
-                    image: NetworkImage(value.portrait),
-                    width: 65,
-                    height: 24,
-                  ),
-                ),
-                ...(_selected(key))
-                    ? [
-                  Align(
-                    widthFactor: 6.2,
-                    heightFactor: 0,
-                    alignment: Alignment.topRight,
-                    child:
-                    // Expanded(),
-                    Icon(
-                      Icons.check_circle,
-                      color: Colours.color_4E9AE3,
-                      size: 15,
+          return MapEntry(
+            key,
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedItemIndex = key;
+                    _withdrawType = value;
+                  });
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 10, top: 5, right: 10, bottom: 5),
+                      decoration: BoxDecoration(
+                        color: Colours.white,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        border: Border.all(
+                            color: _selected(key)
+                                ? Colours.color_4E9AE3
+                                : Colours.white,
+                            width: 1),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colours.color_40A2A2A2,
+                              offset: Offset(1.0, 1.0),
+                              blurRadius: 2,
+                              spreadRadius: 0.5),
+                        ],
+                      ),
+                      child: Image(
+                        image: NetworkImageSSL(value.portrait),
+                        width: 65,
+                        height: 24,
+                      ),
                     ),
-                  ),
-                ]
-                    : [],
-              ],
+                    ...(_selected(key))
+                        ? [
+                            Align(
+                              widthFactor: 6.2,
+                              heightFactor: 0,
+                              alignment: Alignment.topRight,
+                              child:
+                                  // Expanded(),
+                                  Icon(
+                                Icons.check_circle,
+                                color: Colours.color_4E9AE3,
+                                size: 15,
+                              ),
+                            ),
+                          ]
+                        : [],
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      );
-    })
+          );
+        })
         .values
         .toList();
   }
