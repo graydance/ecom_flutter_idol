@@ -54,16 +54,38 @@ class _SignInScreenState extends State<SignInScreen>
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
             },
-            child: Container(
-              height: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: R.image.bg_login_signup(), fit: BoxFit.cover),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 35),
-                child: _signInWidget(vm),
-              ),
+            child: Stack(
+              children: [
+                Container(
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: R.image.bg_login_signup(), fit: BoxFit.cover),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 35),
+                    child: _signInWidget(vm),
+                  ),
+                ),
+                if (Navigator.of(context).canPop())
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: SafeArea(
+                      child: SizedBox(
+                        width: 44,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Image(
+                            image: R.image.arrow_left(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         );
