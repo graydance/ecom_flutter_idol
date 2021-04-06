@@ -229,7 +229,7 @@ void loadGlobalConfig(store, action, next) {
     cookiePolicyUri = data['cookiePolicyUri'];
     privacyPolicyUri = data['privacyPolicyUri'];
   }).catchError((err) {
-    EasyLoading.show(status: 'Ops, seems network error:${err.toString()}');
+    EasyLoading.showToast('Ops, seems network error:${err.toString()}');
   });
   next(action);
 }
