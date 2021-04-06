@@ -22,19 +22,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   static const TextStyle titleTextStyle =
       TextStyle(color: Colours.black, fontSize: 16);
   var settingDatas = [
-    // {
-    //   "key": "set_password",
-    //   "image": Image(
-    //     image: R.image.ic_settings_set_password(),
-    //     color: Colours.color_555764,
-    //     width: 30,
-    //     height: 30,
-    //   ),
-    //   "widget": Text(
-    //     'Set Password',
-    //     style: titleTextStyle,
-    //   )
-    // },
+    {
+      "key": 0,
+      "image": Image(
+        image: R.image.ic_settings_set_password(),
+        color: Colours.color_555764,
+        width: 30,
+        height: 30,
+      ),
+      "widget": Text(
+        'Set Password',
+        style: titleTextStyle,
+      )
+    },
     {
       "key": 1,
       "image": Image(
@@ -168,7 +168,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _onTap(int index) {
     switch (index) {
       case 0:
-        IdolRoute.startSetPassword(context);
+        IdolRoute.startSetMVPPassword(context);
         break;
       case 1:
         Global.launchURL(emailUsUri,

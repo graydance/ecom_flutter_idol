@@ -282,6 +282,7 @@ final Middleware<AppState> signUpSignInMiddleware =
   }
 };
 
+///修改密码
 final Middleware<AppState> updatePasswordMiddleware =
     (Store<AppState> store, action, NextDispatcher next) {
   if (action is UpdatePasswordAction) {
@@ -292,7 +293,7 @@ final Middleware<AppState> updatePasswordMiddleware =
       store.dispatch(UpdatePasswordSuccessAction());
     }).catchError((err) {
       print(err.toString());
-      store.dispatch(UpdatePasswordFailure(err.toString()));
+      store.dispatch(UpdatePasswordFailureAction(err.toString()));
     });
     next(action);
   }
