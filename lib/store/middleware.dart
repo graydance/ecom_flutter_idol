@@ -290,11 +290,8 @@ final Middleware<AppState> updatePasswordMiddleware =
         .post(ApiPath.updatePassword, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) {
-      store.dispatch(UpdatePasswordSuccessAction());
-    }).catchError((err) {
-      print(err.toString());
-      store.dispatch(UpdatePasswordFailureAction(err.toString()));
-    });
+      action.completer.complete();
+    }).catchError((err) => action.completer.completeError(err.toString()));
     next(action);
   }
 };

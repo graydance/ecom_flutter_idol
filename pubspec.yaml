@@ -77,6 +77,8 @@ flutter:
   - assets/images/dashboard/ic_earnings_tip.png
   - assets/images/dashboard/ic_help.png
   - assets/images/dashboard/ic_welcome_dialog.png
+  - assets/images/eyes_normal.png
+  - assets/images/eyes_select.png
   - assets/images/goods_placeholder.png
   - assets/images/guid_1.png
   - assets/images/guid_2.png
@@ -133,6 +135,4 @@ flutter:
   - assets/images/supply/ic_tab_supplier_new_product_unselected.png
   - assets/images/supply/pause.png
   - assets/images/supply/play.png
-  - assets/images/eyes_normal.png
-  - assets/images/eyes_select.png
   - assets/image/

@@ -1,15 +1,18 @@
+import 'dart:async';
+
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+
 import 'package:idol/models/appstate.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/res/Strings.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/main.dart';
 import 'package:idol/widgets/ui.dart';
-import 'package:redux/redux.dart';
 
 import '../../router.dart';
 
@@ -25,7 +28,7 @@ class SetMVPPassword extends StatefulWidget {
 }
 
 class _SetMVPPasswordState extends State<SetMVPPassword> {
-  List<bool> index = [false, false, false];
+  List<bool> index = [true, true, true];
   List<String> passwordStr = [null, null, null];
   String _errorText;
   String _errorNewText;
@@ -62,9 +65,10 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
         converter: _ViewModel.fromStore,
-        onWillChange: (oldVM, newVM) {
-          _onStateChanged(newVM._updatePasswordState);
-        },
+        // 1.不要用onWillChange
+        // onWillChange: (oldVM, newVM) {
+        //   _onStateChanged(newVM._updatePasswordState);
+        // },
         builder: (context, vm) {
           return Scaffold(
             appBar: IdolUI.appBar(context, StringBasic.setPasswordTitle),
@@ -82,17 +86,20 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
 
   // ignore: missing_return
   Widget _buildBodyWidget(_ViewModel vm) {
-    return Container(
-      margin: EdgeInsets.only(top: 42),
-      //垂直布局
-      child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: _bodyContent(vm)),
+    return SingleChildScrollView(
+      child: SafeArea(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _bodyContent(vm)),
+      ),
     );
   }
 
   _bodyContent(_ViewModel vm) {
-    return <Widget>[
+    return [
+      SizedBox(
+        height: 40,
+      ),
       new Container(
         margin: EdgeInsets.only(left: 16),
         child: new Text(
@@ -311,17 +318,6 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
     });
   }
 
-  void _onStateChanged(UpdatePasswordState state) async {
-    if (state is UpdatePasswordInitial || state is UpdatePasswordLoading) {
-      EasyLoading.show(status: 'Loading...');
-    } else if (state is UpdatePasswordSuccess) {
-      EasyLoading.showSuccess('done');
-      IdolRoute.logOut(context);
-    } else if (state is UpdatePasswordFailure) {
-      EasyLoading.showError(state.message);
-    }
-  }
-
   void _checkMessage() {
     setState(() {
       if (!TextUtil.isEmpty(passwordStr[1]) && passwordStr[1].length < 8) {
@@ -360,7 +356,7 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
       EasyLoading.showToast(StringBasic.setPasswordMatch);
     } else {
       //符合要求 -> 请求更新密码接口
-      vm._updatePassword(passwordStr[0], passwordStr[1]);
+      vm._updatePassword(passwordStr[0], passwordStr[1], context);
     }
   }
 
@@ -368,8 +364,8 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
   Image _Images(int position) {
     return Image(
       image: AssetImage(index[position]
-          ? 'assets/images/eyes_select.png'
-          : 'assets/images/eyes_normal.png'),
+          ? 'assets/images/eyes_normal.png'
+          : 'assets/images/eyes_select.png'),
       width: 22,
       height: 22,
     );
@@ -377,25 +373,38 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
 }
 
 class _ViewModel {
-  final UpdatePasswordState _updatePasswordState;
-  final Function _updatePassword;
+  final Function(String, String, BuildContext) _updatePassword;
 
-  _ViewModel(this._updatePasswordState, this._updatePassword);
+  _ViewModel(this._updatePassword);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    updatePassword(String oldPassword, String newPassword) => store.dispatch(
-        UpdatePasswordAction(UpdatePasswordRequest(oldPassword, newPassword)));
+    updatePassword(
+        String oldPassword, String newPassword, BuildContext context) {
+      EasyLoading.show(status: 'Loading...');
+      final completer = Completer();
+      completer.future.then((value) {
+        EasyLoading.showSuccess('Done', duration: Duration(seconds: 2));
+        Future.delayed(Duration(seconds: 2))
+            .then((_) => IdolRoute.logOut(context));
+      }).catchError((err) => EasyLoading.showError(err.toString()));
+      store.dispatch(
+        UpdatePasswordAction(
+          UpdatePasswordRequest(oldPassword, newPassword),
+          completer,
+        ),
+      );
+    }
 
-    return _ViewModel(store.state.updatePasswordState, updatePassword);
+    return _ViewModel(updatePassword);
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ViewModel &&
-          runtimeType == other.runtimeType &&
-          _updatePasswordState == other._updatePasswordState;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is _ViewModel && other._updatePassword == _updatePassword;
+  }
 
   @override
-  int get hashCode => _updatePasswordState.hashCode;
+  int get hashCode => _updatePassword.hashCode;
 }

@@ -170,6 +170,16 @@ class _R_Image_AssetResource {
       "assets/images/dashboard/ic_welcome_dialog.png",
       packageName: null);
 
+  /// asset: assets/images/eyes_normal.png
+  // ignore: non_constant_identifier_names
+  final eyes_normal =
+      const AssetResource("assets/images/eyes_normal.png", packageName: null);
+
+  /// asset: assets/images/eyes_select.png
+  // ignore: non_constant_identifier_names
+  final eyes_select =
+      const AssetResource("assets/images/eyes_select.png", packageName: null);
+
   /// asset: assets/images/goods_placeholder.png
   // ignore: non_constant_identifier_names
   final goods_placeholder = const AssetResource(
@@ -587,6 +597,18 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_welcome_dialog() {
     return AssetImage(asset.ic_welcome_dialog.keyName);
+  }
+
+  /// asset: assets/images/eyes_normal.png
+  // ignore: non_constant_identifier_names
+  AssetImage eyes_normal() {
+    return AssetImage(asset.eyes_normal.keyName);
+  }
+
+  /// asset: assets/images/eyes_select.png
+  // ignore: non_constant_identifier_names
+  AssetImage eyes_select() {
+    return AssetImage(asset.eyes_select.keyName);
   }
 
   /// asset: assets/images/goods_placeholder.png
