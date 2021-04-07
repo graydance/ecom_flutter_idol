@@ -429,6 +429,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           if (step == "2" && model.list.length == 0) {
             Global.tokAddAndShare.currentState.show();
           } else {
+            Global.tokAddAndShare.currentState.hide();
             await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
           }
           _currentPage = 1;

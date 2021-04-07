@@ -209,9 +209,12 @@ class _HomeScreenState extends State<HomeScreen>
                   String step = await _storage.read(key: KeyStore.GUIDE_STEP);
                   if (step == "1") {
                     await _storage.write(key: KeyStore.GUIDE_STEP, value: "2");
+                    Future.delayed(Duration(milliseconds: 100), () {
+                      Global.tokAddAndShare.currentState.show();
+                    });
                   } else {
                     await _storage.write(key: KeyStore.GUIDE_STEP, value: "4");
-                    Future.delayed(Duration(milliseconds: 200), () {
+                    Future.delayed(Duration(milliseconds: 100), () {
                       Global.tokCopy.currentState.show();
                     });
                   }
