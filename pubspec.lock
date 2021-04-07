@@ -223,7 +223,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: f1496d5489791fb0c09b396243d6d3031ee07f88
+      resolved-ref: c533a5e2d53b6ef721b993342a02f55f5dbc1d33
       url: "https://github.com/graydance/ecomshare.git"
     source: git
     version: "0.0.1"
