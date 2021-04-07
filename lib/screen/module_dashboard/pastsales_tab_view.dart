@@ -72,6 +72,7 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
       color: Colours.white,
       padding: EdgeInsets.only(top: 24),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             padding: EdgeInsets.only(top: 7, bottom: 7, left: 22, right: 22),
@@ -108,7 +109,7 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
             child: PageView.builder(
               controller: _pageController,
               scrollDirection: Axis.vertical,
-              physics: PageScrollPhysics(parent: BouncingScrollPhysics()),
+              physics: BouncingScrollPhysics(),
               onPageChanged: (index) => _onPageChanged(pastSales[index]),
               itemCount: pastSales.length,
               itemBuilder: (context, index) {
@@ -138,52 +139,47 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
         calvalues.insert(0, {"day": -1, "value": ""});
       }
     }
-    return Padding(
-      padding: EdgeInsets.all(11),
-      child: GridView.count(
-        crossAxisCount: 7,
-        crossAxisSpacing: 0.0,
-        mainAxisSpacing: 0.0,
-        childAspectRatio: 1.0,
-        physics: NeverScrollableScrollPhysics(),
-        children: calvalues
-            .map((day) => Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: _isToday(pastSales.date, day['day'])
-                        ? Colours.color_10EA5228
-                        : Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        (day['day'] as int) > 0 ? day['day'].toString() : '',
-                        style: TextStyle(
-                          color: Colours.color_575859,
-                          fontSize: 14,
-                        ),
+    return GridView.count(
+      padding: const EdgeInsets.all(12),
+      crossAxisCount: 7,
+      physics: NeverScrollableScrollPhysics(),
+      children: calvalues
+          .map((day) => Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: _isToday(pastSales.date, day['day'])
+                      ? Colours.color_10EA5228
+                      : Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      (day['day'] as int) > 0 ? day['day'].toString() : '',
+                      style: TextStyle(
+                        color: Colours.color_575859,
+                        fontSize: 14,
                       ),
-                      ...day['value'] == ""
-                          ? []
-                          : [
-                              Text(
-                                Global.getUser(context).monetaryUnit +
-                                    day['value'],
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colours.color_C3C4C6,
-                                  fontSize: 12,
-                                ),
-                              )
-                            ],
-                    ],
-                  ),
-                ))
-            .toList(),
-      ),
+                    ),
+                    ...day['value'] == ""
+                        ? []
+                        : [
+                            Text(
+                              Global.getUser(context).monetaryUnit +
+                                  day['value'],
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colours.color_C3C4C6,
+                                fontSize: 12,
+                              ),
+                            )
+                          ],
+                  ],
+                ),
+              ))
+          .toList(),
     );
   }
 

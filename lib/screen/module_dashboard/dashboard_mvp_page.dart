@@ -314,7 +314,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
           Expanded(
             child: Container(
               margin: EdgeInsets.only(top: 33),
-              padding: EdgeInsets.only(top: 20, left: 0, right: 0, bottom: 40),
+              padding: EdgeInsets.only(top: 20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 gradient: LinearGradient(
@@ -341,25 +341,20 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                      left: 0,
-                    ),
-                    child: TabBar(
-                      tabs: _tabValues.map((title) {
-                        return Text(
-                          title,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        );
-                      }).toList(),
-                      isScrollable: true,
-                      controller: _tabController,
-                      indicatorColor: Colours.color_EA5228,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      unselectedLabelColor: Colours.color_B1B1B3,
-                      labelColor: Colours.color_29292B,
-                      labelStyle: TextStyle(fontSize: 16),
-                    ),
+                  TabBar(
+                    tabs: _tabValues.map((title) {
+                      return Text(
+                        title,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      );
+                    }).toList(),
+                    isScrollable: true,
+                    controller: _tabController,
+                    indicatorColor: Colours.color_EA5228,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    unselectedLabelColor: Colours.color_B1B1B3,
+                    labelColor: Colours.color_29292B,
+                    labelStyle: TextStyle(fontSize: 16),
                   ),
                   Expanded(
                     child: TabBarView(
