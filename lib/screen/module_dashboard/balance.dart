@@ -1,6 +1,7 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/utils/global.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/models/withdraw_info.dart';
 import 'package:idol/net/request/base.dart';
@@ -286,7 +287,7 @@ class _ViewModel {
   _ViewModel(this.withdrawInfoState, this.user);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.withdrawInfoState,
-        (store.state.signInState as SignInSuccess).signInUser);
+    return _ViewModel(
+        store.state.withdrawInfoState, Global.getStateUser(store.state));
   }
 }
