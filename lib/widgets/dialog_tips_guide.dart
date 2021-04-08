@@ -5,6 +5,8 @@ import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_share.dart';
 import 'package:video_player/video_player.dart';
 
+import '../r.g.dart';
+
 /// Dialog
 class TipsGuideDialog extends StatefulWidget {
   final String storeKey;
@@ -57,21 +59,23 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    if (widget.onClose != null) {
-                      widget.onClose();
-                    }
-                  },
-                  child: Container(
-                    alignment: Alignment.topRight,
-                    padding: EdgeInsets.all(12),
-                    child: Icon(
-                      Icons.clear,
-                      color: Colours.color_40A2A2A2,
-                      size: 16,
-                    ),
-                  ),
+                Container(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        if (widget.onClose != null) {
+                          widget.onClose();
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(12, 12, 0, 12),
+                        child: Image(
+                          image: R.image.dialog_close(),
+                          width: 12,
+                          height: 12,
+                        ),
+                      )),
                 ),
                 Padding(
                   padding: EdgeInsets.only(

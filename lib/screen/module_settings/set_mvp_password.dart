@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
-
 import 'package:idol/models/appstate.dart';
 import 'package:idol/net/request/signup_signin.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/Strings.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/main.dart';
 import 'package:idol/widgets/ui.dart';
+import 'package:redux/redux.dart';
 
 import '../../router.dart';
 
@@ -143,9 +143,7 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
                   });
                 },
                 child: new Container(
-                    padding: EdgeInsets.only(
-                        top: 10, right: 10, bottom: 10, left: 10),
-                    child: _Images(0))),
+                    padding: EdgeInsets.all(10), child: _Images(0))),
           ),
         ),
       ),
@@ -363,9 +361,7 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
   // ignore: non_constant_identifier_names
   Image _Images(int position) {
     return Image(
-      image: AssetImage(index[position]
-          ? 'assets/images/eyes_normal.png'
-          : 'assets/images/eyes_select.png'),
+      image: index[position] ? R.image.eyes_normal() : R.image.eyes_select(),
       width: 22,
       height: 22,
     );
