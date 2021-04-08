@@ -1,14 +1,14 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:idol/utils/localStorage.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:redux/redux.dart';
 
 /// 校验邮箱
@@ -91,6 +91,11 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
                                     fontSize: 20,
                                   ),
                                   enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Colors.white,
                                     ),

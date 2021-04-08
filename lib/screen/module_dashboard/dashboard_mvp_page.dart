@@ -4,8 +4,8 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/utils/localStorage.dart';
 import 'package:idol/conf.dart';
+import 'package:idol/models/appstate.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/base.dart';
 import 'package:idol/net/request/dashboard.dart';
@@ -18,11 +18,11 @@ import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/dashboard.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/dialog_tips_guide.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:redux/redux.dart';
-import 'package:idol/models/appstate.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 class DashboardMVPPage extends StatefulWidget {
@@ -119,8 +119,8 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
       builder: (context) {
         return TipsGuideDialog(
           KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG,
-          'How to make money\nwith Olaak',
-          '1. Select and add products in Supply panel.\n2. Add Shop Link to your bio in Socials.\n3. Share great post in your socials.\n4. Get your earnings after sales.(we cover all shopping and service)',
+          'How to make money\nwith Olaak?',
+          '1.Select and add products in Olaak panel.\n\n2.Share posts in social medias or anywhere would drive sales.\n\n3.Add shop link in the bio ofsocial media account.\n\n4.Collect earnings.',
           videoUrls[0],
           buttonText: 'Select Now',
           onTap: () {

@@ -86,8 +86,8 @@ class _SelectPaymentMethodsDialogState
                 ),
                 IdolButton('Done',
                     status: IdolButtonStatus.enable,
-                    width: 100,
-                    height: 36, listener: (status) {
+                    width: 160,
+                    height: 44, listener: (status) {
                   debugPrint(
                       '_selectedItemIndex：$_selectedItemIndex, _withdrawType：$_withdrawType');
                   widget.onItemSelected(_selectedItemIndex, _withdrawType);
@@ -124,7 +124,7 @@ class _SelectPaymentMethodsDialogState
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         border: Border.all(
                             color: _selected(key)
-                                ? Colours.color_4E9AE3
+                                ? Colours.color_F68A51
                                 : Colours.white,
                             width: 1),
                         boxShadow: [
@@ -147,12 +147,11 @@ class _SelectPaymentMethodsDialogState
                               widthFactor: 6.2,
                               heightFactor: 0,
                               alignment: Alignment.topRight,
-                              child:
-                                  // Expanded(),
-                                  Icon(
-                                Icons.check_circle,
-                                color: Colours.color_4E9AE3,
-                                size: 15,
+                              child: Image(
+                                image: AssetImage(
+                                    'assets/images/payment_select.png'),
+                                width: 15,
+                                height: 15,
                               ),
                             ),
                           ]
