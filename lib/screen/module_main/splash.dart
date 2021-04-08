@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/models/appstate.dart';
@@ -27,28 +28,31 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StoreConnector<AppState, _ViewModel>(
-          converter: _ViewModel.fromStore,
-          onInit: (store) {
-            store.dispatch(LoadConfigurationAction());
-          },
-          builder: (context, vm) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colours.transparent,
-                image: DecorationImage(
-                    image: R.image.bg_login_signup(), fit: BoxFit.cover),
-              ),
-              child: Center(
-                child: Image(
-                  image: R.image.ic_index_logo(),
-                  width: 150,
-                  height: 150,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        body: StoreConnector<AppState, _ViewModel>(
+            converter: _ViewModel.fromStore,
+            onInit: (store) {
+              store.dispatch(LoadConfigurationAction());
+            },
+            builder: (context, vm) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colours.transparent,
+                  image: DecorationImage(
+                      image: R.image.bg_login_signup(), fit: BoxFit.cover),
                 ),
-              ),
-            );
-          }),
+                child: Center(
+                  child: Image(
+                    image: R.image.ic_index_logo(),
+                    width: 150,
+                    height: 150,
+                  ),
+                ),
+              );
+            }),
+      ),
     );
   }
 

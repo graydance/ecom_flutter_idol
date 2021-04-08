@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/router.dart';
 
@@ -7,41 +8,61 @@ class IndexScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: R.image.bg_login_signup(), fit: BoxFit.cover),
-        ),
-        child: SingleChildScrollView(
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.only(left: 40, right: 40),
-              child: Column(
-                children: [
-                  Image(
-                    image: R.image.ic_index_logo(),
-                    width: 150,
-                    height: 150,
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  _buildButton(
-                    context,
-                    () => Navigator.of(context)
-                        .pushNamed(RouterPath.validateEmail),
-                    'LOG IN',
-                  ),
-                  _buildButton(
-                    context,
-                    () => IdolRoute.startJoinUs(context),
-                    'CREATE ACCOUNT',
-                  ),
-                ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        body: Container(
+          alignment: Alignment.center,
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: R.image.bg_login_signup(), fit: BoxFit.cover),
+          ),
+          child: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.only(left: 40, right: 40),
+                child: Column(
+                  children: [
+                    Image(
+                      image: R.image.ic_index_logo(),
+                      width: 150,
+                      height: 150,
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    _buildButton(
+                      context,
+                      () => Navigator.of(context).pushNamed(
+                          RouterPath.validateEmail,
+                          arguments: false),
+                      'LOG IN',
+                    ),
+                    _buildButton(
+                      context,
+                      () => Navigator.of(context)
+                          .pushNamed(RouterPath.validateEmail, arguments: true),
+                      'CREATE ACCOUNT',
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed(RouterPath.joinus),
+                      child: Text(
+                        'Join Us',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
