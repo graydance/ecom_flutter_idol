@@ -155,3 +155,5 @@ class UpdatePasswordFailureAction {
 
   UpdatePasswordFailureAction(this.message);
 }
+
+class LogoutAction {}
