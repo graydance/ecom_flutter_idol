@@ -426,8 +426,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         try {
           final StoreGoodsList model = await completer.future;
           String step = await _storage.read(key: KeyStore.GUIDE_STEP);
-          if (step == "2" && model.list.length == 0) {
-            Global.tokAddAndShare.currentState.show();
+          if ((step == "2" || step == "3") && model.list.length == 0) {
+            //Global.tokAddAndShare.currentState.show();
           } else {
             Global.tokAddAndShare.currentState.hide();
             await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
@@ -558,8 +558,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                     status: IdolButtonStatus.enable,
                     listener: (status) async {
                       Global.tokAddAndShare.currentState.hide();
-                      await _storage.write(
-                          key: KeyStore.GUIDE_STEP, value: "3");
+                      if (await _storage.read(key: KeyStore.GUIDE_STEP) ==
+                          "2") {
+                        await _storage.write(
+                            key: KeyStore.GUIDE_STEP, value: "3");
+                      }
                       // Future.delayed(Duration(milliseconds: 2000), () {
                       //   Global.tokPikAndSell.currentState.show();
                       // });
