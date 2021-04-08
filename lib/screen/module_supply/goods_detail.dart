@@ -30,6 +30,7 @@ class GoodsDetailScreen extends StatefulWidget {
 class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   GoodsDetail _goodsDetail = GoodsDetail();
   bool _showLikeAndSold = false;
+  double _messageBarHeight = 0;
   IdolButtonStatus _bottomButtonStatus = IdolButtonStatus.normal;
 
   RefreshController _refreshController =
@@ -98,6 +99,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   }
 
   Widget _buildBodyWidget() {
+    print('商品个数');
+    print(_goodsDetail.goods.length);
+    print('商品个数');
     var updateTime =
         DateTime.fromMillisecondsSinceEpoch(_goodsDetail.updateTime);
     _bottomButtonStatus = IdolButtonStatus.enable;
@@ -137,20 +141,50 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                 height: MediaQuery.of(context).size.width,
                 child: Stack(
                   children: [
-                    Swiper(
-                      itemBuilder: (context, index) {
-                        return _createItemMediaWidget(
-                            _goodsDetail.goods[index]);
-                      },
-                      pagination: SwiperPagination(
-                          alignment: Alignment.bottomLeft,
-                          builder: FractionPaginationBuilder(
-                            activeFontSize: 10,
-                            fontSize: 10,
-                            color: Colours.white,
-                            activeColor: Colours.white,
-                          )),
-                      itemCount: _goodsDetail.goods.length,
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(2)),
+                      child: Container(
+                        child: Stack(
+                          children: [
+                            // AspectRatio(
+                            //   aspectRatio: 376 / 345,
+                            //   child:
+                            Stack(
+                              children: [
+                                Swiper(
+                                  itemBuilder: (context, index) {
+                                    return _createItemMediaWidget(
+                                        _goodsDetail.goods[index]);
+                                  },
+                                  pagination: SwiperPagination(
+                                      alignment: Alignment.bottomCenter,
+                                      builder: DotSwiperPaginationBuilder(
+                                        activeSize: 6,
+                                        size: 5,
+                                        color: Colours.color_50D8D8D8,
+                                        activeColor: Colours.black,
+                                      )),
+                                  itemCount: _goodsDetail.goods.length,
+                                ),
+                              ],
+                            ),
+                            // ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: MessageBar(
+                                height: _messageBarHeight,
+                                onTap: () {
+                                  _hideMessageBar();
+                                  ShareManager.showShareGoodsDialog(
+                                      context, _goodsDetail.goods[0]);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     if (_showLikeAndSold)
                       Positioned(
@@ -358,6 +392,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                       });
                       StoreProvider.of<AppState>(context)
                           .dispatch(AddToStoreAction(_goodsDetail, completer));
+
+                      completer.future.then((value) => _showMessageBar());
                     }
                   },
                 ),
@@ -395,6 +431,21 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         ),
       ),
     );
+  }
+
+  _showMessageBar() {
+    setState(() {
+      _messageBarHeight = 60;
+    });
+    Future.delayed(Duration(seconds: 4)).then((value) {
+      _hideMessageBar();
+    });
+  }
+
+  _hideMessageBar() {
+    setState(() {
+      _messageBarHeight = 0;
+    });
   }
 }
 
@@ -446,5 +497,74 @@ class _ViewModel {
   _ViewModel(this.detail);
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(store.state.goodsDetailPage);
+  }
+}
+
+class MessageBar extends StatefulWidget {
+  final double height;
+  final VoidCallback onTap;
+  const MessageBar({
+    Key key,
+    this.height = 60,
+    this.onTap,
+  }) : super(key: key);
+
+  @override
+  _MessageBarState createState() => _MessageBarState();
+}
+
+class _MessageBarState extends State<MessageBar> {
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      height: widget.height,
+      width: double.infinity,
+      duration: Duration(milliseconds: 500),
+      decoration: BoxDecoration(
+        color: Colours.color_0F1015.withAlpha(200),
+      ),
+      curve: Curves.fastOutSlowIn,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Added to listing successfully',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+                maxLines: 2,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                if (widget.onTap != null) widget.onTap();
+              },
+              child: Row(
+                children: [
+                  Text(
+                    'Go to Share',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xffEA5228),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios_sharp,
+                    size: 14,
+                    color: Color(0xffEA5228),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
