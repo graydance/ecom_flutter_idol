@@ -294,7 +294,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                     _goodsDetail.earningPriceStr ??
                                 '0.00',
                             style: TextStyle(
-                                color: Colours.color_EA5228, fontSize: 20),
+                                color: Colours.color_EA5228,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
                           ),
                           TextSpan(text: ' '),
                           TextSpan(
@@ -315,7 +317,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                     _goodsDetail.suggestedPriceStr ??
                                 '0.00',
                             style: TextStyle(
-                                color: Colours.color_0F1015, fontSize: 14),
+                                color: Colours.color_0F1015,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
                           ),
                           TextSpan(text: ' '),
                           TextSpan(
@@ -336,7 +340,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   _goodsDetail.inMyStore == null
                       ? '--'
                       : (_goodsDetail.inMyStore == 0
-                          ? 'Pik & Sell'
+                          ? 'Pick & Sell'
                           : 'Share to Earn'),
                   status: _bottomButtonStatus,
                   listener: (status) {

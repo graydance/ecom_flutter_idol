@@ -1,20 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/models/best_sales_list.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/dashboard.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
-import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/button.dart';
-import 'package:idol/widgets/error.dart';
-import 'package:idol/widgets/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/models/best_sales_list.dart';
 import 'package:redux/redux.dart';
 
 class BestSalesTabView extends StatefulWidget {
@@ -76,6 +72,10 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
                     style: TextStyle(color: Colours.color_C4C5CD, fontSize: 10),
                   ),
                   value: 0,
+                  height: 24,
+                ),
+                PopupMenuDivider(
+                  height: 2,
                 ),
                 PopupMenuItem(
                   child: Text(
@@ -83,6 +83,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
                     style: TextStyle(color: Colours.color_C4C5CD, fontSize: 10),
                   ),
                   value: 1,
+                  height: 24,
                 ),
               ].toList();
             },
@@ -152,7 +153,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
             height: 10,
           ),
           Text(
-            'No sales history Now.\nAdd and Share products now.',
+            'No sales history.\nAdd and Share products now.',
             style: TextStyle(
               color: Colours.color_0F1015,
               fontSize: 16,
