@@ -116,10 +116,10 @@ class Global {
 
 bool validatePassowrd(String text) {
   if (text == null) return false;
-  return RegExp(r"(?=.{8,}).*").hasMatch(text.trim());
+  return RegExp(r"(?=.{8,}).*").hasMatch(text);
 }
 
 bool validateUserName(String text) {
   if (text == null) return false;
-  return RegExp(r"^[a-z][a-z0-9_]{4,51}$").hasMatch(text.trim());
+  return RegExp(r"^[a-z0-9_.]{5,100}$", caseSensitive: false).hasMatch(text);
 }

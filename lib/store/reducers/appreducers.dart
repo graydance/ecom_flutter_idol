@@ -1,7 +1,11 @@
 import 'package:idol/models/models.dart';
+import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/reducers/reducers.dart';
 
 AppState appReducer(AppState state, action) {
+  if (action == LogoutAction) {
+    return AppState();
+  }
   return AppState(
     goodsDetailPage: goodsDetailPageReducer(state.goodsDetailPage, action),
     validateEmailState: validateEmailReducer(state.validateEmailState, action),

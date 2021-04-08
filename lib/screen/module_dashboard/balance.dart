@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:super_tooltip/super_tooltip.dart';
+
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/withdraw_info.dart';
@@ -11,10 +14,9 @@ import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_message.dart';
-import 'package:redux/redux.dart';
-import 'package:super_tooltip/super_tooltip.dart';
 
 class BalanceScreen extends StatefulWidget {
   @override
@@ -348,7 +350,7 @@ class _ViewModel {
   _ViewModel(this.withdrawInfoState, this.user);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.withdrawInfoState,
-        (store.state.signInState as SignInSuccess).signInUser);
+    return _ViewModel(
+        store.state.withdrawInfoState, Global.getStateUser(store.state));
   }
 }

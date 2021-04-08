@@ -24,7 +24,6 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   SignUpSignInArguments _signUpSignInArguments;
-  bool _enable = false;
   bool _setPassword = true;
   bool _passwordVisible = false;
   String _password;
@@ -32,17 +31,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _error = '';
   TextEditingController _controller = TextEditingController();
 
+  String get _errorMessage => _setPassword
+      ? 'Make sure it\'s at least 8 characters'
+      : 'At least 5 characters, only a~z, 0~9, _, . are available.';
+
   @override
   void initState() {
     super.initState();
     _signUpSignInArguments = StoreProvider.of<AppState>(context, listen: false)
         .state
         .signUpSignInArguments;
-    _controller.addListener(() {
-      setState(() {
-        _enable = _validate(_controller.text.trim(), _setPassword);
-      });
-    });
   }
 
   @override
@@ -51,278 +49,289 @@ class _SignUpScreenState extends State<SignUpScreen> {
       converter: _ViewModel.fromStore,
       builder: (context, vm) {
         return Scaffold(
-          body: Stack(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.only(left: 35, right: 35),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: R.image.bg_login_signup(), fit: BoxFit.cover),
-                ),
-                child: SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  _setPassword
-                                      ? 'SET YOUR PASSWORD'
-                                      : 'SET YOUR USERNAME',
-                                  style: TextStyle(
-                                      color: Colours.white, fontSize: 26),
-                                ),
-                                SizedBox(
-                                  height: 70,
-                                ),
-                                Text(
-                                  _signUpSignInArguments.email,
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colours.white),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                TextField(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      final msg = _setPassword
-                                          ? 'Make sure it\'s at least 8 characters'
-                                          : 'Make sure it\'s at least 5 characters\nonly lowercase letters';
-                                      _error =
-                                          _validate(value.trim(), _setPassword)
-                                              ? ''
-                                              : msg;
-                                    });
-                                  },
-                                  autofocus: true,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colours.white, fontSize: 18),
-                                  controller: _controller,
-                                  obscureText:
-                                      _setPassword && !_passwordVisible,
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colours.transparent,
-                                    prefix: _setPassword
-                                        ? SizedBox(
-                                            width: 50,
-                                          )
-                                        : null,
-                                    suffixIcon: _setPassword
-                                        ? GestureDetector(
-                                            child: Image(
-                                              image: _passwordVisible
-                                                  ? R.image.eyes_visibility()
-                                                  : R.image
-                                                      .eyes_visibility_off(),
-                                            ),
-                                            onTap: () {
-                                              setState(() {
-                                                _passwordVisible =
-                                                    !_passwordVisible;
-                                              });
-                                            },
-                                          )
-                                        : null,
-                                    border: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: Colours.color_white60),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: Colours.color_white60),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: Colours.color_white60),
-                                    ),
-                                    hintText:
-                                        _setPassword ? 'Password' : 'Username',
-                                    hintStyle: TextStyle(
-                                      color: Colours.color_white60,
-                                    ),
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Stack(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(left: 35, right: 35),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: R.image.bg_login_signup(), fit: BoxFit.cover),
+                  ),
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    _setPassword
+                                        ? 'SET YOUR PASSWORD'
+                                        : 'SET YOUR USERNAME',
+                                    style: TextStyle(
+                                        color: Colours.white, fontSize: 26),
                                   ),
-                                ),
-                                if (_error.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      _error,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
+                                  SizedBox(
+                                    height: 70,
                                   ),
-                                GestureDetector(
-                                  onTap: () {
-                                    if (_enable && _setPassword) {
-                                      _password = _controller.text.trim();
+                                  Text(
+                                    _signUpSignInArguments.email,
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colours.white),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  TextField(
+                                    onChanged: (value) {
                                       setState(() {
-                                        _controller.text = '';
-                                        _setPassword = false;
+                                        _error = _validate(value, _setPassword)
+                                            ? ''
+                                            : _errorMessage;
                                       });
-                                    } else if (_enable && !_setPassword) {
-                                      _userName = _controller.text.trim();
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                      // sign up
-                                      final comleter = Completer();
-                                      comleter.future
-                                          .then((user) =>
-                                              _showWelcomeDialog(user))
-                                          .catchError((error) =>
-                                              EasyLoading.showToast(
-                                                  error.toString()));
-
-                                      StoreProvider.of<AppState>(context)
-                                          .dispatch(SignUpAction(
-                                              SignUpRequest(
-                                                  _signUpSignInArguments.email,
-                                                  _password,
-                                                  _userName),
-                                              comleter));
-                                    }
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    alignment: Alignment.center,
-                                    margin: EdgeInsets.only(
-                                        left: 60, right: 60, top: 40),
-                                    padding:
-                                        EdgeInsets.only(top: 10, bottom: 10),
-                                    decoration: BoxDecoration(
-                                      color: _enable
-                                          ? Colours.color_white40
-                                          : Colours.transparent,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(4),
+                                    },
+                                    autofocus: true,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colours.white, fontSize: 18),
+                                    controller: _controller,
+                                    obscureText:
+                                        _setPassword && !_passwordVisible,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colours.transparent,
+                                      prefix: _setPassword
+                                          ? SizedBox(
+                                              width: 50,
+                                            )
+                                          : null,
+                                      suffixIcon: _setPassword
+                                          ? GestureDetector(
+                                              child: Image(
+                                                image: _passwordVisible
+                                                    ? R.image.eyes_visibility()
+                                                    : R.image
+                                                        .eyes_visibility_off(),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  _passwordVisible =
+                                                      !_passwordVisible;
+                                                });
+                                              },
+                                            )
+                                          : null,
+                                      border: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1,
+                                            color: Colours.color_white60),
                                       ),
-                                      border: Border.all(
-                                          color: Colours.color_white40),
-                                    ),
-                                    child: Text(
-                                      _setPassword ? 'NEXT' : 'SIGN UP',
-                                      style: TextStyle(
-                                          color: Colours.white, fontSize: 18),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1,
+                                            color: Colours.color_white60),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1,
+                                            color: Colours.color_white60),
+                                      ),
+                                      hintText: _setPassword
+                                          ? 'Password'
+                                          : 'Username',
+                                      hintStyle: TextStyle(
+                                        color: Colours.color_white60,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  if (_error.isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        _error,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      bool enable = _validate(
+                                          _controller.text, _setPassword);
+                                      if (!enable) {
+                                        EasyLoading.showError(_errorMessage);
+                                        return;
+                                      }
+                                      if (_setPassword) {
+                                        _password = _controller.text.trim();
+
+                                        setState(() {
+                                          _controller.text = '';
+                                          _setPassword = false;
+                                        });
+                                      } else {
+                                        _userName = _controller.text
+                                            .trim()
+                                            .toLowerCase();
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
+                                        // sign up
+                                        final comleter = Completer();
+                                        comleter.future
+                                            .then((user) =>
+                                                _showWelcomeDialog(user))
+                                            .catchError((error) =>
+                                                EasyLoading.showToast(
+                                                    error.toString()));
+
+                                        StoreProvider.of<AppState>(context)
+                                            .dispatch(SignUpAction(
+                                                SignUpRequest(
+                                                    _signUpSignInArguments
+                                                        .email,
+                                                    _password,
+                                                    _userName),
+                                                comleter));
+                                      }
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      alignment: Alignment.center,
+                                      margin: EdgeInsets.only(
+                                          left: 60, right: 60, top: 40),
+                                      padding:
+                                          EdgeInsets.only(top: 10, bottom: 10),
+                                      decoration: BoxDecoration(
+                                        color: Colours.color_white40,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(4),
+                                        ),
+                                        border: Border.all(
+                                            color: Colours.color_white40),
+                                      ),
+                                      child: Text(
+                                        _setPassword ? 'NEXT' : 'SIGN UP',
+                                        style: TextStyle(
+                                            color: Colours.white, fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: 25,
-                          right: 25,
-                          bottom: 20,
+                        SizedBox(
+                          height: 50,
                         ),
-                        child: Visibility(
-                          child: RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
-                                text:
-                                    'By signing up, you acknowledge that you agree to our\n',
-                                style: TextStyle(
-                                  color: Colours.color_white60,
-                                  fontSize: 10,
-                                ),
-                              ),
-                              TextSpan(
-                                  text: 'Terms & Conditions,',
-                                  style: TextStyle(
-                                    color: Colours.color_white60,
-                                    fontSize: 10,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      // link Terms & Conditions
-                                      IdolRoute.startInnerWebView(
-                                          context,
-                                          InnerWebViewArguments(
-                                              'Terms & Conditions',
-                                              termsConditionsUri));
-                                    }),
-                              TextSpan(text: ' '),
-                              TextSpan(
-                                  text: 'Privacy Policy,',
-                                  style: TextStyle(
-                                    color: Colours.color_white60,
-                                    fontSize: 10,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      IdolRoute.startInnerWebView(
-                                          context,
-                                          InnerWebViewArguments(
-                                              'Privacy Policy',
-                                              privacyPolicyUri));
-                                    }),
-                              TextSpan(text: ' '),
-                              TextSpan(
-                                  text: 'Cookie Policy.',
-                                  style: TextStyle(
-                                    color: Colours.color_white60,
-                                    fontSize: 10,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      IdolRoute.startInnerWebView(
-                                          context,
-                                          InnerWebViewArguments('Cookie Policy',
-                                              cookiePolicyUri));
-                                    }),
-                            ]),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 25,
+                            right: 25,
+                            bottom: 20,
                           ),
-                          visible: !_setPassword,
+                          child: Visibility(
+                            child: RichText(
+                              text: TextSpan(children: [
+                                TextSpan(
+                                  text:
+                                      'By signing up, you acknowledge that you agree to our\n',
+                                  style: TextStyle(
+                                    color: Colours.color_white60,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                                TextSpan(
+                                    text: 'Terms & Conditions,',
+                                    style: TextStyle(
+                                      color: Colours.color_white60,
+                                      fontSize: 10,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        // link Terms & Conditions
+                                        IdolRoute.startInnerWebView(
+                                            context,
+                                            InnerWebViewArguments(
+                                                'Terms & Conditions',
+                                                termsConditionsUri));
+                                      }),
+                                TextSpan(text: ' '),
+                                TextSpan(
+                                    text: 'Privacy Policy,',
+                                    style: TextStyle(
+                                      color: Colours.color_white60,
+                                      fontSize: 10,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        IdolRoute.startInnerWebView(
+                                            context,
+                                            InnerWebViewArguments(
+                                                'Privacy Policy',
+                                                privacyPolicyUri));
+                                      }),
+                                TextSpan(text: ' '),
+                                TextSpan(
+                                    text: 'Cookie Policy.',
+                                    style: TextStyle(
+                                      color: Colours.color_white60,
+                                      fontSize: 10,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        IdolRoute.startInnerWebView(
+                                            context,
+                                            InnerWebViewArguments(
+                                                'Cookie Policy',
+                                                cookiePolicyUri));
+                                      }),
+                              ]),
+                            ),
+                            visible: !_setPassword,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              if (Navigator.of(context).canPop())
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: SafeArea(
-                    child: SizedBox(
-                      width: 44,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Image(
-                          image: R.image.arrow_left(),
+                if (Navigator.of(context).canPop())
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: SafeArea(
+                      child: SizedBox(
+                        width: 44,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Image(
+                            image: R.image.arrow_left(),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         );
       },
