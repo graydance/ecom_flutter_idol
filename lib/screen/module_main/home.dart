@@ -129,16 +129,27 @@ class _HomeScreenState extends State<HomeScreen>
       //padding: EdgeInsets.only(bottom: 15,),
       child: PageView(
         controller: Global.homePageController,
-        onPageChanged: (index) {
+        onPageChanged: (index) async {
           setState(() {
             _selectedIndex = index;
           });
+          String guildValue = await _storage.read(key: KeyStore.GUIDE_STEP);
           if (index == 1) {
             StoreProvider.of<AppState>(context)
                 .dispatch(DashboardAction(BaseRequestImpl()));
+
+            if (guildValue != "1" && guildValue != "6") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+            }
           } else if (index == 2) {
             // (_pages[index] as ShopLinkPage).refreshData();
+            if (guildValue != "2" && guildValue != "4" && guildValue != "6") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+            }
           } else if (index == 0) {
+            if (guildValue != "3" && guildValue != "5" && guildValue != "6") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+            }
             _storage.read(key: KeyStore.GUIDE_STEP).then((value) => value == "5"
                 ? showDialog(
                     context: context,
