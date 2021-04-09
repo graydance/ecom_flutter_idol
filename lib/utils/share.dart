@@ -1,14 +1,15 @@
 import 'dart:io';
+
 import 'package:ecomshare/ecomshare.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:idol/utils/localStorage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/dialog_share.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -24,9 +25,9 @@ class ShareManager {
         context: context,
         builder: (context) {
           return ShareDialog(
-            'How to sales on socials',
+            'How to drive sales on social media?',
             videoUrls[0],
-            '1. Go to my Social account;\n2. Edit profile;\n3. Paste your Shop Link into Bio;\n4. Notice your fans with great post.',
+            '1. Add shop link in the bio.\n2. Attract your fans with great content and post.',
             ShareType.link,
             (channel) {
               if ('Copy Link' == channel) {
@@ -55,24 +56,24 @@ class ShareManager {
         backgroundColor: Colors.transparent,
         builder: (context) {
           return ShareDialog(
-            'Share great posts in feed',
-            imageUrl,
-            'The product is now available in your store.\nShare the news with your fans on social media to make money!',
-            ShareType.goods,
-            (shareChannel) {
-              EasyLoading.showToast('Capture copied');
-              final shareText =
-                  'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Olaak.com #Olaak  #supportsmallbusinesses';
-              Clipboard.setData(ClipboardData(text: shareText));
+              // 'Share great posts in feed',
+              '',
+              imageUrl,
+              // 'The product is now available in your store.\nShare the news with your fans on social media to make money!',
+              '',
+              ShareType.goods, (shareChannel) {
+            EasyLoading.showToast('Capture copied');
+            final shareText =
+                'Just found a terrific stuff, can\'t wait to share! Check my link in bio  #Olaak.com #Olaak  #supportsmallbusinesses';
+            Clipboard.setData(ClipboardData(text: shareText));
 
-              Future.delayed(Duration(milliseconds: 500), () {
-                IdolRoute.pop(context);
-                _downloadPicture(context, imageUrl, shareChannel);
-              });
-            },
-            tips:
-                'Tips: Share your own pictures with product can increase 38% Sales.',
-          );
+            Future.delayed(Duration(milliseconds: 500), () {
+              IdolRoute.pop(context);
+              _downloadPicture(context, imageUrl, shareChannel);
+            });
+          }, tips: ''
+              // 'Tips: Share your own pictures with product can increase 38% Sales.',
+              );
         });
   }
 

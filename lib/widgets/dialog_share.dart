@@ -1,4 +1,5 @@
 import 'package:ecomshare/ecomshare.dart';
+import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:idol/r.g.dart';
@@ -42,7 +43,9 @@ class ShareDialog extends StatefulWidget {
 
 class MyPikVideo extends StatefulWidget {
   final VideoPlayerController controller;
+
   MyPikVideo(this.controller);
+
   @override
   State<StatefulWidget> createState() => _MyPikVideo();
 }
@@ -130,8 +133,8 @@ class _ShareDialogState extends State<ShareDialog> {
     if (!mounted) return;
     setState(() {
       if (supportChannels.length > 1 && 'System' == supportChannels.last) {
-        supportChannels
-            .add(widget.shareType == ShareType.link ? 'Copy Link' : 'Download');
+        supportChannels.insert(supportChannels.length - 1,
+            widget.shareType == ShareType.link ? 'Copy Link' : 'Download');
       }
       _supportShareChannels = supportChannels;
       debugPrint('Share channels >>> ${_supportShareChannels.toString()}');
@@ -190,7 +193,7 @@ class _ShareDialogState extends State<ShareDialog> {
           Container(
             margin: EdgeInsets.only(top: 8, bottom: 18),
             decoration: BoxDecoration(
-              color: Colours.color_949494,
+              color: Colours.color_C4C5CD,
               borderRadius: BorderRadius.all(
                 Radius.circular(2),
               ),
@@ -204,16 +207,18 @@ class _ShareDialogState extends State<ShareDialog> {
             widget.title,
             style: TextStyle(
                 color: Colours.color_0F1015,
-                fontSize: 16,
+                fontSize: TextUtil.isEmpty(widget.title) ? 0 : 16,
                 fontWeight: FontWeight.bold),
           ),
           SizedBox(
-            height: 10,
+            height: TextUtil.isEmpty(widget.desc) ? 0 : 10,
           ),
           Text(
             widget.desc,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colours.color_979AA9, fontSize: 14),
+            style: TextStyle(
+                color: Colours.color_979AA9,
+                fontSize: TextUtil.isEmpty(widget.desc) ? 0 : 14),
           ),
           Container(
             margin: EdgeInsets.only(left: 80, right: 80, top: 15, bottom: 10),
@@ -226,7 +231,9 @@ class _ShareDialogState extends State<ShareDialog> {
           ),
           Text(
             widget.tips,
-            style: TextStyle(fontSize: 12, color: Colours.color_ED8514),
+            style: TextStyle(
+                fontSize: TextUtil.isEmpty(widget.tips) ? 0 : 12,
+                color: Colours.color_ED8514),
           ),
           SizedBox(
             height: 20,
@@ -256,7 +263,7 @@ class _ShareDialogState extends State<ShareDialog> {
               height: 50,
             ),
             Text(
-              channel,
+              channel == "System" ? 'More' : channel,
               style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
             ),
           ],

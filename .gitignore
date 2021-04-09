@@ -47,6 +47,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 coverage/
+gradlew
+gradle
+gradlew.bat
+local.properties
 
 # env.dart
 /lib/env.dart

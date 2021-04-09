@@ -110,6 +110,7 @@ flutter:
   - assets/images/main/launch_background.webp
   - assets/images/main/whatsapp_small.png
   - assets/images/new_guid.png
+  - assets/images/payment_select.png
   - assets/images/shoplink/edit_avatar.png
   - assets/images/shoplink/ic_change_avatar.png
   - assets/images/shoplink/ic_edit.png
@@ -133,4 +134,7 @@ flutter:
   - assets/images/supply/ic_tab_supplier_new_product_unselected.png
   - assets/images/supply/pause.png
   - assets/images/supply/play.png
+  - assets/images/widget/dialog_close.png
+  - assets/images/widget/eyes_normal.png
+  - assets/images/widget/eyes_select.png
   - assets/image/

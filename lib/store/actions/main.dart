@@ -142,8 +142,9 @@ class UpdatePasswordFailure implements UpdatePasswordState {
 
 class UpdatePasswordAction {
   final UpdatePasswordRequest request;
+  final Completer completer;
 
-  UpdatePasswordAction(this.request);
+  UpdatePasswordAction(this.request, this.completer);
 }
 
 class UpdatePasswordSuccessAction {
@@ -155,3 +156,5 @@ class UpdatePasswordFailureAction {
 
   UpdatePasswordFailureAction(this.message);
 }
+
+class LogoutAction {}

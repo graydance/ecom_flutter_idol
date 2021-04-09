@@ -75,7 +75,7 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
     );
   }
 
-  Widget _buildWidget(_ViewModel vm){
+  Widget _buildWidget(_ViewModel vm) {
     return Scaffold(
       appBar: IdolUI.appBar(context, 'Enter your password'),
       body: Container(
@@ -88,8 +88,8 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
                 child: Padding(
                   padding: EdgeInsets.all(15),
                   child: Text('Enter your password',
-                      style: TextStyle(
-                          color: Colours.color_3B3F42, fontSize: 14)),
+                      style:
+                          TextStyle(color: Colours.color_3B3F42, fontSize: 14)),
                 )),
             TextField(
               controller: _controller,
@@ -106,10 +106,9 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
                 ),
                 isCollapsed: true,
                 contentPadding:
-                EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 hintText: 'Password',
-                hintStyle:
-                TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
+                hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
                 suffixIcon: IconButton(
                     icon: Icon(
                       _passwordVisible
@@ -137,13 +136,13 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
                 },
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text(
-                'Forgot password?',
-                style: TextStyle(fontSize: 14, color: Colours.color_3B3F42),
-              ),
-            )
+            // Padding(
+            //   padding: EdgeInsets.only(top: 10),
+            //   child: Text(
+            //     'Forgot password?',
+            //     style: TextStyle(fontSize: 14, color: Colours.color_3B3F42),
+            //   ),
+            // )
           ],
         ),
       ),
@@ -155,8 +154,8 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
       EasyLoading.show(status: 'Submitting...');
     } else if (state is WithdrawSuccess) {
       EasyLoading.dismiss();
-      IdolRoute.startDashboardWithdrawResult(context,
-          WithdrawResultArguments(withdrawStatus: 0))
+      IdolRoute.startDashboardWithdrawResult(
+              context, WithdrawResultArguments(withdrawStatus: 0))
           .then((value) => IdolRoute.popAndExit(context));
     } else if (state is WithdrawFailure) {
       EasyLoading.showToast(state.message);
@@ -170,14 +169,14 @@ class _ViewModel {
   _ViewModel(this.withdrawState, this.withdraw);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    _withdraw(String password){
-      store.dispatch(
-          WithdrawAction(WithdrawRequest(
-              store.state.withdrawVerifyArguments.withdrawTypeId,
-              store.state.withdrawVerifyArguments.account,
-              store.state.withdrawVerifyArguments.amount,
-              password)));
+    _withdraw(String password) {
+      store.dispatch(WithdrawAction(WithdrawRequest(
+          store.state.withdrawVerifyArguments.withdrawTypeId,
+          store.state.withdrawVerifyArguments.account,
+          store.state.withdrawVerifyArguments.amount,
+          password)));
     }
+
     return _ViewModel(store.state.withdrawState, _withdraw);
   }
 
