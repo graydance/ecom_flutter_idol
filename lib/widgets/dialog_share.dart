@@ -177,73 +177,79 @@ class _ShareDialogState extends State<ShareDialog> {
   }
 
   Widget _createGoodsShareWidget() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colours.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+    return Stack(
+      children: [
+        Container(
+          height: 30.0,
+          width: double.infinity,
+          color: Colors.black54,
         ),
-      ),
-      padding: EdgeInsets.only(bottom: 30, left: 30, right: 30),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: 8, bottom: 18),
-            decoration: BoxDecoration(
-              color: Colours.color_C4C5CD,
-              borderRadius: BorderRadius.all(
-                Radius.circular(2),
+        Container(
+          decoration: BoxDecoration(
+            color: Colours.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+          ),
+          padding: EdgeInsets.only(bottom: 20, left: 15, right: 15),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: 8, bottom: 18),
+                decoration: BoxDecoration(
+                  color: Colours.color_C4C5CD,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(2),
+                  ),
+                ),
+                child: SizedBox(
+                  height: 4,
+                  width: 40,
+                ),
               ),
-            ),
-            child: SizedBox(
-              height: 4,
-              width: 40,
-            ),
-          ),
-          Text(
-            widget.title,
-            style: TextStyle(
-                color: Colours.color_0F1015,
-                fontSize: TextUtil.isEmpty(widget.title) ? 0 : 16,
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: TextUtil.isEmpty(widget.desc) ? 0 : 10,
-          ),
-          Text(
-            widget.desc,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colours.color_979AA9,
-                fontSize: TextUtil.isEmpty(widget.desc) ? 0 : 14),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 80, right: 80, top: 15, bottom: 10),
-            child: AspectRatio(
-              aspectRatio: 1.0, //_controller.value.aspectRatio,
-              child: Image(
-                image: NetworkImage(widget.mediaUrl),
+              Text(
+                widget.title,
+                style: TextStyle(
+                    color: Colours.color_0F1015,
+                    fontSize: TextUtil.isEmpty(widget.title) ? 0 : 16,
+                    fontWeight: FontWeight.bold),
               ),
-            ),
+              SizedBox(
+                height: TextUtil.isEmpty(widget.desc) ? 0 : 10,
+              ),
+              Text(
+                widget.desc,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colours.color_979AA9,
+                    fontSize: TextUtil.isEmpty(widget.desc) ? 0 : 14),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(70, 0, 70, 10),
+                child: AspectRatio(
+                  aspectRatio: 1.0, //_controller.value.aspectRatio,
+                  child: Image(
+                    image: NetworkImage(widget.mediaUrl),
+                  ),
+                ),
+              ),
+              Text(
+                widget.tips,
+                style: TextStyle(
+                    fontSize: TextUtil.isEmpty(widget.tips) ? 0 : 12,
+                    color: Colours.color_ED8514),
+              ),
+              SizedBox(
+                height: TextUtil.isEmpty(widget.tips) ? 5 : 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: _createShareButton(),
+              ),
+            ],
           ),
-          Text(
-            widget.tips,
-            style: TextStyle(
-                fontSize: TextUtil.isEmpty(widget.tips) ? 0 : 12,
-                color: Colours.color_ED8514),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: _createShareButton(),
-          ),
-        ],
-      ),
+        )
+      ],
     );
   }
 
@@ -273,69 +279,79 @@ class _ShareDialogState extends State<ShareDialog> {
   }
 
   Widget _createLinkShareWidget() {
-    return Container(
-      padding: EdgeInsets.only(bottom: 30),
-      decoration: BoxDecoration(
-        color: Colours.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+    return Stack(
+      children: [
+        Container(
+          height: 30.0,
+          width: double.infinity,
+          color: Colors.black54,
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: 8, bottom: 18),
-            decoration: BoxDecoration(
-              color: Colours.color_949494,
-              borderRadius: BorderRadius.all(
-                Radius.circular(2),
-              ),
-            ),
-            child: SizedBox(
-              height: 4,
-              width: 40,
+        Container(
+          padding: EdgeInsets.only(top: 8, bottom: 18),
+          decoration: BoxDecoration(
+            color: Colours.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
             ),
           ),
-          Text(
-            widget.title,
-            style: TextStyle(
-                color: Colours.color_979AA9,
-                fontSize: 16,
-                fontWeight: FontWeight.bold),
-          ),
-          Container(
-              margin: EdgeInsets.only(left: 50, right: 50, top: 10, bottom: 10),
-              decoration: BoxDecoration(
-                color: Colours.color_F8F8F8,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: 8, bottom: 18),
+                decoration: BoxDecoration(
+                  color: Colours.color_C4C5CD,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(2),
+                  ),
+                ),
+                child: SizedBox(
+                  height: 4,
+                  width: 40,
                 ),
               ),
-              child: MyPikVideo(_controller)),
-          Container(
-            width: double.infinity,
-            margin: EdgeInsets.only(left: 60, right: 60),
-            child: Text(
-              widget.desc,
-              style: TextStyle(color: Colours.color_979AA9, fontSize: 12),
-              textAlign: TextAlign.start,
-            ),
+              Text(
+                widget.title,
+                style: TextStyle(
+                    color: Colours.color_979AA9,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+              Container(
+                  margin: EdgeInsets.only(
+                      left: 52.5, right: 52.5, top: 10, bottom: 10),
+                  decoration: BoxDecoration(
+                    color: Colours.color_F8F8F8,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(2),
+                    ),
+                  ),
+                  child: MyPikVideo(_controller)),
+              Container(
+                width: double.infinity,
+                margin: EdgeInsets.only(left: 59.5, right: 59.5),
+                child: Text(
+                  widget.desc,
+                  style: TextStyle(color: Colours.color_979AA9, fontSize: 12),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 29.5, right: 29.5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: _createShareButton(),
+                ),
+              ),
+            ],
           ),
-          SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 30, right: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _createShareButton(),
-            ),
-          ),
-        ],
-      ),
+        )
+      ],
     );
   }
 

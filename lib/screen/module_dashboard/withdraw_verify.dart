@@ -20,7 +20,7 @@ class VerifyPasswordScreen extends StatefulWidget {
 
 class _VerifyPasswordState extends State<VerifyPasswordScreen> {
   bool _passwordVisible = false;
-  IdolButtonStatus _buttonStatus = IdolButtonStatus.normal;
+  IdolButtonStatus _buttonStatus = IdolButtonStatus.disable;
   TextEditingController _controller;
   WithdrawVerifyArguments arguments;
 
@@ -34,13 +34,13 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
           arguments.account.isEmpty ||
           arguments.amount == 0) {
         // 如果参数非法，则禁止后续操作
-        _buttonStatus = IdolButtonStatus.normal;
+        _buttonStatus = IdolButtonStatus.disable;
         return;
       }
       debugPrint('verify password => ${_controller.text}');
       setState(() {
         if (_controller.text.length == 0) {
-          _buttonStatus = IdolButtonStatus.normal;
+          _buttonStatus = IdolButtonStatus.disable;
         } else if (_controller.text.length > 0 && _controller.text.length < 6) {
           _buttonStatus = IdolButtonStatus.disable;
         } else {
@@ -75,7 +75,7 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
     );
   }
 
-  Widget _buildWidget(_ViewModel vm){
+  Widget _buildWidget(_ViewModel vm) {
     return Scaffold(
       appBar: IdolUI.appBar(context, 'Enter your password'),
       body: Container(
@@ -88,8 +88,8 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
                 child: Padding(
                   padding: EdgeInsets.all(15),
                   child: Text('Enter your password',
-                      style: TextStyle(
-                          color: Colours.color_3B3F42, fontSize: 14)),
+                      style:
+                          TextStyle(color: Colours.color_3B3F42, fontSize: 14)),
                 )),
             TextField(
               controller: _controller,
@@ -106,10 +106,9 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
                 ),
                 isCollapsed: true,
                 contentPadding:
-                EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 hintText: 'Password',
-                hintStyle:
-                TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
+                hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
                 suffixIcon: IconButton(
                     icon: Icon(
                       _passwordVisible
@@ -155,8 +154,8 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
       EasyLoading.show(status: 'Submitting...');
     } else if (state is WithdrawSuccess) {
       EasyLoading.dismiss();
-      IdolRoute.startDashboardWithdrawResult(context,
-          WithdrawResultArguments(withdrawStatus: 0))
+      IdolRoute.startDashboardWithdrawResult(
+              context, WithdrawResultArguments(withdrawStatus: 0))
           .then((value) => IdolRoute.popAndExit(context));
     } else if (state is WithdrawFailure) {
       EasyLoading.showToast(state.message);
@@ -170,14 +169,14 @@ class _ViewModel {
   _ViewModel(this.withdrawState, this.withdraw);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    _withdraw(String password){
-      store.dispatch(
-          WithdrawAction(WithdrawRequest(
-              store.state.withdrawVerifyArguments.withdrawTypeId,
-              store.state.withdrawVerifyArguments.account,
-              store.state.withdrawVerifyArguments.amount,
-              password)));
+    _withdraw(String password) {
+      store.dispatch(WithdrawAction(WithdrawRequest(
+          store.state.withdrawVerifyArguments.withdrawTypeId,
+          store.state.withdrawVerifyArguments.account,
+          store.state.withdrawVerifyArguments.amount,
+          password)));
     }
+
     return _ViewModel(store.state.withdrawState, _withdraw);
   }
 
