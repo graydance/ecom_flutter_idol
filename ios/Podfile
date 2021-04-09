@@ -35,6 +35,8 @@ target 'Runner' do
   pod 'FacebookSDK'
   pod 'FacebookSDK/LoginKit'
   pod 'FacebookSDK/ShareKit'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Crashlytics'
 end
 
 post_install do |installer|
