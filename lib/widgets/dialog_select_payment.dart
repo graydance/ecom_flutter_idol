@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/widgets/NetworkImageSSL.dart';
 import 'package:idol/widgets/button.dart';
 
 /// 选择支付方式弹窗
@@ -135,7 +136,7 @@ class _SelectPaymentMethodsDialogState
                         ],
                       ),
                       child: Image(
-                        image: NetworkImage(value.portrait),
+                        image: NetworkImageSSL(value.portrait),
                         width: 65,
                         height: 24,
                       ),
@@ -143,15 +144,16 @@ class _SelectPaymentMethodsDialogState
                     ...(_selected(key))
                         ? [
                             Align(
-                                widthFactor: 6.2,
-                                heightFactor: 0,
-                                alignment: Alignment.topRight,
-                                child: Image(
-                                  image: AssetImage(
-                                      'assets/images/payment_select.png'),
-                                  width: 15,
-                                  height: 15,
-                                )),
+                              widthFactor: 6.2,
+                              heightFactor: 0,
+                              alignment: Alignment.topRight,
+                              child: Image(
+                                image: AssetImage(
+                                    'assets/images/payment_select.png'),
+                                width: 15,
+                                height: 15,
+                              ),
+                            ),
                           ]
                         : [],
                   ],

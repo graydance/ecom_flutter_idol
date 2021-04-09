@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/models/arguments/base.dart';
@@ -7,6 +8,7 @@ import 'package:idol/models/arguments/supplier_detail.dart';
 import 'package:idol/screen/module_main/validate_email.dart';
 import 'package:idol/screen/module_settings/set_mvp_password.dart';
 import 'package:idol/screen/screens.dart';
+import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/arguments.dart';
 import 'package:idol/utils/global.dart';
 
@@ -136,6 +138,7 @@ class IdolRoute {
   static Future<Object> logOut(BuildContext context) {
     String email = Global.getUser(context).email;
     Global.clearAccountInfo();
+    StoreProvider.of<AppState>(context).dispatch(LogoutAction());
     return startSignIn(context, SignUpSignInArguments(email));
   }
 

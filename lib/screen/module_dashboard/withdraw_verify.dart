@@ -136,13 +136,13 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
                 },
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text(
-                'Forgot password?',
-                style: TextStyle(fontSize: 14, color: Colours.color_3B3F42),
-              ),
-            )
+            // Padding(
+            //   padding: EdgeInsets.only(top: 10),
+            //   child: Text(
+            //     'Forgot password?',
+            //     style: TextStyle(fontSize: 14, color: Colours.color_3B3F42),
+            //   ),
+            // )
           ],
         ),
       ),
