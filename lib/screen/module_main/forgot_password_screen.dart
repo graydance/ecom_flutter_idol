@@ -27,7 +27,6 @@ class ForgotPasswordScreen extends StatelessWidget {
               body: Stack(
             children: [
               Container(
-                alignment: Alignment.center,
                 width: double.infinity,
                 height: double.infinity,
                 decoration: BoxDecoration(
@@ -37,9 +36,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Center(
                     child: Padding(
-                      padding: EdgeInsets.only(left: 40, right: 40),
+                      padding: EdgeInsets.only(left: 40, right: 40, top: 180),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             StringBasic.forgotPasswordTitle,
@@ -111,8 +109,8 @@ class _ViewModel {
       final completer = Completer();
       completer.future.then((value) {
         EasyLoading.showSuccess(StringBasic.done,
-            duration: Duration(seconds: 2));
-        Future.delayed(Duration(seconds: 2))
+            duration: Duration(seconds: 1));
+        Future.delayed(Duration(seconds: 1))
             .then((_) => {_showConfirmDialog(context)});
       }).catchError((err) =>
           {EasyLoading.showError(err.toString()), IdolRoute.pop(context)});
