@@ -11,7 +11,6 @@ import 'package:idol/r.g.dart';
 import 'package:idol/res/Strings.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/main.dart';
-import 'package:idol/widgets/ui.dart';
 import 'package:redux/redux.dart';
 
 import '../../router.dart';
@@ -65,13 +64,28 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
         converter: _ViewModel.fromStore,
-        // 1.不要用onWillChange
-        // onWillChange: (oldVM, newVM) {
-        //   _onStateChanged(newVM._updatePasswordState);
-        // },
         builder: (context, vm) {
           return Scaffold(
-            appBar: IdolUI.appBar(context, StringBasic.setPasswordTitle),
+            appBar: AppBar(
+              elevation: 0,
+              titleSpacing: 0,
+              title: Text(
+                StringBasic.setPasswordTitle,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colours.color_29292B,
+                    fontWeight: FontWeight.bold),
+              ),
+              centerTitle: true,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colours.color_444648,
+                  size: 16,
+                ),
+                onPressed: () => IdolRoute.pop(context),
+              ),
+            ),
             body: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
@@ -105,7 +119,8 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
         child: new Text(
           StringBasic.setPasswordCurrent,
           textAlign: TextAlign.start,
-          style: TextStyle(fontSize: 14, color: Colours.black),
+          style: TextStyle(
+              fontSize: 14, color: Colours.black, fontWeight: FontWeight.bold),
         ),
       ),
       new Container(
@@ -120,7 +135,7 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
           //输入内容是否可见
           obscureText: index[0],
           //限制输入最大字符数
-          maxLength: 10,
+          maxLength: 50,
           //控制当达到输入字符数上限时是否还可再输入
           maxLengthEnforcement: MaxLengthEnforcement.enforced,
           controller: _OldPasswordController,
@@ -152,7 +167,8 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
         child: new Text(
           StringBasic.setPasswordNew,
           textAlign: TextAlign.start,
-          style: TextStyle(fontSize: 14, color: Colours.black),
+          style: TextStyle(
+              fontSize: 14, color: Colours.black, fontWeight: FontWeight.bold),
         ),
       ),
       new Container(
@@ -215,7 +231,8 @@ class _SetMVPPasswordState extends State<SetMVPPassword> {
         child: new Text(
           StringBasic.setPasswordConfirm,
           textAlign: TextAlign.start,
-          style: TextStyle(fontSize: 14, color: Colours.black),
+          style: TextStyle(
+              fontSize: 14, color: Colours.black, fontWeight: FontWeight.bold),
         ),
       ),
       new Container(
@@ -376,10 +393,11 @@ class _ViewModel {
   static _ViewModel fromStore(Store<AppState> store) {
     updatePassword(
         String oldPassword, String newPassword, BuildContext context) {
-      EasyLoading.show(status: 'Loading...');
+      EasyLoading.show(status: StringBasic.loading);
       final completer = Completer();
       completer.future.then((value) {
-        EasyLoading.showSuccess('Done', duration: Duration(seconds: 2));
+        EasyLoading.showSuccess(StringBasic.done,
+            duration: Duration(seconds: 2));
         Future.delayed(Duration(seconds: 2))
             .then((_) => IdolRoute.logOut(context));
       }).catchError((err) => EasyLoading.showError(err.toString()));
