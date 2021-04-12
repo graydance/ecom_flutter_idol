@@ -40,6 +40,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   @override
   void initState() {
     super.initState();
+
+    AppEvent.shared.report(event: AnalyticsEvent.product_view_b);
   }
 
   @override

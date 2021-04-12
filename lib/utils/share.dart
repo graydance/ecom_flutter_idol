@@ -31,15 +31,16 @@ class ShareManager {
             '1. Add shop link in the bio.\n2. Attract your fans with great content and post.',
             ShareType.link,
             (channel) {
+              final shareChannel = channel == 'System' ? 'More' : channel;
+              AppEvent.shared.report(
+                  event: AnalyticsEvent.shoplink_share_channel,
+                  parameters: {AnalyticsEventParameter.type: shareChannel});
+
               if ('Copy Link' == channel) {
                 //复制
                 Clipboard.setData(ClipboardData(text: link));
                 EasyLoading.showToast('$link\n is Replicated!');
               } else {
-                AppEvent.shared.report(
-                    event: AnalyticsEvent.shoplink_share_channel,
-                    parameters: {AnalyticsEventParameter.type: channel});
-
                 Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
               }
               IdolRoute.pop(context);
@@ -115,14 +116,14 @@ class ShareManager {
 
   static void _showGuideDialog(BuildContext context, String mediaType,
       String guideVideoUrl, String shareChannel, String imageLocalPath) async {
-    if (shareChannel != 'Download') {
-      AppEvent.shared.report(
-          event: AnalyticsEvent.product_share_channel,
-          parameters: {AnalyticsEventParameter.type: shareChannel});
+    final channel = shareChannel == 'System' ? 'More' : shareChannel;
+    AppEvent.shared.report(
+        event: AnalyticsEvent.product_share_channel,
+        parameters: {AnalyticsEventParameter.type: channel});
 
+    if (shareChannel != 'Download') {
       Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
     } else {
-      debugPrint("...");
       if (await Permission.storage.request().isGranted) {
         // Either the permission was already granted before or the user just granted it.
         ImageGallerySaver.saveFile(imageLocalPath);

@@ -54,6 +54,9 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
       vsync: this, //ScrollableState(),
     );
     _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        return;
+      }
       AppEvent.shared.report(
           event: _tabController.index == 0
               ? AnalyticsEvent.pastsale_view
