@@ -190,8 +190,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             key: Global.tokCopy,
                             builder: (ctx) => GestureDetector(
                               onTap: () {
-                                AppEvent.shared
-                                    .report(event: AnalyticsEvent.copy_click);
+                                AppEvent.shared.report(
+                                    event: AnalyticsEvent.shoplink_copy_click);
 
                                 Global.tokCopy.currentState.hide();
                                 final link = '$linkDomain$_userName';
