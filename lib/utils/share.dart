@@ -22,8 +22,6 @@ class ShareManager {
 
   /// 分享Link
   static void showShareLinkDialog(BuildContext context, String link) {
-    AppEvent.shared.report(event: AnalyticsEvent.share_view);
-
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -57,7 +55,7 @@ class ShareManager {
 
   /// 分享商品
   static void showShareGoodsDialog(BuildContext context, String imageUrl) {
-    AppEvent.shared.report(event: AnalyticsEvent.share_view);
+    AppEvent.shared.report(event: AnalyticsEvent.share_product_view);
 
     showMaterialModalBottomSheet(
         expand: false,

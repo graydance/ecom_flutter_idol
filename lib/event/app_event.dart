@@ -42,7 +42,7 @@ enum AnalyticsEvent {
   product_view_b,
   detail_pick_share,
 
-  share_view,
+  share_product_view,
   product_share_channel,
 
   dashboard_tab,
@@ -50,7 +50,7 @@ enum AnalyticsEvent {
   pastsale_view,
   bestsale_view,
   shoplink_tab,
-  copy_click,
+  shoplink_copy_click,
   shoplink_share_channel,
 
   product_remove,

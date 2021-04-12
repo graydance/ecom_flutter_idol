@@ -26,6 +26,9 @@ class _ForYouTabViewState extends State<ForYouTabView>
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
+
+  Set<String> _reportedIds = {};
+
   @override
   bool get wantKeepAlive => true;
 
@@ -80,10 +83,13 @@ class _ForYouTabViewState extends State<ForYouTabView>
               final model = (vm._forYouState as ForYouSuccess)
                   .goodsDetailList
                   .list[index];
-              AppEvent.shared.report(
-                event: AnalyticsEvent.grid_display_b,
-                parameters: {AnalyticsEventParameter.id: model.id},
-              );
+              if (!_reportedIds.contains(model.id)) {
+                _reportedIds.add(model.id);
+                AppEvent.shared.report(
+                  event: AnalyticsEvent.grid_display_b,
+                  parameters: {AnalyticsEventParameter.id: model.id},
+                );
+              }
 
               return FollowingGoodsListItem(
                 idx: index,
