@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:idol/utils/keystore.dart';
@@ -189,6 +190,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             key: Global.tokCopy,
                             builder: (ctx) => GestureDetector(
                               onTap: () {
+                                AppEvent.shared
+                                    .report(event: AnalyticsEvent.copy_click);
+
                                 Global.tokCopy.currentState.hide();
                                 final link = '$linkDomain$_userName';
                                 Clipboard.setData(ClipboardData(text: link));
@@ -589,6 +593,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                 ShareManager.showShareGoodsDialog(context, storeGoods.picture);
                 break;
               case 1:
+                AppEvent.shared.report(event: AnalyticsEvent.product_remove);
+
                 vm.deleteGoods(storeGoods.id);
                 break;
               default:

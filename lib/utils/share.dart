@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/conf.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
@@ -21,6 +22,8 @@ class ShareManager {
 
   /// 分享Link
   static void showShareLinkDialog(BuildContext context, String link) {
+    AppEvent.shared.report(event: AnalyticsEvent.share_view);
+
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -35,6 +38,10 @@ class ShareManager {
                 Clipboard.setData(ClipboardData(text: link));
                 EasyLoading.showToast('$link\n is Replicated!');
               } else {
+                AppEvent.shared.report(
+                    event: AnalyticsEvent.shoplink_share_channel,
+                    parameters: {AnalyticsEventParameter.type: channel});
+
                 Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
               }
               IdolRoute.pop(context);
@@ -50,6 +57,8 @@ class ShareManager {
 
   /// 分享商品
   static void showShareGoodsDialog(BuildContext context, String imageUrl) {
+    AppEvent.shared.report(event: AnalyticsEvent.share_view);
+
     showMaterialModalBottomSheet(
         expand: false,
         context: context,
@@ -109,6 +118,10 @@ class ShareManager {
   static void _showGuideDialog(BuildContext context, String mediaType,
       String guideVideoUrl, String shareChannel, String imageLocalPath) async {
     if (shareChannel != 'Download') {
+      AppEvent.shared.report(
+          event: AnalyticsEvent.product_share_channel,
+          parameters: {AnalyticsEventParameter.type: shareChannel});
+
       Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
     } else {
       debugPrint("...");

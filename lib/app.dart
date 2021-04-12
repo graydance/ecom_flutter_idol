@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
@@ -21,6 +22,7 @@ class ReduxApp extends StatelessWidget {
             primaryColor: Colors.white,
             errorColor: Colours.color_ED3544,
           ),
+          navigatorObservers: [AppEvent.shared.firebaseAnalyticsObserver],
           initialRoute: RouterPath.splash,
           navigatorKey: Global.navigatorKey,
           routes: IdolRoute.routes(),

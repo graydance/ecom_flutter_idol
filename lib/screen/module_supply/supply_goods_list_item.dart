@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/r.g.dart';
@@ -77,6 +78,10 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
 
     return GestureDetector(
       onTap: () {
+        AppEvent.shared.report(
+          event: AnalyticsEvent.grid_click_b,
+          parameters: {AnalyticsEventParameter.id: widget.goodsDetail.id},
+        );
         StoreProvider.of<AppState>(context)
             .dispatch(ShowGoodsDetailAction(widget.goodsDetail));
       },
@@ -295,6 +300,15 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                     String step = await _storage.read(
                                         key: KeyStore.GUIDE_STEP);
                                     if (status == IdolButtonStatus.enable) {
+                                      AppEvent.shared.report(
+                                          event: AnalyticsEvent.pick_share,
+                                          parameters: {
+                                            AnalyticsEventParameter.type:
+                                                widget.goodsDetail.inMyStore ==
+                                                        1
+                                                    ? 'share'
+                                                    : 'pick'
+                                          });
                                       if (widget.goodsDetail.inMyStore == 1) {
                                         ShareManager.showShareGoodsDialog(
                                             context,

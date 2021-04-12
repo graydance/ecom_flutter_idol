@@ -19,7 +19,8 @@ class TokenInterceptors extends InterceptorsWrapper {
   TokenInterceptors(this.dio);
 
   @override
-  Future onRequest(RequestOptions options) async {
+  Future onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     Global.logger.fine(
         "TokenInterceptors REQUEST[${options?.method}] => PATH: ${options?.path}");
     // 登录成功后，写入token到headers中
@@ -45,7 +46,7 @@ class TokenInterceptors extends InterceptorsWrapper {
       'x-version': signVersion,
       'x-signature': sign,
     });
-    return super.onRequest(options);
+    return super.onRequest(options, handler);
   }
 
   String _generateMd5(String data) {
@@ -55,9 +56,7 @@ class TokenInterceptors extends InterceptorsWrapper {
   }
 
   @override
-  Future onResponse(Response response) {
-    Global.logger.fine(
-        "TokenInterceptors RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (response.data is Map) {
       if (response.data['code'] != 0) {
         final code = response.data['code'];
@@ -81,13 +80,11 @@ class TokenInterceptors extends InterceptorsWrapper {
         }
       }
     }
-    return super.onResponse(response);
+    super.onResponse(response, handler);
   }
 
   @override
-  Future onError(DioError err) {
-    Global.logger.fine(
-        "TokenInterceptors ERROR[${err?.response?.statusCode}] => PATH: ${err?.request?.path}");
-    return super.onError(err);
+  void onError(DioError err, ErrorInterceptorHandler handler) {
+    super.onError(err, handler);
   }
 }

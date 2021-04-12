@@ -1,3 +1,4 @@
+import 'package:idol/event/app_event.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/share.dart';
@@ -75,16 +76,24 @@ class _ForYouTabViewState extends State<ForYouTabView>
             },
             itemCount:
                 (vm._forYouState as ForYouSuccess).goodsDetailList.list.length,
-            itemBuilder: (context, index) => FollowingGoodsListItem(
-              idx: index,
-              goodsDetail: (vm._forYouState as ForYouSuccess)
+            itemBuilder: (context, index) {
+              final model = (vm._forYouState as ForYouSuccess)
                   .goodsDetailList
-                  .list[index],
-              onProductAddedStoreListener: (goodsDetail) {
-                ShareManager.showShareGoodsDialog(
-                    context, goodsDetail.goods[0]);
-              },
-            ),
+                  .list[index];
+              AppEvent.shared.report(
+                event: AnalyticsEvent.grid_display_b,
+                parameters: {AnalyticsEventParameter.id: model.id},
+              );
+
+              return FollowingGoodsListItem(
+                idx: index,
+                goodsDetail: model,
+                onProductAddedStoreListener: (goodsDetail) {
+                  ShareManager.showShareGoodsDialog(
+                      context, goodsDetail.goods[0]);
+                },
+              );
+            },
           ),
           onRefresh: () async {
             await Future(() {
