@@ -227,6 +227,13 @@ packages:
       url: "https://github.com/graydance/ecomshare.git"
     source: git
     version: "0.0.1"
+  enum_to_string:
+    dependency: "direct main"
+    description:
+      name: enum_to_string
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.1"
   fake_async:
     dependency: transitive
     description:
