@@ -99,7 +99,7 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
                         Radius.circular(2),
                       ),
                     ),
-                    child: MyPikVideo(_controller)),
+                    child: MyPikVideo(widget.mediaUrl)),
                 Container(
                   margin: EdgeInsets.only(bottom: 10),
                   child: Text(
