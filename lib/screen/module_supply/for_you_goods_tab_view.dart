@@ -1,3 +1,4 @@
+import 'package:idol/event/app_event.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/share.dart';
@@ -25,6 +26,9 @@ class _ForYouTabViewState extends State<ForYouTabView>
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
+
+  Set<String> _reportedIds = {};
+
   @override
   bool get wantKeepAlive => true;
 
@@ -75,16 +79,27 @@ class _ForYouTabViewState extends State<ForYouTabView>
             },
             itemCount:
                 (vm._forYouState as ForYouSuccess).goodsDetailList.list.length,
-            itemBuilder: (context, index) => FollowingGoodsListItem(
-              idx: index,
-              goodsDetail: (vm._forYouState as ForYouSuccess)
+            itemBuilder: (context, index) {
+              final model = (vm._forYouState as ForYouSuccess)
                   .goodsDetailList
-                  .list[index],
-              onProductAddedStoreListener: (goodsDetail) {
-                ShareManager.showShareGoodsDialog(
-                    context, goodsDetail.goods[0]);
-              },
-            ),
+                  .list[index];
+              if (!_reportedIds.contains(model.id)) {
+                _reportedIds.add(model.id);
+                AppEvent.shared.report(
+                  event: AnalyticsEvent.grid_display_b,
+                  parameters: {AnalyticsEventParameter.id: model.id},
+                );
+              }
+
+              return FollowingGoodsListItem(
+                idx: index,
+                goodsDetail: model,
+                onProductAddedStoreListener: (goodsDetail) {
+                  ShareManager.showShareGoodsDialog(
+                      context, goodsDetail.goods[0]);
+                },
+              );
+            },
           ),
           onRefresh: () async {
             await Future(() {

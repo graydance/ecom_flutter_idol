@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:idol/utils/localStorage.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/models/biolinks.dart';
+import 'package:idol/models/models.dart';
 import 'package:idol/models/validate_email.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/net/api_path.dart';
@@ -15,16 +15,17 @@ import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
-import 'package:idol/utils/share.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/dialog_message.dart';
 import 'package:redux/redux.dart';
-import 'package:idol/models/models.dart';
+
 import 'actions/arguments.dart';
 
 List<Middleware<AppState>> createStoreMiddleware() {
   return [
     TypedMiddleware<AppState, ValidateEmailAction>(validateEmailMiddleware),
     TypedMiddleware<AppState, UpdatePasswordAction>(updatePasswordMiddleware),
+    TypedMiddleware<AppState, ResetPasswordAction>(resetPasswordMiddleware),
     TypedMiddleware<AppState, SignUpAction>(signUpSignInMiddleware),
     TypedMiddleware<AppState, SignInAction>(signUpSignInMiddleware),
     TypedMiddleware<AppState, DashboardAction>(dashboardMiddleware),
@@ -282,6 +283,7 @@ final Middleware<AppState> signUpSignInMiddleware =
   }
 };
 
+///修改密码
 final Middleware<AppState> updatePasswordMiddleware =
     (Store<AppState> store, action, NextDispatcher next) {
   if (action is UpdatePasswordAction) {
@@ -289,11 +291,8 @@ final Middleware<AppState> updatePasswordMiddleware =
         .post(ApiPath.updatePassword, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) {
-      store.dispatch(UpdatePasswordSuccessAction());
-    }).catchError((err) {
-      print(err.toString());
-      store.dispatch(UpdatePasswordFailure(err.toString()));
-    });
+      action.completer.complete();
+    }).catchError((err) => action.completer.completeError(err.toString()));
     next(action);
   }
 };
@@ -641,6 +640,20 @@ final Middleware<AppState> deleteGoodsMiddleware =
       print(err.toString());
       action.completer.completeError(err.toString());
     });
+    next(action);
+  }
+};
+
+///忘记密码
+final Middleware<AppState> resetPasswordMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is ResetPasswordAction) {
+    DioClient.getInstance()
+        .post(ApiPath.resetPassword, baseRequest: action.request)
+        .whenComplete(() => null)
+        .then((data) {
+      action.completer.complete();
+    }).catchError((err) => action.completer.completeError(err.toString()));
     next(action);
   }
 };

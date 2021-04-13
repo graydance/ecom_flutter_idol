@@ -1,24 +1,23 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/utils/localStorage.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:idol/utils/global.dart';
-import 'package:idol/utils/keystore.dart';
-import 'package:idol/widgets/tutorialOverlay.dart';
-import 'package:timeago/timeago.dart' as timeago;
-
+import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
+import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:idol/widgets/video_player_widget.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class FollowingGoodsListItem extends StatefulWidget {
   final GoodsDetail goodsDetail;
@@ -79,6 +78,10 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
 
     return GestureDetector(
       onTap: () {
+        AppEvent.shared.report(
+          event: AnalyticsEvent.grid_click_b,
+          parameters: {AnalyticsEventParameter.id: widget.goodsDetail.id},
+        );
         StoreProvider.of<AppState>(context)
             .dispatch(ShowGoodsDetailAction(widget.goodsDetail));
       },
@@ -232,9 +235,9 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                           style: DefaultTextStyle.of(context).style,
                           children: [
                             TextSpan(
-                              text: '\$' +
-                                  TextUtil.formatDoubleComma3(
-                                      widget.goodsDetail.earningPrice / 100),
+                              text: Global.getUser(context).monetaryUnit +
+                                      widget.goodsDetail.earningPriceStr ??
+                                  '0.00',
                               style: TextStyle(
                                   color: Colours.color_EA5228,
                                   fontSize: 20,
@@ -244,9 +247,9 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                             TextSpan(
                               text: 'Earnings Per Sale',
                               style: TextStyle(
-                                  color: Colours.color_C4C5CD,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                                color: Colours.color_C4C5CD,
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
@@ -256,21 +259,21 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                           style: DefaultTextStyle.of(context).style,
                           children: [
                             TextSpan(
-                              text: '\$' +
-                                  TextUtil.formatDoubleComma3(
-                                      widget.goodsDetail.suggestedPrice / 100),
+                              text: Global.getUser(context).monetaryUnit +
+                                      widget.goodsDetail.suggestedPriceStr ??
+                                  '0.00',
                               style: TextStyle(
-                                  color: Colours.color_0F1015,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold),
+                                color: Colours.color_0F1015,
+                                fontSize: 14,
+                              ),
                             ),
                             TextSpan(text: ' '),
                             TextSpan(
                               text: 'Suggested Price',
                               style: TextStyle(
-                                  color: Colours.color_C4C5CD,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                                color: Colours.color_C4C5CD,
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
@@ -290,13 +293,22 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                             builder: (ctx) => IdolButton(
                                   widget.goodsDetail.inMyStore == 1
                                       ? 'Share to Earn'
-                                      : 'Pik & Sell',
+                                      : 'Pick & Sell',
                                   status: IdolButtonStatus.enable,
                                   listener: (status) async {
                                     Global.tokPikAndSell.currentState.hide();
                                     String step = await _storage.read(
                                         key: KeyStore.GUIDE_STEP);
                                     if (status == IdolButtonStatus.enable) {
+                                      AppEvent.shared.report(
+                                          event: AnalyticsEvent.pick_share,
+                                          parameters: {
+                                            AnalyticsEventParameter.type:
+                                                widget.goodsDetail.inMyStore ==
+                                                        1
+                                                    ? 'share'
+                                                    : 'pick'
+                                          });
                                       if (widget.goodsDetail.inMyStore == 1) {
                                         ShareManager.showShareGoodsDialog(
                                             context,
@@ -315,7 +327,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         : IdolButton(
                             widget.goodsDetail.inMyStore == 1
                                 ? 'Share to Earn'
-                                : 'Pik & Sell',
+                                : 'Pick & Sell',
                             status: IdolButtonStatus.enable,
                             listener: (status) {
                               if (status == IdolButtonStatus.enable) {

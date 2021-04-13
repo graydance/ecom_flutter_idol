@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
@@ -87,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen>
     // });
     _guideInit();
     super.initState();
+    AppEvent.shared.report(event: AnalyticsEvent.dashboard_tab);
   }
 
   @override
@@ -107,7 +109,6 @@ class _HomeScreenState extends State<HomeScreen>
           onWillPop: () async {
             var durTime =
                 (DateTime.now().microsecondsSinceEpoch - _lastClickTime) / 1000;
-            debugPrint("${durTime}");
             if (durTime > 2000) {
               _lastClickTime = DateTime.now().microsecondsSinceEpoch;
               EasyLoading.showToast("Tap again to exit");
@@ -129,16 +130,33 @@ class _HomeScreenState extends State<HomeScreen>
       //padding: EdgeInsets.only(bottom: 15,),
       child: PageView(
         controller: Global.homePageController,
-        onPageChanged: (index) {
+        onPageChanged: (index) async {
           setState(() {
             _selectedIndex = index;
           });
+          String guildValue = await _storage.read(key: KeyStore.GUIDE_STEP);
           if (index == 1) {
+            AppEvent.shared.report(event: AnalyticsEvent.dashboard_tab);
+
             StoreProvider.of<AppState>(context)
                 .dispatch(DashboardAction(BaseRequestImpl()));
+
+            if (guildValue != "1" && guildValue != "6") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+            }
           } else if (index == 2) {
+            AppEvent.shared.report(event: AnalyticsEvent.shoplink_tab);
+
             // (_pages[index] as ShopLinkPage).refreshData();
+            if (guildValue != "2" && guildValue != "4" && guildValue != "6") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+            }
           } else if (index == 0) {
+            AppEvent.shared.report(event: AnalyticsEvent.olaak_tab);
+
+            if (guildValue != "3" && guildValue != "5" && guildValue != "6") {
+              await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+            }
             _storage.read(key: KeyStore.GUIDE_STEP).then((value) => value == "5"
                 ? showDialog(
                     context: context,
@@ -209,9 +227,12 @@ class _HomeScreenState extends State<HomeScreen>
                   String step = await _storage.read(key: KeyStore.GUIDE_STEP);
                   if (step == "1") {
                     await _storage.write(key: KeyStore.GUIDE_STEP, value: "2");
+                    Future.delayed(Duration(milliseconds: 100), () {
+                      Global.tokAddAndShare.currentState.show();
+                    });
                   } else {
                     await _storage.write(key: KeyStore.GUIDE_STEP, value: "4");
-                    Future.delayed(Duration(milliseconds: 200), () {
+                    Future.delayed(Duration(milliseconds: 100), () {
                       Global.tokCopy.currentState.show();
                     });
                   }

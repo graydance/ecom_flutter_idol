@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "280651964891",
+    "project_id": "olaak-3b626",
+    "storage_bucket": "olaak-3b626.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280651964891:android:407ac3d3be052ad7c3c7fe",
+        "android_client_info": {
+          "package_name": "com.olaak.shop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "280651964891-gjt4eretg3616jit3s97cvqsedgd7o32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_ZoMJAZ29ihwGbJiOZfF8mESzWag86sM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280651964891-gjt4eretg3616jit3s97cvqsedgd7o32.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "280651964891-eccq0hdeaju74lnc6761c6fa3amevn4d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.levermore.idol",
+                "app_store_id": "1560793181"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

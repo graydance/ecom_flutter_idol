@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:idol/utils/keystore.dart';
@@ -189,6 +190,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                             key: Global.tokCopy,
                             builder: (ctx) => GestureDetector(
                               onTap: () {
+                                AppEvent.shared.report(
+                                    event: AnalyticsEvent.shoplink_copy_click);
+
                                 Global.tokCopy.currentState.hide();
                                 final link = '$linkDomain$_userName';
                                 Clipboard.setData(ClipboardData(text: link));
@@ -426,9 +430,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         try {
           final StoreGoodsList model = await completer.future;
           String step = await _storage.read(key: KeyStore.GUIDE_STEP);
-          if (step == "2" && model.list.length == 0) {
-            Global.tokAddAndShare.currentState.show();
+          if ((step == "2" || step == "3") && model.list.length == 0) {
+            //Global.tokAddAndShare.currentState.show();
           } else {
+            Global.tokAddAndShare.currentState.hide();
             await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
           }
           _currentPage = 1;
@@ -557,8 +562,11 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                     status: IdolButtonStatus.enable,
                     listener: (status) async {
                       Global.tokAddAndShare.currentState.hide();
-                      await _storage.write(
-                          key: KeyStore.GUIDE_STEP, value: "3");
+                      if (await _storage.read(key: KeyStore.GUIDE_STEP) ==
+                          "2") {
+                        await _storage.write(
+                            key: KeyStore.GUIDE_STEP, value: "3");
+                      }
                       // Future.delayed(Duration(milliseconds: 2000), () {
                       //   Global.tokPikAndSell.currentState.show();
                       // });
@@ -585,6 +593,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                 ShareManager.showShareGoodsDialog(context, storeGoods.picture);
                 break;
               case 1:
+                AppEvent.shared.report(event: AnalyticsEvent.product_remove);
+
                 vm.deleteGoods(storeGoods.id);
                 break;
               default:

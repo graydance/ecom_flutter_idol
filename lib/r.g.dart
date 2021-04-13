@@ -360,6 +360,11 @@ class _R_Image_AssetResource {
   final new_guid =
       const AssetResource("assets/images/new_guid.png", packageName: null);
 
+  /// asset: assets/images/payment_select.png
+  // ignore: non_constant_identifier_names
+  final payment_select = const AssetResource("assets/images/payment_select.png",
+      packageName: null);
+
   /// asset: assets/images/shoplink/edit_avatar.png
   // ignore: non_constant_identifier_names
   final edit_avatar = const AssetResource(
@@ -492,6 +497,24 @@ class _R_Image_AssetResource {
   // ignore: non_constant_identifier_names
   final play =
       const AssetResource("assets/images/supply/play.png", packageName: null);
+
+  /// asset: assets/images/widget/dialog_close.png
+  // ignore: non_constant_identifier_names
+  final dialog_close = const AssetResource(
+      "assets/images/widget/dialog_close.png",
+      packageName: null);
+
+  /// asset: assets/images/widget/eyes_normal.png
+  // ignore: non_constant_identifier_names
+  final eyes_normal = const AssetResource(
+      "assets/images/widget/eyes_normal.png",
+      packageName: null);
+
+  /// asset: assets/images/widget/eyes_select.png
+  // ignore: non_constant_identifier_names
+  final eyes_select = const AssetResource(
+      "assets/images/widget/eyes_select.png",
+      packageName: null);
 }
 
 // ignore: camel_case_types
@@ -787,6 +810,12 @@ class _R_Image {
     return AssetImage(asset.new_guid.keyName);
   }
 
+  /// asset: assets/images/payment_select.png
+  // ignore: non_constant_identifier_names
+  AssetImage payment_select() {
+    return AssetImage(asset.payment_select.keyName);
+  }
+
   /// asset: assets/images/shoplink/edit_avatar.png
   // ignore: non_constant_identifier_names
   AssetImage edit_avatar() {
@@ -923,6 +952,24 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage play() {
     return AssetImage(asset.play.keyName);
+  }
+
+  /// asset: assets/images/widget/dialog_close.png
+  // ignore: non_constant_identifier_names
+  AssetImage dialog_close() {
+    return AssetImage(asset.dialog_close.keyName);
+  }
+
+  /// asset: assets/images/widget/eyes_normal.png
+  // ignore: non_constant_identifier_names
+  AssetImage eyes_normal() {
+    return AssetImage(asset.eyes_normal.keyName);
+  }
+
+  /// asset: assets/images/widget/eyes_select.png
+  // ignore: non_constant_identifier_names
+  AssetImage eyes_select() {
+    return AssetImage(asset.eyes_select.keyName);
   }
 }
 

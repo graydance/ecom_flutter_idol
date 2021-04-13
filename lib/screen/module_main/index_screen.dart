@@ -46,6 +46,21 @@ class IndexScreen extends StatelessWidget {
                           .pushNamed(RouterPath.validateEmail, arguments: true),
                       'CREATE ACCOUNT',
                     ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed(RouterPath.joinus),
+                      child: Text(
+                        'Join Us',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

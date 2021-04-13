@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:idol/models/appstate.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+
+import 'package:idol/models/appstate.dart';
+import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/models/arguments/base.dart';
 import 'package:idol/models/arguments/supplier_detail.dart';
 import 'package:idol/screen/module_main/validate_email.dart';
-import 'package:idol/store/actions/arguments.dart';
-import 'package:idol/models/arguments/arguments.dart';
+import 'package:idol/screen/module_settings/set_mvp_password.dart';
 import 'package:idol/screen/screens.dart';
+import 'package:idol/store/actions/actions.dart';
+import 'package:idol/store/actions/arguments.dart';
 import 'package:idol/utils/global.dart';
 
 class RouterPath {
@@ -16,6 +19,7 @@ class RouterPath {
   static const String signUp = '/sign_up';
   static const String signIn = '/sign_in';
   static const String setPassword = '/set_password';
+  static const String setMVPPassword = '/set_mvp_password';
   static const String innerWebView = '/inner_webview';
   static const String home = '/home';
   static const String imageCrop = '/image_crop';
@@ -49,6 +53,7 @@ class IdolRoute {
       RouterPath.signUp: (context) => SignUpScreen(),
       RouterPath.signIn: (context) => SignInScreen(),
       RouterPath.setPassword: (context) => SetPasswordScreen(),
+      RouterPath.setMVPPassword: (context) => SetMVPPassword(),
       RouterPath.innerWebView: (context) => InnerWebViewScreen(),
       RouterPath.home: (context) => HomeScreen(),
       RouterPath.imageCrop: (context) => ImageCropScreen(),
@@ -133,6 +138,7 @@ class IdolRoute {
   static Future<Object> logOut(BuildContext context) {
     String email = Global.getUser(context).email;
     Global.clearAccountInfo();
+    StoreProvider.of<AppState>(context).dispatch(LogoutAction());
     return startSignIn(context, SignUpSignInArguments(email));
   }
 
@@ -143,6 +149,10 @@ class IdolRoute {
 
   static Future<Object> startSetPassword(BuildContext context) {
     return Navigator.of(context).pushNamed(RouterPath.setPassword);
+  }
+
+  static Future<Object> startSetMVPPassword(BuildContext context) {
+    return Navigator.of(context).pushNamed(RouterPath.setMVPPassword);
   }
 
   static Future<Object> startInnerWebView(

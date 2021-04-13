@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:idol/app.dart';
@@ -12,6 +13,8 @@ import 'models/appstate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   Global.init().whenComplete(() {
     runApp(ReduxApp(
       store: Store<AppState>(

@@ -19,7 +19,7 @@ class SignUpSignInRequest extends BaseRequest {
   }
 }
 
-class ValidateEmailRequest extends BaseRequest{
+class ValidateEmailRequest extends BaseRequest {
   final String email;
 
   ValidateEmailRequest(this.email);
@@ -34,7 +34,7 @@ class ValidateEmailRequest extends BaseRequest{
   }
 }
 
-class SignUpRequest extends BaseRequest{
+class SignUpRequest extends BaseRequest {
   final String email;
   final String password;
   final String userName;
@@ -53,7 +53,7 @@ class SignUpRequest extends BaseRequest{
   }
 }
 
-class UpdatePasswordRequest extends BaseRequest{
+class UpdatePasswordRequest extends BaseRequest {
   final String oldPassword;
   final String newPassword;
 
@@ -66,6 +66,21 @@ class UpdatePasswordRequest extends BaseRequest{
     return {
       keyMapper('oldPassword'): this.oldPassword,
       keyMapper('newPassword'): this.newPassword,
+    };
+  }
+}
+
+class ResetPasswordRequest extends BaseRequest {
+  final String email;
+
+  ResetPasswordRequest(this.email);
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+    return {
+      keyMapper('email'): this.email,
     };
   }
 }
