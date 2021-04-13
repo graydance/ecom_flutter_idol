@@ -160,7 +160,11 @@ class _WithdrawScreenState extends State {
         (_amountController.text.contains(".")
                 ? double.tryParse(_amountController.text)
                 : int.tryParse(_amountController.text)) >=
-            _minWithdrawalAmount;
+            _minWithdrawalAmount &&
+        (_amountController.text.contains(".")
+                ? double.tryParse(_amountController.text)
+                : int.tryParse(_amountController.text)) <=
+            (_withdrawInfo.withdraw / 100);
     setState(() {
       withdrawButtonStatus =
           enable ? IdolButtonStatus.enable : IdolButtonStatus.disable;

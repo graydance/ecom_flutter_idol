@@ -36,7 +36,7 @@ class WelcomeDialog extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.fromLTRB(12, 12, 0, 12),
                       child: Image(
-                        image: AssetImage('assets/images/dialog_close.png'),
+                        image: R.image.dialog_close(),
                         width: 12,
                         height: 12,
                       ),

@@ -13,7 +13,6 @@ import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/dialog_share.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -28,7 +27,7 @@ class ShareManager {
           return ShareDialog(
             'How to drive sales on social media?',
             videoUrls[0],
-            '1. Add shop link in the bio.\n2. Attract your fans with great content and post.',
+            '1.Add shop link in the bio.\n2.Attract your fans with great content and post.',
             ShareType.link,
             (channel) {
               final shareChannel = channel == 'System' ? 'More' : channel;
@@ -58,8 +57,7 @@ class ShareManager {
   static void showShareGoodsDialog(BuildContext context, String imageUrl) {
     AppEvent.shared.report(event: AnalyticsEvent.share_product_view);
 
-    showMaterialModalBottomSheet(
-        expand: false,
+    showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         builder: (context) {

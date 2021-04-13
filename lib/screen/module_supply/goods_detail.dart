@@ -165,7 +165,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                         activeSize: 6,
                                         size: 5,
                                         color: Colours.color_50D8D8D8,
-                                        activeColor: Colours.black,
+                                        activeColor: Colours.white,
                                       )),
                                   itemCount: _goodsDetail.goods.length,
                                 ),
