@@ -419,8 +419,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Html(
-                        data: _goodsDetail.goodsDescription,
-                        onLinkTap: (String url) {}),
+                      data: _goodsDetail.goodsDescription,
+                    ),
                     // Text(
                     //   goodsDetail.goodsDescription,
                     //   style: TextStyle(
