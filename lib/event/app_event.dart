@@ -13,10 +13,7 @@ class AppEvent {
   Future<void> report(
       {@required AnalyticsEvent event,
       Map<AnalyticsEventParameter, dynamic> parameters}) {
-    print('>>> AppEvent report: ${event.name} $parameters');
-    providers.map((provider) {
-      provider.report(event: event, parameters: parameters);
-    });
+    debugPrint('>>> AppEvent report: ${event.name} $parameters');
     return Future.wait(providers.map(
         (provider) => provider.report(event: event, parameters: parameters)));
   }
