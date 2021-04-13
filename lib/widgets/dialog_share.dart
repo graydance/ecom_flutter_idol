@@ -72,8 +72,7 @@ class _MyPikVideo extends State<MyPikVideo> {
   Future<void> initializePlayer() async {
     try {
       //widget.mediaUrl
-      _videoPlayerController = VideoPlayerController.network(
-          'https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4');
+      _videoPlayerController = VideoPlayerController.network(widget.mediaUrl);
       await _videoPlayerController.initialize();
 
       _chewieController = ChewieController(
