@@ -20,7 +20,7 @@ class VerifyPasswordScreen extends StatefulWidget {
 
 class _VerifyPasswordState extends State<VerifyPasswordScreen> {
   bool _passwordVisible = false;
-  IdolButtonStatus _buttonStatus = IdolButtonStatus.normal;
+  IdolButtonStatus _buttonStatus = IdolButtonStatus.disable;
   TextEditingController _controller;
   WithdrawVerifyArguments arguments;
 
@@ -34,13 +34,13 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
           arguments.account.isEmpty ||
           arguments.amount == 0) {
         // 如果参数非法，则禁止后续操作
-        _buttonStatus = IdolButtonStatus.normal;
+        _buttonStatus = IdolButtonStatus.disable;
         return;
       }
       debugPrint('verify password => ${_controller.text}');
       setState(() {
         if (_controller.text.length == 0) {
-          _buttonStatus = IdolButtonStatus.normal;
+          _buttonStatus = IdolButtonStatus.disable;
         } else if (_controller.text.length > 0 && _controller.text.length < 6) {
           _buttonStatus = IdolButtonStatus.disable;
         } else {

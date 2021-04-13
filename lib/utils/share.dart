@@ -13,7 +13,6 @@ import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/dialog_share.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -28,18 +27,19 @@ class ShareManager {
           return ShareDialog(
             'How to drive sales on social media?',
             videoUrls[0],
-            '1. Add shop link in the bio.\n2. Attract your fans with great content and post.',
+            '1.Add shop link in the bio.\n2.Attract your fans with great content and post.',
             ShareType.link,
             (channel) {
+              final shareChannel = channel == 'System' ? 'More' : channel;
+              AppEvent.shared.report(
+                  event: AnalyticsEvent.shoplink_share_channel,
+                  parameters: {AnalyticsEventParameter.type: shareChannel});
+
               if ('Copy Link' == channel) {
                 //复制
                 Clipboard.setData(ClipboardData(text: link));
                 EasyLoading.showToast('$link\n is Replicated!');
               } else {
-                AppEvent.shared.report(
-                    event: AnalyticsEvent.shoplink_share_channel,
-                    parameters: {AnalyticsEventParameter.type: channel});
-
                 Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
               }
               IdolRoute.pop(context);
@@ -57,8 +57,7 @@ class ShareManager {
   static void showShareGoodsDialog(BuildContext context, String imageUrl) {
     AppEvent.shared.report(event: AnalyticsEvent.share_product_view);
 
-    showMaterialModalBottomSheet(
-        expand: false,
+    showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         builder: (context) {
@@ -115,14 +114,14 @@ class ShareManager {
 
   static void _showGuideDialog(BuildContext context, String mediaType,
       String guideVideoUrl, String shareChannel, String imageLocalPath) async {
-    if (shareChannel != 'Download') {
-      AppEvent.shared.report(
-          event: AnalyticsEvent.product_share_channel,
-          parameters: {AnalyticsEventParameter.type: shareChannel});
+    final channel = shareChannel == 'System' ? 'More' : shareChannel;
+    AppEvent.shared.report(
+        event: AnalyticsEvent.product_share_channel,
+        parameters: {AnalyticsEventParameter.type: channel});
 
+    if (shareChannel != 'Download') {
       Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
     } else {
-      debugPrint("...");
       if (await Permission.storage.request().isGranted) {
         // Either the permission was already granted before or the user just granted it.
         ImageGallerySaver.saveFile(imageLocalPath);
