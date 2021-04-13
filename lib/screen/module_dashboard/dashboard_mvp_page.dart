@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/conf.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/base.dart';
@@ -52,6 +53,15 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
       length: _tabValues.length,
       vsync: this, //ScrollableState(),
     );
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        return;
+      }
+      AppEvent.shared.report(
+          event: _tabController.index == 0
+              ? AnalyticsEvent.pastsale_view
+              : AnalyticsEvent.bestsale_view);
+    });
     super.initState();
   }
 
@@ -211,12 +221,17 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
         children: [
           // $1,516.23
           GestureDetector(
-            onTap: () => IdolRoute.startDashboardBalance(context).then((value) {
-              if (value != null) {
-                // 切换到Supply
-                IdolRoute.sendArguments(context, HomeTabArguments(tabIndex: 0));
-              }
-            }),
+            onTap: () {
+              AppEvent.shared.report(event: AnalyticsEvent.balance_check);
+
+              IdolRoute.startDashboardBalance(context).then((value) {
+                if (value != null) {
+                  // 切换到Supply
+                  IdolRoute.sendArguments(
+                      context, HomeTabArguments(tabIndex: 0));
+                }
+              });
+            },
             child: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,

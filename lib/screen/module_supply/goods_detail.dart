@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/request/supply.dart';
@@ -39,6 +40,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   @override
   void initState() {
     super.initState();
+
+    AppEvent.shared.report(event: AnalyticsEvent.product_view_b);
   }
 
   @override
@@ -378,6 +381,13 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                           : 'Share to Earn'),
                   status: _bottomButtonStatus,
                   listener: (status) {
+                    AppEvent.shared.report(
+                        event: AnalyticsEvent.detail_pick_share,
+                        parameters: {
+                          AnalyticsEventParameter.type:
+                              _goodsDetail.inMyStore == 1 ? 'share' : 'pick'
+                        });
+
                     if (_goodsDetail.inMyStore == 1) {
                       ShareManager.showShareGoodsDialog(
                           context, _goodsDetail.goods[0]);

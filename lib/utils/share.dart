@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/conf.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
@@ -29,6 +30,11 @@ class ShareManager {
             '1.Add shop link in the bio.\n2.Attract your fans with great content and post.',
             ShareType.link,
             (channel) {
+              final shareChannel = channel == 'System' ? 'More' : channel;
+              AppEvent.shared.report(
+                  event: AnalyticsEvent.shoplink_share_channel,
+                  parameters: {AnalyticsEventParameter.type: shareChannel});
+
               if ('Copy Link' == channel) {
                 //复制
                 Clipboard.setData(ClipboardData(text: link));
@@ -49,6 +55,8 @@ class ShareManager {
 
   /// 分享商品
   static void showShareGoodsDialog(BuildContext context, String imageUrl) {
+    AppEvent.shared.report(event: AnalyticsEvent.share_product_view);
+
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
@@ -106,10 +114,14 @@ class ShareManager {
 
   static void _showGuideDialog(BuildContext context, String mediaType,
       String guideVideoUrl, String shareChannel, String imageLocalPath) async {
+    final channel = shareChannel == 'System' ? 'More' : shareChannel;
+    AppEvent.shared.report(
+        event: AnalyticsEvent.product_share_channel,
+        parameters: {AnalyticsEventParameter.type: channel});
+
     if (shareChannel != 'Download') {
       Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
     } else {
-      debugPrint("...");
       if (await Permission.storage.request().isGranted) {
         // Either the permission was already granted before or the user just granted it.
         ImageGallerySaver.saveFile(imageLocalPath);
