@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/widgets/button.dart';
@@ -44,19 +45,20 @@ class _ChangeUserNameDialogState extends State<ChangeUserNameDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.only(top: 7, bottom: 7, right: 12),
+                  alignment: Alignment.topRight,
                   child: GestureDetector(
-                    onTap: () {
-                      IdolRoute.pop(context);
-                    },
-                    child: Icon(
-                      Icons.close,
-                      size: 15,
-                      color: Colours.color_C4C5CD,
-                    ),
-                  ),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        IdolRoute.pop(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+                        child: Image(
+                          image: R.image.dialog_close(),
+                          width: 12,
+                          height: 12,
+                        ),
+                      )),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16, right: 16, bottom: 20),

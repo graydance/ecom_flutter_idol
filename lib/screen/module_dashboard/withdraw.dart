@@ -25,9 +25,9 @@ class _WithdrawScreenState extends State {
   _WithdrawScreenState();
 
   WithdrawInfo _withdrawInfo;
-  TextEditingController _accountController;
-  TextEditingController _confirmAccountController;
-  TextEditingController _amountController;
+  TextEditingController _accountController = TextEditingController();
+  TextEditingController _confirmAccountController = TextEditingController();
+  TextEditingController _amountController = TextEditingController();
   String _withdrawTypeId;
   String _withdrawTypeName = 'Select the payment';
   int _serviceCharge = 0;
@@ -50,7 +50,7 @@ class _WithdrawScreenState extends State {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _accountController = TextEditingController();
+
     _accountController.addListener(() => _changeWithdrawButtonStatus());
     _amountFocusNode.addListener(() {
       if (!_amountFocusNode.hasFocus) {
@@ -61,7 +61,6 @@ class _WithdrawScreenState extends State {
       }
     });
 
-    _confirmAccountController = TextEditingController();
     _confirmAccountController.addListener(() => _changeWithdrawButtonStatus());
     _confirmAccountFocusNode.addListener(() {
       if (!_confirmAccountFocusNode.hasFocus) {
@@ -76,7 +75,6 @@ class _WithdrawScreenState extends State {
       }
     });
 
-    _amountController = TextEditingController();
     _amountController.addListener(() => _changeWithdrawButtonStatus());
     _amountFocusNode.addListener(() {
       String withdrawalAmountString = _amountController.text;
@@ -162,7 +160,11 @@ class _WithdrawScreenState extends State {
         (_amountController.text.contains(".")
                 ? double.tryParse(_amountController.text)
                 : int.tryParse(_amountController.text)) >=
-            _minWithdrawalAmount;
+            _minWithdrawalAmount &&
+        (_amountController.text.contains(".")
+                ? double.tryParse(_amountController.text)
+                : int.tryParse(_amountController.text)) <=
+            (_withdrawInfo.withdraw / 100);
     setState(() {
       withdrawButtonStatus =
           enable ? IdolButtonStatus.enable : IdolButtonStatus.disable;

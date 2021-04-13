@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/r.g.dart';
-import 'package:idol/router.dart';
-import 'package:idol/store/actions/actions.dart';
-import 'package:idol/utils/global.dart';
-import 'package:redux/redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
+import 'package:idol/screen/screens.dart';
+import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/main.dart';
+import 'package:idol/utils/global.dart';
+import 'package:redux/redux.dart';
 
 /// Sign Up/Sign In
 class SignInScreen extends StatefulWidget {
@@ -180,7 +181,11 @@ class _SignInScreenState extends State<SignInScreen>
           ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushNamed(RouterPath.forgotPassword);
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => ForgotPasswordScreen(
+                          email: _signUpSignInArguments.email)));
             },
             child: Text(
               'Forgot your password',

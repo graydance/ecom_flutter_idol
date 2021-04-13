@@ -142,8 +142,9 @@ class UpdatePasswordFailure implements UpdatePasswordState {
 
 class UpdatePasswordAction {
   final UpdatePasswordRequest request;
+  final Completer completer;
 
-  UpdatePasswordAction(this.request);
+  UpdatePasswordAction(this.request, this.completer);
 }
 
 class UpdatePasswordSuccessAction {
@@ -157,3 +158,37 @@ class UpdatePasswordFailureAction {
 }
 
 class LogoutAction {}
+
+/// ResetPasswordState
+abstract class ResetPasswordState {}
+
+class ResetPasswordInitial implements ResetPasswordState {
+  const ResetPasswordInitial();
+}
+
+class ResetPasswordLoading implements ResetPasswordState {}
+
+class ResetPasswordSuccess implements ResetPasswordState {}
+
+class ResetPasswordFailure implements ResetPasswordState {
+  final String message;
+
+  ResetPasswordFailure(this.message);
+}
+
+class ResetPasswordAction {
+  final ResetPasswordRequest request;
+  final Completer completer;
+
+  ResetPasswordAction(this.request, this.completer);
+}
+
+class ResetPasswordSuccessAction {
+  ResetPasswordSuccessAction();
+}
+
+class ResetPasswordFailureAction {
+  final String message;
+
+  ResetPasswordFailureAction(this.message);
+}

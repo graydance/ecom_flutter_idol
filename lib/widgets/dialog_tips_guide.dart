@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:idol/utils/localStorage.dart';
-import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_share.dart';
-import 'package:idol/widgets/loading.dart';
 import 'package:video_player/video_player.dart';
+
+import '../r.g.dart';
 
 /// Dialog
 class TipsGuideDialog extends StatefulWidget {
@@ -59,21 +59,23 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    if (widget.onClose != null) {
-                      widget.onClose();
-                    }
-                  },
-                  child: Container(
-                    alignment: Alignment.topRight,
-                    padding: EdgeInsets.all(12),
-                    child: Icon(
-                      Icons.clear,
-                      color: Colours.color_40A2A2A2,
-                      size: 16,
-                    ),
-                  ),
+                Container(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        if (widget.onClose != null) {
+                          widget.onClose();
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(12, 12, 0, 12),
+                        child: Image(
+                          image: R.image.dialog_close(),
+                          width: 12,
+                          height: 12,
+                        ),
+                      )),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
@@ -98,25 +100,35 @@ class _TipsGuideDialogState extends State<TipsGuideDialog> {
                       ),
                     ),
                     child: MyPikVideo(_controller)),
-                Text(
-                  widget.desc,
-                  style: TextStyle(color: Colours.color_979AA9, fontSize: 12),
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    widget.desc,
+                    style: TextStyle(color: Colours.color_979AA9, fontSize: 12),
+                  ),
                 ),
                 Row(
                   children: [
-                    Checkbox(
-                        value: this._neverShow,
-                        activeColor: Colours.color_ED8514,
-                        checkColor: Colours.white,
-                        onChanged: (bool value) {
-                          setState(() {
-                            this._neverShow = value;
-                            _storage.write(
-                                key: widget.storeKey, value: value.toString());
-                          });
-                        }),
+                    SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: Checkbox(
+                          value: this._neverShow,
+                          activeColor: Colours.color_ED8514,
+                          checkColor: Colours.white,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          onChanged: (bool value) {
+                            setState(() {
+                              this._neverShow = value;
+                              _storage.write(
+                                  key: widget.storeKey,
+                                  value: value.toString());
+                            });
+                          }),
+                    ),
                     Text(
-                      'Don\'t show this hint again.',
+                      '  Don\'t show this hint again.',
                       style:
                           TextStyle(color: Colours.color_979AA9, fontSize: 12),
                     ),

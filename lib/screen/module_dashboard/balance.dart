@@ -1,20 +1,22 @@
+import 'dart:async';
+
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/utils/global.dart';
-import 'package:idol/utils/localStorage.dart';
-import 'package:idol/models/withdraw_info.dart';
-import 'package:idol/net/request/base.dart';
-import 'package:idol/store/actions/actions.dart';
-import 'package:idol/utils/keystore.dart';
-import 'package:idol/widgets/button.dart';
-import 'package:idol/widgets/dialog_message.dart';
 import 'package:redux/redux.dart';
+import 'package:super_tooltip/super_tooltip.dart';
+
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/models.dart';
+import 'package:idol/models/withdraw_info.dart';
+import 'package:idol/net/request/base.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
-import 'package:idol/r.g.dart';
+import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/global.dart';
+import 'package:idol/widgets/button.dart';
+import 'package:idol/widgets/dialog_message.dart';
 
 class BalanceScreen extends StatefulWidget {
   @override
@@ -22,7 +24,9 @@ class BalanceScreen extends StatefulWidget {
 }
 
 class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
-  final _storage = new FlutterSecureStorage();
+  SuperTooltip _tooltip;
+  Timer _toolTipTimer;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +53,59 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
         },
       ),
     );
+  }
+
+  void _showEarningTip(
+      BuildContext context, String content, TooltipDirection td) {
+    _cancelToolTipTimer();
+
+    if (_tooltip != null && _tooltip.isOpen) {
+      _tooltip.close();
+      return;
+    }
+
+    var renderBox = context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    var targetGlobalCenter = renderBox
+        .localToGlobal(renderBox.size.center(Offset.zero), ancestor: overlay);
+
+    // We create the tooltip on the first use
+    _tooltip = SuperTooltip(
+      popupDirection: td,
+      arrowTipDistance: 20.0,
+      arrowBaseWidth: 8.0,
+      arrowLength: 4.0,
+      borderWidth: 0,
+      borderColor: Colors.white,
+      shadowColor: Colours.color_black15,
+      maxWidth: 200.0,
+      showCloseButton: ShowCloseButton.none,
+      hasShadow: true,
+      touchThrougArea: Rect.fromLTWH(targetGlobalCenter.dx - 70,
+          targetGlobalCenter.dy + 100, 140.0, 160.0),
+      touchThroughAreaShape: ClipAreaShape.rectangle,
+      content: Text(
+        content,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 12,
+          decoration: TextDecoration.none,
+        ),
+        softWrap: true,
+      ),
+    );
+
+    _tooltip.show(context);
+    _toolTipTimer = Timer(Duration(seconds: 3), () {
+      if (_tooltip != null && _tooltip.isOpen) {
+        _tooltip.close();
+      }
+    });
+  }
+
+  _cancelToolTipTimer() {
+    if (_toolTipTimer != null) _toolTipTimer.cancel();
   }
 
   Widget _buildWidget(_ViewModel _viewModel) {
@@ -98,25 +155,26 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Balance(' +
-                          (withdrawInfo == null
-                              ? "\$"
-                              : _viewModel.user.monetaryUnit) +
-                          ')',
+                      'Balance',
                       style: TextStyle(
                           color: Colours.color_5028292A,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
-                    GestureDetector(
-                      onTap: _tips(
-                          'Money you\'ve earned but have yet to withdraw.'),
-                      child: Icon(
-                        Icons.info,
-                        size: 15,
-                        color: Colours.color_40A2A2A2,
-                      ),
-                    ),
+                    Builder(
+                        builder: (ctx) => GestureDetector(
+                              onTap: () {
+                                _showEarningTip(
+                                    ctx,
+                                    'Money you\'ve earned but have yet to withdraw.',
+                                    TooltipDirection.down);
+                              },
+                              child: Icon(
+                                Icons.info,
+                                size: 15,
+                                color: Colours.color_40A2A2A2,
+                              ),
+                            ))
                   ],
                 ),
                 SizedBox(
@@ -136,23 +194,24 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Available(' +
-                                    (withdrawInfo == null
-                                        ? "\$"
-                                        : _viewModel.user.monetaryUnit) +
-                                    ')',
+                                'Available',
                                 style: TextStyle(
                                     color: Colours.color_A9A9A9, fontSize: 14),
                               ),
-                              GestureDetector(
-                                onTap: _tips(
-                                    'Money you\'ve earned and yuo can withdraw now.'),
-                                child: Icon(
-                                  Icons.info,
-                                  size: 15,
-                                  color: Colours.color_40A2A2A2,
-                                ),
-                              ),
+                              Builder(
+                                  builder: (ctx) => GestureDetector(
+                                        onTap: () {
+                                          _showEarningTip(
+                                              ctx,
+                                              'Money you\'ve earned and yuo can withdraw now.',
+                                              TooltipDirection.up);
+                                        },
+                                        child: Icon(
+                                          Icons.info,
+                                          size: 15,
+                                          color: Colours.color_40A2A2A2,
+                                        ),
+                                      ))
                             ],
                           ),
                           Padding(
@@ -164,7 +223,9 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                       TextUtil.formatDoubleComma3(
                                           withdrawInfo.withdraw / 100),
                               style: TextStyle(
-                                  color: Colours.color_28292A, fontSize: 16),
+                                  color: Colours.color_0F1015,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
@@ -184,24 +245,25 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Unavailable(' +
-                                        (withdrawInfo == null
-                                            ? "\$"
-                                            : _viewModel.user.monetaryUnit) +
-                                        ')',
+                                    'Unavailable',
                                     style: TextStyle(
                                         color: Colours.color_A9A9A9,
                                         fontSize: 14),
                                   ),
-                                  GestureDetector(
-                                    onTap: _tips(
-                                        'Money you\'ve earned but you can\'t withdraw now.\nThe money will available after the sale confirmed.'),
-                                    child: Icon(
-                                      Icons.info,
-                                      size: 15,
-                                      color: Colours.color_40A2A2A2,
-                                    ),
-                                  ),
+                                  Builder(
+                                      builder: (ctx) => GestureDetector(
+                                            onTap: () {
+                                              _showEarningTip(
+                                                  ctx,
+                                                  'Money you\'ve earned but you can\'t withdraw now.\nThe money will available after the sale confirmed.',
+                                                  TooltipDirection.up);
+                                            },
+                                            child: Icon(
+                                              Icons.info,
+                                              size: 15,
+                                              color: Colours.color_40A2A2A2,
+                                            ),
+                                          ))
                                 ],
                               ),
                               Padding(
@@ -213,8 +275,9 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                           TextUtil.formatDoubleComma3(
                                               withdrawInfo.freeze / 100),
                                   style: TextStyle(
-                                      color: Colours.color_28292A,
-                                      fontSize: 16),
+                                      color: Colours.color_0F1015,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               )
                             ],
