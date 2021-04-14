@@ -39,7 +39,7 @@ class _WithdrawScreenState extends State {
   String _accountTips = '';
   String _confirmAccountTips = '';
   String _amountTips = '';
-  IdolButtonStatus withdrawButtonStatus = IdolButtonStatus.normal;
+  IdolButtonStatus withdrawButtonStatus = IdolButtonStatus.disable;
 
   final _minWithdrawalAmount = 10;
   @override
