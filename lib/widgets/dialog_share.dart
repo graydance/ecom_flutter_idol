@@ -1,7 +1,9 @@
+import 'package:chewie/chewie.dart';
 import 'package:ecomshare/ecomshare.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
@@ -42,51 +44,75 @@ class ShareDialog extends StatefulWidget {
 }
 
 class MyPikVideo extends StatefulWidget {
-  final VideoPlayerController controller;
+  final String mediaUrl;
 
-  MyPikVideo(this.controller);
+  MyPikVideo(this.mediaUrl);
 
   @override
   State<StatefulWidget> createState() => _MyPikVideo();
 }
 
 class _MyPikVideo extends State<MyPikVideo> {
+  ChewieController _chewieController;
+  VideoPlayerController _videoPlayerController;
+
+  @override
+  void initState() {
+    super.initState();
+    initializePlayer();
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    _chewieController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> initializePlayer() async {
+    try {
+      //widget.mediaUrl
+      _videoPlayerController = VideoPlayerController.network(widget.mediaUrl);
+      await _videoPlayerController.initialize();
+
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        autoPlay: true,
+        looping: true,
+        autoInitialize: true,
+        showControlsOnInitialize: false,
+      );
+
+      setState(() {});
+    } catch (error) {
+      EasyLoading.showError(error.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          widget.controller.value.isPlaying
-              ? widget.controller.pause()
-              : widget.controller.play();
-          setState(() {});
-        },
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              child: AspectRatio(
-                aspectRatio: 270 / 140, //_controller.value.aspectRatio,
-                child: VideoPlayer(widget.controller),
-              ),
-            ),
-            Center(
-              child: widget.controller.value.initialized
-                  ? widget.controller.value.isPlaying
-                      ? Container(
-                          width: 50,
-                          height: 50,
-                          color: Colors.transparent,
-                        )
-                      : Image(
-                          image: R.image.play(),
-                          width: 50,
-                          height: 50,
-                        )
-                  : IdolLoadingWidget(),
-            ),
-          ],
-        ));
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          child: AspectRatio(
+            aspectRatio: 270 / 140, //_controller.value.aspectRatio,
+            child: _chewieController != null
+                ? Chewie(
+                    controller: _chewieController,
+                  )
+                : Container(),
+          ),
+        ),
+        Center(
+          child: _chewieController != null &&
+                  _chewieController.videoPlayerController.value.isInitialized
+              ? Container()
+              : IdolLoadingWidget(),
+        ),
+      ],
+    );
   }
 }
 
@@ -102,22 +128,10 @@ class _ShareDialogState extends State<ShareDialog> {
     'System': R.image.ic_share_more(),
   };
 
-  VideoPlayerController _controller;
-
   @override
   void initState() {
     super.initState();
     initSharePlatformState();
-    if (ShareType.guide == widget.shareType ||
-        ShareType.link == widget.shareType &&
-            widget.mediaUrl.toLowerCase().endsWith('.mp4')) {
-      _controller = VideoPlayerController.network(widget.mediaUrl)
-        ..initialize().then((_) {
-          _controller.setLooping(true);
-          // _controller.play();
-          setState(() {});
-        });
-    }
   }
 
   Future<void> initSharePlatformState() async {
@@ -328,7 +342,7 @@ class _ShareDialogState extends State<ShareDialog> {
                       Radius.circular(2),
                     ),
                   ),
-                  child: MyPikVideo(_controller)),
+                  child: MyPikVideo(widget.mediaUrl)),
               Container(
                 width: double.infinity,
                 margin: EdgeInsets.only(left: 59.5, right: 59.5),
@@ -386,7 +400,7 @@ class _ShareDialogState extends State<ShareDialog> {
                   Radius.circular(2),
                 ),
               ),
-              child: MyPikVideo(_controller)),
+              child: MyPikVideo(widget.mediaUrl)),
           SizedBox(
             height: 10,
           ),
@@ -399,12 +413,6 @@ class _ShareDialogState extends State<ShareDialog> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    if (_controller != null) _controller.dispose();
-    super.dispose();
   }
 }
 
