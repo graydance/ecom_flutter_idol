@@ -778,7 +778,7 @@ class _Tile extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 imageUrl: model.picture,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
               if (model.discount.isNotEmpty)
                 Positioned(

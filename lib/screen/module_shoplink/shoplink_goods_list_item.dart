@@ -48,7 +48,7 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
                         aspectRatio: widget.index == 0 ? 1 : 167 / 210,
                         child: Image(
                           image: NetworkImage(widget._goods.picture),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                       ),
                       Positioned(

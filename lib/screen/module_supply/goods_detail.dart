@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -152,6 +153,22 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                             // AspectRatio(
                             //   aspectRatio: 376 / 345,
                             //   child:
+                            Container(
+                              constraints: BoxConstraints.expand(),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(_goodsDetail.goods.first),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                                child: Container(
+                                  color: Colors.black.withOpacity(0.2),
+                                ),
+                              ),
+                            ),
                             Stack(
                               children: [
                                 Swiper(
@@ -471,7 +488,7 @@ Widget _createItemMediaWidget(String sourceUrl) {
         fit: BoxFit.cover,
       ),
       imageUrl: sourceUrl,
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
     );
   }
 }
