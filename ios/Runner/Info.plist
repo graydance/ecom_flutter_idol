@@ -72,6 +72,10 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>${PRODUCT_NAME} uses the music to share your product medias</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the bluetooth to share your product medias</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the bluetooth to share your product medias</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_dartobservatory._tcp</string>

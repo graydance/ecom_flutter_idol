@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -128,29 +129,42 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(6)),
               child: Container(
+                height: MediaQuery.of(context).size.width - 20 * 2,
                 child: Stack(
                   children: [
-                    AspectRatio(
-                      aspectRatio: 345 / 376,
-                      child: Stack(
-                        children: [
-                          Swiper(
-                            itemBuilder: (context, index) {
-                              return _createItemMediaWidget(
-                                  widget.goodsDetail.goods[index]);
-                            },
-                            pagination: SwiperPagination(
-                                alignment: Alignment.bottomCenter,
-                                builder: DotSwiperPaginationBuilder(
-                                  activeSize: 6,
-                                  size: 5,
-                                  color: Colours.color_50D8D8D8,
-                                  activeColor: Colours.white,
-                                )),
-                            itemCount: widget.goodsDetail.goods.length,
-                          ),
-                        ],
+                    Container(
+                      constraints: BoxConstraints.expand(),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(widget.goodsDetail.goods.first),
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                        child: Container(
+                          color: Colors.black.withOpacity(0.2),
+                        ),
+                      ),
+                    ),
+                    Stack(
+                      children: [
+                        Swiper(
+                          itemBuilder: (context, index) {
+                            return _createItemMediaWidget(
+                                widget.goodsDetail.goods[index]);
+                          },
+                          pagination: SwiperPagination(
+                              alignment: Alignment.bottomCenter,
+                              builder: DotSwiperPaginationBuilder(
+                                activeSize: 6,
+                                size: 5,
+                                color: Colours.color_50D8D8D8,
+                                activeColor: Colours.white,
+                              )),
+                          itemCount: widget.goodsDetail.goods.length,
+                        ),
+                      ],
                     ),
                     Positioned(
                       bottom: 0,
@@ -189,7 +203,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                           borderRadius: BorderRadius.all(Radius.circular(4)),
                         ),
                         child: Text(
-                          tag.interestName,
+                          tag.name,
                           style: TextStyle(
                               color: Colours.color_ED8514, fontSize: 12),
                         ),
@@ -404,7 +418,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
           fit: BoxFit.cover,
         ),
         imageUrl: sourceUrl,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
       );
     }
   }

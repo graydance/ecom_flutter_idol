@@ -203,7 +203,7 @@ class _BestSalesItemState extends State<_BestSalesItem> {
             ),
             width: 70,
             height: 70,
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
           ),
           SizedBox(
             width: 8,
