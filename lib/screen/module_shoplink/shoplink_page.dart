@@ -820,8 +820,6 @@ class _Tile extends StatelessWidget {
                   children: [
                     Image(
                       image: R.image.ic_pv(),
-                      width: 12,
-                      height: 8,
                     ),
                     SizedBox(
                       width: 2,
@@ -830,7 +828,7 @@ class _Tile extends StatelessWidget {
                       _formatHeatRank(model.heatRank) ?? '0',
                       style: TextStyle(
                         color: Colours.white,
-                        fontSize: 10,
+                        fontSize: 12,
                         shadows: [
                           Shadow(
                               offset: Offset(1.0, 1.0),
