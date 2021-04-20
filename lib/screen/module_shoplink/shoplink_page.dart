@@ -895,15 +895,24 @@ class _Tile extends StatelessWidget {
                   height: 8,
                 ),
               Wrap(
-                spacing: 2,
-                runSpacing: 2,
-                children: model.tag
-                    .map(
-                      (e) => TagView(
-                        text: e.name.toUpperCase(),
-                      ),
-                    )
-                    .toList(),
+                direction: Axis.horizontal,
+                alignment: WrapAlignment.start,
+                spacing: 5,
+                runSpacing: 5,
+                children: model.tag.map((tag) {
+                  return Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colours.color_ED8514, width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    child: Text(
+                      tag.name,
+                      style:
+                          TextStyle(color: Colours.color_ED8514, fontSize: 12),
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),

@@ -203,7 +203,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                           borderRadius: BorderRadius.all(Radius.circular(4)),
                         ),
                         child: Text(
-                          tag.interestName,
+                          tag.name,
                           style: TextStyle(
                               color: Colours.color_ED8514, fontSize: 12),
                         ),
