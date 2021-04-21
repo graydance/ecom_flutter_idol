@@ -37,8 +37,6 @@ import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_bottom_sheet.dart';
 import 'package:idol/widgets/dialog_change_username.dart';
-import 'package:idol/widgets/error.dart';
-import 'package:idol/widgets/loading.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -746,7 +744,7 @@ class _Tile extends StatelessWidget {
                 ),
                 clipBehavior: Clip.antiAlias,
                 elevation: 0,
-                child: _GoodsItem(),
+                child: _goodsItem(),
               ),
             ),
           )
@@ -759,12 +757,12 @@ class _Tile extends StatelessWidget {
               ),
               clipBehavior: Clip.antiAlias,
               elevation: 0,
-              child: _GoodsItem(),
+              child: _goodsItem(),
             ),
           );
   }
 
-  Widget _GoodsItem() {
+  Widget _goodsItem() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -772,13 +770,15 @@ class _Tile extends StatelessWidget {
           height: size.height,
           child: Stack(
             children: [
-              CachedNetworkImage(
-                placeholder: (context, _) => Image(
-                  image: R.image.goods_placeholder(),
-                  fit: BoxFit.cover,
+              Center(
+                child: CachedNetworkImage(
+                  placeholder: (context, _) => Image(
+                    image: R.image.goods_placeholder(),
+                    fit: BoxFit.cover,
+                  ),
+                  imageUrl: model.picture,
+                  fit: BoxFit.contain,
                 ),
-                imageUrl: model.picture,
-                fit: BoxFit.contain,
               ),
               if (model.discount.isNotEmpty)
                 Positioned(

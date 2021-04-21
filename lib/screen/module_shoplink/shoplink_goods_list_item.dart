@@ -134,7 +134,7 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
                                               color: Colours.color_ED8514,
                                               width: 1)),
                                       child: Text(
-                                        tag.name,
+                                        tag.interestName,
                                         style: TextStyle(
                                             color: Colours.color_ED8514,
                                             fontSize: 10),

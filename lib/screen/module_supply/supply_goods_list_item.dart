@@ -129,7 +129,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(6)),
               child: Container(
-                height: MediaQuery.of(context).size.width - 20 * 2,
+                height: MediaQuery.of(context).size.width - 15 * 2,
                 child: Stack(
                   children: [
                     Container(
@@ -203,7 +203,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                           borderRadius: BorderRadius.all(Radius.circular(4)),
                         ),
                         child: Text(
-                          tag.name,
+                          tag.interestName,
                           style: TextStyle(
                               color: Colours.color_ED8514, fontSize: 12),
                         ),
