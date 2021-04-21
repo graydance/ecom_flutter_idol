@@ -308,7 +308,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                       BorderRadius.all(Radius.circular(4)),
                                 ),
                                 child: Text(
-                                  tag.name,
+                                  tag.interestName,
                                   style: TextStyle(
                                       color: Colours.color_ED8514,
                                       fontSize: 12),
