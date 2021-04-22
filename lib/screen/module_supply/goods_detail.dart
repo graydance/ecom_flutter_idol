@@ -148,27 +148,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(2)),
                       child: Container(
+                        color: Colors.white,
                         child: Stack(
                           children: [
-                            // AspectRatio(
-                            //   aspectRatio: 376 / 345,
-                            //   child:
-                            Container(
-                              constraints: BoxConstraints.expand(),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(_goodsDetail.goods.first),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              child: BackdropFilter(
-                                filter:
-                                    ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                                child: Container(
-                                  color: Colors.black.withOpacity(0.2),
-                                ),
-                              ),
-                            ),
                             Stack(
                               children: [
                                 Swiper(
@@ -188,7 +170,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                 ),
                               ],
                             ),
-                            // ),
                             Positioned(
                               bottom: 0,
                               left: 0,
