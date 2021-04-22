@@ -132,21 +132,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                 height: MediaQuery.of(context).size.width - 15 * 2,
                 child: Stack(
                   children: [
-                    Container(
-                      constraints: BoxConstraints.expand(),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(widget.goodsDetail.goods.first),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                        child: Container(
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                      ),
-                    ),
                     Stack(
                       children: [
                         Swiper(
@@ -386,27 +371,9 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
       completer,
     ));
     completer.future.then((value) => _showMessageBar());
-    // try {
-    //   EasyLoading.show(status: 'Loading...');
-    //   await DioClient.getInstance()
-    //       .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
-    //   EasyLoading.dismiss();
-    //   if (widget.onProductAddedStoreListener != null) {
-    //     widget.onProductAddedStoreListener(goodsDetail);
-    //   }
-    //   _buttonText = 'Has been added to my store';
-    //   _idolButtonStatus = IdolButtonStatus.normal;
-    //   _idolButtonStatusKey.currentState.updateText(_buttonText);
-    //   _idolButtonStatusKey.currentState.updateButtonStatus(_idolButtonStatus);
-    // } catch (e) {
-    //   EasyLoading.dismiss();
-    //   debugPrint(e.toString());
-    //   EasyLoading.showError(e.toString());
-    // }
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {
-    debugPrint('_createItemMediaWidget >>> $sourceUrl');
     if (_isVideoSource(sourceUrl)) {
       return VideoPlayerWidget(
         url: sourceUrl,
@@ -438,18 +405,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         url.contains('.wmv') ||
         url.contains('.mkv'));
   }
-
-  // Timer _debounce;
-
-  // void debounce(Function fn, [int t = 30]) {
-  //   // return () {
-  //   // 还在时间之内，抛弃上一次
-  //   if (_debounce?.isActive ?? false) _debounce.cancel();
-  //   _debounce = Timer(Duration(milliseconds: t), () {
-  //     fn();
-  //   });
-  //   // };
-  // }
 }
 
 class MessageBar extends StatefulWidget {
