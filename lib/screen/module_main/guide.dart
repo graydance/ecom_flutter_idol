@@ -59,8 +59,8 @@ class _GuideScreenState extends State<GuideScreen> {
                 return _createSwiperItem(index, context, controllrer);
               },
               pagination: SwiperPagination(
-                alignment: Alignment.center,
-                margin: EdgeInsets.fromLTRB(0, imageHeight / 2.0, 0, 0),
+                alignment: Alignment.topCenter,
+                margin: EdgeInsets.only(top: 440),
                 builder: RoundRectSwiperPaginationBuilder(
                     //点之间的间隔
                     space: 5,
@@ -142,12 +142,6 @@ class _GuideScreenState extends State<GuideScreen> {
     ));
   }
 
-  double get imageHeight {
-    final double height = MediaQuery.of(context).size.height / 3.0 * 2.0;
-    final double imageHeight = height > 420 ? 420.0 : height;
-    return imageHeight;
-  }
-
   Widget _createSwiperItem(
       int index, BuildContext context, SwiperController controllrer) {
     return Container(
@@ -157,7 +151,7 @@ class _GuideScreenState extends State<GuideScreen> {
         children: [
           Image(
             image: _getCurImage(index),
-            height: imageHeight,
+            height: 420,
             fit: BoxFit.contain,
           ),
           SizedBox(
