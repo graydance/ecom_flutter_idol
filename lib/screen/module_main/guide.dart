@@ -1,6 +1,4 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
@@ -21,9 +19,9 @@ class _GuideScreenState extends State<GuideScreen> {
   ];
 
   static const List<String> guideDesc = [
-    'Start, grow and boost your\nonline business with Olaak.com\n',
-    'With our free, Easy-to-Use\nTools, build-in supply\nchains, after-sale service',
-    'Start selling today in your socials -\nNo Inventory Required, risk-free',
+    'Your fully-powered online shop is ready after sign-up',
+    'Your supply chain is ready just pick what your favarite to tools',
+    'Boost faster sales and fans growth with built-in marketing tools',
   ];
 
   static const List<String> guideClick = [
@@ -36,9 +34,6 @@ class _GuideScreenState extends State<GuideScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final height = size.height;
-    debugPrint("$height");
     return Scaffold(
         body: Stack(
       children: [
@@ -65,7 +60,7 @@ class _GuideScreenState extends State<GuideScreen> {
               },
               pagination: SwiperPagination(
                 alignment: Alignment.center,
-                margin: EdgeInsets.fromLTRB(0, 340, 0, 0),
+                margin: EdgeInsets.fromLTRB(0, imageHeight / 2.0, 0, 0),
                 builder: RoundRectSwiperPaginationBuilder(
                     //点之间的间隔
                     space: 5,
@@ -74,7 +69,7 @@ class _GuideScreenState extends State<GuideScreen> {
                     // 选中时的大小
                     activeSize: Size(30, 4),
                     // 没选中时的颜色
-                    color: Colours.color_black45,
+                    color: Colors.white30,
                     //选中时的颜色
                     activeColor: Colors.white),
               ),
@@ -147,28 +142,39 @@ class _GuideScreenState extends State<GuideScreen> {
     ));
   }
 
+  double get imageHeight {
+    final double height = MediaQuery.of(context).size.height / 3.0 * 2.0;
+    final double imageHeight = height > 420 ? 420.0 : height;
+    return imageHeight;
+  }
+
   Widget _createSwiperItem(
       int index, BuildContext context, SwiperController controllrer) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image(
             image: _getCurImage(index),
-            height: 120,
+            height: imageHeight,
             fit: BoxFit.contain,
           ),
           SizedBox(
-            height: 100,
+            height: 60,
           ),
-          Text(
-            guideDesc[index],
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colours.white,
-                fontSize: 20,
-                fontWeight: FontWeight.normal),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30,
+            ),
+            child: Text(
+              guideDesc[index],
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colours.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
           ),
           // Text(
           //   guideDesc[index],

@@ -37,8 +37,6 @@ import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_bottom_sheet.dart';
 import 'package:idol/widgets/dialog_change_username.dart';
-import 'package:idol/widgets/error.dart';
-import 'package:idol/widgets/loading.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -746,7 +744,7 @@ class _Tile extends StatelessWidget {
                 ),
                 clipBehavior: Clip.antiAlias,
                 elevation: 0,
-                child: _GoodsItem(),
+                child: _goodsItem(),
               ),
             ),
           )
@@ -759,12 +757,12 @@ class _Tile extends StatelessWidget {
               ),
               clipBehavior: Clip.antiAlias,
               elevation: 0,
-              child: _GoodsItem(),
+              child: _goodsItem(),
             ),
           );
   }
 
-  Widget _GoodsItem() {
+  Widget _goodsItem() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -772,13 +770,15 @@ class _Tile extends StatelessWidget {
           height: size.height,
           child: Stack(
             children: [
-              CachedNetworkImage(
-                placeholder: (context, _) => Image(
-                  image: R.image.goods_placeholder(),
-                  fit: BoxFit.cover,
+              Center(
+                child: CachedNetworkImage(
+                  placeholder: (context, _) => Image(
+                    image: R.image.goods_placeholder(),
+                    fit: BoxFit.cover,
+                  ),
+                  imageUrl: model.picture,
+                  fit: BoxFit.contain,
                 ),
-                imageUrl: model.picture,
-                fit: BoxFit.cover,
               ),
               if (model.discount.isNotEmpty)
                 Positioned(
@@ -820,8 +820,6 @@ class _Tile extends StatelessWidget {
                   children: [
                     Image(
                       image: R.image.ic_pv(),
-                      width: 12,
-                      height: 8,
                     ),
                     SizedBox(
                       width: 2,
@@ -830,7 +828,7 @@ class _Tile extends StatelessWidget {
                       _formatHeatRank(model.heatRank) ?? '0',
                       style: TextStyle(
                         color: Colours.white,
-                        fontSize: 10,
+                        fontSize: 12,
                         shadows: [
                           Shadow(
                               offset: Offset(1.0, 1.0),
@@ -895,15 +893,24 @@ class _Tile extends StatelessWidget {
                   height: 8,
                 ),
               Wrap(
-                spacing: 2,
-                runSpacing: 2,
-                children: model.tag
-                    .map(
-                      (e) => TagView(
-                        text: e.name.toUpperCase(),
-                      ),
-                    )
-                    .toList(),
+                direction: Axis.horizontal,
+                alignment: WrapAlignment.start,
+                spacing: 5,
+                runSpacing: 5,
+                children: model.tag.map((tag) {
+                  return Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colours.color_ED8514, width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    child: Text(
+                      tag.name,
+                      style:
+                          TextStyle(color: Colours.color_ED8514, fontSize: 12),
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),

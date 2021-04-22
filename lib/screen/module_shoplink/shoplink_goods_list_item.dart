@@ -48,7 +48,7 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
                         aspectRatio: widget.index == 0 ? 1 : 167 / 210,
                         child: Image(
                           image: NetworkImage(widget._goods.picture),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                       ),
                       Positioned(
@@ -58,8 +58,6 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
                           children: [
                             Image(
                               image: R.image.ic_pv(),
-                              width: 18,
-                              height: 15,
                             ),
                             Text(
                               _formatHeatRank(widget._goods.heatRank) ?? '0',
@@ -83,7 +81,7 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: Text(
-                      widget._goods.goodsName, //'我是一个商品哈哈哈哈哈哈哈哈哈哈',
+                      widget._goods.goodsName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style:
@@ -136,7 +134,7 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
                                               color: Colours.color_ED8514,
                                               width: 1)),
                                       child: Text(
-                                        tag.name,
+                                        tag.interestName,
                                         style: TextStyle(
                                             color: Colours.color_ED8514,
                                             fontSize: 10),
