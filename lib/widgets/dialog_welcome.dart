@@ -54,7 +54,7 @@ class WelcomeDialog extends StatelessWidget {
                   height: 20,
                 ),
                 Text(
-                  'Congratulations!\nYou\'ve opened your store!\nYou can check it at the last tab.',
+                  'Congratulations!\nYour online shop is ready!\nCheck your shop at Myshop tab.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,

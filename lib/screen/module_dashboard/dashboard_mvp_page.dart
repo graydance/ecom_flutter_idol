@@ -308,7 +308,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'How to make money with Olaak',
+                  'How to boost revenue with Olaak',
                   style: TextStyle(
                     color: Colours.color_0F1015,
                     fontSize: 12,
