@@ -67,7 +67,7 @@ class _ChangeUserNameDialogState extends State<ChangeUserNameDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Change Your UserName',
+                        'Change Your Username',
                         style: TextStyle(
                             fontSize: 16, color: Colours.color_0F1015),
                       ),

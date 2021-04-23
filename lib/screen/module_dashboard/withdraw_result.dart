@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/conf.dart';
+import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/withdraw_result.dart';
 import 'package:idol/net/request/base.dart';
+import 'package:idol/r.g.dart';
+import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_rating.dart';
 import 'package:idol/widgets/ui.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:redux/redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/models/appstate.dart';
-import 'package:idol/r.g.dart';
-import 'package:idol/res/colors.dart';
-import 'package:idol/router.dart';
 
 class WithdrawResultScreen extends StatefulWidget {
   @override
@@ -54,6 +54,7 @@ class _WithdrawResultScreenState extends State {
                     LaunchReview.launch(
                         androidAppId: androidAppId, iOSAppId: iosAppId);
                   } else {
+                    IdolRoute.pop(context);
                     EasyLoading.showToast(
                         'Thank you for your comment, we will do better.');
                   }

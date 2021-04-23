@@ -10,10 +10,28 @@ class FlutterSecureStorage {
     }
   }
 
+  Future<int> readInt({String key}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      return prefs.getInt(key);
+    } catch (ex) {
+      return null;
+    }
+  }
+
   Future<void> write({String key, String value}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       return prefs.setString(key, value);
+    } catch (ex) {
+      return null;
+    }
+  }
+
+  Future<void> writeInt({String key, int value}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      return prefs.setInt(key, value);
     } catch (ex) {
       return null;
     }

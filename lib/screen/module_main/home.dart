@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/event/app_event.dart';
-import 'package:idol/utils/localStorage.dart';
+import 'package:idol/event/supply_refresh.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/net/request/base.dart';
-import 'package:idol/net/request/store.dart';
-import 'package:idol/res/colors.dart';
 import 'package:idol/r.g.dart';
+import 'package:idol/res/colors.dart';
 import 'package:idol/screen/screens.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/SpeechBubble.dart';
 import 'package:idol/widgets/dialog_welcome.dart';
 import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:redux/redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 
 /// 应用主页面
 /// 对于当前页面缓存一级Page页面问题，可参考该[https://www.jb51.net/article/157680.htm]
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen>
   static const _titles = <String>[
     'Olaak',
     'Dashboard',
-    'ShopLink',
+    'Myshop',
     // 'Inbox',
     // 'Store'
   ];
@@ -263,7 +264,13 @@ class _HomeScreenState extends State<HomeScreen>
         selectedItemColor: Colours.color_0F1015,
         selectedFontSize: 0,
         currentIndex: _selectedIndex,
-        onTap: (index) => Global.homePageController.jumpToPage(index),
+        onTap: (index) {
+          if (index == 0 && _selectedIndex == 0) {
+            eventBus.fire(SupplyRefresh(SupplyRefreshEvent(index)));
+          }
+
+          Global.homePageController.jumpToPage(index);
+        },
       ),
     );
   }

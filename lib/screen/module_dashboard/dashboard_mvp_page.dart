@@ -129,7 +129,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
       builder: (context) {
         return TipsGuideDialog(
           KeyStore.NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG,
-          'How to make money\nwith Olaak?',
+          'How to boost revenue\nwith Olaak?',
           '1.Select and add products in Olaak panel.\n\n2.Share posts in social medias or anywhere would drive sales.\n\n3.Add shop link in the bio ofsocial media account.\n\n4.Collect earnings.',
           videoUrls[0],
           buttonText: 'Select Now',
@@ -308,7 +308,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'How to make money with Olaak',
+                  'How to boost revenue with Olaak',
                   style: TextStyle(
                     color: Colours.color_0F1015,
                     fontSize: 12,
