@@ -62,7 +62,7 @@ class IdolMessageDialog extends StatelessWidget {
                       ]
                     : [],
                 Container(
-                  margin: EdgeInsets.all(20),
+                  margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
                   child: Text(
                     message,
                     textAlign: TextAlign.center,

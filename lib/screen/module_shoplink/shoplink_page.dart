@@ -8,17 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/event/app_event.dart';
-import 'package:idol/utils/localStorage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:idol/utils/keystore.dart';
-import 'package:idol/widgets/SpeechBubble.dart';
-import 'package:idol/widgets/tutorialOverlay.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:redux/redux.dart';
-
 import 'package:idol/conf.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';
 import 'package:idol/net/api.dart';
@@ -33,10 +25,18 @@ import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/utils/share.dart';
+import 'package:idol/widgets/SpeechBubble.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_bottom_sheet.dart';
 import 'package:idol/widgets/dialog_change_username.dart';
+import 'package:idol/widgets/dialog_message.dart';
+import 'package:idol/widgets/tutorialOverlay.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:redux/redux.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -194,9 +194,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                                 Global.tokCopy.currentState.hide();
                                 final link = '$linkDomain$_userName';
                                 Clipboard.setData(ClipboardData(text: link));
-                                EasyLoading.showToast(
-                                    'Copied\nYou can add the Link to your social bio now.');
+                                // EasyLoading.showToast(
+                                //     'Copied\nYou can add the Link to your social bio now.');
                                 ShareManager.showShareLinkDialog(context, link);
+                                copyDialog(context);
                               },
                               child: Container(
                                 padding: EdgeInsets.only(
@@ -703,6 +704,32 @@ class _ShopLinkPageState extends State<ShopLinkPage>
 
   @override
   bool get wantKeepAlive => true;
+
+  copyDialog(BuildContext context) async {
+    int readInt = await _storage.readInt(key: KeyStore.COPY_NUMBER);
+    if (readInt != null) readInt++;
+    debugPrint('copy次数：' + readInt.toString());
+    if (readInt == null || readInt <= 3) {
+      readInt == null
+          ? await _storage.writeInt(key: KeyStore.COPY_NUMBER, value: 1)
+          : await _storage.writeInt(
+              key: KeyStore.COPY_NUMBER, value: readInt++);
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => WillPopScope(
+                onWillPop: () async => false, // 屏蔽返回键
+                child: IdolMessageDialog(
+                  'Copied\n\nPut the link in your social bio to launch your social ecommerce.',
+                  buttonText: 'I got it!',
+                  onClose: () => {IdolRoute.pop(context)},
+                  onTap: () {
+                    IdolRoute.pop(context);
+                  },
+                ),
+              ));
+    }
+  }
 }
 
 class _Size {

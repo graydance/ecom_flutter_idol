@@ -16,4 +16,5 @@ class KeyStore {
   static const String SHOWED_WELCOME_DIALOG = "showedWelcomeDialog";
   static const String NEVER_SHOW_HOW_TO_MAKE_MONEY_DIALOG =
       "neverShowHowToMakeMoneyDialog";
+  static const String COPY_NUMBER = 'copyNumber';
 }

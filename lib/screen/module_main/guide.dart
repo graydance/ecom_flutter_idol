@@ -19,9 +19,9 @@ class _GuideScreenState extends State<GuideScreen> {
   ];
 
   static const List<String> guideDesc = [
-    'Your fully-powered online shop is ready after sign-up',
-    'Your supply chain is ready just pick what your favarite to tools',
-    'Boost faster sales and fans growth with built-in marketing tools',
+    'Your fully-powered\nonline shop is ready after\nsign-up',
+    'Your supply chain is ready\njust pick what your favarite\nto sell',
+    'Boost faster sales and fans\ngrowth with built-in\nmarketing tools',
   ];
 
   static const List<String> guideClick = [
@@ -35,175 +35,108 @@ class _GuideScreenState extends State<GuideScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        Container(
-            decoration: BoxDecoration(
-              image:
-                  DecorationImage(image: R.image.guid_bg(), fit: BoxFit.cover),
-            ),
-            child: Swiper(
-              itemCount: guideTitle.length,
-              autoplay: false,
-              viewportFraction: 1,
-              loop: false,
-              outer: false,
-              scale: 1,
-              controller: controllrer,
-              onIndexChanged: (index) {
-                setState(() {
-                  _showGetStarted = index == guideTitle.length - 1;
-                });
-              },
-              itemBuilder: (context, index) {
-                return _createSwiperItem(index, context, controllrer);
-              },
-              pagination: SwiperPagination(
-                alignment: Alignment.topCenter,
-                margin: EdgeInsets.only(top: 440),
-                builder: RoundRectSwiperPaginationBuilder(
-                    //点之间的间隔
-                    space: 5,
-                    // 没选中时的大小
-                    size: Size(30, 4),
-                    // 选中时的大小
-                    activeSize: Size(30, 4),
-                    // 没选中时的颜色
-                    color: Colors.white30,
-                    //选中时的颜色
-                    activeColor: Colors.white),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(image: R.image.guid_bg(), fit: BoxFit.cover),
+        ),
+        child: SafeArea(
+          child: Swiper(
+            itemCount: guideTitle.length,
+            autoplay: false,
+            viewportFraction: 1,
+            loop: false,
+            outer: false,
+            scale: 1,
+            controller: controllrer,
+            onIndexChanged: (index) {
+              setState(() {
+                _showGetStarted = index == guideTitle.length - 1;
+              });
+            },
+            itemBuilder: (context, index) {
+              return _createSwiperItem(index, context, controllrer);
+            },
+            pagination: SwiperPagination(
+              alignment: Alignment.topCenter,
+              margin: EdgeInsets.only(top: 430),
+              builder: RoundRectSwiperPaginationBuilder(
+                //点之间的间隔
+                space: 5,
+                // 没选中时的大小
+                size: Size(30, 4),
+                // 选中时的大小
+                activeSize: Size(30, 4),
+                // 没选中时的颜色
+                color: Colors.white30,
+                //选中时的颜色
+                activeColor: Colors.white,
               ),
-            )),
-        Column(
-          children: [
-            Spacer(),
-            Center(
-                child: Visibility(
-                    maintainState: true,
-                    maintainAnimation: true,
-                    maintainSize: true,
-                    visible: _showGetStarted,
-                    child: GestureDetector(
-                      onTap: () {
-                        IdolRoute.startIndex(context);
-                      },
-                      child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 60),
-                          decoration: BoxDecoration(
-                            color: Colours.color_white30,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(4),
-                            ),
-                          ),
-                          padding: EdgeInsets.only(
-                              left: 30, top: 12, right: 30, bottom: 12),
-                          child: Text(
-                            'GET STARTED!',
-                            style: TextStyle(color: Colors.white),
-                          )),
-                    )))
-            // Center(
-            //   child: Container(
-            //     margin: EdgeInsets.fromLTRB(0, 0, 0, 36),
-            //     child: Column(
-            //       children: [
-            //         Text(
-            //           "By signing up, you also agree with our ",
-            //           style:
-            //               TextStyle(color: Colours.color_636365, fontSize: 12),
-            //         ),
-            //         RichText(
-            //             text: TextSpan(children: [
-            //           TextSpan(
-            //               text: "Terms of Use",
-            //               style: TextStyle(
-            //                   color: Colours.color_4E9AE3, fontSize: 12),
-            //               recognizer: TapGestureRecognizer()
-            //                 ..onTap = () => print('click1')),
-            //           TextSpan(
-            //             text: " and ",
-            //             style: TextStyle(
-            //                 color: Colours.color_636365, fontSize: 12),
-            //           ),
-            //           TextSpan(
-            //               text: "Privacy Policy",
-            //               style: TextStyle(
-            //                   color: Colours.color_4E9AE3, fontSize: 12),
-            //               recognizer: TapGestureRecognizer()
-            //                 ..onTap = () => print('click2'))
-            //         ]))
-            //       ],
-            //     ),
-            //   ),
-            // )
-          ],
-        )
-      ],
-    ));
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _createSwiperItem(
       int index, BuildContext context, SwiperController controllrer) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image(
-            image: _getCurImage(index),
-            height: 420,
-            fit: BoxFit.contain,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      // mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image(
+          image: _getCurImage(index),
+          height: 420,
+          fit: BoxFit.contain,
+        ),
+        SizedBox(
+          height: 60,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
           ),
-          SizedBox(
-            height: 60,
+          child: Text(
+            guideDesc[index],
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colours.white,
+                fontSize: 25,
+                fontWeight: FontWeight.w800,
+                height: 1.2),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30,
+        ),
+        Visibility(
+          maintainState: true,
+          maintainAnimation: true,
+          maintainSize: true,
+          visible: _showGetStarted,
+          child: GestureDetector(
+            onTap: () {
+              IdolRoute.startIndex(context);
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 30),
+              decoration: BoxDecoration(
+                color: Colours.color_white30,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(4),
+                ),
+              ),
+              padding:
+                  EdgeInsets.only(left: 30, top: 12, right: 30, bottom: 12),
+              child: Text(
+                'GET STARTED!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-            child: Text(
-              guideDesc[index],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colours.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
           ),
-          // Text(
-          //   guideDesc[index],
-          //   textAlign: TextAlign.center,
-          //   style: TextStyle(color: Colours.color_white70, fontSize: 14),
-          // ),
-          // GestureDetector(
-          //   onTap: () {
-          //     if (index == 2)
-          //       IdolRoute.startValidateEmail(context);
-          //     else
-          //       controllrer.next(animation: true);
-          //   },
-          //   child: Container(
-          //     margin: EdgeInsets.fromLTRB(0, 35, 0, 0),
-          //     //设置 child 居中
-          //     alignment: Alignment(0, 0),
-          //     height: 22,
-          //     width: 76,
-          //     //边框设置
-          //     decoration: new BoxDecoration(
-          //       //背景
-          //       color: Colors.transparent,
-          //       //设置四周圆角 角度 这里的角度应该为 父Container height 的一半
-          //       borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          //       //设置四周边框
-          //       border: new Border.all(width: 1, color: Colors.white),
-          //     ),
-          //     child: Text(guideClick[index],
-          //         textAlign: TextAlign.center,
-          //         style: new TextStyle(color: Colors.white, fontSize: 12)),
-          //   ),
-          // ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
