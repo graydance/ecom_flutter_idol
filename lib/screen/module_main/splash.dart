@@ -38,12 +38,15 @@ class _SplashScreenState extends State<SplashScreen> {
             },
             builder: (context, vm) {
               return Container(
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colours.transparent,
                   image: DecorationImage(
                       image: R.image.bg_login_signup(), fit: BoxFit.cover),
                 ),
-                child: Center(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.4),
                   child: Image(
                     image: R.image.ic_index_logo(),
                     width: 150,
