@@ -60,16 +60,17 @@ class _GuideScreenState extends State<GuideScreen> {
               alignment: Alignment.topCenter,
               margin: EdgeInsets.only(top: 430),
               builder: RoundRectSwiperPaginationBuilder(
-                  //点之间的间隔
-                  space: 5,
-                  // 没选中时的大小
-                  size: Size(30, 4),
-                  // 选中时的大小
-                  activeSize: Size(30, 4),
-                  // 没选中时的颜色
-                  color: Colors.white30,
-                  //选中时的颜色
-                  activeColor: Colors.white),
+                //点之间的间隔
+                space: 5,
+                // 没选中时的大小
+                size: Size(30, 4),
+                // 选中时的大小
+                activeSize: Size(30, 4),
+                // 没选中时的颜色
+                color: Colors.white30,
+                //选中时的颜色
+                activeColor: Colors.white,
+              ),
             ),
           ),
         ),
@@ -79,64 +80,63 @@ class _GuideScreenState extends State<GuideScreen> {
 
   Widget _createSwiperItem(
       int index, BuildContext context, SwiperController controllrer) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image(
-            image: _getCurImage(index),
-            height: 420,
-            fit: BoxFit.contain,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      // mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image(
+          image: _getCurImage(index),
+          height: 420,
+          fit: BoxFit.contain,
+        ),
+        SizedBox(
+          height: 60,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
           ),
-          SizedBox(
-            height: 60,
+          child: Text(
+            guideDesc[index],
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colours.white,
+                fontSize: 25,
+                fontWeight: FontWeight.w800,
+                height: 1.2),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-            ),
-            child: Text(
-              guideDesc[index],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colours.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2),
-            ),
-          ),
-          Visibility(
-            maintainState: true,
-            maintainAnimation: true,
-            maintainSize: true,
-            visible: _showGetStarted,
-            child: GestureDetector(
-              onTap: () {
-                IdolRoute.startIndex(context);
-              },
-              child: Container(
-                margin: EdgeInsets.only(top: 30),
-                decoration: BoxDecoration(
-                  color: Colours.color_white30,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
+        ),
+        Visibility(
+          maintainState: true,
+          maintainAnimation: true,
+          maintainSize: true,
+          visible: _showGetStarted,
+          child: GestureDetector(
+            onTap: () {
+              IdolRoute.startIndex(context);
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 30),
+              decoration: BoxDecoration(
+                color: Colours.color_white30,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(4),
                 ),
-                padding:
-                    EdgeInsets.only(left: 30, top: 12, right: 30, bottom: 12),
-                child: Text(
-                  'GET STARTED!',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
+              ),
+              padding:
+                  EdgeInsets.only(left: 30, top: 12, right: 30, bottom: 12),
+              child: Text(
+                'GET STARTED!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
