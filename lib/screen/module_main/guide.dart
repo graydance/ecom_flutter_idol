@@ -19,9 +19,9 @@ class _GuideScreenState extends State<GuideScreen> {
   ];
 
   static const List<String> guideDesc = [
-    'Your fully-powered online shop is ready after sign-up',
-    'Your supply chain is ready just pick what your favarite to sell',
-    'Boost faster sales and fans growth with built-in marketing tools',
+    'Your fully-powered\nonline shop is ready after\nsign-up',
+    'Your supply chain is ready\njust pick what your favarite\nto sell',
+    'Boost faster sales and fans\ngrowth with built-in\nmarketing tools',
   ];
 
   static const List<String> guideClick = [
@@ -94,21 +94,22 @@ class _GuideScreenState extends State<GuideScreen> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 30,
+              horizontal: 8,
             ),
             child: Text(
               guideDesc[index],
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colours.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
+                  fontSize: 25,
+                  fontWeight: FontWeight.w800,
+                  height: 1.2),
             ),
           ),
           Visibility(
-            // maintainState: true,
-            // maintainAnimation: true,
-            // maintainSize: true,
+            maintainState: true,
+            maintainAnimation: true,
+            maintainSize: true,
             visible: _showGetStarted,
             child: GestureDetector(
               onTap: () {
@@ -126,7 +127,10 @@ class _GuideScreenState extends State<GuideScreen> {
                     EdgeInsets.only(left: 30, top: 12, right: 30, bottom: 12),
                 child: Text(
                   'GET STARTED!',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),

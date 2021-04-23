@@ -38,19 +38,29 @@ class _SplashScreenState extends State<SplashScreen> {
             },
             builder: (context, vm) {
               return Container(
-                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colours.transparent,
                   image: DecorationImage(
-                      image: R.image.bg_login_signup(), fit: BoxFit.cover),
+                    image: R.image.bg_login_signup(),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.4),
-                  child: Image(
-                    image: R.image.ic_index_logo(),
-                    width: 150,
-                    height: 150,
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Image(
+                            image: R.image.ic_index_logo(),
+                            width: 150,
+                            height: 150,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Container(),
+                      ),
+                    ],
                   ),
                 ),
               );
