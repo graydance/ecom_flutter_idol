@@ -27,7 +27,7 @@ class ShareManager {
           return ShareDialog(
             'How to drive sales on social media?',
             videoUrls[0],
-            '1.Add shop link in the bio.\n2.Attract your fans with great content and post.',
+            '1.Add shop link in the bio of social media account.\n2.Attract your fans with great content and post.',
             ShareType.link,
             (channel) {
               final shareChannel = channel == 'System' ? 'More' : channel;

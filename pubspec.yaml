@@ -48,6 +48,7 @@ dependencies:
   firebase_crashlytics: ^2.0.0
   enum_to_string: ^2.0.1
   chewie: ^1.0.0
+  event_bus: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
