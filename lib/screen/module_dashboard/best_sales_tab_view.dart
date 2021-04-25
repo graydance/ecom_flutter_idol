@@ -46,6 +46,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
   }
 
   Widget _buildWidget(_ViewModel vm) {
+    print("bestSales:" + _bestSalesList.toString());
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -118,7 +119,7 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
                   var list = await completer.future;
                   _refreshController.refreshCompleted();
                   setState(() {
-                    _bestSalesList = list;
+                    _bestSalesList = list.list;
                   });
                 } catch (error) {
                   _refreshController.loadFailed();

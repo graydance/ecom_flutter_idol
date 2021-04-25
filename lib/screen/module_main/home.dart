@@ -82,6 +82,19 @@ class _HomeScreenState extends State<HomeScreen>
     ]);
   }
 
+  var lastPopTime = DateTime.now();
+
+  void intervalClick(int needTime, int index) {
+    // 防重复提交
+    if (lastPopTime == null ||
+        DateTime.now().difference(lastPopTime) > Duration(seconds: needTime)) {
+      print(lastPopTime);
+      lastPopTime = DateTime.now();
+
+      eventBus.fire(SupplyRefresh(SupplyRefreshEvent(index)));
+    }
+  }
+
   @override
   void initState() {
     // Future.delayed(Duration(milliseconds: 100), () {
@@ -266,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen>
         currentIndex: _selectedIndex,
         onTap: (index) {
           if (index == 0 && _selectedIndex == 0) {
-            eventBus.fire(SupplyRefresh(SupplyRefreshEvent(index)));
+            intervalClick(1, index);
           }
 
           Global.homePageController.jumpToPage(index);

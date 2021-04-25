@@ -40,7 +40,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
     eventBusFn = eventBus.on<SupplyRefresh>().listen((event) {
       // ignore: deprecated_member_use
       _refreshController.scrollController.animateTo(0,
-          duration: Duration(milliseconds: 1000), curve: Curves.ease);
+          duration: Duration(milliseconds: 800), curve: Curves.ease);
     });
   }
 
