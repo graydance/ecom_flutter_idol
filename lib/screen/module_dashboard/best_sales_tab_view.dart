@@ -214,54 +214,59 @@ class _BestSalesItemState extends State<_BestSalesItem> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  widget.bestSales.goodsName,
-                  style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
+                Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: Text(
+                    widget.bestSales.goodsName,
+                    style: TextStyle(
+                      color: Colours.color_0F1015,
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: 4,
                 ),
-                Text(
-                  'Sales',
-                  style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
+                Row(
+                  children: [
+                    Text(
+                      'Sales',
+                      style: TextStyle(
+                        color: Colours.color_0F1015,
+                        fontSize: 12,
+                      ),
+                    ),
+                    Spacer(),
+                    Text(
+                      widget.bestSales.soldNum.toString(),
+                      style: TextStyle(
+                        color: Colours.color_0F1015,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 4,
                 ),
-                Text(
-                  'Earnings',
-                  style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
+                Row(
+                  children: [
+                    Text(
+                      'Earnings',
+                      style:
+                          TextStyle(color: Colours.color_0F1015, fontSize: 12),
+                    ),
+                    Spacer(),
+                    Text(
+                      Global.getUser(context).monetaryUnit +
+                          widget.bestSales.earningPriceStr,
+                      style:
+                          TextStyle(color: Colours.color_0F1015, fontSize: 12),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '',
-                style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Text(
-                widget.bestSales.soldNum.toString(),
-                style: TextStyle(
-                  color: Colours.color_0F1015,
-                  fontSize: 12,
-                ),
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Text(
-                Global.getUser(context).monetaryUnit +
-                    widget.bestSales.earningPriceStr,
-                style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
-              ),
-            ],
           ),
         ],
       ),
