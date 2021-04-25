@@ -33,4 +33,8 @@ class StringBasic {
   static const String forgotPasswordCheckInbox = 'Check Your Inbox';
   static const String forgotPasswordResetSuccess =
       'Your new password have been sent to your email.';
+
+  ///MyShop
+  static const String userNameError =
+      'At least 5 characters, only a~z, 0~9, _, . are available.';
 }
