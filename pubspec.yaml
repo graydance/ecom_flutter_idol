@@ -43,9 +43,9 @@ dependencies:
   ecomshare:
     git:
       url: 'https://github.com/graydance/ecomshare.git'
-  firebase_core: ^1.0.3
-  firebase_analytics: ^7.1.1
-  firebase_crashlytics: ^2.0.0
+  firebase_core: 1.0.3
+  firebase_analytics: 7.1.1
+  firebase_crashlytics: 2.0.0
   enum_to_string: ^2.0.1
   chewie: ^1.0.0
   event_bus: ^2.0.0
