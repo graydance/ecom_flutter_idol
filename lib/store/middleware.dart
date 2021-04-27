@@ -13,6 +13,7 @@ import 'package:idol/net/request/store.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
@@ -169,6 +170,8 @@ List<Middleware<AppState>> createStoreMiddleware() {
       store.dispatch(MyInfoGoodsListAction(
           MyInfoGoodsListRequest(Global.getStateUser(store.state).id, 0, 1),
           Completer()));
+
+      eventBus.fire(MyShopRefresh());
       next(action);
     }),
     TypedMiddleware<AppState, AddToStoreActionFailAction>(

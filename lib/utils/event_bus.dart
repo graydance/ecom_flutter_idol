@@ -11,3 +11,5 @@ class SupplyRefresh {
   SupplyRefreshEvent supplyRefresh;
   SupplyRefresh(this.supplyRefresh);
 }
+
+class MyShopRefresh {}

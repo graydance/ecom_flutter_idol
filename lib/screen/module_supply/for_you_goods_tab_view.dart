@@ -46,7 +46,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     //取消订阅
     eventBusFn.cancel();
