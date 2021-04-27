@@ -24,6 +24,7 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
@@ -55,6 +56,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   bool _editState = true;
   bool _shopDescIsEditing = false;
 
+  List<StoreGoods> _models = [];
+  StreamSubscription<MyShopRefresh> eventBusFn;
+
   // int _lastClickTime = 0;
   final _storage = new FlutterSecureStorage();
   @override
@@ -73,6 +77,17 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         _shopDescIsEditing = _shopDescFocusNode.hasFocus;
       });
     });
+
+    eventBusFn = eventBus.on<MyShopRefresh>().listen((event) {
+      if (_refreshController.isRefresh) return;
+      _refreshController.requestRefresh();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    eventBusFn.cancel();
   }
 
   @override
@@ -81,7 +96,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       builder: (context, vm) {
-        debugPrint('>>>>>>>>>>>>>>>>>>>ShopLink build<<<<<<<<<<<<<<<<<<<');
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
@@ -410,6 +424,18 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
+  _showStepIfNeeded() async {
+    try {
+      String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+      if ((step == "2" || step == "3") && _models.length == 0) {
+        //Global.tokAddAndShare.currentState.show();
+      } else {
+        Global.tokAddAndShare.currentState.hide();
+        await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+      }
+    } catch (e) {}
+  }
+
   Widget _buildWidget(_ViewModel vm) {
     return SmartRefresher(
       enablePullDown: true,
@@ -428,18 +454,16 @@ class _ShopLinkPageState extends State<ShopLinkPage>
 
         try {
           final StoreGoodsList model = await completer.future;
-          String step = await _storage.read(key: KeyStore.GUIDE_STEP);
-          if ((step == "2" || step == "3") && model.list.length == 0) {
-            //Global.tokAddAndShare.currentState.show();
-          } else {
-            Global.tokAddAndShare.currentState.hide();
-            await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
-          }
           _currentPage = 1;
+          setState(() {
+            _models = model.list;
+          });
           _refreshController.refreshCompleted(resetFooterState: true);
           if (_currentPage >= model.totalPage) {
             _refreshController.loadNoData();
           }
+
+          _showStepIfNeeded();
         } catch (e) {
           _refreshController.refreshFailed();
         }
@@ -456,6 +480,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         try {
           final StoreGoodsList model = await completer.future;
           _currentPage = model.currentPage;
+
+          setState(() {
+            _models.addAll(model.list);
+          });
           _refreshController.loadComplete();
           if (_currentPage >= model.totalPage) {
             _refreshController.loadNoData();
@@ -471,7 +499,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           SliverToBoxAdapter(
             child: _buildHeaderWidget(),
           ),
-          vm.models.isEmpty
+          _models.isEmpty
               ? SliverToBoxAdapter(child: _emptyGoodsWidget())
               : _hasGoodsWidget(vm)
         ],
@@ -480,19 +508,18 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   }
 
   Widget _hasGoodsWidget(_ViewModel vm) {
-    debugPrint("-----");
     return SliverPadding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 14),
       sliver: SliverStaggeredGrid.countBuilder(
-        itemCount: vm.models.length,
+        itemCount: _models.length,
         crossAxisCount: 4,
         crossAxisSpacing: 4.0,
         mainAxisSpacing: 4.0,
         staggeredTileBuilder: (index) => StaggeredTile.fit(2),
         itemBuilder: (context, index) => _Tile(
           currency: Global.getUser(context).monetaryUnit,
-          model: vm.models[index],
-          size: _getSize(vm.models[index]),
+          model: _models[index],
+          size: _getSize(_models[index]),
           idx: index,
           onTap: () async {
             if (await _storage.read(key: KeyStore.GUIDE_STEP) == "4") {
@@ -505,7 +532,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             final completer = Completer();
             StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
                 GoodsDetailRequest(
-                    vm.models[index].supplierId, vm.models[index].id),
+                    _models[index].supplierId, _models[index].id),
                 completer));
 
             EasyLoading.show();
@@ -524,7 +551,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               await _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
               Global.tokGoods.currentState.hide();
             }
-            _shareOrRemoveGoods(vm, vm.models[index]);
+            _shareOrRemoveGoods(vm, _models[index]);
           },
         ),
       ),
@@ -594,7 +621,20 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               case 1:
                 AppEvent.shared.report(event: AnalyticsEvent.product_remove);
 
-                vm.deleteGoods(storeGoods.id);
+                EasyLoading.show();
+                final completer = Completer();
+                completer.future.then((value) {
+                  EasyLoading.dismiss();
+                  setState(() {
+                    _models
+                        .removeWhere((element) => element.id == storeGoods.id);
+                  });
+                }).catchError((err) {
+                  EasyLoading.dismiss();
+                  EasyLoading.showToast(err.toString());
+                });
+                StoreProvider.of<AppState>(context).dispatch(DeleteGoodsAction(
+                    DeleteGoodsRequest(storeGoods.id), completer));
                 break;
               default:
                 break;
@@ -988,14 +1028,10 @@ class TagView extends StatelessWidget {
 }
 
 class _ViewModel {
-  final List<StoreGoods> models;
-  final Function(String) deleteGoods;
   final VoidCallback fetchMyInfo;
 
   _ViewModel(
-    this.models,
     this.fetchMyInfo,
-    this.deleteGoods,
   );
 
   static _ViewModel fromStore(Store<AppState> store) {
@@ -1003,20 +1039,8 @@ class _ViewModel {
       store.dispatch(MyInfoAction(BaseRequestImpl()));
     }
 
-    void _deleteGoods(String goodsId) {
-      EasyLoading.show();
-      final completer = Completer();
-      completer.future.then((value) => EasyLoading.dismiss()).catchError((err) {
-        EasyLoading.dismiss();
-        EasyLoading.showToast(err.toString());
-      });
-      store.dispatch(DeleteGoodsAction(DeleteGoodsRequest(goodsId), completer));
-    }
-
     return _ViewModel(
-      store.state.myStoreGoods.list,
       _fetchMyInfo,
-      _deleteGoods,
     );
   }
 }
