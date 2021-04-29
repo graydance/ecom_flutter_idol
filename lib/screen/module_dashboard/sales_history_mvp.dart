@@ -22,6 +22,7 @@ class _SalesHistoryTabViewState extends State<SalesHistoryTabView>
   List<SalesHistory> _salesHistoryList = const [];
   SalesHistoryArguments _arguments;
   RefreshController _refreshController;
+  bool isRequest = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -85,7 +86,7 @@ class _SalesHistoryTabViewState extends State<SalesHistoryTabView>
 
   Widget _createWidgetByStatus(_ViewModel vm) {
     return SmartRefresher(
-      enablePullDown: _salesHistoryList.isEmpty ? false : true,
+      enablePullDown: true,
       enablePullUp: false,
       header: MaterialClassicHeader(
         color: Colours.color_EA5228,
@@ -98,10 +99,13 @@ class _SalesHistoryTabViewState extends State<SalesHistoryTabView>
             color: Colors.transparent,
           );
         },
-        itemCount: _salesHistoryList.length == 0 ? 1 : _salesHistoryList.length,
-        itemBuilder: (context, index) => _salesHistoryList.isEmpty
-            ? _salesHistoryEmptyItem(context)
-            : _SalesHistoryItem(_salesHistoryList[index]),
+        itemCount: (_salesHistoryList.length == 0 && isRequest)
+            ? 1
+            : _salesHistoryList.length,
+        itemBuilder: (context, index) =>
+            (_salesHistoryList.isEmpty && isRequest)
+                ? _salesHistoryEmptyItem(context)
+                : _SalesHistoryItem(_salesHistoryList[index]),
       ),
       onRefresh: () async {
         final completer = Completer();
@@ -111,6 +115,7 @@ class _SalesHistoryTabViewState extends State<SalesHistoryTabView>
           var list = await completer.future;
           _refreshController.refreshCompleted();
           setState(() {
+            isRequest = true;
             _salesHistoryList = list.list;
           });
         } catch (error) {
