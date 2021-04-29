@@ -46,7 +46,6 @@ class _BestSalesTabViewState extends State<BestSalesTabView>
   }
 
   Widget _buildWidget(_ViewModel vm) {
-    print("bestSales:" + _bestSalesList.toString());
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,

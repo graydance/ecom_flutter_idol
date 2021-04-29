@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/arguments/arguments.dart';
 import 'package:idol/models/arguments/base.dart';
 import 'package:idol/models/arguments/supplier_detail.dart';
+import 'package:idol/screen/module_dashboard/sales_history_mvp.dart';
 import 'package:idol/screen/module_main/validate_email.dart';
 import 'package:idol/screen/module_settings/set_mvp_password.dart';
 import 'package:idol/screen/screens.dart';
@@ -62,7 +62,7 @@ class IdolRoute {
       RouterPath.dashboard$Withdraw: (context) => WithdrawScreen(),
       RouterPath.dashboard$VerifyPassword: (context) => VerifyPasswordScreen(),
       RouterPath.dashboard$WithdrawResult: (context) => WithdrawResultScreen(),
-      RouterPath.dashboard$SalesHistory: (context) => SalesHistoryScreen(),
+      RouterPath.dashboard$SalesHistory: (context) => SalesHistoryTabView(),
       RouterPath.settings: (context) => SettingsScreen(),
       RouterPath.store$EditStore: (context) => EditStoreScreen(),
       RouterPath.supply$SupplierDetail: (context) => SupplierDetailScreen(),
@@ -204,7 +204,7 @@ class IdolRoute {
       BuildContext context, SalesHistoryArguments arguments) {
     StoreProvider.of<AppState>(context)
         .dispatch(UpdateArgumentsAction<SalesHistoryArguments>(arguments));
-    return Navigator.of(context).pushNamed(RouterPath.dashboard$WithdrawResult);
+    return Navigator.of(context).pushNamed(RouterPath.dashboard$SalesHistory);
   }
 
   static Future<Object> startSupplySupplierDetail(
