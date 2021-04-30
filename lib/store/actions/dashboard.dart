@@ -215,18 +215,19 @@ class SalesHistoryFailure implements SalesHistoryState {
 /// SalesHistoryAction
 class SalesHistoryAction {
   final BaseRequest request;
+  final Completer completer;
 
-  SalesHistoryAction(this.request);
+  SalesHistoryAction(this.request, this.completer);
 }
 
-class SalesHistoryFailureAction {
-  final String message;
-
-  SalesHistoryFailureAction(this.message);
-}
-
-class SalesHistorySuccessAction {
-  final SalesHistoryList salesHistoryList;
-
-  SalesHistorySuccessAction(this.salesHistoryList);
-}
+// class SalesHistoryFailureAction {
+//   final String message;
+//
+//   SalesHistoryFailureAction(this.message);
+// }
+//
+// class SalesHistorySuccessAction {
+//   final SalesHistoryList salesHistoryList;
+//
+//   SalesHistorySuccessAction(this.salesHistoryList);
+// }
