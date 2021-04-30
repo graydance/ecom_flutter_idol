@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:meta/meta.dart';
-
 import 'package:idol/models/arguments/rewards_detail.dart';
 import 'package:idol/models/arguments/supplier_detail.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/main.dart';
+import 'package:meta/meta.dart';
 
 import 'arguments/arguments.dart';
 
@@ -83,7 +82,7 @@ class AppState {
     this.signUpSignInArguments = const SignUpSignInArguments(''),
     this.bestSalesState = const BestSalesInitial(),
     this.salesHistoryState = const SalesHistoryInitial(),
-    this.salesHistoryArguments = const SalesHistoryArguments('', ''),
+    this.salesHistoryArguments = const SalesHistoryArguments('', '', ''),
     this.homeTabArguments = const HomeTabArguments(),
     this.updatePasswordState = const UpdatePasswordInitial(),
     this.innerWebViewArguments = const InnerWebViewArguments('', ''),

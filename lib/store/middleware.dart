@@ -338,12 +338,12 @@ final Middleware<AppState> salesHistoryMiddleware =
         .post(ApiPath.salesHistory, baseRequest: action.request)
         .whenComplete(() => null)
         .then((data) => {
-              store.dispatch(
-                  SalesHistorySuccessAction(SalesHistoryList.fromMap(data)))
+      action.completer.complete(SalesHistoryList.fromMap(data))
             })
         .catchError((err) {
-      print(err.toString());
-      store.dispatch(SalesHistoryFailureAction(err.toString()));
+      // print(err.toString());
+      // store.dispatch(SalesHistoryFailureAction(err.toString()));
+      action.completer.completeError(err.toString());
     });
     next(action);
   }
