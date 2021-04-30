@@ -37,4 +37,7 @@ class StringBasic {
   ///MyShop
   static const String userNameError =
       'At least 5 characters, only a~z, 0~9, _, . are available.';
+
+  //past sales
+  static const String history_empty = 'No sales history.';
 }
