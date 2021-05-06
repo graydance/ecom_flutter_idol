@@ -3,24 +3,24 @@ PODS:
     - FBSDKCoreKit
     - FBSDKShareKit
     - Flutter
-  - FacebookSDK (9.2.0):
-    - FacebookSDK/CoreKit (= 9.2.0)
-  - FacebookSDK/CoreKit (9.2.0):
-    - FBSDKCoreKit (~> 9.2.0)
-  - FacebookSDK/LoginKit (9.2.0):
+  - FacebookSDK (9.3.0):
+    - FacebookSDK/CoreKit (= 9.3.0)
+  - FacebookSDK/CoreKit (9.3.0):
+    - FBSDKCoreKit (~> 9.3.0)
+  - FacebookSDK/LoginKit (9.3.0):
     - FacebookSDK/CoreKit
-  - FacebookSDK/ShareKit (9.2.0):
+  - FacebookSDK/ShareKit (9.3.0):
     - FacebookSDK/CoreKit
-  - FBSDKCoreKit (9.2.0):
-    - FBSDKCoreKit/Basics (= 9.2.0)
-    - FBSDKCoreKit/Core (= 9.2.0)
-  - FBSDKCoreKit/Basics (9.2.0)
-  - FBSDKCoreKit/Core (9.2.0):
+  - FBSDKCoreKit (9.3.0):
+    - FBSDKCoreKit/Basics (= 9.3.0)
+    - FBSDKCoreKit/Core (= 9.3.0)
+  - FBSDKCoreKit/Basics (9.3.0)
+  - FBSDKCoreKit/Core (9.3.0):
     - FBSDKCoreKit/Basics
-  - FBSDKShareKit (9.2.0):
-    - FBSDKShareKit/Share (= 9.2.0)
-  - FBSDKShareKit/Share (9.2.0):
-    - FBSDKCoreKit (~> 9.2.0)
+  - FBSDKShareKit (9.3.0):
+    - FBSDKShareKit/Share (= 9.3.0)
+  - FBSDKShareKit/Share (9.3.0):
+    - FBSDKCoreKit (~> 9.3.0)
   - Firebase/Analytics (7.3.0):
     - Firebase/Core
   - Firebase/Core (7.3.0):
@@ -217,9 +217,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ecomshare: 8c7b7f33cc62949a8367def56b953aae3cd3bca7
-  FacebookSDK: 4b9bb8e2824898b47f18c666dc145c09b40609e6
-  FBSDKCoreKit: dace5abafc2fd9272733e6d027bcf18102712117
-  FBSDKShareKit: 1210ece9e8f516ef0bb40ac329929a2874aef274
+  FacebookSDK: 0c32a92b36f566ee5e48446236e481c6e5c6c024
+  FBSDKCoreKit: 0d1ae58388a458b8222f72025804cdc84eb5d0c3
+  FBSDKShareKit: 70889c97c62f0c6b3ccb8b999e73a85f19024001
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
   firebase_analytics: ee4abb07bfa857e7c95d97144efe9eb68be414cd
   firebase_core: b5d81dfd4fb2d6f700e67de34d9a633ae325c4e9

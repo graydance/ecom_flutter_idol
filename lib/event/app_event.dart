@@ -1,3 +1,4 @@
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -8,7 +9,10 @@ class AppEvent {
 
   AppEvent(this.providers);
 
-  static AppEvent get shared => AppEvent([FirebaseAnalyticsProvider()]);
+  static AppEvent get shared => AppEvent([
+        FirebaseAnalyticsProvider(),
+        FacebookAnalyticsProvider(),
+      ]);
 
   Future<void> report(
       {@required AnalyticsEvent event,
@@ -74,6 +78,23 @@ abstract class AnalyticsProvider {
 
 class FirebaseAnalyticsProvider extends AnalyticsProvider {
   final FirebaseAnalytics analytics = FirebaseAnalytics();
+
+  @override
+  Future<void> report(
+      {AnalyticsEvent event,
+      Map<AnalyticsEventParameter, dynamic> parameters}) {
+    Map<String, dynamic> maps = {};
+    if (parameters != null) {
+      for (var key in parameters.keys) {
+        maps.addAll({key.name: parameters[key]});
+      }
+    }
+    return analytics.logEvent(name: event.name, parameters: maps);
+  }
+}
+
+class FacebookAnalyticsProvider extends AnalyticsProvider {
+  final FacebookAppEvents analytics = FacebookAppEvents();
 
   @override
   Future<void> report(
