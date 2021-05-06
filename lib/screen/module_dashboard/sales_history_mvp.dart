@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/dashboard.dart';
+import 'package:idol/res/Strings.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/widgets/ui.dart';
@@ -145,15 +146,25 @@ Widget _salesHistoryEmptyItem(BuildContext context) {
   return Container(
       margin: EdgeInsets.only(top: 100),
       child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image(
-              image: R.image.bg_default_empty_sales_history_webp(),
-              width: 170,
-              height: 195,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image(
+            image: R.image.bg_default_empty_sales_history_webp(),
+            width: 170,
+            height: 195,
+          ),
+          Text(
+            StringBasic.history_empty,
+            style: TextStyle(
+              color: Colours.color_0F1015,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
-          ]));
+            textAlign: TextAlign.center,
+          )
+        ],
+      ));
 }
 
 class _SalesHistoryItem extends StatefulWidget {
