@@ -175,7 +175,7 @@ packages:
       name: crypto
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   css_colors:
     dependency: transitive
     description:
@@ -241,6 +241,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  facebook_app_events:
+    dependency: "direct main"
+    description:
+      name: facebook_app_events
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.12.0"
   fake_async:
     dependency: transitive
     description:
@@ -1090,4 +1097,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.25.0"
+  flutter: ">=2.0.0"

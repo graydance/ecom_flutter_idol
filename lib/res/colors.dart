@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class Colours {
@@ -91,6 +92,7 @@ class Colours {
   static const Color color_10EA5228 = Color(0x1AEA5228);
   static const Color color_35444648 = Color(0x59444648);
   static const Color color_70555764 = Color(0xB3444648);
+  static const Color color_8000000 = Color(0x8000000);
 
   static const Color color_black100 = Color(0xFF000000);
   static const Color color_black95 = Color(0xF2000000);

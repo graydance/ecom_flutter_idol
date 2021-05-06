@@ -437,73 +437,91 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   }
 
   Widget _buildWidget(_ViewModel vm) {
-    return SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: true,
-      header: MaterialClassicHeader(
-        color: Colours.color_EA5228,
-      ),
-      onRefresh: () async {
-        vm.fetchMyInfo();
-        final Completer completer = Completer();
-        StoreProvider.of<AppState>(context).dispatch(
-          MyInfoGoodsListAction(
-              MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1),
-              completer),
-        );
-
-        try {
-          final StoreGoodsList model = await completer.future;
-          _currentPage = 1;
-          setState(() {
-            _models = model.list;
-          });
-          _refreshController.refreshCompleted(resetFooterState: true);
-          if (_currentPage >= model.totalPage) {
-            _refreshController.loadNoData();
-          }
-
-          _showStepIfNeeded();
-        } catch (e) {
-          _refreshController.refreshFailed();
-        }
-      },
-      onLoading: () async {
-        final Completer completer = Completer();
-        StoreProvider.of<AppState>(context).dispatch(
-          MyInfoGoodsListAction(
-              MyInfoGoodsListRequest(
-                  Global.getUser(context).id, 0, _currentPage + 1),
-              completer),
-        );
-
-        try {
-          final StoreGoodsList model = await completer.future;
-          _currentPage = model.currentPage;
-
-          setState(() {
-            _models.addAll(model.list);
-          });
-          _refreshController.loadComplete();
-          if (_currentPage >= model.totalPage) {
-            _refreshController.loadNoData();
-          }
-        } catch (e) {
-          _refreshController.loadFailed();
-        }
-      },
-      controller: _refreshController,
-      child: CustomScrollView(
-        physics: BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: _buildHeaderWidget(),
+    return Stack(
+      children: [
+        SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: MaterialClassicHeader(
+            color: Colours.color_EA5228,
           ),
-          _models.isEmpty
-              ? SliverToBoxAdapter(child: _emptyGoodsWidget())
-              : _hasGoodsWidget(vm)
-        ],
-      ),
+          onRefresh: () async {
+            vm.fetchMyInfo();
+            final Completer completer = Completer();
+            StoreProvider.of<AppState>(context).dispatch(
+              MyInfoGoodsListAction(
+                  MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1),
+                  completer),
+            );
+
+            try {
+              final StoreGoodsList model = await completer.future;
+              _currentPage = 1;
+              setState(() {
+                _models = model.list;
+              });
+              _refreshController.refreshCompleted(resetFooterState: true);
+              if (_currentPage >= model.totalPage) {
+                _refreshController.loadNoData();
+              }
+
+              _showStepIfNeeded();
+            } catch (e) {
+              _refreshController.refreshFailed();
+            }
+          },
+          onLoading: () async {
+            final Completer completer = Completer();
+            StoreProvider.of<AppState>(context).dispatch(
+              MyInfoGoodsListAction(
+                  MyInfoGoodsListRequest(
+                      Global.getUser(context).id, 0, _currentPage + 1),
+                  completer),
+            );
+
+            try {
+              final StoreGoodsList model = await completer.future;
+              _currentPage = model.currentPage;
+
+              setState(() {
+                _models.addAll(model.list);
+              });
+              _refreshController.loadComplete();
+              if (_currentPage >= model.totalPage) {
+                _refreshController.loadNoData();
+              }
+            } catch (e) {
+              _refreshController.loadFailed();
+            }
+          },
+          controller: _refreshController,
+          child: CustomScrollView(
+            physics: BouncingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: _buildHeaderWidget(),
+              ),
+              _models.isEmpty
+                  ? SliverToBoxAdapter(child: _emptyGoodsWidget())
+                  : _hasGoodsWidget(vm)
+            ],
+          ),
+        ),
+        Align(
+            alignment: Alignment.bottomRight,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => Global.launchWhatsApp(),
+              child: Container(
+                  height: 44,
+                  width: 44,
+                  margin: EdgeInsets.only(right: 15, bottom: 10),
+                  child: Image(
+                    fit: BoxFit.contain,
+                    image: AssetImage('assets/images/shoplink/suc_manager.png'),
+                  )),
+            )),
+      ],
     );
   }
 

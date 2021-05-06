@@ -49,6 +49,7 @@ dependencies:
   enum_to_string: ^2.0.1
   chewie: ^1.0.0
   event_bus: ^2.0.0
+  facebook_app_events: ^0.12.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -121,6 +122,7 @@ flutter:
   - assets/images/shoplink/ic_change_avatar.png
   - assets/images/shoplink/ic_edit.png
   - assets/images/shoplink/ic_pv.png
+  - assets/images/shoplink/suc_manager.png
   - assets/images/store/bg_header.png
   - assets/images/store/default_portrait.png
   - assets/images/store/ic_settings_contact.png

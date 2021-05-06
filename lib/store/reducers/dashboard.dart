@@ -103,10 +103,10 @@ BestSalesLoading _onBestSales(BestSalesState state, BestSalesAction action) {
 /// SalesHistoryReducer
 final salesHistoryReducer = combineReducers<SalesHistoryState>([
   TypedReducer<SalesHistoryState, SalesHistoryAction>(_onSalesHistory),
-  TypedReducer<SalesHistoryState, SalesHistorySuccessAction>(
-      _onSalesHistorySuccess),
-  TypedReducer<SalesHistoryState, SalesHistoryFailureAction>(
-      _onSalesHistoryFailure),
+  // TypedReducer<SalesHistoryState, SalesHistorySuccessAction>(
+  //     _onSalesHistorySuccess),
+  // TypedReducer<SalesHistoryState, SalesHistoryFailureAction>(
+  //     _onSalesHistoryFailure),
 ]);
 
 SalesHistoryLoading _onSalesHistory(
@@ -114,12 +114,12 @@ SalesHistoryLoading _onSalesHistory(
   return SalesHistoryLoading();
 }
 
-SalesHistorySuccess _onSalesHistorySuccess(
-    SalesHistoryState state, SalesHistorySuccessAction action) {
-  return SalesHistorySuccess(action.salesHistoryList);
-}
-
-SalesHistoryFailure _onSalesHistoryFailure(
-    SalesHistoryState state, SalesHistoryFailureAction action) {
-  return SalesHistoryFailure(action.message);
-}
+// SalesHistorySuccess _onSalesHistorySuccess(
+//     SalesHistoryState state, SalesHistorySuccessAction action) {
+//   return SalesHistorySuccess(action.salesHistoryList);
+// }
+//
+// SalesHistoryFailure _onSalesHistoryFailure(
+//     SalesHistoryState state, SalesHistoryFailureAction action) {
+//   return SalesHistoryFailure(action.message);
+// }

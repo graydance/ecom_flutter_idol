@@ -1,7 +1,9 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
+import 'package:idol/models/arguments/sales_history.dart';
 import 'package:idol/models/dashboard.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
 
 class PastSalesTabView extends StatefulWidget {
@@ -122,10 +124,10 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
     );
   }
 
-  Widget _buildCalendarPage(PastSales pastSales) {
+  Widget _buildCalendarPage(PastSales pastSale) {
     // 当前月份第一天对应的是周几
-    int firstDayWeekday = DateTime.parse(pastSales.date + '01').weekday;
-    var calvalues = pastSales.dailySales
+    int firstDayWeekday = DateTime.parse(pastSale.date + '01').weekday;
+    var calvalues = pastSale.dailySales
         .asMap()
         .map((index, value) => MapEntry(index, {
               "day": index + 1,
@@ -144,39 +146,60 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
       crossAxisCount: 7,
       physics: NeverScrollableScrollPhysics(),
       children: calvalues
-          .map((day) => Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: _isToday(pastSales.date, day['day'])
-                      ? Colours.color_10EA5228
-                      : Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      (day['day'] as int) > 0 ? day['day'].toString() : '',
-                      style: TextStyle(
-                        color: Colours.color_575859,
-                        fontSize: 14,
+          .map((day) => InkWell(
+                onTap: () {
+                  int clickDay = day['day'];
+                  if (clickDay < 0) return;
+                  String date;
+                  String showDay;
+                  if (0 < clickDay && clickDay < 10) {
+                    date = pastSale.date + '0' + clickDay.toString();
+                    showDay = '0' + clickDay.toString();
+                  } else {
+                    date = pastSale.date + clickDay.toString();
+                    showDay = clickDay.toString();
+                  }
+                  String month = _monthMap[pastSales[0].date.substring(4, 6)]
+                          .substring(0, 3) +
+                      '.' +
+                      showDay.toString();
+                  IdolRoute.startDashboardSalesHistory(context,
+                      SalesHistoryArguments(date, day['value'], month));
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: _isToday(pastSale.date, day['day'])
+                        ? Colours.color_10EA5228
+                        : Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        (day['day'] as int) > 0 ? day['day'].toString() : '',
+                        style: TextStyle(
+                          color: Colours.color_575859,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                    ...day['value'] == ""
-                        ? []
-                        : [
-                            Text(
-                              Global.getUser(context).monetaryUnit +
-                                  day['value'],
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Colours.color_C3C4C6,
-                                fontSize: 12,
-                              ),
-                            )
-                          ],
-                  ],
+                      ...day['value'] == ""
+                          ? []
+                          : [
+                              Text(
+                                Global.getUser(context).monetaryUnit +
+                                    day['value'],
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colours.color_C3C4C6,
+                                  fontSize: 12,
+                                ),
+                              )
+                            ],
+                    ],
+                  ),
                 ),
               ))
           .toList(),
@@ -193,7 +216,7 @@ class _PastSalesTabViewSate extends State<PastSalesTabView>
     var result =
         currentYearMonth == pastSalesDate && DateTime.now().day == pastSalesDay;
     // debugPrint(
-    //     'currentYearMonth $result >>> $currentYearMonth, pastSalesDate >>> $pastSalesDate, pastSalesDay >>> ${DateTime.now().day} $pastSalesDay');
+    // 'currentYearMonth $result >>> $currentYearMonth, pastSalesDate >>> $pastSalesDate, pastSalesDay >>> ${DateTime.now().day} $pastSalesDay');
     return result;
   }
 
