@@ -3,24 +3,27 @@ PODS:
     - FBSDKCoreKit
     - FBSDKShareKit
     - Flutter
-  - FacebookSDK (9.3.0):
-    - FacebookSDK/CoreKit (= 9.3.0)
-  - FacebookSDK/CoreKit (9.3.0):
-    - FBSDKCoreKit (~> 9.3.0)
-  - FacebookSDK/LoginKit (9.3.0):
+  - facebook_app_events (0.0.1):
+    - FBSDKCoreKit (~> 9.1.0)
+    - Flutter
+  - FacebookSDK (9.1.0):
+    - FacebookSDK/CoreKit (= 9.1.0)
+  - FacebookSDK/CoreKit (9.1.0):
+    - FBSDKCoreKit (~> 9.1.0)
+  - FacebookSDK/LoginKit (9.1.0):
     - FacebookSDK/CoreKit
-  - FacebookSDK/ShareKit (9.3.0):
+  - FacebookSDK/ShareKit (9.1.0):
     - FacebookSDK/CoreKit
-  - FBSDKCoreKit (9.3.0):
-    - FBSDKCoreKit/Basics (= 9.3.0)
-    - FBSDKCoreKit/Core (= 9.3.0)
-  - FBSDKCoreKit/Basics (9.3.0)
-  - FBSDKCoreKit/Core (9.3.0):
+  - FBSDKCoreKit (9.1.0):
+    - FBSDKCoreKit/Basics (= 9.1.0)
+    - FBSDKCoreKit/Core (= 9.1.0)
+  - FBSDKCoreKit/Basics (9.1.0)
+  - FBSDKCoreKit/Core (9.1.0):
     - FBSDKCoreKit/Basics
-  - FBSDKShareKit (9.3.0):
-    - FBSDKShareKit/Share (= 9.3.0)
-  - FBSDKShareKit/Share (9.3.0):
-    - FBSDKCoreKit (~> 9.3.0)
+  - FBSDKShareKit (9.1.0):
+    - FBSDKShareKit/Share (= 9.1.0)
+  - FBSDKShareKit/Share (9.1.0):
+    - FBSDKCoreKit (~> 9.1.0)
   - Firebase/Analytics (7.3.0):
     - Firebase/Core
   - Firebase/Core (7.3.0):
@@ -138,6 +141,7 @@ PODS:
 
 DEPENDENCIES:
   - ecomshare (from `.symlinks/plugins/ecomshare/ios`)
+  - facebook_app_events (from `.symlinks/plugins/facebook_app_events/ios`)
   - FacebookSDK
   - FacebookSDK/LoginKit
   - FacebookSDK/ShareKit
@@ -180,6 +184,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   ecomshare:
     :path: ".symlinks/plugins/ecomshare/ios"
+  facebook_app_events:
+    :path: ".symlinks/plugins/facebook_app_events/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
@@ -217,9 +223,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ecomshare: 8c7b7f33cc62949a8367def56b953aae3cd3bca7
-  FacebookSDK: 0c32a92b36f566ee5e48446236e481c6e5c6c024
-  FBSDKCoreKit: 0d1ae58388a458b8222f72025804cdc84eb5d0c3
-  FBSDKShareKit: 70889c97c62f0c6b3ccb8b999e73a85f19024001
+  facebook_app_events: 3f4d7bb584f5ab326f2009a1e13e69b02ba35906
+  FacebookSDK: bfb786cb4d1ca541b81c8f39b8c2fd0a8a2a227b
+  FBSDKCoreKit: a00fe2efd780c195a5e09201bf51c56106245b40
+  FBSDKShareKit: d5aafc35870083f53c15ec0eb9eda4dfe8037d11
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
   firebase_analytics: ee4abb07bfa857e7c95d97144efe9eb68be414cd
   firebase_core: b5d81dfd4fb2d6f700e67de34d9a633ae325c4e9
