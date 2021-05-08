@@ -164,18 +164,18 @@ class _SignInScreenState extends State<SignInScreen>
               ),
             ),
           ),
-          if (_error.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                _error,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
-                textAlign: TextAlign.center,
+          // if (_error.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              _error,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
               ),
+              textAlign: TextAlign.center,
             ),
+          ),
           SizedBox(
             height: 40,
           ),
