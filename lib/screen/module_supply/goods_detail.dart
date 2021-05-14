@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -417,8 +418,17 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Html(
-                      data: _goodsDetail.goodsDescription,
+                    GestureDetector(
+                      onLongPress: () {
+                        Clipboard.setData(ClipboardData(
+                            text: _removeAllHtmlTags(
+                                _goodsDetail.goodsDescription)));
+                        EasyLoading.showToast(
+                            'Product description is Replicated!');
+                      },
+                      child: Html(
+                        data: _goodsDetail.goodsDescription,
+                      ),
                     ),
                     // Text(
                     //   goodsDetail.goodsDescription,
@@ -440,6 +450,12 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         ),
       ),
     );
+  }
+
+  String _removeAllHtmlTags(String htmlText) {
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+
+    return htmlText.replaceAll(exp, '');
   }
 
   _showMessageBar() {
