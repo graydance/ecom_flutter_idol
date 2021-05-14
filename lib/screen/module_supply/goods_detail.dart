@@ -377,6 +377,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                       : (_goodsDetail.inMyStore == 0
                           ? 'Pick & Sell'
                           : 'Share to Earn'),
+                  isOutlineStyle: _goodsDetail.inMyStore == 1,
                   status: _bottomButtonStatus,
                   listener: (status) {
                     AppEvent.shared.report(

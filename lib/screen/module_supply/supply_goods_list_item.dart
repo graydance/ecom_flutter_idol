@@ -293,6 +293,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                   widget.goodsDetail.inMyStore == 1
                                       ? 'Share to Earn'
                                       : 'Pick & Sell',
+                                  isOutlineStyle:
+                                      widget.goodsDetail.inMyStore == 1,
                                   status: IdolButtonStatus.enable,
                                   listener: (status) async {
                                     Global.tokPikAndSell.currentState.hide();
@@ -327,6 +329,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                             widget.goodsDetail.inMyStore == 1
                                 ? 'Share to Earn'
                                 : 'Pick & Sell',
+                            isOutlineStyle: widget.goodsDetail.inMyStore == 1,
                             status: IdolButtonStatus.enable,
                             listener: (status) {
                               if (status == IdolButtonStatus.enable) {
