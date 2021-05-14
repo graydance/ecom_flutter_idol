@@ -180,7 +180,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                 onTap: () {
                                   _hideMessageBar();
                                   ShareManager.showShareGoodsDialog(
-                                      context, _goodsDetail.goods[0]);
+                                    context,
+                                    _goodsDetail.goods,
+                                    _goodsDetail.goodsName,
+                                    _goodsDetail.suggestedPriceStr,
+                                  );
                                 },
                               ),
                             ),
@@ -390,7 +394,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
                     if (_goodsDetail.inMyStore == 1) {
                       ShareManager.showShareGoodsDialog(
-                          context, _goodsDetail.goods[0]);
+                        context,
+                        _goodsDetail.goods,
+                        _goodsDetail.goodsName,
+                        _goodsDetail.suggestedPriceStr,
+                      );
                     } else {
                       final completer = Completer();
                       completer.future.then((value) {

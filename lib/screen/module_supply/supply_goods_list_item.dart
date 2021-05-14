@@ -160,7 +160,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         onTap: () {
                           _hideMessageBar();
                           ShareManager.showShareGoodsDialog(
-                              context, widget.goodsDetail.goods[0]);
+                            context,
+                            widget.goodsDetail.goods,
+                            widget.goodsDetail.goodsName,
+                            widget.goodsDetail.suggestedPriceStr,
+                          );
                         },
                       ),
                     ),
@@ -312,8 +316,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                           });
                                       if (widget.goodsDetail.inMyStore == 1) {
                                         ShareManager.showShareGoodsDialog(
-                                            context,
-                                            widget.goodsDetail.goods[0]);
+                                          context,
+                                          widget.goodsDetail.goods,
+                                          widget.goodsDetail.goodsName,
+                                          widget.goodsDetail.suggestedPriceStr,
+                                        );
                                       } else {
                                         await _addProductToMyStore(
                                             widget.goodsDetail);
@@ -335,7 +342,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                               if (status == IdolButtonStatus.enable) {
                                 if (widget.goodsDetail.inMyStore == 1) {
                                   ShareManager.showShareGoodsDialog(
-                                      context, widget.goodsDetail.goods[0]);
+                                    context,
+                                    widget.goodsDetail.goods,
+                                    widget.goodsDetail.goodsName,
+                                    widget.goodsDetail.suggestedPriceStr,
+                                  );
                                 } else {
                                   _addProductToMyStore(widget.goodsDetail);
                                 }
