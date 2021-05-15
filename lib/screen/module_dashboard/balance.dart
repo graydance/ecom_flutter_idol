@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
-import 'package:super_tooltip/super_tooltip.dart';
-
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/withdraw_info.dart';
@@ -17,6 +14,8 @@ import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_message.dart';
+import 'package:redux/redux.dart';
+import 'package:super_tooltip/super_tooltip.dart';
 
 class BalanceScreen extends StatefulWidget {
   @override
@@ -203,7 +202,7 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
                                         onTap: () {
                                           _showEarningTip(
                                               ctx,
-                                              'Money you\'ve earned and yuo can withdraw now.',
+                                              'Money you\'ve earned and you can withdraw now.',
                                               TooltipDirection.up);
                                         },
                                         child: Icon(

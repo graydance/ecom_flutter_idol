@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -179,7 +180,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                 onTap: () {
                                   _hideMessageBar();
                                   ShareManager.showShareGoodsDialog(
-                                      context, _goodsDetail.goods[0]);
+                                    context,
+                                    _goodsDetail.goods,
+                                    _goodsDetail.goodsName,
+                                    _goodsDetail.suggestedPriceStr,
+                                  );
                                 },
                               ),
                             ),
@@ -377,6 +382,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                       : (_goodsDetail.inMyStore == 0
                           ? 'Pick & Sell'
                           : 'Share to Earn'),
+                  isOutlineStyle: _goodsDetail.inMyStore == 1,
                   status: _bottomButtonStatus,
                   listener: (status) {
                     AppEvent.shared.report(
@@ -388,7 +394,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
                     if (_goodsDetail.inMyStore == 1) {
                       ShareManager.showShareGoodsDialog(
-                          context, _goodsDetail.goods[0]);
+                        context,
+                        _goodsDetail.goods,
+                        _goodsDetail.goodsName,
+                        _goodsDetail.suggestedPriceStr,
+                      );
                     } else {
                       final completer = Completer();
                       completer.future.then((value) {
@@ -416,8 +426,17 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Html(
-                      data: _goodsDetail.goodsDescription,
+                    GestureDetector(
+                      onLongPress: () {
+                        Clipboard.setData(ClipboardData(
+                            text: _removeAllHtmlTags(
+                                _goodsDetail.goodsDescription)));
+                        EasyLoading.showToast(
+                            'Product description is Replicated!');
+                      },
+                      child: Html(
+                        data: _goodsDetail.goodsDescription,
+                      ),
                     ),
                     // Text(
                     //   goodsDetail.goodsDescription,
@@ -439,6 +458,12 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         ),
       ),
     );
+  }
+
+  String _removeAllHtmlTags(String htmlText) {
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+
+    return htmlText.replaceAll(exp, '');
   }
 
   _showMessageBar() {

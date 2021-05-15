@@ -634,7 +634,12 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           onItemClick: (index) {
             switch (index) {
               case 0:
-                ShareManager.showShareGoodsDialog(context, storeGoods.picture);
+                ShareManager.showShareGoodsDialog(
+                  context,
+                  [storeGoods.picture],
+                  storeGoods.goodsName,
+                  storeGoods.currentPriceStr,
+                );
                 break;
               case 1:
                 AppEvent.shared.report(event: AnalyticsEvent.product_remove);
