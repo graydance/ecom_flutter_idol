@@ -69,13 +69,26 @@ class _HomeScreenState extends State<HomeScreen>
   ];
 
   Widget _buildNavigationBarItemIcon(int index, bool active) {
+    final imageView = index != 2
+        ? Image(
+            image: active
+                ? _tabIconSelectedPaths[index]
+                : _tabIconNormalPaths[index],
+            width: 30,
+            height: 30,
+          )
+        : ScaleTransition(
+            scale: _scaleMyShop,
+            child: Image(
+              image: active
+                  ? _tabIconSelectedPaths[index]
+                  : _tabIconNormalPaths[index],
+              width: 30,
+              height: 30,
+            ),
+          );
     return Column(children: [
-      Image(
-        image:
-            active ? _tabIconSelectedPaths[index] : _tabIconNormalPaths[index],
-        width: 30,
-        height: 30,
-      ),
+      imageView,
       Text(
         _titles[index],
         style: active
@@ -102,6 +115,9 @@ class _HomeScreenState extends State<HomeScreen>
   String _pickImageURL = '';
   StreamSubscription<StartPickAnimation> eventBusFn;
 
+  Animation<double> _scaleMyShop;
+  AnimationController _myShopAnimationController;
+
   @override
   void initState() {
     _guideInit();
@@ -109,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen>
     AppEvent.shared.report(event: AnalyticsEvent.dashboard_tab);
 
     _animationController = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: Duration(milliseconds: 1500),
       vsync: this,
     );
 
@@ -121,6 +137,30 @@ class _HomeScreenState extends State<HomeScreen>
       });
       _animationController.forward();
     });
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _myShopAnimationController.reset();
+        _myShopAnimationController.forward();
+      }
+    });
+
+    _myShopAnimationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+      value: 1.0,
+    );
+
+    _scaleMyShop = Tween(begin: 0.6, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _myShopAnimationController,
+        curve: Interval(
+          0.0,
+          1.0,
+          curve: Curves.easeOutBack,
+        ),
+      ),
+    );
   }
 
   @override
@@ -149,16 +189,16 @@ class _HomeScreenState extends State<HomeScreen>
                   url: _pickImageURL,
                 ),
               ),
-              // Positioned(
-              //   top: 50,
-              //   child: TextButton(
-              //     onPressed: () {
-              //       _animationController.reset();
-              //       _animationController.forward();
-              //     },
-              //     child: Text('Start'),
-              //   ),
-              // ),
+              Positioned(
+                top: 50,
+                child: TextButton(
+                  onPressed: () {
+                    _animationController.reset();
+                    _animationController.forward();
+                  },
+                  child: Text('Start'),
+                ),
+              ),
             ],
           ),
           onWillPop: () async {
@@ -356,12 +396,12 @@ class _ViewModel {
 // ignore: must_be_immutable
 class StaggerAnimation extends StatelessWidget {
   StaggerAnimation({Key key, this.controller, this.url}) : super(key: key) {
-    opacity = Tween(begin: 0.0, end: 1.0).animate(
+    scale = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: controller,
         curve: Interval(
-          0.0, 0.1, //间隔，前20%的动画时间
-          curve: Curves.easeIn,
+          0.0, 0.2, //间隔，前20%的动画时间
+          curve: Curves.easeOutBack,
         ),
       ),
     );
@@ -371,7 +411,7 @@ class StaggerAnimation extends StatelessWidget {
         parent: controller,
         curve: Interval(
           0.9, 1.0, //间隔，后20%的动画时间
-          curve: Curves.easeInOut,
+          curve: Curves.easeOut,
         ),
       ),
     );
@@ -381,37 +421,26 @@ class StaggerAnimation extends StatelessWidget {
   final String url;
   Animation<double> opacity;
   Animation<double> bottom;
+  Animation<double> scale;
 
   Widget _buildAnimation(BuildContext context, Widget child) {
-    return Opacity(
-      opacity: opacity.value,
-      child: Container(
-        height: 100,
-        width: 60,
-        child: Stack(
-          children: [
-            Positioned(
-              bottom: bottom.value,
-              child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black54,
-                      offset: Offset(3.0, 3.0),
-                      blurRadius: 10.0, // 阴影模糊程度
-                      spreadRadius: 1.0, // 阴影扩散程度
-                    ),
-                  ],
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: url,
-                  width: 50,
-                  height: 50,
-                ),
+    return Container(
+      height: 100,
+      width: 50,
+      child: Stack(
+        children: [
+          Positioned(
+            bottom: bottom.value,
+            child: Transform.scale(
+              scale: scale.value,
+              child: CachedNetworkImage(
+                imageUrl: url,
+                width: 40,
+                height: 40,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
