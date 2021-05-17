@@ -16,6 +16,7 @@ import 'package:idol/widgets/dialog_share.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
 
 class ShareManager {
   static final _storage = new FlutterSecureStorage();
@@ -89,6 +90,8 @@ class ShareManager {
 
   static void _downloadAll(
       BuildContext context, List<String> imageUrls, shareChannel) async {
+    debugPrint('Download images >>> $imageUrls');
+
     EasyLoading.show(status: 'Downloading...');
     try {
       List<String> imageLocalPaths = await Future.wait(
@@ -149,6 +152,8 @@ class ShareManager {
 }
 
 void downloadImages(BuildContext context, List<String> imageUrls) async {
+  debugPrint('Download images >>> $imageUrls');
+
   EasyLoading.show(status: 'Downloading...');
   try {
     List<String> imageLocalPaths = await Future.wait(
@@ -174,10 +179,7 @@ Future<String> downloadPicture(BuildContext context, String imageUrl) async {
   String savePath;
   try {
     Directory tempDir = await getTemporaryDirectory();
-    savePath = tempDir.path +
-        '/' +
-        DateTime.now().millisecondsSinceEpoch.toString() +
-        '.jpg';
+    savePath = tempDir.path + '/' + Uuid().v4() + '.jpg';
   } catch (e) {
     return Future.error(e);
   }
