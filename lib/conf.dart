@@ -9,3 +9,4 @@ var faqUri = linkDomain + 'faq.htm';
 var termsConditionsUri = linkDomain + 'terms_conditions.htm';
 var cookiePolicyUri = linkDomain + 'cookie_policy.htm';
 var privacyPolicyUri = linkDomain + 'privacy_policy.htm';
+var customerService = 'https://www.facebook.com/groups/821302222143641';
