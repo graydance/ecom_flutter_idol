@@ -89,7 +89,7 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
             mainAxisSize: MainAxisSize.max,
             children: [
               AppBar(
-                title: Text('Dashboard'),
+                title: Text('My Earnings'),
                 centerTitle: true,
                 elevation: 0,
                 primary: true,
@@ -300,30 +300,30 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
           ),
 
           // Invite friends to receive extra earnings
-          GestureDetector(
-            onTap: () {
-              _showHowToMakeMoneyDialog(false);
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'How to boost revenue with Olaak',
-                  style: TextStyle(
-                    color: Colours.color_0F1015,
-                    fontSize: 12,
-                  ),
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Image(
-                  image: R.image.ic_help(),
-                  width: 15,
-                ),
-              ],
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () {
+          //     _showHowToMakeMoneyDialog(false);
+          //   },
+          //   child: Row(
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       Text(
+          //         'How to boost revenue with Olaak',
+          //         style: TextStyle(
+          //           color: Colours.color_0F1015,
+          //           fontSize: 12,
+          //         ),
+          //       ),
+          //       SizedBox(
+          //         width: 4,
+          //       ),
+          //       Image(
+          //         image: R.image.ic_help(),
+          //         width: 15,
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
           // Rewards | Past Sales
           Expanded(
