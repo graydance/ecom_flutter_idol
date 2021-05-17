@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/conf.dart';
 import 'package:idol/event/app_event.dart';
-import 'package:idol/models/store_goods_list.dart';
 import 'package:idol/net/api.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/global.dart';
@@ -42,6 +41,7 @@ class ShareManager {
                 Clipboard.setData(ClipboardData(text: link));
                 EasyLoading.showToast('$link\n is Replicated!');
               } else {
+                print('channel:' + channel + " , link:" + link);
                 Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
               }
               IdolRoute.pop(context);

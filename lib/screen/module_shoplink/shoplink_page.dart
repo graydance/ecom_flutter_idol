@@ -511,7 +511,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             alignment: Alignment.bottomRight,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => Global.launchWhatsApp(),
+              onTap: () => Global.launchCustomerService(),
               child: Container(
                   height: 44,
                   width: 44,
