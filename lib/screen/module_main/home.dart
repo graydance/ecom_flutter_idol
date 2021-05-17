@@ -141,23 +141,24 @@ class _HomeScreenState extends State<HomeScreen>
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _myShopAnimationController.reset();
-        _myShopAnimationController.forward();
+        _myShopAnimationController
+            .forward()
+            .then((value) => _myShopAnimationController.reverse());
       }
     });
 
     _myShopAnimationController = AnimationController(
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 100),
       vsync: this,
-      value: 1.0,
     );
 
-    _scaleMyShop = Tween(begin: 0.6, end: 1.0).animate(
+    _scaleMyShop = Tween(begin: 1.0, end: 1.4).animate(
       CurvedAnimation(
         parent: _myShopAnimationController,
         curve: Interval(
           0.0,
           1.0,
-          curve: Curves.easeOutBack,
+          curve: Curves.easeOut,
         ),
       ),
     );
@@ -400,7 +401,7 @@ class StaggerAnimation extends StatelessWidget {
       CurvedAnimation(
         parent: controller,
         curve: Interval(
-          0.0, 0.2, //间隔，前20%的动画时间
+          0.0, 0.3, //间隔，前40%的动画时间
           curve: Curves.easeOutBack,
         ),
       ),
@@ -433,10 +434,22 @@ class StaggerAnimation extends StatelessWidget {
             bottom: bottom.value,
             child: Transform.scale(
               scale: scale.value,
-              child: CachedNetworkImage(
-                imageUrl: url,
-                width: 40,
-                height: 40,
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      offset: Offset(3.0, 3.0),
+                      blurRadius: 10.0, // 阴影模糊程度
+                      spreadRadius: 1.0, // 阴影扩散程度
+                    ),
+                  ],
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: url,
+                  width: 40,
+                  height: 40,
+                ),
               ),
             ),
           ),
