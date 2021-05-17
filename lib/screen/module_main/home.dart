@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   static const _titles = <String>[
     'Olaak',
-    'Dashboard',
+    'My Earnings',
     'Myshop',
     // 'Inbox',
     // 'Store'
