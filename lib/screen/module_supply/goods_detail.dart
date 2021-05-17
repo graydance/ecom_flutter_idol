@@ -104,9 +104,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   }
 
   Widget _buildBodyWidget() {
-    print('商品个数');
-    print(_goodsDetail.goods.length);
-    print('商品个数');
     var updateTime =
         DateTime.fromMillisecondsSinceEpoch(_goodsDetail.updateTime);
     _bottomButtonStatus = IdolButtonStatus.enable;
@@ -426,30 +423,23 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    GestureDetector(
-                      onLongPress: () {
-                        Clipboard.setData(ClipboardData(
+                    PopupMenuContainer<String>(
+                      items: [
+                        PopupMenuItem(value: 'Copy', child: Text('Copy'))
+                      ],
+                      onItemSelected: (value) {
+                        Clipboard.setData(
+                          ClipboardData(
                             text: _removeAllHtmlTags(
-                                _goodsDetail.goodsDescription)));
-                        EasyLoading.showToast(
-                            'Product description is Replicated!');
+                              _goodsDetail.goodsDescription,
+                            ),
+                          ),
+                        );
                       },
                       child: Html(
                         data: _goodsDetail.goodsDescription,
                       ),
                     ),
-                    // Text(
-                    //   goodsDetail.goodsDescription,
-                    //   style: TextStyle(
-                    //     color: Colours.color_555764,
-                    //     fontSize: 14,
-                    //   ),
-                    //   strutStyle: StrutStyle(
-                    //       forceStrutHeight: true,
-                    //       height: 1,
-                    //       leading: 0.2,
-                    //       fontSize: 14),
-                    // ),
                   ],
                 ),
               ),
@@ -599,5 +589,51 @@ class _MessageBarState extends State<MessageBar> {
         ),
       ),
     );
+  }
+}
+
+class PopupMenuContainer<T> extends StatefulWidget {
+  final Widget child;
+  final List<PopupMenuEntry<T>> items;
+  final void Function(T) onItemSelected;
+
+  PopupMenuContainer(
+      {@required this.child,
+      @required this.items,
+      @required this.onItemSelected,
+      Key key})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => PopupMenuContainerState<T>();
+}
+
+class PopupMenuContainerState<T> extends State<PopupMenuContainer<T>> {
+  Offset _tapDownPosition;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTapDown: (TapDownDetails details) {
+          _tapDownPosition = details.globalPosition;
+        },
+        onLongPress: () async {
+          final RenderBox overlay =
+              Overlay.of(context).context.findRenderObject();
+
+          T value = await showMenu<T>(
+            context: context,
+            items: widget.items,
+            position: RelativeRect.fromLTRB(
+              _tapDownPosition.dx,
+              _tapDownPosition.dy,
+              overlay.size.width - _tapDownPosition.dx,
+              overlay.size.height - _tapDownPosition.dy,
+            ),
+          );
+
+          widget.onItemSelected(value);
+        },
+        child: widget.child);
   }
 }
