@@ -80,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen>
         : ScaleTransition(
             scale: _scaleMyShop,
             child: Image(
+              key: _myShopKey,
               image: active
                   ? _tabIconSelectedPaths[index]
                   : _tabIconNormalPaths[index],
@@ -115,8 +116,11 @@ class _HomeScreenState extends State<HomeScreen>
   String _pickImageURL = '';
   StreamSubscription<StartPickAnimation> eventBusFn;
 
+  GlobalKey _myShopKey = GlobalKey();
   Animation<double> _scaleMyShop;
   AnimationController _myShopAnimationController;
+  double _myShopOffsetX = 0;
+  double _pickImageSize = 40;
 
   @override
   void initState() {
@@ -162,6 +166,17 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       ),
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      RenderBox box = _myShopKey.currentContext.findRenderObject();
+      _myShopOffsetX = box.localToGlobal(Offset.zero).dx +
+          box.size.width / 2.0 -
+          _pickImageSize / 2.0;
+      // _key1.currentContext.size; Size(200.0, 100.0)
+      debugPrint('box >>> ${box.size}'); // Size(200.0, 100.0)
+      debugPrint(
+          'box offset >>> ${box.localToGlobal(Offset.zero)}'); // Offset(107.0, 100.0)
+    });
   }
 
   @override
@@ -184,10 +199,11 @@ class _HomeScreenState extends State<HomeScreen>
               _createBody(),
               Positioned(
                 bottom: -10,
-                right: 25,
+                left: _myShopOffsetX,
                 child: StaggerAnimation(
                   controller: _animationController,
                   url: _pickImageURL,
+                  size: _pickImageSize,
                 ),
               ),
               // Positioned(
@@ -396,7 +412,8 @@ class _ViewModel {
 
 // ignore: must_be_immutable
 class StaggerAnimation extends StatelessWidget {
-  StaggerAnimation({Key key, this.controller, this.url}) : super(key: key) {
+  StaggerAnimation({Key key, this.controller, this.url, this.size})
+      : super(key: key) {
     scale = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: controller,
@@ -420,6 +437,7 @@ class StaggerAnimation extends StatelessWidget {
 
   final AnimationController controller;
   final String url;
+  final double size;
   Animation<double> opacity;
   Animation<double> bottom;
   Animation<double> scale;
@@ -447,8 +465,8 @@ class StaggerAnimation extends StatelessWidget {
                 ),
                 child: CachedNetworkImage(
                   imageUrl: url,
-                  width: 40,
-                  height: 40,
+                  width: size,
+                  height: size,
                 ),
               ),
             ),
