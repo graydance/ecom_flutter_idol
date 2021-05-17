@@ -636,7 +636,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               case 0:
                 ShareManager.showShareGoodsDialog(
                   context,
-                  [storeGoods.picture],
+                  storeGoods.pictures,
                   storeGoods.goodsName,
                   storeGoods.currentPriceStr,
                 );
@@ -938,7 +938,6 @@ class _Tile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 已知问题：web无法同时支持maxLines和ellipsis，详见 https://github.com/flutter/flutter/issues/44802#issuecomment-555707104
               Text(
                 '${model.goodsName}',
                 style: TextStyle(
