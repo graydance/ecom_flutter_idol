@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:idol/models/tag.dart';
@@ -24,12 +25,6 @@ class StoreGoodsList {
     int currentPage,
     List<StoreGoods> list,
   }) {
-    if ((totalPage == null || identical(totalPage, this.totalPage)) &&
-        (currentPage == null || identical(currentPage, this.currentPage)) &&
-        (list == null || identical(list, this.list))) {
-      return this;
-    }
-
     return StoreGoodsList(
       totalPage: totalPage ?? this.totalPage,
       currentPage: currentPage ?? this.currentPage,
@@ -37,58 +32,46 @@ class StoreGoodsList {
     );
   }
 
-  @override
-  String toString() {
-    return 'StoreGoodsList{totalPage: $totalPage, currentPage: $currentPage, list: $list}';
+  Map<String, dynamic> toMap() {
+    return {
+      'totalPage': totalPage,
+      'currentPage': currentPage,
+      'list': list?.map((x) => x.toMap())?.toList(),
+    };
   }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is StoreGoodsList &&
-          runtimeType == other.runtimeType &&
-          totalPage == other.totalPage &&
-          currentPage == other.currentPage &&
-          list == other.list);
-
-  @override
-  int get hashCode => totalPage.hashCode ^ currentPage.hashCode ^ list.hashCode;
-
-  factory StoreGoodsList.fromMap(
-    Map<String, dynamic> map, {
-    String keyMapper(String key),
-  }) {
-    keyMapper ??= (key) => key;
-
+  factory StoreGoodsList.fromMap(Map<String, dynamic> map) {
     return StoreGoodsList(
-      totalPage: map[keyMapper('totalPage')] as int,
-      currentPage: map[keyMapper('currentPage')] as int,
-      list: (map[keyMapper('list')] as List)
-          .map((e) => StoreGoods.fromMap(e as Map<String, dynamic>))
-          .toList(),
+      totalPage: map['totalPage'],
+      currentPage: map['currentPage'],
+      list:
+          List<StoreGoods>.from(map['list']?.map((x) => StoreGoods.fromMap(x))),
     );
   }
 
-  Map<String, dynamic> toMap({
-    String keyMapper(String key),
-  }) {
-    keyMapper ??= (key) => key;
+  String toJson() => json.encode(toMap());
 
-    return {
-      keyMapper('totalPage'): this.totalPage,
-      keyMapper('currentPage'): this.currentPage,
-      keyMapper('list'): this.list,
-    };
+  factory StoreGoodsList.fromJson(String source) =>
+      StoreGoodsList.fromMap(json.decode(source));
+
+  @override
+  String toString() =>
+      'StoreGoodsList(totalPage: $totalPage, currentPage: $currentPage, list: $list)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StoreGoodsList &&
+        other.totalPage == totalPage &&
+        other.currentPage == currentPage &&
+        listEquals(other.list, list);
   }
+
+  @override
+  int get hashCode => totalPage.hashCode ^ currentPage.hashCode ^ list.hashCode;
 }
 
-/// id : "eLRGN8Bw"
-/// idolGoodsId : "红人商品id"
-/// picture : "https://www.baidu.com1"
-/// width : 1
-/// height : 1
-/// isSellOut : 1
-/// isOffTheShelf : 1
 @immutable
 class StoreGoods {
   final String id;
@@ -108,6 +91,7 @@ class StoreGoods {
   final String discount;
   final List<Tag> tag;
   final int heatRank;
+  final List<String> pictures;
 
   const StoreGoods({
     this.id = '',
@@ -127,50 +111,55 @@ class StoreGoods {
     this.discount = '',
     this.tag = const [],
     this.heatRank = 0,
+    this.pictures = const [],
   });
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is StoreGoods &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          idolGoodsId == other.idolGoodsId &&
-          picture == other.picture &&
-          width == other.width &&
-          height == other.height &&
-          isSellOut == other.isSellOut &&
-          isOffTheShelf == other.isOffTheShelf &&
-          interestName == other.interestName &&
-          supplierId == other.supplierId &&
-          goodsName == other.goodsName &&
-          originalPrice == other.originalPrice &&
-          originalPriceStr == other.originalPriceStr &&
-          currentPrice == other.currentPrice &&
-          currentPriceStr == other.currentPriceStr &&
-          discount == other.discount &&
-          tag == other.tag &&
-          heatRank == other.heatRank;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StoreGoods &&
+        other.id == id &&
+        other.idolGoodsId == idolGoodsId &&
+        other.picture == picture &&
+        other.width == width &&
+        other.height == height &&
+        other.isSellOut == isSellOut &&
+        other.isOffTheShelf == isOffTheShelf &&
+        other.interestName == interestName &&
+        other.supplierId == supplierId &&
+        other.goodsName == goodsName &&
+        other.originalPrice == originalPrice &&
+        other.originalPriceStr == originalPriceStr &&
+        other.currentPrice == currentPrice &&
+        other.currentPriceStr == currentPriceStr &&
+        other.discount == discount &&
+        listEquals(other.tag, tag) &&
+        other.heatRank == heatRank &&
+        listEquals(other.pictures, pictures);
+  }
 
   @override
-  int get hashCode =>
-      id.hashCode ^
-      idolGoodsId.hashCode ^
-      picture.hashCode ^
-      width.hashCode ^
-      height.hashCode ^
-      isSellOut.hashCode ^
-      isOffTheShelf.hashCode ^
-      interestName.hashCode ^
-      supplierId.hashCode ^
-      goodsName.hashCode ^
-      originalPrice.hashCode ^
-      originalPriceStr.hashCode ^
-      currentPrice.hashCode ^
-      currentPriceStr.hashCode ^
-      discount.hashCode ^
-      tag.hashCode ^
-      heatRank.hashCode;
+  int get hashCode {
+    return id.hashCode ^
+        idolGoodsId.hashCode ^
+        picture.hashCode ^
+        width.hashCode ^
+        height.hashCode ^
+        isSellOut.hashCode ^
+        isOffTheShelf.hashCode ^
+        interestName.hashCode ^
+        supplierId.hashCode ^
+        goodsName.hashCode ^
+        originalPrice.hashCode ^
+        originalPriceStr.hashCode ^
+        currentPrice.hashCode ^
+        currentPriceStr.hashCode ^
+        discount.hashCode ^
+        tag.hashCode ^
+        heatRank.hashCode ^
+        pictures.hashCode;
+  }
 
   StoreGoods copyWith({
     String id,
@@ -190,6 +179,7 @@ class StoreGoods {
     String discount,
     List<Tag> tag,
     int heatRank,
+    List<String> pictures,
   }) {
     return StoreGoods(
       id: id ?? this.id,
@@ -209,6 +199,7 @@ class StoreGoods {
       discount: discount ?? this.discount,
       tag: tag ?? this.tag,
       heatRank: heatRank ?? this.heatRank,
+      pictures: pictures ?? this.pictures,
     );
   }
 
@@ -229,14 +220,13 @@ class StoreGoods {
       'currentPrice': currentPrice,
       'currentPriceStr': currentPriceStr,
       'discount': discount,
-      'tag': tag?.map((x) => x?.toMap())?.toList(),
+      'tag': tag?.map((x) => x.toMap())?.toList(),
       'heatRank': heatRank,
+      'pictures': pictures,
     };
   }
 
   factory StoreGoods.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return StoreGoods(
       id: map['id'],
       idolGoodsId: map['idolGoodsId'],
@@ -253,8 +243,9 @@ class StoreGoods {
       currentPrice: map['currentPrice'],
       currentPriceStr: map['currentPriceStr'],
       discount: map['discount'],
-      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x))),
+      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x)) ?? []),
       heatRank: map['heatRank'],
+      pictures: List<String>.from(map['pictures'] ?? []),
     );
   }
 
@@ -262,4 +253,9 @@ class StoreGoods {
 
   factory StoreGoods.fromJson(String source) =>
       StoreGoods.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'StoreGoods(id: $id, idolGoodsId: $idolGoodsId, picture: $picture, width: $width, height: $height, isSellOut: $isSellOut, isOffTheShelf: $isOffTheShelf, interestName: $interestName, supplierId: $supplierId, goodsName: $goodsName, originalPrice: $originalPrice, originalPriceStr: $originalPriceStr, currentPrice: $currentPrice, currentPriceStr: $currentPriceStr, discount: $discount, tag: $tag, heatRank: $heatRank, pictures: $pictures)';
+  }
 }

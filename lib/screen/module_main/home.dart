@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -27,7 +30,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin<HomeScreen> {
+    with AutomaticKeepAliveClientMixin<HomeScreen>, TickerProviderStateMixin {
   int _selectedIndex = Global.homePageController.initialPage;
   int _lastClickTime = 0;
   final _storage = new FlutterSecureStorage();
@@ -95,19 +98,35 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
+  AnimationController _animationController;
+  String _pickImageURL = '';
+  StreamSubscription<StartPickAnimation> eventBusFn;
+
   @override
   void initState() {
-    // Future.delayed(Duration(milliseconds: 100), () {
-    //   Global.tokShopLink.currentState.show();
-    // });
     _guideInit();
     super.initState();
     AppEvent.shared.report(event: AnalyticsEvent.dashboard_tab);
+
+    _animationController = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    );
+
+    eventBusFn = eventBus.on<StartPickAnimation>().listen((event) {
+      if (!mounted) return;
+      _animationController.reset();
+      setState(() {
+        _pickImageURL = event.imageURL;
+      });
+      _animationController.forward();
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+    eventBusFn.cancel();
   }
 
   @override
@@ -119,7 +138,29 @@ class _HomeScreenState extends State<HomeScreen>
         extendBodyBehindAppBar: true,
         extendBody: false,
         body: WillPopScope(
-          child: _createBody(),
+          child: Stack(
+            children: [
+              _createBody(),
+              Positioned(
+                bottom: -10,
+                right: 25,
+                child: StaggerAnimation(
+                  controller: _animationController,
+                  url: _pickImageURL,
+                ),
+              ),
+              // Positioned(
+              //   top: 50,
+              //   child: TextButton(
+              //     onPressed: () {
+              //       _animationController.reset();
+              //       _animationController.forward();
+              //     },
+              //     child: Text('Start'),
+              //   ),
+              // ),
+            ],
+          ),
           onWillPop: () async {
             var durTime =
                 (DateTime.now().microsecondsSinceEpoch - _lastClickTime) / 1000;
@@ -310,4 +351,76 @@ class _ViewModel {
 
   @override
   int get hashCode => _homeTabArguments.hashCode;
+}
+
+// ignore: must_be_immutable
+class StaggerAnimation extends StatelessWidget {
+  StaggerAnimation({Key key, this.controller, this.url}) : super(key: key) {
+    opacity = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: Interval(
+          0.0, 0.1, //间隔，前20%的动画时间
+          curve: Curves.easeIn,
+        ),
+      ),
+    );
+
+    bottom = Tween(begin: 20.0, end: -50.0).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: Interval(
+          0.9, 1.0, //间隔，后20%的动画时间
+          curve: Curves.easeInOut,
+        ),
+      ),
+    );
+  }
+
+  final AnimationController controller;
+  final String url;
+  Animation<double> opacity;
+  Animation<double> bottom;
+
+  Widget _buildAnimation(BuildContext context, Widget child) {
+    return Opacity(
+      opacity: opacity.value,
+      child: Container(
+        height: 100,
+        width: 60,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: bottom.value,
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      offset: Offset(3.0, 3.0),
+                      blurRadius: 10.0, // 阴影模糊程度
+                      spreadRadius: 1.0, // 阴影扩散程度
+                    ),
+                  ],
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: url,
+                  width: 50,
+                  height: 50,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      builder: _buildAnimation,
+      animation: controller,
+    );
+  }
 }

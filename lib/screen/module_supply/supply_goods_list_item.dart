@@ -11,6 +11,7 @@ import 'package:idol/models/goods_detail.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
@@ -384,7 +385,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
       goodsDetail,
       completer,
     ));
-    completer.future.then((value) => _showMessageBar());
+    completer.future.then((value) => _showMessageBar()).then((value) => eventBus
+        .fire(StartPickAnimation(widget.goodsDetail.goods.first ?? '')));
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {
