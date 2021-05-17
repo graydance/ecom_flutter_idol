@@ -110,6 +110,11 @@ class Global {
         uri, 'Please check whether you have WhatsApp application installed');
   }
 
+  static void launchCustomerService() {
+    final uri = customerService;
+    launchURL(uri, '');
+  }
+
   static void launchURL(String url, String errorMsg) async =>
       await canLaunch(url) ? launch(url) : EasyLoading.showToast(errorMsg);
 }

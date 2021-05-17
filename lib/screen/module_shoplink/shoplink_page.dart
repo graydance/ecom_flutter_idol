@@ -511,7 +511,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             alignment: Alignment.bottomRight,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => Global.launchWhatsApp(),
+              onTap: () => Global.launchCustomerService(),
               child: Container(
                   height: 44,
                   width: 44,
@@ -634,7 +634,12 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           onItemClick: (index) {
             switch (index) {
               case 0:
-                ShareManager.showShareGoodsDialog(context, storeGoods.picture);
+                ShareManager.showShareGoodsDialog(
+                  context,
+                  storeGoods.pictures,
+                  storeGoods.goodsName,
+                  storeGoods.currentPriceStr,
+                );
                 break;
               case 1:
                 AppEvent.shared.report(event: AnalyticsEvent.product_remove);
@@ -933,7 +938,6 @@ class _Tile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 已知问题：web无法同时支持maxLines和ellipsis，详见 https://github.com/flutter/flutter/issues/44802#issuecomment-555707104
               Text(
                 '${model.goodsName}',
                 style: TextStyle(

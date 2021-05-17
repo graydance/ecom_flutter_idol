@@ -11,6 +11,7 @@ import 'package:idol/models/goods_detail.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
@@ -160,7 +161,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         onTap: () {
                           _hideMessageBar();
                           ShareManager.showShareGoodsDialog(
-                              context, widget.goodsDetail.goods[0]);
+                            context,
+                            widget.goodsDetail.goods,
+                            widget.goodsDetail.goodsName,
+                            widget.goodsDetail.suggestedPriceStr,
+                          );
                         },
                       ),
                     ),
@@ -293,6 +298,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                   widget.goodsDetail.inMyStore == 1
                                       ? 'Share to Earn'
                                       : 'Pick & Sell',
+                                  isOutlineStyle:
+                                      widget.goodsDetail.inMyStore == 1,
                                   status: IdolButtonStatus.enable,
                                   listener: (status) async {
                                     Global.tokPikAndSell.currentState.hide();
@@ -310,8 +317,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                           });
                                       if (widget.goodsDetail.inMyStore == 1) {
                                         ShareManager.showShareGoodsDialog(
-                                            context,
-                                            widget.goodsDetail.goods[0]);
+                                          context,
+                                          widget.goodsDetail.goods,
+                                          widget.goodsDetail.goodsName,
+                                          widget.goodsDetail.suggestedPriceStr,
+                                        );
                                       } else {
                                         await _addProductToMyStore(
                                             widget.goodsDetail);
@@ -327,12 +337,17 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                             widget.goodsDetail.inMyStore == 1
                                 ? 'Share to Earn'
                                 : 'Pick & Sell',
+                            isOutlineStyle: widget.goodsDetail.inMyStore == 1,
                             status: IdolButtonStatus.enable,
                             listener: (status) {
                               if (status == IdolButtonStatus.enable) {
                                 if (widget.goodsDetail.inMyStore == 1) {
                                   ShareManager.showShareGoodsDialog(
-                                      context, widget.goodsDetail.goods[0]);
+                                    context,
+                                    widget.goodsDetail.goods,
+                                    widget.goodsDetail.goodsName,
+                                    widget.goodsDetail.suggestedPriceStr,
+                                  );
                                 } else {
                                   _addProductToMyStore(widget.goodsDetail);
                                 }
@@ -370,7 +385,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
       goodsDetail,
       completer,
     ));
-    completer.future.then((value) => _showMessageBar());
+    completer.future.then((value) => _showMessageBar()).then((value) => eventBus
+        .fire(StartPickAnimation(widget.goodsDetail.goods.first ?? '')));
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {

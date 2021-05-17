@@ -108,7 +108,11 @@ class _ForYouTabViewState extends State<ForYouTabView>
                 goodsDetail: model,
                 onProductAddedStoreListener: (goodsDetail) {
                   ShareManager.showShareGoodsDialog(
-                      context, goodsDetail.goods[0]);
+                    context,
+                    goodsDetail.goods,
+                    goodsDetail.goodsName,
+                    goodsDetail.suggestedPriceStr,
+                  );
                 },
               );
             },

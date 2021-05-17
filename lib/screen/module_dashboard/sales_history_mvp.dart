@@ -41,7 +41,7 @@ class _SalesHistoryTabViewState extends State<SalesHistoryTabView>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-        appBar: IdolUI.appBar(context, 'SalesHistory'),
+        appBar: IdolUI.appBar(context, 'Sales History'),
         body: StoreConnector<AppState, _ViewModel>(
           converter: _ViewModel.fromStore,
           distinct: true,
@@ -72,7 +72,7 @@ class _SalesHistoryTabViewState extends State<SalesHistoryTabView>
                 ),
                 Text(
                   "\$" + _arguments.money,
-                  style: TextStyle(color: Colours.color_EA5228, fontSize: 14),
+                  style: TextStyle(color: Colours.color_0F1015, fontSize: 14),
                 ),
               ],
             ),
@@ -203,7 +203,7 @@ class _SalesHistoryItemState extends State<_SalesHistoryItem> {
               children: [
                 Text(
                   widget.salesHistory.goodsName,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
                 ),
@@ -212,7 +212,7 @@ class _SalesHistoryItemState extends State<_SalesHistoryItem> {
                 ),
                 Text(
                   'Sales',
-                  style: TextStyle(color: Colours.color_B1B2B3, fontSize: 12),
+                  style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
                 ),
                 SizedBox(
                   height: 4,
@@ -239,7 +239,7 @@ class _SalesHistoryItemState extends State<_SalesHistoryItem> {
                 margin: EdgeInsets.only(right: 15),
                 child: Text(
                   widget.salesHistory.soldNum.toString(),
-                  style: TextStyle(color: Colours.color_B1B2B3, fontSize: 12),
+                  style: TextStyle(color: Colours.color_0F1015, fontSize: 12),
                 ),
               ),
               SizedBox(

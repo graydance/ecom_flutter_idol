@@ -65,7 +65,7 @@ class _DashboardPageState extends State<DashboardPage>
           mainAxisSize: MainAxisSize.max,
           children: [
             AppBar(
-              title: Text('Dashboard'),
+              title: Text('My Earnings'),
               elevation: 0,
               primary: true,
             ),
@@ -303,15 +303,15 @@ class _ViewModel {
   final CompleteRewardsState _completeRewardsState;
   final Function(String) _completeRewards;
 
-  _ViewModel(
-      this._dashboardState, this._completeRewardsState, this._completeRewards, this._load);
+  _ViewModel(this._dashboardState, this._completeRewardsState,
+      this._completeRewards, this._load);
 
   static _ViewModel fromStore(Store<AppState> store) {
     void _completeRewards(String rewardId) {
       store.dispatch(CompleteRewardsAction(CompleteRewardsRequest(rewardId)));
     }
 
-    void _load(){
+    void _load() {
       store.dispatch(DashboardAction(BaseRequestImpl()));
     }
 
