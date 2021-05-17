@@ -189,16 +189,16 @@ class _HomeScreenState extends State<HomeScreen>
                   url: _pickImageURL,
                 ),
               ),
-              Positioned(
-                top: 50,
-                child: TextButton(
-                  onPressed: () {
-                    _animationController.reset();
-                    _animationController.forward();
-                  },
-                  child: Text('Start'),
-                ),
-              ),
+              // Positioned(
+              //   top: 50,
+              //   child: TextButton(
+              //     onPressed: () {
+              //       _animationController.reset();
+              //       _animationController.forward();
+              //     },
+              //     child: Text('Start'),
+              //   ),
+              // ),
             ],
           ),
           onWillPop: () async {
