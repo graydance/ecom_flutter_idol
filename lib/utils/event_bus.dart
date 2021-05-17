@@ -13,3 +13,9 @@ class SupplyRefresh {
 }
 
 class MyShopRefresh {}
+
+class StartPickAnimation {
+  final String imageURL;
+
+  StartPickAnimation(this.imageURL);
+}
