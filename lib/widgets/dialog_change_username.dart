@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:idol/r.g.dart';
+import 'package:idol/res/Strings.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/widgets/button.dart';
@@ -67,7 +69,7 @@ class _ChangeUserNameDialogState extends State<ChangeUserNameDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Change Your UserName',
+                        'Change Your Username',
                         style: TextStyle(
                             fontSize: 16, color: Colours.color_0F1015),
                       ),
@@ -130,7 +132,14 @@ class _ChangeUserNameDialogState extends State<ChangeUserNameDialog> {
                         listener: (status) {
                           FocusScope.of(context).requestFocus(FocusNode());
                           if (widget.onSave != null) {
-                            widget.onSave(_controller.text.trim());
+                            bool isSave =
+                                validateUserName(_controller.text.trim());
+                            if (!isSave) {
+                              EasyLoading.showError(StringBasic.userNameError);
+                            } else {
+                              widget.onSave(
+                                  _controller.text.trim().toLowerCase());
+                            }
                           }
                         },
                       ),
@@ -144,4 +153,9 @@ class _ChangeUserNameDialogState extends State<ChangeUserNameDialog> {
       ),
     );
   }
+}
+
+bool validateUserName(String text) {
+  if (text == null) return false;
+  return RegExp(r"^[a-z0-9_.]{5,100}$", caseSensitive: false).hasMatch(text);
 }

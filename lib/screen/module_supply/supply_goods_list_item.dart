@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:idol/models/goods_detail.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
@@ -128,29 +130,27 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(6)),
               child: Container(
+                height: MediaQuery.of(context).size.width - 15 * 2,
                 child: Stack(
                   children: [
-                    AspectRatio(
-                      aspectRatio: 345 / 376,
-                      child: Stack(
-                        children: [
-                          Swiper(
-                            itemBuilder: (context, index) {
-                              return _createItemMediaWidget(
-                                  widget.goodsDetail.goods[index]);
-                            },
-                            pagination: SwiperPagination(
-                                alignment: Alignment.bottomCenter,
-                                builder: DotSwiperPaginationBuilder(
-                                  activeSize: 6,
-                                  size: 5,
-                                  color: Colours.color_50D8D8D8,
-                                  activeColor: Colours.white,
-                                )),
-                            itemCount: widget.goodsDetail.goods.length,
-                          ),
-                        ],
-                      ),
+                    Stack(
+                      children: [
+                        Swiper(
+                          itemBuilder: (context, index) {
+                            return _createItemMediaWidget(
+                                widget.goodsDetail.goods[index]);
+                          },
+                          pagination: SwiperPagination(
+                              alignment: Alignment.bottomCenter,
+                              builder: DotSwiperPaginationBuilder(
+                                activeSize: 6,
+                                size: 5,
+                                color: Colours.color_50D8D8D8,
+                                activeColor: Colours.white,
+                              )),
+                          itemCount: widget.goodsDetail.goods.length,
+                        ),
+                      ],
                     ),
                     Positioned(
                       bottom: 0,
@@ -161,7 +161,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         onTap: () {
                           _hideMessageBar();
                           ShareManager.showShareGoodsDialog(
-                              context, widget.goodsDetail.goods[0]);
+                            context,
+                            widget.goodsDetail.goods,
+                            widget.goodsDetail.goodsName,
+                            widget.goodsDetail.suggestedPriceStr,
+                          );
                         },
                       ),
                     ),
@@ -294,6 +298,8 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                   widget.goodsDetail.inMyStore == 1
                                       ? 'Share to Earn'
                                       : 'Pick & Sell',
+                                  isOutlineStyle:
+                                      widget.goodsDetail.inMyStore == 1,
                                   status: IdolButtonStatus.enable,
                                   listener: (status) async {
                                     Global.tokPikAndSell.currentState.hide();
@@ -311,8 +317,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                           });
                                       if (widget.goodsDetail.inMyStore == 1) {
                                         ShareManager.showShareGoodsDialog(
-                                            context,
-                                            widget.goodsDetail.goods[0]);
+                                          context,
+                                          widget.goodsDetail.goods,
+                                          widget.goodsDetail.goodsName,
+                                          widget.goodsDetail.suggestedPriceStr,
+                                        );
                                       } else {
                                         await _addProductToMyStore(
                                             widget.goodsDetail);
@@ -328,12 +337,17 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                             widget.goodsDetail.inMyStore == 1
                                 ? 'Share to Earn'
                                 : 'Pick & Sell',
+                            isOutlineStyle: widget.goodsDetail.inMyStore == 1,
                             status: IdolButtonStatus.enable,
                             listener: (status) {
                               if (status == IdolButtonStatus.enable) {
                                 if (widget.goodsDetail.inMyStore == 1) {
                                   ShareManager.showShareGoodsDialog(
-                                      context, widget.goodsDetail.goods[0]);
+                                    context,
+                                    widget.goodsDetail.goods,
+                                    widget.goodsDetail.goodsName,
+                                    widget.goodsDetail.suggestedPriceStr,
+                                  );
                                 } else {
                                   _addProductToMyStore(widget.goodsDetail);
                                 }
@@ -371,28 +385,11 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
       goodsDetail,
       completer,
     ));
-    completer.future.then((value) => _showMessageBar());
-    // try {
-    //   EasyLoading.show(status: 'Loading...');
-    //   await DioClient.getInstance()
-    //       .post(ApiPath.addStore, baseRequest: AddStoreRequest(goodsDetail.id));
-    //   EasyLoading.dismiss();
-    //   if (widget.onProductAddedStoreListener != null) {
-    //     widget.onProductAddedStoreListener(goodsDetail);
-    //   }
-    //   _buttonText = 'Has been added to my store';
-    //   _idolButtonStatus = IdolButtonStatus.normal;
-    //   _idolButtonStatusKey.currentState.updateText(_buttonText);
-    //   _idolButtonStatusKey.currentState.updateButtonStatus(_idolButtonStatus);
-    // } catch (e) {
-    //   EasyLoading.dismiss();
-    //   debugPrint(e.toString());
-    //   EasyLoading.showError(e.toString());
-    // }
+    completer.future.then((value) => _showMessageBar()).then((value) => eventBus
+        .fire(StartPickAnimation(widget.goodsDetail.goods.first ?? '')));
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {
-    debugPrint('_createItemMediaWidget >>> $sourceUrl');
     if (_isVideoSource(sourceUrl)) {
       return VideoPlayerWidget(
         url: sourceUrl,
@@ -404,7 +401,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
           fit: BoxFit.cover,
         ),
         imageUrl: sourceUrl,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
       );
     }
   }
@@ -424,18 +421,6 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
         url.contains('.wmv') ||
         url.contains('.mkv'));
   }
-
-  // Timer _debounce;
-
-  // void debounce(Function fn, [int t = 30]) {
-  //   // return () {
-  //   // 还在时间之内，抛弃上一次
-  //   if (_debounce?.isActive ?? false) _debounce.cancel();
-  //   _debounce = Timer(Duration(milliseconds: t), () {
-  //     fn();
-  //   });
-  //   // };
-  // }
 }
 
 class MessageBar extends StatefulWidget {

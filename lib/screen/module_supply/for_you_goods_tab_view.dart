@@ -1,20 +1,17 @@
-import 'package:idol/event/app_event.dart';
-import 'package:idol/utils/localStorage.dart';
-import 'package:idol/utils/keystore.dart';
-import 'package:idol/utils/share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
-import 'package:idol/models/goods_detail.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/screen/module_supply/supply_goods_list_item.dart';
 import 'package:idol/store/actions/supply.dart';
-import 'package:idol/widgets/dialog_share.dart';
+import 'package:idol/utils/event_bus.dart';
+import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
-import 'package:idol/screen/module_supply/supply_goods_list_item.dart';
 
 class ForYouTabView extends StatefulWidget {
   @override
@@ -26,6 +23,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
   RefreshController _refreshController;
   int _currentPage = 1;
   bool _enablePullUp = false;
+  var eventBusFn;
 
   Set<String> _reportedIds = {};
 
@@ -37,6 +35,20 @@ class _ForYouTabViewState extends State<ForYouTabView>
     super.initState();
     _refreshController = RefreshController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
+
+    // 注册监听器，订阅 eventBus
+    eventBusFn = eventBus.on<SupplyRefresh>().listen((event) {
+      // ignore: deprecated_member_use
+      _refreshController.scrollController.animateTo(0,
+          duration: Duration(milliseconds: 800), curve: Curves.ease);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    //取消订阅
+    eventBusFn.cancel();
   }
 
   @override
@@ -96,7 +108,11 @@ class _ForYouTabViewState extends State<ForYouTabView>
                 goodsDetail: model,
                 onProductAddedStoreListener: (goodsDetail) {
                   ShareManager.showShareGoodsDialog(
-                      context, goodsDetail.goods[0]);
+                    context,
+                    goodsDetail.goods,
+                    goodsDetail.goodsName,
+                    goodsDetail.suggestedPriceStr,
+                  );
                 },
               );
             },

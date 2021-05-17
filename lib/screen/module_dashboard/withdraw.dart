@@ -88,7 +88,7 @@ class _WithdrawScreenState extends State {
                   'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}$_minWithdrawalAmount';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
-              _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
+              _amountTips = (withdrawalAmountDouble * 100 + _serviceCharge) >
                       _withdrawInfo.withdraw
                   ? 'Not sufficient funds'
                   : '';
@@ -100,7 +100,7 @@ class _WithdrawScreenState extends State {
                   'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}$_minWithdrawalAmount';
             } else {
               // 提现金额+手续费大于 可提现余额，则提示错误信息。
-              _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
+              _amountTips = (withdrawalAmountInt * 100 + _serviceCharge) >
                       _withdrawInfo.withdraw
                   ? 'Not sufficient funds'
                   : '';
@@ -125,7 +125,7 @@ class _WithdrawScreenState extends State {
                 'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}$_minWithdrawalAmount';
           } else {
             // 提现金额+手续费大于 可提现余额，则提示错误信息。
-            _amountTips = (withdrawalAmountDouble + _serviceCharge) * 100 >
+            _amountTips = (withdrawalAmountDouble * 100 + _serviceCharge) >
                     _withdrawInfo.withdraw
                 ? 'Not sufficient funds'
                 : '';
@@ -137,7 +137,7 @@ class _WithdrawScreenState extends State {
                 'The minimum withdrawal amount is ${Global.getUser(context).monetaryUnit}$_minWithdrawalAmount';
           } else {
             // 提现金额+手续费大于 可提现余额，则提示错误信息。
-            _amountTips = (withdrawalAmountInt + _serviceCharge) * 100 >
+            _amountTips = (withdrawalAmountInt * 100 + _serviceCharge) >
                     _withdrawInfo.withdraw
                 ? 'Not sufficient funds'
                 : '';

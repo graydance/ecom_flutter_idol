@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "14.0.0"
+    version: "20.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.41.2"
+    version: "1.4.0"
   animations:
     dependency: "direct main"
     description:
@@ -63,7 +63,7 @@ packages:
       name: build
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.6.2"
+    version: "1.6.3"
   built_collection:
     dependency: transitive
     description:
@@ -175,7 +175,7 @@ packages:
       name: crypto
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   css_colors:
     dependency: transitive
     description:
@@ -203,7 +203,7 @@ packages:
       name: dart_style
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.3.12"
+    version: "1.3.14"
   decimal:
     dependency: transitive
     description:
@@ -234,6 +234,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.1"
+  event_bus:
+    dependency: "direct main"
+    description:
+      name: event_bus
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
+  facebook_app_events:
+    dependency: "direct main"
+    description:
+      name: facebook_app_events
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.12.0"
   fake_async:
     dependency: transitive
     description:
@@ -571,7 +585,7 @@ packages:
       name: mockito
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.1.4"
+    version: "5.0.5"
   modal_bottom_sheet:
     dependency: "direct main"
     description:
@@ -592,7 +606,7 @@ packages:
       name: package_config
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.9.3"
+    version: "2.0.0"
   path:
     dependency: transitive
     description:
@@ -697,7 +711,7 @@ packages:
       name: process
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.1"
   pub_semver:
     dependency: transitive
     description:
@@ -898,7 +912,7 @@ packages:
       name: test_api
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   timeago:
     dependency: "direct main"
     description:
@@ -1003,7 +1017,7 @@ packages:
       name: vm_service
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.1-nullsafety.1"
+    version: "6.1.0+1"
   wakelock:
     dependency: transitive
     description:
@@ -1083,4 +1097,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.25.0"
+  flutter: ">=2.0.0"

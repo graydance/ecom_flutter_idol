@@ -72,6 +72,10 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>${PRODUCT_NAME} uses the music to share your product medias</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the bluetooth to share your product medias</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>${PRODUCT_NAME} uses the bluetooth to share your product medias</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_dartobservatory._tcp</string>
@@ -111,5 +115,7 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>This identifier will be used to deliver personalized ads to you.</string>
 </dict>
 </plist>

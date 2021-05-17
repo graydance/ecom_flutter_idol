@@ -1,12 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:ecomshare/ecomshare.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
+import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/error.dart';
 import 'package:idol/widgets/loading.dart';
@@ -18,7 +21,7 @@ class ShareDialog extends StatefulWidget {
   final String title;
 
   // Image/Video url
-  final String mediaUrl;
+  final List<String> mediaUrls;
 
   // 描述
   final String desc;
@@ -35,7 +38,7 @@ class ShareDialog extends StatefulWidget {
   // 分享渠道
   final String shareChannel;
 
-  ShareDialog(this.title, this.mediaUrl, this.desc, this.shareType,
+  ShareDialog(this.title, this.mediaUrls, this.desc, this.shareType,
       this.onShareButtonClick,
       {this.tips, this.shareChannel});
 
@@ -123,7 +126,7 @@ class _ShareDialogState extends State<ShareDialog> {
     'Instagram': R.image.ic_share_instagram(),
     'Facebook': R.image.ic_share_facebook(),
     'Twitter': R.image.ic_share_twitter(),
-    'Download': R.image.ic_share_download(),
+    'Download All': R.image.ic_share_download(),
     'Copy Link': R.image.ic_share_copy_link(),
     'System': R.image.ic_share_more(),
   };
@@ -148,7 +151,7 @@ class _ShareDialogState extends State<ShareDialog> {
     setState(() {
       if (supportChannels.length > 1 && 'System' == supportChannels.last) {
         supportChannels.insert(supportChannels.length - 1,
-            widget.shareType == ShareType.link ? 'Copy Link' : 'Download');
+            widget.shareType == ShareType.link ? 'Copy Link' : 'Download All');
       }
       _supportShareChannels = supportChannels;
       debugPrint('Share channels >>> ${_supportShareChannels.toString()}');
@@ -242,8 +245,57 @@ class _ShareDialogState extends State<ShareDialog> {
                 margin: EdgeInsets.fromLTRB(70, 0, 70, 10),
                 child: AspectRatio(
                   aspectRatio: 1.0, //_controller.value.aspectRatio,
-                  child: Image(
-                    image: NetworkImage(widget.mediaUrl),
+                  child: Swiper(
+                    itemBuilder: (context, index) {
+                      return Stack(
+                        children: [
+                          CachedNetworkImage(
+                            placeholder: (context, _) => Image(
+                              image: R.image.goods_placeholder(),
+                              fit: BoxFit.cover,
+                            ),
+                            imageUrl: widget.mediaUrls[index],
+                            fit: BoxFit.contain,
+                          ),
+                          Positioned(
+                            bottom: 8,
+                            right: 8,
+                            child: InkWell(
+                              onTap: () {
+                                downloadImages(
+                                  context,
+                                  [widget.mediaUrls[index]],
+                                );
+                              },
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.file_download,
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    pagination: SwiperPagination(
+                        alignment: Alignment.bottomCenter,
+                        builder: DotSwiperPaginationBuilder(
+                          activeSize: 6,
+                          size: 5,
+                          color: Colours.color_50D8D8D8,
+                          activeColor: Colours.white,
+                        )),
+                    itemCount: widget.mediaUrls.length,
                   ),
                 ),
               ),
@@ -342,7 +394,7 @@ class _ShareDialogState extends State<ShareDialog> {
                       Radius.circular(2),
                     ),
                   ),
-                  child: MyPikVideo(widget.mediaUrl)),
+                  child: MyPikVideo(widget.mediaUrls.first)),
               Container(
                 width: double.infinity,
                 margin: EdgeInsets.only(left: 59.5, right: 59.5),
@@ -400,7 +452,7 @@ class _ShareDialogState extends State<ShareDialog> {
                   Radius.circular(2),
                 ),
               ),
-              child: MyPikVideo(widget.mediaUrl)),
+              child: MyPikVideo(widget.mediaUrls.first)),
           SizedBox(
             height: 10,
           ),

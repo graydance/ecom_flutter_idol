@@ -38,6 +38,8 @@ class IdolButton extends StatefulWidget {
   /// 是否使用局部刷新？ 如果使用局部刷新则通过rebuild方式无法进行status更改。
   final bool isPartialRefresh;
 
+  final bool isOutlineStyle;
+
   /// Button click callback.
   final IdolButtonClickListener listener;
 
@@ -56,6 +58,7 @@ class IdolButton extends StatefulWidget {
     this.linearGradientBegin = Alignment.centerLeft,
     this.linearGradientEnd = Alignment.centerRight,
     this.isPartialRefresh = false,
+    this.isOutlineStyle = false,
     this.listener,
   }) : super(key: key);
 
@@ -77,21 +80,47 @@ class IdolButtonState extends State<IdolButton> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('IdolButton build...');
+    debugPrint('IdolButton >>> ${widget.isOutlineStyle}');
+    BoxDecoration decoration;
+    Color textColor = Colours.white;
+    if (widget.isOutlineStyle) {
+      decoration = BoxDecoration(
+        border: Border.all(
+          color: Colours.color_EA5228,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      );
+      textColor = Colours.color_EA5228;
+    } else {
+      bool condition = (widget.isPartialRefresh
+          ? (_status == IdolButtonStatus.enable)
+          : (widget.status == IdolButtonStatus.enable));
+
+      decoration = condition
+          ? BoxDecoration(
+              gradient: LinearGradient(
+                begin: widget.linearGradientBegin,
+                end: widget.linearGradientEnd,
+                colors: widget.enableColors,
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(5)))
+          : BoxDecoration(
+              color: (widget.isPartialRefresh
+                      ? _status == IdolButtonStatus.normal
+                      : widget.status == IdolButtonStatus.normal)
+                  ? widget.normalColor
+                  : widget.disableColor,
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+            );
+    }
+
     return (widget.isPartialRefresh
             ? (_status == IdolButtonStatus.enable)
             : (widget.status == IdolButtonStatus.enable))
         ? Container(
             width: widget.width,
             height: widget.height,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: widget.linearGradientBegin,
-                end: widget.linearGradientEnd,
-                colors: widget.enableColors,
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-            ),
+            decoration: decoration,
             child: RaisedButton(
               onPressed: () => widget
                   .listener(widget.isPartialRefresh ? _status : widget.status),
@@ -103,7 +132,7 @@ class IdolButtonState extends State<IdolButton> {
               elevation: 0,
               child: AutoSizeText(
                 widget.isPartialRefresh ? _text : widget.text,
-                style: TextStyle(color: Colours.white, fontSize: 16),
+                style: TextStyle(color: textColor, fontSize: 16),
                 maxLines: 1,
               ),
             ),
@@ -111,14 +140,7 @@ class IdolButtonState extends State<IdolButton> {
         : Container(
             width: widget.width,
             height: widget.height,
-            decoration: BoxDecoration(
-              color: (widget.isPartialRefresh
-                      ? _status == IdolButtonStatus.normal
-                      : widget.status == IdolButtonStatus.normal)
-                  ? widget.normalColor
-                  : widget.disableColor,
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-            ),
+            decoration: decoration,
             child: RaisedButton(
               onPressed: () => widget
                   .listener(widget.isPartialRefresh ? _status : widget.status),
@@ -130,7 +152,7 @@ class IdolButtonState extends State<IdolButton> {
               elevation: 0,
               child: AutoSizeText(
                 widget.isPartialRefresh ? _text : widget.text,
-                style: TextStyle(color: Colours.white, fontSize: 16),
+                style: TextStyle(color: textColor, fontSize: 16),
                 maxLines: 1,
               ),
             ),

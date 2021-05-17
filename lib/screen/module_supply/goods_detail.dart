@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -102,9 +104,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   }
 
   Widget _buildBodyWidget() {
-    print('商品个数');
-    print(_goodsDetail.goods.length);
-    print('商品个数');
     var updateTime =
         DateTime.fromMillisecondsSinceEpoch(_goodsDetail.updateTime);
     _bottomButtonStatus = IdolButtonStatus.enable;
@@ -147,11 +146,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(2)),
                       child: Container(
+                        color: Colors.white,
                         child: Stack(
                           children: [
-                            // AspectRatio(
-                            //   aspectRatio: 376 / 345,
-                            //   child:
                             Stack(
                               children: [
                                 Swiper(
@@ -171,7 +168,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                 ),
                               ],
                             ),
-                            // ),
                             Positioned(
                               bottom: 0,
                               left: 0,
@@ -181,7 +177,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                 onTap: () {
                                   _hideMessageBar();
                                   ShareManager.showShareGoodsDialog(
-                                      context, _goodsDetail.goods[0]);
+                                    context,
+                                    _goodsDetail.goods,
+                                    _goodsDetail.goodsName,
+                                    _goodsDetail.suggestedPriceStr,
+                                  );
                                 },
                               ),
                             ),
@@ -379,6 +379,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                       : (_goodsDetail.inMyStore == 0
                           ? 'Pick & Sell'
                           : 'Share to Earn'),
+                  isOutlineStyle: _goodsDetail.inMyStore == 1,
                   status: _bottomButtonStatus,
                   listener: (status) {
                     AppEvent.shared.report(
@@ -390,7 +391,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
                     if (_goodsDetail.inMyStore == 1) {
                       ShareManager.showShareGoodsDialog(
-                          context, _goodsDetail.goods[0]);
+                        context,
+                        _goodsDetail.goods,
+                        _goodsDetail.goodsName,
+                        _goodsDetail.suggestedPriceStr,
+                      );
                     } else {
                       final completer = Completer();
                       completer.future.then((value) {
@@ -418,21 +423,23 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Html(
-                      data: _goodsDetail.goodsDescription,
+                    PopupMenuContainer<String>(
+                      items: [
+                        PopupMenuItem(value: 'Copy', child: Text('Copy'))
+                      ],
+                      onItemSelected: (value) {
+                        Clipboard.setData(
+                          ClipboardData(
+                            text: _removeAllHtmlTags(
+                              _goodsDetail.goodsDescription,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Html(
+                        data: _goodsDetail.goodsDescription,
+                      ),
                     ),
-                    // Text(
-                    //   goodsDetail.goodsDescription,
-                    //   style: TextStyle(
-                    //     color: Colours.color_555764,
-                    //     fontSize: 14,
-                    //   ),
-                    //   strutStyle: StrutStyle(
-                    //       forceStrutHeight: true,
-                    //       height: 1,
-                    //       leading: 0.2,
-                    //       fontSize: 14),
-                    // ),
                   ],
                 ),
               ),
@@ -441,6 +448,12 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         ),
       ),
     );
+  }
+
+  String _removeAllHtmlTags(String htmlText) {
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+
+    return htmlText.replaceAll(exp, '');
   }
 
   _showMessageBar() {
@@ -471,7 +484,7 @@ Widget _createItemMediaWidget(String sourceUrl) {
         fit: BoxFit.cover,
       ),
       imageUrl: sourceUrl,
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
     );
   }
 }
@@ -576,5 +589,51 @@ class _MessageBarState extends State<MessageBar> {
         ),
       ),
     );
+  }
+}
+
+class PopupMenuContainer<T> extends StatefulWidget {
+  final Widget child;
+  final List<PopupMenuEntry<T>> items;
+  final void Function(T) onItemSelected;
+
+  PopupMenuContainer(
+      {@required this.child,
+      @required this.items,
+      @required this.onItemSelected,
+      Key key})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => PopupMenuContainerState<T>();
+}
+
+class PopupMenuContainerState<T> extends State<PopupMenuContainer<T>> {
+  Offset _tapDownPosition;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTapDown: (TapDownDetails details) {
+          _tapDownPosition = details.globalPosition;
+        },
+        onLongPress: () async {
+          final RenderBox overlay =
+              Overlay.of(context).context.findRenderObject();
+
+          T value = await showMenu<T>(
+            context: context,
+            items: widget.items,
+            position: RelativeRect.fromLTRB(
+              _tapDownPosition.dx,
+              _tapDownPosition.dy,
+              overlay.size.width - _tapDownPosition.dx,
+              overlay.size.height - _tapDownPosition.dy,
+            ),
+          );
+
+          widget.onItemSelected(value);
+        },
+        child: widget.child);
   }
 }

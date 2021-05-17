@@ -8,22 +8,20 @@ import 'package:flutter/material.dart';
 
 @immutable
 class Tag {
- final String id;
- final String name;
- final String interestName;
- final String interestPortrait;
- final String interestDescription;
- final int interestType;
-
-//<editor-fold desc="Data Methods" defaultstate="collapsed">
+  final String id;
+  final String name;
+  final String interestName;
+  final String interestPortrait;
+  final String interestDescription;
+  final int interestType;
 
   const Tag({
-    this.id,
-    this.name,
-    this.interestName,
-    this.interestPortrait,
-    this.interestDescription,
-    this.interestType,
+    this.id = '',
+    this.name = '',
+    this.interestName = '',
+    this.interestPortrait = '',
+    this.interestDescription = '',
+    this.interestType = 0,
   });
 
   Tag copyWith({

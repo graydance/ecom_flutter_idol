@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
     }
  */
 @immutable
-class SalesHistoryList{
+class SalesHistoryList {
   final List<SalesHistory> list;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
@@ -59,7 +59,9 @@ class SalesHistoryList{
 
     return SalesHistoryList(
       list: map[keyMapper('list')] != null
-          ? (map[keyMapper('list')] as List).map((e) => SalesHistory.fromMap(e as Map<String, dynamic>)).toList()
+          ? (map[keyMapper('list')] as List)
+              .map((e) => SalesHistory.fromMap(e as Map<String, dynamic>))
+              .toList()
           : const [],
     );
   }
@@ -80,11 +82,11 @@ class SalesHistoryList{
 }
 
 @immutable
-class SalesHistory{
+class SalesHistory {
   final String id;
   final String goodsName;
   final String goodsPicture;
-  final String soldNum;
+  final int soldNum;
   final int earningPrice;
   final String earningPriceStr;
 
@@ -163,7 +165,7 @@ class SalesHistory{
       id: map[keyMapper('id')] as String,
       goodsName: map[keyMapper('goodsName')] as String,
       goodsPicture: map[keyMapper('goodsPicture')] as String,
-      soldNum: map[keyMapper('soldNum')] as String,
+      soldNum: map[keyMapper('soldNum')] as int,
       earningPrice: map[keyMapper('earningPrice')] as int,
       earningPriceStr: map[keyMapper('earningPriceStr')] as String,
     );

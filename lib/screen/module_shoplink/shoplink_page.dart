@@ -8,17 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:idol/event/app_event.dart';
-import 'package:idol/utils/localStorage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:idol/utils/keystore.dart';
-import 'package:idol/widgets/SpeechBubble.dart';
-import 'package:idol/widgets/tutorialOverlay.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:redux/redux.dart';
-
 import 'package:idol/conf.dart';
+import 'package:idol/event/app_event.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/upload.dart';
 import 'package:idol/net/api.dart';
@@ -32,13 +24,20 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
+import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
+import 'package:idol/utils/keystore.dart';
+import 'package:idol/utils/localStorage.dart';
 import 'package:idol/utils/share.dart';
+import 'package:idol/widgets/SpeechBubble.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/dialog_bottom_sheet.dart';
 import 'package:idol/widgets/dialog_change_username.dart';
-import 'package:idol/widgets/error.dart';
-import 'package:idol/widgets/loading.dart';
+import 'package:idol/widgets/dialog_message.dart';
+import 'package:idol/widgets/tutorialOverlay.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:redux/redux.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -56,6 +55,9 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   final _picker = ImagePicker();
   bool _editState = true;
   bool _shopDescIsEditing = false;
+
+  List<StoreGoods> _models = [];
+  StreamSubscription<MyShopRefresh> eventBusFn;
 
   // int _lastClickTime = 0;
   final _storage = new FlutterSecureStorage();
@@ -75,6 +77,17 @@ class _ShopLinkPageState extends State<ShopLinkPage>
         _shopDescIsEditing = _shopDescFocusNode.hasFocus;
       });
     });
+
+    eventBusFn = eventBus.on<MyShopRefresh>().listen((event) {
+      if (_refreshController.isRefresh) return;
+      _refreshController.requestRefresh();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    eventBusFn.cancel();
   }
 
   @override
@@ -83,7 +96,6 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       builder: (context, vm) {
-        debugPrint('>>>>>>>>>>>>>>>>>>>ShopLink build<<<<<<<<<<<<<<<<<<<');
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
@@ -196,9 +208,10 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                                 Global.tokCopy.currentState.hide();
                                 final link = '$linkDomain$_userName';
                                 Clipboard.setData(ClipboardData(text: link));
-                                EasyLoading.showToast(
-                                    'Copied\nYou can add the Link to your social bio now.');
+                                // EasyLoading.showToast(
+                                //     'Copied\nYou can add the Link to your social bio now.');
                                 ShareManager.showShareLinkDialog(context, link);
+                                copyDialog(context);
                               },
                               child: Container(
                                 padding: EdgeInsets.only(
@@ -411,89 +424,120 @@ class _ShopLinkPageState extends State<ShopLinkPage>
     }
   }
 
+  _showStepIfNeeded() async {
+    try {
+      String step = await _storage.read(key: KeyStore.GUIDE_STEP);
+      if ((step == "2" || step == "3") && _models.length == 0) {
+        //Global.tokAddAndShare.currentState.show();
+      } else {
+        Global.tokAddAndShare.currentState.hide();
+        await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
+      }
+    } catch (e) {}
+  }
+
   Widget _buildWidget(_ViewModel vm) {
-    return SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: true,
-      header: MaterialClassicHeader(
-        color: Colours.color_EA5228,
-      ),
-      onRefresh: () async {
-        vm.fetchMyInfo();
-        final Completer completer = Completer();
-        StoreProvider.of<AppState>(context).dispatch(
-          MyInfoGoodsListAction(
-              MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1),
-              completer),
-        );
-
-        try {
-          final StoreGoodsList model = await completer.future;
-          String step = await _storage.read(key: KeyStore.GUIDE_STEP);
-          if ((step == "2" || step == "3") && model.list.length == 0) {
-            //Global.tokAddAndShare.currentState.show();
-          } else {
-            Global.tokAddAndShare.currentState.hide();
-            await _storage.write(key: KeyStore.GUIDE_STEP, value: "6");
-          }
-          _currentPage = 1;
-          _refreshController.refreshCompleted(resetFooterState: true);
-          if (_currentPage >= model.totalPage) {
-            _refreshController.loadNoData();
-          }
-        } catch (e) {
-          _refreshController.refreshFailed();
-        }
-      },
-      onLoading: () async {
-        final Completer completer = Completer();
-        StoreProvider.of<AppState>(context).dispatch(
-          MyInfoGoodsListAction(
-              MyInfoGoodsListRequest(
-                  Global.getUser(context).id, 0, _currentPage + 1),
-              completer),
-        );
-
-        try {
-          final StoreGoodsList model = await completer.future;
-          _currentPage = model.currentPage;
-          _refreshController.loadComplete();
-          if (_currentPage >= model.totalPage) {
-            _refreshController.loadNoData();
-          }
-        } catch (e) {
-          _refreshController.loadFailed();
-        }
-      },
-      controller: _refreshController,
-      child: CustomScrollView(
-        physics: BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: _buildHeaderWidget(),
+    return Stack(
+      children: [
+        SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: MaterialClassicHeader(
+            color: Colours.color_EA5228,
           ),
-          vm.models.isEmpty
-              ? SliverToBoxAdapter(child: _emptyGoodsWidget())
-              : _hasGoodsWidget(vm)
-        ],
-      ),
+          onRefresh: () async {
+            vm.fetchMyInfo();
+            final Completer completer = Completer();
+            StoreProvider.of<AppState>(context).dispatch(
+              MyInfoGoodsListAction(
+                  MyInfoGoodsListRequest(Global.getUser(context).id, 0, 1),
+                  completer),
+            );
+
+            try {
+              final StoreGoodsList model = await completer.future;
+              _currentPage = 1;
+              setState(() {
+                _models = model.list;
+              });
+              _refreshController.refreshCompleted(resetFooterState: true);
+              if (_currentPage >= model.totalPage) {
+                _refreshController.loadNoData();
+              }
+
+              _showStepIfNeeded();
+            } catch (e) {
+              _refreshController.refreshFailed();
+            }
+          },
+          onLoading: () async {
+            final Completer completer = Completer();
+            StoreProvider.of<AppState>(context).dispatch(
+              MyInfoGoodsListAction(
+                  MyInfoGoodsListRequest(
+                      Global.getUser(context).id, 0, _currentPage + 1),
+                  completer),
+            );
+
+            try {
+              final StoreGoodsList model = await completer.future;
+              _currentPage = model.currentPage;
+
+              setState(() {
+                _models.addAll(model.list);
+              });
+              _refreshController.loadComplete();
+              if (_currentPage >= model.totalPage) {
+                _refreshController.loadNoData();
+              }
+            } catch (e) {
+              _refreshController.loadFailed();
+            }
+          },
+          controller: _refreshController,
+          child: CustomScrollView(
+            physics: BouncingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: _buildHeaderWidget(),
+              ),
+              _models.isEmpty
+                  ? SliverToBoxAdapter(child: _emptyGoodsWidget())
+                  : _hasGoodsWidget(vm)
+            ],
+          ),
+        ),
+        Align(
+            alignment: Alignment.bottomRight,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => Global.launchWhatsApp(),
+              child: Container(
+                  height: 44,
+                  width: 44,
+                  margin: EdgeInsets.only(right: 15, bottom: 10),
+                  child: Image(
+                    fit: BoxFit.contain,
+                    image: AssetImage('assets/images/shoplink/suc_manager.png'),
+                  )),
+            )),
+      ],
     );
   }
 
   Widget _hasGoodsWidget(_ViewModel vm) {
-    debugPrint("-----");
     return SliverPadding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 14),
       sliver: SliverStaggeredGrid.countBuilder(
-        itemCount: vm.models.length,
+        itemCount: _models.length,
         crossAxisCount: 4,
         crossAxisSpacing: 4.0,
         mainAxisSpacing: 4.0,
         staggeredTileBuilder: (index) => StaggeredTile.fit(2),
         itemBuilder: (context, index) => _Tile(
           currency: Global.getUser(context).monetaryUnit,
-          model: vm.models[index],
-          size: _getSize(vm.models[index]),
+          model: _models[index],
+          size: _getSize(_models[index]),
           idx: index,
           onTap: () async {
             if (await _storage.read(key: KeyStore.GUIDE_STEP) == "4") {
@@ -506,7 +550,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             final completer = Completer();
             StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
                 GoodsDetailRequest(
-                    vm.models[index].supplierId, vm.models[index].id),
+                    _models[index].supplierId, _models[index].id),
                 completer));
 
             EasyLoading.show();
@@ -525,7 +569,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               await _storage.write(key: KeyStore.GUIDE_STEP, value: "5");
               Global.tokGoods.currentState.hide();
             }
-            _shareOrRemoveGoods(vm, vm.models[index]);
+            _shareOrRemoveGoods(vm, _models[index]);
           },
         ),
       ),
@@ -590,12 +634,30 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           onItemClick: (index) {
             switch (index) {
               case 0:
-                ShareManager.showShareGoodsDialog(context, storeGoods.picture);
+                ShareManager.showShareGoodsDialog(
+                  context,
+                  storeGoods.pictures,
+                  storeGoods.goodsName,
+                  storeGoods.currentPriceStr,
+                );
                 break;
               case 1:
                 AppEvent.shared.report(event: AnalyticsEvent.product_remove);
 
-                vm.deleteGoods(storeGoods.id);
+                EasyLoading.show();
+                final completer = Completer();
+                completer.future.then((value) {
+                  EasyLoading.dismiss();
+                  setState(() {
+                    _models
+                        .removeWhere((element) => element.id == storeGoods.id);
+                  });
+                }).catchError((err) {
+                  EasyLoading.dismiss();
+                  EasyLoading.showToast(err.toString());
+                });
+                StoreProvider.of<AppState>(context).dispatch(DeleteGoodsAction(
+                    DeleteGoodsRequest(storeGoods.id), completer));
                 break;
               default:
                 break;
@@ -705,6 +767,32 @@ class _ShopLinkPageState extends State<ShopLinkPage>
 
   @override
   bool get wantKeepAlive => true;
+
+  copyDialog(BuildContext context) async {
+    int readInt = await _storage.readInt(key: KeyStore.COPY_NUMBER);
+    if (readInt != null) readInt++;
+    debugPrint('copy次数：' + readInt.toString());
+    if (readInt == null || readInt <= 3) {
+      readInt == null
+          ? await _storage.writeInt(key: KeyStore.COPY_NUMBER, value: 1)
+          : await _storage.writeInt(
+              key: KeyStore.COPY_NUMBER, value: readInt++);
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => WillPopScope(
+                onWillPop: () async => false, // 屏蔽返回键
+                child: IdolMessageDialog(
+                  'Copied\n\nPut the link in your social bio to launch your social ecommerce.',
+                  buttonText: 'I got it!',
+                  onClose: () => {IdolRoute.pop(context)},
+                  onTap: () {
+                    IdolRoute.pop(context);
+                  },
+                ),
+              ));
+    }
+  }
 }
 
 class _Size {
@@ -746,7 +834,7 @@ class _Tile extends StatelessWidget {
                 ),
                 clipBehavior: Clip.antiAlias,
                 elevation: 0,
-                child: _GoodsItem(),
+                child: _goodsItem(),
               ),
             ),
           )
@@ -759,12 +847,12 @@ class _Tile extends StatelessWidget {
               ),
               clipBehavior: Clip.antiAlias,
               elevation: 0,
-              child: _GoodsItem(),
+              child: _goodsItem(),
             ),
           );
   }
 
-  Widget _GoodsItem() {
+  Widget _goodsItem() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -772,13 +860,15 @@ class _Tile extends StatelessWidget {
           height: size.height,
           child: Stack(
             children: [
-              CachedNetworkImage(
-                placeholder: (context, _) => Image(
-                  image: R.image.goods_placeholder(),
-                  fit: BoxFit.cover,
+              Center(
+                child: CachedNetworkImage(
+                  placeholder: (context, _) => Image(
+                    image: R.image.goods_placeholder(),
+                    fit: BoxFit.cover,
+                  ),
+                  imageUrl: model.picture,
+                  fit: BoxFit.contain,
                 ),
-                imageUrl: model.picture,
-                fit: BoxFit.cover,
               ),
               if (model.discount.isNotEmpty)
                 Positioned(
@@ -820,8 +910,6 @@ class _Tile extends StatelessWidget {
                   children: [
                     Image(
                       image: R.image.ic_pv(),
-                      width: 12,
-                      height: 8,
                     ),
                     SizedBox(
                       width: 2,
@@ -830,7 +918,7 @@ class _Tile extends StatelessWidget {
                       _formatHeatRank(model.heatRank) ?? '0',
                       style: TextStyle(
                         color: Colours.white,
-                        fontSize: 10,
+                        fontSize: 12,
                         shadows: [
                           Shadow(
                               offset: Offset(1.0, 1.0),
@@ -850,7 +938,6 @@ class _Tile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 已知问题：web无法同时支持maxLines和ellipsis，详见 https://github.com/flutter/flutter/issues/44802#issuecomment-555707104
               Text(
                 '${model.goodsName}',
                 style: TextStyle(
@@ -895,15 +982,24 @@ class _Tile extends StatelessWidget {
                   height: 8,
                 ),
               Wrap(
-                spacing: 2,
-                runSpacing: 2,
-                children: model.tag
-                    .map(
-                      (e) => TagView(
-                        text: e.name.toUpperCase(),
-                      ),
-                    )
-                    .toList(),
+                direction: Axis.horizontal,
+                alignment: WrapAlignment.start,
+                spacing: 5,
+                runSpacing: 5,
+                children: model.tag.map((tag) {
+                  return Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colours.color_ED8514, width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    child: Text(
+                      tag.name,
+                      style:
+                          TextStyle(color: Colours.color_ED8514, fontSize: 12),
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),
@@ -954,14 +1050,10 @@ class TagView extends StatelessWidget {
 }
 
 class _ViewModel {
-  final List<StoreGoods> models;
-  final Function(String) deleteGoods;
   final VoidCallback fetchMyInfo;
 
   _ViewModel(
-    this.models,
     this.fetchMyInfo,
-    this.deleteGoods,
   );
 
   static _ViewModel fromStore(Store<AppState> store) {
@@ -969,20 +1061,8 @@ class _ViewModel {
       store.dispatch(MyInfoAction(BaseRequestImpl()));
     }
 
-    void _deleteGoods(String goodsId) {
-      EasyLoading.show();
-      final completer = Completer();
-      completer.future.then((value) => EasyLoading.dismiss()).catchError((err) {
-        EasyLoading.dismiss();
-        EasyLoading.showToast(err.toString());
-      });
-      store.dispatch(DeleteGoodsAction(DeleteGoodsRequest(goodsId), completer));
-    }
-
     return _ViewModel(
-      store.state.myStoreGoods.list,
       _fetchMyInfo,
-      _deleteGoods,
     );
   }
 }
