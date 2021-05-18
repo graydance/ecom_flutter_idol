@@ -117,5 +117,7 @@
 	<string>YES</string>
     <key>NSUserTrackingUsageDescription</key>
     <string>This identifier will be used to deliver personalized ads to you.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>${PRODUCT_NAME} uses the photo to share your product photo</string>
 </dict>
 </plist>

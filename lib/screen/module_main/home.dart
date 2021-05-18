@@ -80,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen>
         : ScaleTransition(
             scale: _scaleMyShop,
             child: Image(
+              key: _myShopKey,
               image: active
                   ? _tabIconSelectedPaths[index]
                   : _tabIconNormalPaths[index],
@@ -115,8 +116,11 @@ class _HomeScreenState extends State<HomeScreen>
   String _pickImageURL = '';
   StreamSubscription<StartPickAnimation> eventBusFn;
 
+  GlobalKey _myShopKey = GlobalKey();
   Animation<double> _scaleMyShop;
   AnimationController _myShopAnimationController;
+  double _myShopOffsetX = 0;
+  double _pickImageSize = 40;
 
   @override
   void initState() {
@@ -141,26 +145,38 @@ class _HomeScreenState extends State<HomeScreen>
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _myShopAnimationController.reset();
-        _myShopAnimationController.forward();
+        _myShopAnimationController
+            .forward()
+            .then((value) => _myShopAnimationController.reverse());
       }
     });
 
     _myShopAnimationController = AnimationController(
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 100),
       vsync: this,
-      value: 1.0,
     );
 
-    _scaleMyShop = Tween(begin: 0.6, end: 1.0).animate(
+    _scaleMyShop = Tween(begin: 1.0, end: 1.4).animate(
       CurvedAnimation(
         parent: _myShopAnimationController,
         curve: Interval(
           0.0,
           1.0,
-          curve: Curves.easeOutBack,
+          curve: Curves.easeOut,
         ),
       ),
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      RenderBox box = _myShopKey.currentContext.findRenderObject();
+      _myShopOffsetX = box.localToGlobal(Offset.zero).dx +
+          box.size.width / 2.0 -
+          _pickImageSize / 2.0;
+      // _key1.currentContext.size; Size(200.0, 100.0)
+      debugPrint('box >>> ${box.size}'); // Size(200.0, 100.0)
+      debugPrint(
+          'box offset >>> ${box.localToGlobal(Offset.zero)}'); // Offset(107.0, 100.0)
+    });
   }
 
   @override
@@ -183,10 +199,11 @@ class _HomeScreenState extends State<HomeScreen>
               _createBody(),
               Positioned(
                 bottom: -10,
-                right: 25,
+                left: _myShopOffsetX,
                 child: StaggerAnimation(
                   controller: _animationController,
                   url: _pickImageURL,
+                  size: _pickImageSize,
                 ),
               ),
               // Positioned(
@@ -395,12 +412,13 @@ class _ViewModel {
 
 // ignore: must_be_immutable
 class StaggerAnimation extends StatelessWidget {
-  StaggerAnimation({Key key, this.controller, this.url}) : super(key: key) {
+  StaggerAnimation({Key key, this.controller, this.url, this.size})
+      : super(key: key) {
     scale = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: controller,
         curve: Interval(
-          0.0, 0.2, //间隔，前20%的动画时间
+          0.0, 0.3, //间隔，前40%的动画时间
           curve: Curves.easeOutBack,
         ),
       ),
@@ -419,6 +437,7 @@ class StaggerAnimation extends StatelessWidget {
 
   final AnimationController controller;
   final String url;
+  final double size;
   Animation<double> opacity;
   Animation<double> bottom;
   Animation<double> scale;
@@ -433,10 +452,22 @@ class StaggerAnimation extends StatelessWidget {
             bottom: bottom.value,
             child: Transform.scale(
               scale: scale.value,
-              child: CachedNetworkImage(
-                imageUrl: url,
-                width: 40,
-                height: 40,
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      offset: Offset(3.0, 3.0),
+                      blurRadius: 10.0, // 阴影模糊程度
+                      spreadRadius: 1.0, // 阴影扩散程度
+                    ),
+                  ],
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: url,
+                  width: size,
+                  height: size,
+                ),
               ),
             ),
           ),
