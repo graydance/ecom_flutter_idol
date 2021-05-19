@@ -80,7 +80,6 @@ class _HomeScreenState extends State<HomeScreen>
         : ScaleTransition(
             scale: _scaleMyShop,
             child: Image(
-              key: _myShopKey,
               image: active
                   ? _tabIconSelectedPaths[index]
                   : _tabIconNormalPaths[index],
@@ -351,6 +350,7 @@ class _HomeScreenState extends State<HomeScreen>
 
                   Global.homePageController.jumpToPage(2);
                 },
+                builderKey: _myShopKey,
                 builder: (ctx) =>
                     _buildNavigationBarItemIcon(2, false)), // Inbox
             activeIcon: _buildNavigationBarItemIcon(2, true),
