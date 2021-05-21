@@ -310,10 +310,10 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                     SizedBox(
                       height: 5,
                     ),
-                    Text(
+                    SelectableText(
                       _goodsDetail.goodsName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      // maxLines: 2,
+                      // overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Colours.color_555764,
                         fontSize: 12,
