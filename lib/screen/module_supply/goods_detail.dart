@@ -298,15 +298,14 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                 padding: EdgeInsets.all(2),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: Colours.color_ED8514, width: 1),
+                                      color: HexColor(tag.color), width: 1),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(4)),
                                 ),
                                 child: Text(
                                   tag.interestName,
                                   style: TextStyle(
-                                      color: Colours.color_ED8514,
-                                      fontSize: 12),
+                                      color: HexColor(tag.color), fontSize: 12),
                                 ),
                               );
                             }).toList(),

@@ -4,6 +4,7 @@ import 'package:idol/models/supplier.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_supply/supplier_goods_tab_view.dart';
 import 'package:idol/store/actions/supply.dart';
@@ -276,11 +277,11 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen>
                 decoration: BoxDecoration(
                   color: Colours.white,
                   borderRadius: BorderRadius.all(Radius.circular(4)),
-                  border: Border.all(color: Colours.color_48B6EF, width: 1),
+                  border: Border.all(color: HexColor(tag.color), width: 1),
                 ),
                 child: Text(
                   tag.interestName,
-                  style: TextStyle(color: Colours.color_48B6EF, fontSize: 12),
+                  style: TextStyle(color: HexColor(tag.color), fontSize: 12),
                 ),
               );
             }).toList(),

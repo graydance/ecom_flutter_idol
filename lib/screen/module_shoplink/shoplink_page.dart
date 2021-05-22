@@ -21,6 +21,7 @@ import 'package:idol/net/request/store.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
@@ -990,13 +991,13 @@ class _Tile extends StatelessWidget {
                   return Container(
                     padding: EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colours.color_ED8514, width: 1),
+                      border: Border.all(color: HexColor(tag.color), width: 1),
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                     ),
                     child: Text(
                       tag.name,
                       style:
-                          TextStyle(color: Colours.color_ED8514, fontSize: 12),
+                          TextStyle(color: HexColor(tag.color), fontSize: 12),
                     ),
                   );
                 }).toList(),

@@ -10,6 +10,7 @@ import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
@@ -189,13 +190,13 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         padding: EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           border:
-                              Border.all(color: Colours.color_ED8514, width: 1),
+                              Border.all(color: HexColor(tag.color), width: 1),
                           borderRadius: BorderRadius.all(Radius.circular(4)),
                         ),
                         child: Text(
                           tag.interestName,
                           style: TextStyle(
-                              color: Colours.color_ED8514, fontSize: 12),
+                              color: HexColor(tag.color), fontSize: 12),
                         ),
                       );
                     }).toList(),
