@@ -54,7 +54,7 @@ class GoodsSpec {
       createdAt: map['createdAt'],
       updatedAt: map['updatedAt'],
       specValues: List<SpecValues>.from(
-          map['specValues']?.map((x) => SpecValues.fromMap(x))),
+          map['specValues']?.map((x) => SpecValues.fromMap(x)) ?? []),
     );
   }
 

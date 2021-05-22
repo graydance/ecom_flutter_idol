@@ -234,21 +234,21 @@ class GoodsDetail {
       soldNum: map['soldNum'],
       collectNum: map['collectNum'],
       inMyStore: map['inMyStore'],
-      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x))),
+      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x)) ?? []),
       goods: List<String>.from(map['goods']),
       updateTime: map['updateTime'],
       goodsSkus: List<GoodsSkus>.from(
-          map['goodsSkus']?.map((x) => GoodsSkus.fromMap(x))),
+          map['goodsSkus']?.map((x) => GoodsSkus.fromMap(x)) ?? []),
       specList: List<GoodsSpec>.from(
-          map['specList']?.map((x) => GoodsSpec.fromMap(x))),
+          map['specList']?.map((x) => GoodsSpec.fromMap(x)) ?? []),
       serviceConfigs: List<ServiceConfig>.from(
-          map['serviceConfigs']?.map((x) => ServiceConfig.fromMap(x))),
-      shippedFrom: map['shippedFrom'],
-      shippedTo: map['shippedTo'],
+          map['serviceConfigs']?.map((x) => ServiceConfig.fromMap(x)) ?? []),
+      shippedFrom: map['shippedFrom'] ?? '',
+      shippedTo: map['shippedTo'] ?? '',
       expressTemplete: List<ExpressTemplete>.from(
-          map['expressTemplete']?.map((x) => ExpressTemplete.fromMap(x))),
-      isCustomiz: map['isCustomiz'],
-      shareText: map['shareText'],
+          map['expressTemplete']?.map((x) => ExpressTemplete.fromMap(x)) ?? []),
+      isCustomiz: map['isCustomiz'] ?? 0,
+      shareText: map['shareText'] ?? '',
     );
   }
 

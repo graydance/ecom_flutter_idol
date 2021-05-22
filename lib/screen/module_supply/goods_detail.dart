@@ -44,8 +44,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 
-  String _skuTitle = 'Select';
-  String _selectedSkuDesc = 'not selected';
+  String _skuTitle = 'Variations';
+  String _selectedSkuDesc = '';
   GoodsSkus _selectedSku;
   ExpressTemplete _selectedExpress;
 
@@ -132,9 +132,19 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
         try {
           final goodsDetail = await completer.future;
-          setState(() {
-            _goodsDetail = goodsDetail;
-          });
+
+          if (mounted) {
+            setState(() {
+              _goodsDetail = goodsDetail;
+              _skuTitle = _goodsDetail.specList.isNotEmpty
+                  ? 'Variations ' +
+                      _goodsDetail.specList
+                          .map((e) => '${e.specName}(${e.specValues.length})')
+                          .join(', ')
+                  : 'Variations';
+              _selectedExpress = _goodsDetail.expressTemplete.first;
+            });
+          }
           debugPrint('_goodsDetail >>> $_goodsDetail');
 
           _refreshController.refreshCompleted();
@@ -384,41 +394,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                 color: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: IdolButton(
-                  _goodsDetail.inMyStore == null
-                      ? '--'
-                      : (_goodsDetail.inMyStore == 0
-                          ? 'Pick & Sell'
-                          : 'Share to Earn'),
+                  _shareButtonTitle,
                   isOutlineStyle: _goodsDetail.inMyStore == 1,
                   status: _bottomButtonStatus,
                   listener: (status) {
-                    AppEvent.shared.report(
-                        event: AnalyticsEvent.detail_pick_share,
-                        parameters: {
-                          AnalyticsEventParameter.type:
-                              _goodsDetail.inMyStore == 1 ? 'share' : 'pick'
-                        });
-
-                    if (_goodsDetail.inMyStore == 1) {
-                      ShareManager.showShareGoodsDialog(
-                        context,
-                        _goodsDetail.goods,
-                        _goodsDetail.shareText,
-                      );
-                    } else {
-                      final completer = Completer();
-                      completer.future.then((value) {
-                        setState(() {
-                          _goodsDetail = _goodsDetail.copyWith(inMyStore: 1);
-                        });
-                      }).catchError((error) {
-                        print(error);
-                      });
-                      StoreProvider.of<AppState>(context)
-                          .dispatch(AddToStoreAction(_goodsDetail, completer));
-
-                      completer.future.then((value) => _showMessageBar());
-                    }
+                    _onTapShare();
                   },
                 ),
               ),
@@ -430,44 +410,52 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                 child: Column(
                   children: [
                     if (_goodsDetail.goodsSkus.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                _skuTitle,
-                                style: TextStyle(
-                                  color: AppTheme.color0F1015,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                      GestureDetector(
+                        onTap: () async {
+                          await _showSkuBottomSheet(
+                            context,
+                            model,
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            children: [
+                              Expanded(
                                 child: Text(
-                                  _selectedSkuDesc,
-                                  maxLines: 2,
-                                  textAlign: TextAlign.right,
+                                  _skuTitle,
                                   style: TextStyle(
-                                    color: AppTheme.color555764,
-                                    fontSize: 12,
+                                    color: AppTheme.color0F1015,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 10,
-                              color: AppTheme.color555764,
-                            ),
-                          ],
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Text(
+                                    _selectedSkuDesc,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: AppTheme.color555764,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 10,
+                                color: AppTheme.color555764,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     Divider(
@@ -479,6 +467,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         await _showDeliveryBottomSheet(
                           context,
                           model,
+                          _shareButtonTitle,
                         );
                       },
                       child: Container(
@@ -551,7 +540,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                     if (_goodsDetail.serviceConfigs.isNotEmpty)
                       GestureDetector(
                         onTap: () async {
-                          await _showServiceBottomSheet(context, model);
+                          await _showServiceBottomSheet(
+                              context, model, _shareButtonTitle);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -641,6 +631,40 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
     );
   }
 
+  String get _shareButtonTitle => _goodsDetail.inMyStore == null
+      ? '--'
+      : (_goodsDetail.inMyStore == 0 ? 'Pick & Sell' : 'Share to Earn');
+
+  void _onTapShare() {
+    AppEvent.shared.report(
+        event: AnalyticsEvent.detail_pick_share,
+        parameters: {
+          AnalyticsEventParameter.type:
+              _goodsDetail.inMyStore == 1 ? 'share' : 'pick'
+        });
+
+    if (_goodsDetail.inMyStore == 1) {
+      ShareManager.showShareGoodsDialog(
+        context,
+        _goodsDetail.goods,
+        _goodsDetail.shareText,
+      );
+    } else {
+      final completer = Completer();
+      completer.future.then((value) {
+        setState(() {
+          _goodsDetail = _goodsDetail.copyWith(inMyStore: 1);
+        });
+      }).catchError((error) {
+        print(error);
+      });
+      StoreProvider.of<AppState>(context)
+          .dispatch(AddToStoreAction(_goodsDetail, completer));
+
+      completer.future.then((value) => _showMessageBar());
+    }
+  }
+
   String _removeAllHtmlTags(String htmlText) {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
@@ -662,15 +686,15 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
     });
   }
 
-  Future<void> _showSkuBottomSheet(BuildContext context, _ViewModel viewModel,
-      ProductAttributesActionType actionType) async {
+  Future<void> _showSkuBottomSheet(
+      BuildContext context, _ViewModel viewModel) async {
     await showProductAttributesBottomSheet(
       context,
       ProductAttributesViewModel(
         currency: Global.getUser(context).monetaryUnit,
         model: _goodsDetail,
         quantity: 1,
-        actionType: actionType,
+        buttonTitle: _shareButtonTitle,
         selectedSku: _selectedSku,
         onSkuChanged: (sku) {
           _selectedSku = sku;
@@ -695,14 +719,15 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
             _selectedSkuDesc = specDescs.join(', ');
           });
         },
-        onTapAction: (skuSpecIds, isCustomiz, customiz) {},
-        onQuantityChange: (int) {},
+        onTapAction: (skuSpecIds, isCustomiz, customiz) {
+          _onTapShare();
+        },
       ),
     );
   }
 
   Future<void> _showDeliveryBottomSheet(
-      BuildContext context, _ViewModel viewModel) async {
+      BuildContext context, _ViewModel viewModel, String buttonTitle) async {
     if (_goodsDetail.expressTemplete.isEmpty) {
       EasyLoading.showToast('No shipping');
       return;
@@ -727,16 +752,17 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                 _selectedExpress = value;
               });
             },
-            onTapAddToCart: () async {},
+            onTapAddToCart: _onTapShare,
             defaultExpress: _selectedExpress,
             currency: Global.getUser(context).monetaryUnit,
+            buttonTitle: buttonTitle,
           );
         },
         isDismissible: true);
   }
 
   Future<void> _showServiceBottomSheet(
-      BuildContext context, _ViewModel viewModel) async {
+      BuildContext context, _ViewModel viewModel, String buttonTitle) async {
     return showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -750,7 +776,8 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         builder: (context) {
           return _ServiceView(
             list: _goodsDetail.serviceConfigs,
-            onTapAddToCart: () {},
+            onTapAddToCart: _onTapShare,
+            buttonTitle: buttonTitle,
           );
         },
         isDismissible: true);
@@ -805,6 +832,7 @@ class _DeliveryOptionView extends StatefulWidget {
   final String shippedTo;
   final List<ExpressTemplete> list;
   final Function(ExpressTemplete) onChanged;
+  final String buttonTitle;
   final VoidCallback onTapAddToCart;
   final ExpressTemplete defaultExpress;
   final String currency;
@@ -815,6 +843,7 @@ class _DeliveryOptionView extends StatefulWidget {
       @required this.shippedTo,
       @required this.list,
       @required this.onChanged,
+      @required this.buttonTitle,
       @required this.onTapAddToCart,
       @required this.currency,
       this.defaultExpress})
@@ -930,7 +959,7 @@ class __DeliveryOptionViewState extends State<_DeliveryOptionView> {
                 bottom: 20,
               ),
               child: IdolButton(
-                'ADD TO CART',
+                widget.buttonTitle,
                 listener: (status) {
                   Navigator.of(context).pop();
                   widget.onTapAddToCart();
@@ -946,11 +975,13 @@ class __DeliveryOptionViewState extends State<_DeliveryOptionView> {
 
 class _ServiceView extends StatelessWidget {
   final List<ServiceConfig> list;
+  final String buttonTitle;
   final VoidCallback onTapAddToCart;
 
   const _ServiceView({
     Key key,
     @required this.list,
+    @required this.buttonTitle,
     @required this.onTapAddToCart,
   }) : super(key: key);
 
@@ -1039,7 +1070,7 @@ class _ServiceView extends StatelessWidget {
                 vertical: 15,
               ),
               child: IdolButton(
-                'ADD TO CART',
+                buttonTitle,
                 listener: (status) {
                   Navigator.of(context).pop();
                   if (onTapAddToCart != null) {

@@ -181,15 +181,17 @@ class _ProductAttributesBottomSheetState
                       },
                       itemCount: widget.viewModel.model.specList.length),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                QuantityEditingButton(
-                  min: 1,
-                  max: _currentSku.stock,
-                  quantity: widget.viewModel.quantity,
-                  onChanged: widget.viewModel.onQuantityChange,
-                ),
+                if (widget.viewModel.onQuantityChange != null)
+                  SizedBox(
+                    height: 20,
+                  ),
+                if (widget.viewModel.onQuantityChange != null)
+                  QuantityEditingButton(
+                    min: 1,
+                    max: _currentSku.stock,
+                    quantity: widget.viewModel.quantity,
+                    onChanged: widget.viewModel.onQuantityChange,
+                  ),
                 if (widget.viewModel.model.isCustomiz == 1) _customizView(),
                 SizedBox(
                   height: 20,
@@ -200,7 +202,7 @@ class _ProductAttributesBottomSheetState
                   child: IdolButton(
                     _currentSku.stock == 0
                         ? 'Out of stock'
-                        : widget.viewModel.actionType.displayTitle,
+                        : widget.viewModel.buttonTitle,
                     listener: (status) {
                       if (_currentSku.stock == 0) {
                         return;
@@ -528,26 +530,12 @@ Future showProductAttributesBottomSheet(
       isDismissible: true);
 }
 
-enum ProductAttributesActionType { addToCart, buyNow }
-
-extension ProductAttributesActionTypeExt on ProductAttributesActionType {
-  // ignore: missing_return
-  String get displayTitle {
-    switch (this) {
-      case ProductAttributesActionType.addToCart:
-        return 'Add to cart';
-      case ProductAttributesActionType.buyNow:
-        return 'Buy now';
-    }
-  }
-}
-
 class ProductAttributesViewModel {
   final String currency;
   final GoodsDetail model;
   final int quantity;
   final GoodsSkus selectedSku;
-  final ProductAttributesActionType actionType;
+  final String buttonTitle;
   final Function(int) onQuantityChange;
   final Function(GoodsSkus) onSkuChanged;
   final Function(String, bool, String) onTapAction;
@@ -557,8 +545,8 @@ class ProductAttributesViewModel {
     @required this.model,
     @required this.quantity,
     @required this.selectedSku,
-    @required this.actionType,
-    @required this.onQuantityChange,
+    @required this.buttonTitle,
+    this.onQuantityChange,
     @required this.onSkuChanged,
     @required this.onTapAction,
   });

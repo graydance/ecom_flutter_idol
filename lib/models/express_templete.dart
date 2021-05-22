@@ -46,11 +46,11 @@ class ExpressTemplete {
 
   factory ExpressTemplete.fromMap(Map<String, dynamic> map) {
     return ExpressTemplete(
-      id: map['id'],
-      name: map['name'],
-      min: map['min'],
-      max: map['max'],
-      price: map['price'],
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      min: map['min'] ?? 0,
+      max: map['max'] ?? 0,
+      price: map['price'] ?? '',
     );
   }
 
