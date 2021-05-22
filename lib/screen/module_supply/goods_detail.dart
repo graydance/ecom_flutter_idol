@@ -191,8 +191,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                   ShareManager.showShareGoodsDialog(
                                     context,
                                     _goodsDetail.goods,
-                                    _goodsDetail.goodsName,
-                                    _goodsDetail.suggestedPriceStr,
+                                    _goodsDetail.shareText,
                                   );
                                 },
                               ),
@@ -404,8 +403,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                       ShareManager.showShareGoodsDialog(
                         context,
                         _goodsDetail.goods,
-                        _goodsDetail.goodsName,
-                        _goodsDetail.suggestedPriceStr,
+                        _goodsDetail.shareText,
                       );
                     } else {
                       final completer = Completer();

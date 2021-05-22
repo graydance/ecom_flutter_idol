@@ -110,8 +110,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
                   ShareManager.showShareGoodsDialog(
                     context,
                     goodsDetail.goods,
-                    goodsDetail.goodsName,
-                    goodsDetail.suggestedPriceStr,
+                    goodsDetail.shareText,
                   );
                 },
               );

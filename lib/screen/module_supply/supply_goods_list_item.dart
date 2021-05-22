@@ -164,8 +164,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                           ShareManager.showShareGoodsDialog(
                             context,
                             widget.goodsDetail.goods,
-                            widget.goodsDetail.goodsName,
-                            widget.goodsDetail.suggestedPriceStr,
+                            widget.goodsDetail.shareText,
                           );
                         },
                       ),
@@ -320,8 +319,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                         ShareManager.showShareGoodsDialog(
                                           context,
                                           widget.goodsDetail.goods,
-                                          widget.goodsDetail.goodsName,
-                                          widget.goodsDetail.suggestedPriceStr,
+                                          widget.goodsDetail.shareText,
                                         );
                                       } else {
                                         await _addProductToMyStore(
@@ -346,8 +344,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                   ShareManager.showShareGoodsDialog(
                                     context,
                                     widget.goodsDetail.goods,
-                                    widget.goodsDetail.goodsName,
-                                    widget.goodsDetail.suggestedPriceStr,
+                                    widget.goodsDetail.shareText,
                                   );
                                 } else {
                                   _addProductToMyStore(widget.goodsDetail);

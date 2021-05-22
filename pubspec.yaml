@@ -39,7 +39,7 @@ dependencies:
   cached_network_image: ^2.5.1
   auto_size_text: ^2.1.0
   super_tooltip: ^1.0.1
-  modal_bottom_sheet: ^1.0.0+1
+  modal_bottom_sheet: ^2.0.0
   ecomshare:
     git:
       url: 'https://github.com/graydance/ecomshare.git'

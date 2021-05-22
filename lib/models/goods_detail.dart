@@ -8,23 +8,6 @@ import 'package:idol/models/goods_spec.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/models/tag.dart';
 
-/// id : "商品id"
-/// supplierName : "供应商名称"
-/// supplierId : "供应商id"
-/// followStatus : 0
-/// goodsName : "商品名称"
-/// earningPrice : 10
-/// earningPriceStr : "0.10"
-/// suggestedPrice : 100
-/// suggestedPriceStr : "1.00"
-/// goodsDescription : "商品描述"
-/// discount : "商品折扣 ps: -20%"
-/// soldNum : 100
-/// collectNum : 100
-/// inMyStore: 0, //0不在我的商店 1在我的商店
-/// tag : [{"id":"标签id","interestName":"标签名称","interestPortrait":"标签图标","interestDescription":"标签描述","interestType":0}]
-/// goods : ["商品图片/视频地址"]
-
 @immutable
 class GoodsDetail {
   final String id;
@@ -53,7 +36,7 @@ class GoodsDetail {
   final List<ExpressTemplete> expressTemplete;
   final int isCustomiz;
 
-//<editor-fold desc="Data Methods" defaultstate="collapsed">
+  final String shareText;
 
   const GoodsDetail({
     this.id = '',
@@ -80,6 +63,7 @@ class GoodsDetail {
     this.shippedTo = '',
     this.expressTemplete = const [],
     this.isCustomiz = 0,
+    this.shareText = '',
   });
 
   GoodsDetail copyWith({
@@ -107,6 +91,7 @@ class GoodsDetail {
     String shippedTo,
     List<ExpressTemplete> expressTemplete,
     int isCustomiz,
+    String shareText,
   }) {
     return GoodsDetail(
       id: id ?? this.id,
@@ -133,12 +118,13 @@ class GoodsDetail {
       shippedTo: shippedTo ?? this.shippedTo,
       expressTemplete: expressTemplete ?? this.expressTemplete,
       isCustomiz: isCustomiz ?? this.isCustomiz,
+      shareText: shareText ?? this.shareText,
     );
   }
 
   @override
   String toString() {
-    return 'GoodsDetail(id: $id, supplierName: $supplierName, supplierId: $supplierId, followStatus: $followStatus, goodsName: $goodsName, earningPrice: $earningPrice, earningPriceStr: $earningPriceStr, suggestedPrice: $suggestedPrice, suggestedPriceStr: $suggestedPriceStr, goodsDescription: $goodsDescription, discount: $discount, soldNum: $soldNum, collectNum: $collectNum, inMyStore: $inMyStore, tag: $tag, goods: $goods, updateTime: $updateTime, goodsSkus: $goodsSkus, specList: $specList, serviceConfigs: $serviceConfigs, shippedFrom: $shippedFrom, shippedTo: $shippedTo, expressTemplete: $expressTemplete, isCustomiz: $isCustomiz)';
+    return 'GoodsDetail(id: $id, supplierName: $supplierName, supplierId: $supplierId, followStatus: $followStatus, goodsName: $goodsName, earningPrice: $earningPrice, earningPriceStr: $earningPriceStr, suggestedPrice: $suggestedPrice, suggestedPriceStr: $suggestedPriceStr, goodsDescription: $goodsDescription, discount: $discount, soldNum: $soldNum, collectNum: $collectNum, inMyStore: $inMyStore, tag: $tag, goods: $goods, updateTime: $updateTime, goodsSkus: $goodsSkus, specList: $specList, serviceConfigs: $serviceConfigs, shippedFrom: $shippedFrom, shippedTo: $shippedTo, expressTemplete: $expressTemplete, isCustomiz: $isCustomiz, shareText: $shareText)';
   }
 
   @override
@@ -169,7 +155,8 @@ class GoodsDetail {
         other.shippedFrom == shippedFrom &&
         other.shippedTo == shippedTo &&
         listEquals(other.expressTemplete, expressTemplete) &&
-        other.isCustomiz == isCustomiz;
+        other.isCustomiz == isCustomiz &&
+        other.shareText == shareText;
   }
 
   @override
@@ -197,7 +184,8 @@ class GoodsDetail {
         shippedFrom.hashCode ^
         shippedTo.hashCode ^
         expressTemplete.hashCode ^
-        isCustomiz.hashCode;
+        isCustomiz.hashCode ^
+        shareText.hashCode;
   }
 
   Map<String, dynamic> toMap() {
@@ -226,6 +214,7 @@ class GoodsDetail {
       'shippedTo': shippedTo,
       'expressTemplete': expressTemplete?.map((x) => x.toMap())?.toList(),
       'isCustomiz': isCustomiz,
+      'shareText': shareText,
     };
   }
 
@@ -245,20 +234,21 @@ class GoodsDetail {
       soldNum: map['soldNum'],
       collectNum: map['collectNum'],
       inMyStore: map['inMyStore'],
-      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x)) ?? []),
+      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x))),
       goods: List<String>.from(map['goods']),
       updateTime: map['updateTime'],
       goodsSkus: List<GoodsSkus>.from(
-          map['goodsSkus']?.map((x) => GoodsSkus.fromMap(x)) ?? []),
+          map['goodsSkus']?.map((x) => GoodsSkus.fromMap(x))),
       specList: List<GoodsSpec>.from(
-          map['specList']?.map((x) => GoodsSpec.fromMap(x)) ?? []),
+          map['specList']?.map((x) => GoodsSpec.fromMap(x))),
       serviceConfigs: List<ServiceConfig>.from(
-          map['serviceConfigs']?.map((x) => ServiceConfig.fromMap(x)) ?? []),
-      shippedFrom: map['shippedFrom'] ?? '',
-      shippedTo: map['shippedTo'] ?? '',
+          map['serviceConfigs']?.map((x) => ServiceConfig.fromMap(x))),
+      shippedFrom: map['shippedFrom'],
+      shippedTo: map['shippedTo'],
       expressTemplete: List<ExpressTemplete>.from(
-          map['expressTemplete']?.map((x) => ExpressTemplete.fromMap(x)) ?? []),
-      isCustomiz: map['isCustomiz'] ?? 0,
+          map['expressTemplete']?.map((x) => ExpressTemplete.fromMap(x))),
+      isCustomiz: map['isCustomiz'],
+      shareText: map['shareText'],
     );
   }
 

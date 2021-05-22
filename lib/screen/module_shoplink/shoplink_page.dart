@@ -638,8 +638,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                 ShareManager.showShareGoodsDialog(
                   context,
                   storeGoods.pictures,
-                  storeGoods.goodsName,
-                  storeGoods.currentPriceStr,
+                  storeGoods.shareText,
                 );
                 break;
               case 1:
