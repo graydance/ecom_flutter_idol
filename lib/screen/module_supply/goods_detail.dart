@@ -11,15 +11,20 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
+import 'package:idol/models/goods_skus.dart';
+import 'package:idol/models/models.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/supply.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
+import 'package:idol/widgets/product_attributes_bottom_sheet.dart';
 import 'package:idol/widgets/video_player_widget.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -38,6 +43,11 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
+
+  String _skuTitle = 'Variations';
+  String _selectedSkuDesc = '';
+  GoodsSkus _selectedSku;
+  ExpressTemplete _selectedExpress;
 
   @override
   void initState() {
@@ -97,13 +107,13 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
               onPressed: () => IdolRoute.pop(context),
             ),
           ),
-          body: _buildBodyWidget(),
+          body: _buildBodyWidget(vm),
         );
       },
     );
   }
 
-  Widget _buildBodyWidget() {
+  Widget _buildBodyWidget(_ViewModel model) {
     var updateTime =
         DateTime.fromMillisecondsSinceEpoch(_goodsDetail.updateTime);
     _bottomButtonStatus = IdolButtonStatus.enable;
@@ -122,9 +132,21 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
         try {
           final goodsDetail = await completer.future;
-          setState(() {
-            _goodsDetail = goodsDetail;
-          });
+
+          if (mounted) {
+            setState(() {
+              _goodsDetail = goodsDetail;
+              _skuTitle = _goodsDetail.specList.isNotEmpty
+                  ? 'Variations ' +
+                      _goodsDetail.specList
+                          .map((e) => '${e.specName}(${e.specValues.length})')
+                          .join(', ')
+                  : 'Variations';
+              _selectedExpress = _goodsDetail.expressTemplete.first;
+            });
+          }
+          debugPrint('_goodsDetail >>> $_goodsDetail');
+
           _refreshController.refreshCompleted();
         } catch (error) {
           _refreshController.refreshFailed();
@@ -179,8 +201,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                   ShareManager.showShareGoodsDialog(
                                     context,
                                     _goodsDetail.goods,
-                                    _goodsDetail.goodsName,
-                                    _goodsDetail.suggestedPriceStr,
+                                    _goodsDetail.shareText,
                                   );
                                 },
                               ),
@@ -286,15 +307,14 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                 padding: EdgeInsets.all(2),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: Colours.color_ED8514, width: 1),
+                                      color: HexColor(tag.color), width: 1),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(4)),
                                 ),
                                 child: Text(
                                   tag.interestName,
                                   style: TextStyle(
-                                      color: Colours.color_ED8514,
-                                      fontSize: 12),
+                                      color: HexColor(tag.color), fontSize: 12),
                                 ),
                               );
                             }).toList(),
@@ -310,10 +330,10 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                     SizedBox(
                       height: 5,
                     ),
-                    Text(
+                    SelectableText(
                       _goodsDetail.goodsName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      // maxLines: 2,
+                      // overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Colours.color_555764,
                         fontSize: 12,
@@ -374,43 +394,204 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                 color: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: IdolButton(
-                  _goodsDetail.inMyStore == null
-                      ? '--'
-                      : (_goodsDetail.inMyStore == 0
-                          ? 'Pick & Sell'
-                          : 'Share to Earn'),
+                  _shareButtonTitle,
                   isOutlineStyle: _goodsDetail.inMyStore == 1,
                   status: _bottomButtonStatus,
                   listener: (status) {
-                    AppEvent.shared.report(
-                        event: AnalyticsEvent.detail_pick_share,
-                        parameters: {
-                          AnalyticsEventParameter.type:
-                              _goodsDetail.inMyStore == 1 ? 'share' : 'pick'
-                        });
-
-                    if (_goodsDetail.inMyStore == 1) {
-                      ShareManager.showShareGoodsDialog(
-                        context,
-                        _goodsDetail.goods,
-                        _goodsDetail.goodsName,
-                        _goodsDetail.suggestedPriceStr,
-                      );
-                    } else {
-                      final completer = Completer();
-                      completer.future.then((value) {
-                        setState(() {
-                          _goodsDetail = _goodsDetail.copyWith(inMyStore: 1);
-                        });
-                      }).catchError((error) {
-                        print(error);
-                      });
-                      StoreProvider.of<AppState>(context)
-                          .dispatch(AddToStoreAction(_goodsDetail, completer));
-
-                      completer.future.then((value) => _showMessageBar());
-                    }
+                    _onTapShare();
                   },
+                ),
+              ),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                child: Column(
+                  children: [
+                    if (_goodsDetail.goodsSkus.isNotEmpty)
+                      GestureDetector(
+                        onTap: () async {
+                          await _showSkuBottomSheet(
+                            context,
+                            model,
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _skuTitle,
+                                  style: TextStyle(
+                                    color: AppTheme.color0F1015,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Text(
+                                    _selectedSkuDesc,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: AppTheme.color555764,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 10,
+                                color: AppTheme.color555764,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    Divider(
+                      color: AppTheme.colorE7E8EC,
+                      height: 1,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        await _showDeliveryBottomSheet(
+                          context,
+                          model,
+                          _shareButtonTitle,
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _selectedExpress != null
+                                        ? _selectedExpress.name +
+                                            ' ' +
+                                            _formatPrice(
+                                                _selectedExpress.price,
+                                                Global.getUser(context)
+                                                    .monetaryUnit)
+                                        : 'Free Shipping',
+                                    style: TextStyle(
+                                      color: AppTheme.color0F1015,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Image(image: R.image.icon_airplane()),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0),
+                                          child: Text(
+                                            _formatShippingMessage(
+                                              _goodsDetail.shippedFrom,
+                                              _goodsDetail.shippedTo,
+                                              _selectedExpress,
+                                            ),
+                                            style: TextStyle(
+                                              color: AppTheme.color555764,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 10,
+                              color: AppTheme.color555764,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (_goodsDetail.serviceConfigs.isNotEmpty)
+                      Divider(
+                        color: AppTheme.colorE7E8EC,
+                        height: 1,
+                      ),
+                    if (_goodsDetail.serviceConfigs.isNotEmpty)
+                      GestureDetector(
+                        onTap: () async {
+                          await _showServiceBottomSheet(
+                              context, model, _shareButtonTitle);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Service',
+                                      style: TextStyle(
+                                        color: AppTheme.color0F1015,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            _goodsDetail.serviceConfigs
+                                                .map((e) => e.title)
+                                                .join(', '),
+                                            style: TextStyle(
+                                              color: AppTheme.color555764,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 10,
+                                color: AppTheme.color555764,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Container(
@@ -450,6 +631,40 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
     );
   }
 
+  String get _shareButtonTitle => _goodsDetail.inMyStore == null
+      ? '--'
+      : (_goodsDetail.inMyStore == 0 ? 'Pick & Sell' : 'Share to Earn');
+
+  void _onTapShare() {
+    AppEvent.shared.report(
+        event: AnalyticsEvent.detail_pick_share,
+        parameters: {
+          AnalyticsEventParameter.type:
+              _goodsDetail.inMyStore == 1 ? 'share' : 'pick'
+        });
+
+    if (_goodsDetail.inMyStore == 1) {
+      ShareManager.showShareGoodsDialog(
+        context,
+        _goodsDetail.goods,
+        _goodsDetail.shareText,
+      );
+    } else {
+      final completer = Completer();
+      completer.future.then((value) {
+        setState(() {
+          _goodsDetail = _goodsDetail.copyWith(inMyStore: 1);
+        });
+      }).catchError((error) {
+        print(error);
+      });
+      StoreProvider.of<AppState>(context)
+          .dispatch(AddToStoreAction(_goodsDetail, completer));
+
+      completer.future.then((value) => _showMessageBar());
+    }
+  }
+
   String _removeAllHtmlTags(String htmlText) {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
@@ -469,6 +684,103 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
     setState(() {
       _messageBarHeight = 0;
     });
+  }
+
+  Future<void> _showSkuBottomSheet(
+      BuildContext context, _ViewModel viewModel) async {
+    await showProductAttributesBottomSheet(
+      context,
+      ProductAttributesViewModel(
+        currency: Global.getUser(context).monetaryUnit,
+        model: _goodsDetail,
+        quantity: 1,
+        buttonTitle: _shareButtonTitle,
+        selectedSku: _selectedSku,
+        onSkuChanged: (sku) {
+          _selectedSku = sku;
+          debugPrint('onSkuChanged >>> ${sku.toString()}');
+          List<String> skuSpecIds = _selectedSku.skuSpecIds.split('_');
+          if (skuSpecIds.length != _goodsDetail.specList.length) {
+            return;
+          }
+
+          List<String> specDescs = [];
+          for (int i = 0; i < _goodsDetail.specList.length; i++) {
+            final spec = _goodsDetail.specList[i];
+            final specValue = spec.specValues.firstWhere(
+              (e) => e.id.toString() == skuSpecIds[i],
+              orElse: () => null,
+            );
+            if (specValue != null) {
+              specDescs.add('${spec.specName}(${specValue.specValue})');
+            }
+          }
+          setState(() {
+            _selectedSkuDesc = specDescs.join(', ');
+          });
+        },
+        onTapAction: (skuSpecIds, isCustomiz, customiz) {
+          _onTapShare();
+        },
+      ),
+    );
+  }
+
+  Future<void> _showDeliveryBottomSheet(
+      BuildContext context, _ViewModel viewModel, String buttonTitle) async {
+    if (_goodsDetail.expressTemplete.isEmpty) {
+      EasyLoading.showToast('No shipping');
+      return;
+    }
+
+    return showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(4),
+            topRight: Radius.circular(4),
+          ),
+        ),
+        builder: (context) {
+          return _DeliveryOptionView(
+            shippedFrom: _goodsDetail.shippedFrom,
+            shippedTo: _goodsDetail.shippedTo,
+            list: _goodsDetail.expressTemplete,
+            onChanged: (value) {
+              setState(() {
+                _selectedExpress = value;
+              });
+            },
+            onTapAddToCart: _onTapShare,
+            defaultExpress: _selectedExpress,
+            currency: Global.getUser(context).monetaryUnit,
+            buttonTitle: buttonTitle,
+          );
+        },
+        isDismissible: true);
+  }
+
+  Future<void> _showServiceBottomSheet(
+      BuildContext context, _ViewModel viewModel, String buttonTitle) async {
+    return showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(4),
+            topRight: Radius.circular(4),
+          ),
+        ),
+        builder: (context) {
+          return _ServiceView(
+            list: _goodsDetail.serviceConfigs,
+            onTapAddToCart: _onTapShare,
+            buttonTitle: buttonTitle,
+          );
+        },
+        isDismissible: true);
   }
 }
 
@@ -513,6 +825,328 @@ bool _isVideoSource(String url) {
       url.contains('.3gp') ||
       url.contains('.wmv') ||
       url.contains('.mkv'));
+}
+
+class _DeliveryOptionView extends StatefulWidget {
+  final String shippedFrom;
+  final String shippedTo;
+  final List<ExpressTemplete> list;
+  final Function(ExpressTemplete) onChanged;
+  final String buttonTitle;
+  final VoidCallback onTapAddToCart;
+  final ExpressTemplete defaultExpress;
+  final String currency;
+
+  _DeliveryOptionView(
+      {Key key,
+      @required this.shippedFrom,
+      @required this.shippedTo,
+      @required this.list,
+      @required this.onChanged,
+      @required this.buttonTitle,
+      @required this.onTapAddToCart,
+      @required this.currency,
+      this.defaultExpress})
+      : super(key: key);
+
+  @override
+  __DeliveryOptionViewState createState() => __DeliveryOptionViewState();
+}
+
+class __DeliveryOptionViewState extends State<_DeliveryOptionView> {
+  ExpressTemplete _expressGroupValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _expressGroupValue = widget.defaultExpress ?? widget.list.first;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          bottom: MediaQuery.of(context).padding.bottom,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            SizedBox(
+              height: 40,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Delivery Opention',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: AppTheme.color0F1015,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        primary: AppTheme.colorC4C5CD,
+                        padding: EdgeInsets.all(1),
+                      ),
+                      child: Image(
+                        image: R.image.icon_close(),
+                        width: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListView.separated(
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final model = widget.list[index];
+                final price = _formatPrice(model.price, widget.currency);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  child: RadioListTile(
+                    value: model,
+                    groupValue: _expressGroupValue,
+                    onChanged: (value) {
+                      setState(() {
+                        _expressGroupValue = value;
+                      });
+                      widget.onChanged(model);
+                    },
+                    contentPadding: EdgeInsets.zero,
+                    title: Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        '${model.name} $price',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppTheme.color0F1015,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    subtitle: Text(
+                      _formatShippingMessage(
+                          widget.shippedFrom, widget.shippedTo, model),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.color555764,
+                      ),
+                    ),
+                    activeColor: Color(0xFFFFA700),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return Divider(color: AppTheme.colorC4C5CD, height: 1);
+              },
+              itemCount:
+                  widget.list.length, //view_model.expressTemplete.length,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                bottom: 20,
+              ),
+              child: IdolButton(
+                widget.buttonTitle,
+                listener: (status) {
+                  Navigator.of(context).pop();
+                  widget.onTapAddToCart();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ServiceView extends StatelessWidget {
+  final List<ServiceConfig> list;
+  final String buttonTitle;
+  final VoidCallback onTapAddToCart;
+
+  const _ServiceView({
+    Key key,
+    @required this.list,
+    @required this.buttonTitle,
+    @required this.onTapAddToCart,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Container(
+              height: 210 / 375 * MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: R.image.icon_service(),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 10,
+                    right: 10,
+                    bottom: 30,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Shop with Confidence',
+                          style: TextStyle(
+                            color: AppTheme.colorED8514,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          'We provids guarantess to all Olaak purchases',
+                          style: TextStyle(
+                            color: AppTheme.colorED8514,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    right: 5,
+                    top: 5,
+                    child: SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        style: TextButton.styleFrom(
+                          primary: AppTheme.colorC4C5CD,
+                          padding: EdgeInsets.all(1),
+                        ),
+                        child: Image(
+                          image: R.image.icon_close(),
+                          width: 15,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return _buildTile(list[index]);
+              },
+              itemCount: list.length,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 15,
+              ),
+              child: IdolButton(
+                buttonTitle,
+                listener: (status) {
+                  Navigator.of(context).pop();
+                  if (onTapAddToCart != null) {
+                    onTapAddToCart();
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTile(ServiceConfig model) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CachedNetworkImage(
+            imageUrl: model.icon,
+            width: 30,
+            height: 30,
+          ),
+          SizedBox(
+            width: 12,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  model.title,
+                  style: TextStyle(
+                    color: AppTheme.color0F1015,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  model.content,
+                  style: TextStyle(
+                    color: AppTheme.color555764,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _formatShippingMessage(
+    String shippedFrom, String shippedTo, ExpressTemplete model) {
+  if (model == null) {
+    return '';
+  }
+  final earlyDate = DateTime.now().add(Duration(days: model.min));
+  final earlyDateString = DateFormat('MM/dd').format(earlyDate);
+  final theShippedTo = shippedTo.trim().isEmpty ? 'United States' : shippedTo;
+  if (shippedFrom.isEmpty) {
+    return 'Shipped to $theShippedTo\nEstimated delivery as early as $earlyDateString';
+  }
+  return 'Shipped from $shippedFrom To $theShippedTo\nEstimated delivery as early as $earlyDateString';
+}
+
+String _formatPrice(String price, String currency) {
+  return double.tryParse(price) != 0 ? currency + price : 'Free';
 }
 
 class _ViewModel {

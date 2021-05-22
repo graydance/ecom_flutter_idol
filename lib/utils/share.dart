@@ -13,6 +13,7 @@ import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/dialog_share.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -22,7 +23,7 @@ class ShareManager {
 
   /// 分享Link
   static void showShareLinkDialog(BuildContext context, String link) {
-    showModalBottomSheet(
+    showCupertinoModalBottomSheet(
         context: context,
         builder: (context) {
           return ShareDialog(
@@ -30,7 +31,7 @@ class ShareManager {
             videoUrls,
             '1.Add shop link in the bio of social media account.\n2.Attract your fans with great content and post.',
             ShareType.link,
-            (channel) {
+            (channel, shareText) {
               final shareChannel = channel == 'System' ? 'More' : channel;
               AppEvent.shared.report(
                   event: AnalyticsEvent.shoplink_share_channel,
@@ -56,11 +57,12 @@ class ShareManager {
   }
 
   /// 分享商品
-  static void showShareGoodsDialog(BuildContext context, List<String> imageUrls,
-      String goodsName, String price) {
+  static void showShareGoodsDialog(
+      BuildContext context, List<String> imageUrls, String shareText) {
     AppEvent.shared.report(event: AnalyticsEvent.share_product_view);
+    debugPrint('shareText >> $shareText');
 
-    showModalBottomSheet(
+    showCupertinoModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         builder: (context) {
@@ -70,19 +72,17 @@ class ShareManager {
               imageUrls,
               // 'The product is now available in your store.\nShare the news with your fans on social media to make money!',
               '',
-              ShareType.goods, (shareChannel) {
+              ShareType.goods, (shareChannel, newShareText) {
             if (shareChannel != 'Download All') {
               EasyLoading.showToast('Capture copied');
             }
-            final shareText =
-                '$goodsName+ at US \$$price / piece only.\n\n\n🚨 LINK IN BIO TO SHOP⤵️\n\n🚨 FELLOW ME FOR SAVING 💰\n\n\n#olaak #rundeals #couponer #deals #savingmonsy #coupons #couponcommunity';
-            Clipboard.setData(ClipboardData(text: shareText));
+            Clipboard.setData(ClipboardData(text: newShareText));
 
             Future.delayed(Duration(milliseconds: 500), () {
               IdolRoute.pop(context);
               _downloadAll(context, imageUrls, shareChannel);
             });
-          }, tips: ''
+          }, shareText: shareText, tips: ''
               // 'Tips: Share your own pictures with product can increase 38% Sales.',
               );
         });

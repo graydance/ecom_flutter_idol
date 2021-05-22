@@ -39,7 +39,7 @@ dependencies:
   cached_network_image: ^2.5.1
   auto_size_text: ^2.1.0
   super_tooltip: ^1.0.1
-  modal_bottom_sheet: ^1.0.0+1
+  modal_bottom_sheet: ^2.0.0
   ecomshare:
     git:
       url: 'https://github.com/graydance/ecomshare.git'
@@ -50,6 +50,8 @@ dependencies:
   chewie: ^1.0.0
   event_bus: ^2.0.0
   facebook_app_events: ^0.12.0
+  intl: ^0.17.0
+  photo_view: ^0.10.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -114,7 +116,15 @@ flutter:
   - assets/images/main/ic_tab_supply_normal.png
   - assets/images/main/ic_tab_supply_selected.png
   - assets/images/main/ic_whatsapp.png
+  - assets/images/main/icon_add.png
+  - assets/images/main/icon_add_disable.png
+  - assets/images/main/icon_airplane.png
+  - assets/images/main/icon_close.png
+  - assets/images/main/icon_remove.png
+  - assets/images/main/icon_remove_disable.png
+  - assets/images/main/icon_service.png
   - assets/images/main/launch_background.webp
+  - assets/images/main/product_search.png
   - assets/images/main/whatsapp_small.png
   - assets/images/new_guid.png
   - assets/images/payment_select.png
