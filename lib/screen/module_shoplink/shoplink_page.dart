@@ -345,7 +345,12 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                                         color: Colours.color_575859),
                                   ],
                           ),
-                          decoration: InputDecoration.collapsed(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                             hintText: 'Tap to add a shop description',
                             hintStyle: TextStyle(
                               color: _shopDescIsEditing
