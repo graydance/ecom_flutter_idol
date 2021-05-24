@@ -52,6 +52,9 @@ dependencies:
   facebook_app_events: ^0.12.0
   intl: ^0.17.0
   photo_view: ^0.10.3
+  hashtagable:
+    git:
+      url: 'https://github.com/graydance/hashtagable.git'
 dev_dependencies:
   flutter_test:
     sdk: flutter

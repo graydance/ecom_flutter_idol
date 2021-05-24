@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:hashtagable/hashtagable.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/res/theme.dart';
@@ -320,7 +321,15 @@ class _ShareDialogState extends State<ShareDialog> {
                   right: 12,
                   bottom: 10,
                 ),
-                child: TextField(
+                child: HashTagTextField(
+                  decoratedStyle: TextStyle(
+                    fontSize: 12,
+                    color: Colors.blue,
+                  ),
+                  basicStyle: TextStyle(
+                    color: AppTheme.color555764,
+                    fontSize: 12,
+                  ),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
@@ -366,10 +375,6 @@ class _ShareDialogState extends State<ShareDialog> {
                   ),
                   controller: _textEditingController,
                   maxLines: null,
-                  style: TextStyle(
-                    color: AppTheme.color555764,
-                    fontSize: 12,
-                  ),
                 ),
               ),
               SizedBox(
