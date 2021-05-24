@@ -96,9 +96,11 @@ flutter:
   - assets/images/ic_share_facebook.png
   - assets/images/ic_share_instagram.png
   - assets/images/ic_share_more.png
+  - assets/images/ic_share_single_download.png
   - assets/images/ic_share_twitter.png
   - assets/images/main/arrow_left.png
   - assets/images/main/bg_login_signup.png
+  - assets/images/main/copy_sharetext.png
   - assets/images/main/double_arrow_down.png
   - assets/images/main/eyes_visibility.png
   - assets/images/main/eyes_visibility_off.png

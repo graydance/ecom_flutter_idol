@@ -44,7 +44,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 
-  String _skuTitle = 'Variations';
+  String _skuTitle = '';
   String _selectedSkuDesc = '';
   GoodsSkus _selectedSku;
   ExpressTemplete _selectedExpress;
@@ -74,7 +74,14 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      onInit: (store) => _goodsDetail = store.state.goodsDetailPage,
+      onInit: (store) {
+        _goodsDetail = store.state.goodsDetailPage;
+        _skuTitle = _goodsDetail.specList.isNotEmpty
+            ? _goodsDetail.specList
+                .map((e) => '${e.specName}(${e.specValues.length})')
+                .join(', ')
+            : '';
+      },
       builder: (context, vm) {
         return Scaffold(
           appBar: AppBar(
@@ -137,11 +144,10 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
             setState(() {
               _goodsDetail = goodsDetail;
               _skuTitle = _goodsDetail.specList.isNotEmpty
-                  ? 'Variations ' +
-                      _goodsDetail.specList
-                          .map((e) => '${e.specName}(${e.specValues.length})')
-                          .join(', ')
-                  : 'Variations';
+                  ? _goodsDetail.specList
+                      .map((e) => '${e.specName}(${e.specValues.length})')
+                      .join(', ')
+                  : '';
               _selectedExpress = _goodsDetail.expressTemplete.first;
             });
           }
@@ -422,31 +428,52 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                           child: Row(
                             children: [
                               Expanded(
-                                child: Text(
-                                  _skuTitle,
-                                  style: TextStyle(
-                                    color: AppTheme.color0F1015,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Text(
-                                    _selectedSkuDesc,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      color: AppTheme.color555764,
-                                      fontSize: 12,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Variations',
+                                      style: TextStyle(
+                                        color: AppTheme.color0F1015,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
                                     ),
-                                  ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            _skuTitle,
+                                            style: TextStyle(
+                                              color: AppTheme.color0F1015,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: Text(
+                                              _selectedSkuDesc,
+                                              maxLines: 2,
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                color: AppTheme.color555764,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                               Icon(
