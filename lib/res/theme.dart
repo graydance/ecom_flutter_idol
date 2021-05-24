@@ -26,7 +26,7 @@ class HexColor extends Color {
     if (hexColor.length == 6) {
       hexColor = "FF" + hexColor;
     } else {
-      hexColor = "FFFFFFFF";
+      hexColor = "FFED8514";
     }
     return int.parse(hexColor, radix: 16);
   }
