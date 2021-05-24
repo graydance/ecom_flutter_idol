@@ -5,6 +5,7 @@ import 'package:idol/widgets/SpeechBubble.dart';
 
 class TutorialOverlay extends StatefulWidget {
   final GlobalKey<TutorialOverlayState> key;
+  final GlobalKey builderKey;
   final builder; // 子控件构造函数
   final String bubbleText; // 气泡框文本内容
   final Position handPosition; // 手势位置
@@ -17,6 +18,7 @@ class TutorialOverlay extends StatefulWidget {
   TutorialOverlay(
       {this.builder,
       this.key,
+      this.builderKey,
       this.bubbleText = "",
       this.handPosition = Position.BOTTOM_RIGHT,
       this.bubbleNipPosition = NipLocation.BOTTOM,
@@ -36,7 +38,7 @@ const double BUBBLE_NIP_HEIGHT = 10;
 const HAND_POSITION_OFFSET = const Offset(20, 20);
 
 class TutorialOverlayState extends State<TutorialOverlay> {
-  var builderKey = GlobalKey();
+  GlobalKey builderKey;
   var bubbleEntryKey = GlobalKey();
   OverlayEntry bubbleEntry;
   AnimationController controller;
@@ -215,6 +217,7 @@ class TutorialOverlayState extends State<TutorialOverlay> {
   }
 
   initState() {
+    builderKey = widget.builderKey ?? GlobalKey();
     super.initState();
   }
 

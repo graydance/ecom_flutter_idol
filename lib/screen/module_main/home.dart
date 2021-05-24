@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   static const _titles = <String>[
     'Olaak',
-    'Dashboard',
+    'My Earnings',
     'Myshop',
     // 'Inbox',
     // 'Store'
@@ -69,13 +69,26 @@ class _HomeScreenState extends State<HomeScreen>
   ];
 
   Widget _buildNavigationBarItemIcon(int index, bool active) {
+    final imageView = index != 2
+        ? Image(
+            image: active
+                ? _tabIconSelectedPaths[index]
+                : _tabIconNormalPaths[index],
+            width: 30,
+            height: 30,
+          )
+        : ScaleTransition(
+            scale: _scaleMyShop,
+            child: Image(
+              image: active
+                  ? _tabIconSelectedPaths[index]
+                  : _tabIconNormalPaths[index],
+              width: 30,
+              height: 30,
+            ),
+          );
     return Column(children: [
-      Image(
-        image:
-            active ? _tabIconSelectedPaths[index] : _tabIconNormalPaths[index],
-        width: 30,
-        height: 30,
-      ),
+      imageView,
       Text(
         _titles[index],
         style: active
@@ -102,6 +115,12 @@ class _HomeScreenState extends State<HomeScreen>
   String _pickImageURL = '';
   StreamSubscription<StartPickAnimation> eventBusFn;
 
+  GlobalKey _myShopKey = GlobalKey();
+  Animation<double> _scaleMyShop;
+  AnimationController _myShopAnimationController;
+  double _myShopOffsetX = 0;
+  double _pickImageSize = 40;
+
   @override
   void initState() {
     _guideInit();
@@ -109,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen>
     AppEvent.shared.report(event: AnalyticsEvent.dashboard_tab);
 
     _animationController = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: Duration(milliseconds: 1500),
       vsync: this,
     );
 
@@ -120,6 +139,42 @@ class _HomeScreenState extends State<HomeScreen>
         _pickImageURL = event.imageURL;
       });
       _animationController.forward();
+    });
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _myShopAnimationController.reset();
+        _myShopAnimationController
+            .forward()
+            .then((value) => _myShopAnimationController.reverse());
+      }
+    });
+
+    _myShopAnimationController = AnimationController(
+      duration: Duration(milliseconds: 100),
+      vsync: this,
+    );
+
+    _scaleMyShop = Tween(begin: 1.0, end: 1.4).animate(
+      CurvedAnimation(
+        parent: _myShopAnimationController,
+        curve: Interval(
+          0.0,
+          1.0,
+          curve: Curves.easeOut,
+        ),
+      ),
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      RenderBox box = _myShopKey.currentContext.findRenderObject();
+      _myShopOffsetX = box.localToGlobal(Offset.zero).dx +
+          box.size.width / 2.0 -
+          _pickImageSize / 2.0;
+      // _key1.currentContext.size; Size(200.0, 100.0)
+      debugPrint('box >>> ${box.size}'); // Size(200.0, 100.0)
+      debugPrint(
+          'box offset >>> ${box.localToGlobal(Offset.zero)}'); // Offset(107.0, 100.0)
     });
   }
 
@@ -143,10 +198,11 @@ class _HomeScreenState extends State<HomeScreen>
               _createBody(),
               Positioned(
                 bottom: -10,
-                right: 25,
+                left: _myShopOffsetX,
                 child: StaggerAnimation(
                   controller: _animationController,
                   url: _pickImageURL,
+                  size: _pickImageSize,
                 ),
               ),
               // Positioned(
@@ -294,6 +350,7 @@ class _HomeScreenState extends State<HomeScreen>
 
                   Global.homePageController.jumpToPage(2);
                 },
+                builderKey: _myShopKey,
                 builder: (ctx) =>
                     _buildNavigationBarItemIcon(2, false)), // Inbox
             activeIcon: _buildNavigationBarItemIcon(2, true),
@@ -355,13 +412,14 @@ class _ViewModel {
 
 // ignore: must_be_immutable
 class StaggerAnimation extends StatelessWidget {
-  StaggerAnimation({Key key, this.controller, this.url}) : super(key: key) {
-    opacity = Tween(begin: 0.0, end: 1.0).animate(
+  StaggerAnimation({Key key, this.controller, this.url, this.size})
+      : super(key: key) {
+    scale = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: controller,
         curve: Interval(
-          0.0, 0.1, //间隔，前20%的动画时间
-          curve: Curves.easeIn,
+          0.0, 0.3, //间隔，前40%的动画时间
+          curve: Curves.easeOutBack,
         ),
       ),
     );
@@ -371,7 +429,7 @@ class StaggerAnimation extends StatelessWidget {
         parent: controller,
         curve: Interval(
           0.9, 1.0, //间隔，后20%的动画时间
-          curve: Curves.easeInOut,
+          curve: Curves.easeOut,
         ),
       ),
     );
@@ -379,19 +437,21 @@ class StaggerAnimation extends StatelessWidget {
 
   final AnimationController controller;
   final String url;
+  final double size;
   Animation<double> opacity;
   Animation<double> bottom;
+  Animation<double> scale;
 
   Widget _buildAnimation(BuildContext context, Widget child) {
-    return Opacity(
-      opacity: opacity.value,
-      child: Container(
-        height: 100,
-        width: 60,
-        child: Stack(
-          children: [
-            Positioned(
-              bottom: bottom.value,
+    return Container(
+      height: 100,
+      width: 50,
+      child: Stack(
+        children: [
+          Positioned(
+            bottom: bottom.value,
+            child: Transform.scale(
+              scale: scale.value,
               child: Container(
                 decoration: BoxDecoration(
                   boxShadow: [
@@ -405,13 +465,13 @@ class StaggerAnimation extends StatelessWidget {
                 ),
                 child: CachedNetworkImage(
                   imageUrl: url,
-                  width: 50,
-                  height: 50,
+                  width: size,
+                  height: size,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -12,7 +12,7 @@ class DioClient {
   BaseOptions _options = BaseOptions(
     baseUrl: apiEntry,
     connectTimeout: 30000,
-    receiveTimeout: 10000,
+    receiveTimeout: 30000,
     contentType: "application/json; charset=utf-8",
     responseType: ResponseType.json,
     headers: {
