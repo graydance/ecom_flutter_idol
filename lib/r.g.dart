@@ -225,6 +225,12 @@ class _R_Image_AssetResource {
   final ic_share_more =
       const AssetResource("assets/images/ic_share_more.png", packageName: null);
 
+  /// asset: assets/images/ic_share_single_download.png
+  // ignore: non_constant_identifier_names
+  final ic_share_single_download = const AssetResource(
+      "assets/images/ic_share_single_download.png",
+      packageName: null);
+
   /// asset: assets/images/ic_share_twitter.png
   // ignore: non_constant_identifier_names
   final ic_share_twitter = const AssetResource(
@@ -240,6 +246,12 @@ class _R_Image_AssetResource {
   // ignore: non_constant_identifier_names
   final bg_login_signup = const AssetResource(
       "assets/images/main/bg_login_signup.png",
+      packageName: null);
+
+  /// asset: assets/images/main/copy_sharetext.png
+  // ignore: non_constant_identifier_names
+  final copy_sharetext = const AssetResource(
+      "assets/images/main/copy_sharetext.png",
       packageName: null);
 
   /// asset: assets/images/main/double_arrow_down.png
@@ -723,6 +735,12 @@ class _R_Image {
     return AssetImage(asset.ic_share_more.keyName);
   }
 
+  /// asset: assets/images/ic_share_single_download.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_share_single_download() {
+    return AssetImage(asset.ic_share_single_download.keyName);
+  }
+
   /// asset: assets/images/ic_share_twitter.png
   // ignore: non_constant_identifier_names
   AssetImage ic_share_twitter() {
@@ -739,6 +757,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage bg_login_signup() {
     return AssetImage(asset.bg_login_signup.keyName);
+  }
+
+  /// asset: assets/images/main/copy_sharetext.png
+  // ignore: non_constant_identifier_names
+  AssetImage copy_sharetext() {
+    return AssetImage(asset.copy_sharetext.keyName);
   }
 
   /// asset: assets/images/main/double_arrow_down.png

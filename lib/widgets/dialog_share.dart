@@ -301,16 +301,8 @@ class _ShareDialogState extends State<ShareDialog> {
                         child: Container(
                           height: 20,
                           width: 20,
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.file_download,
-                            color: Colors.white,
-                            size: 14,
+                          child: Image(
+                            image: R.image.ic_share_single_download(),
                           ),
                         ),
                       ),
@@ -322,32 +314,61 @@ class _ShareDialogState extends State<ShareDialog> {
                 height: 10,
               ),
               Container(
+                color: AppTheme.colorF4F4F4,
+                padding: const EdgeInsets.only(
+                  left: 12,
+                  right: 12,
+                  bottom: 10,
+                ),
                 child: TextField(
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.color979AA9,
-                      ),
-                    ),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
                     hintText: 'Share Text',
-                    labelText: 'Share Text',
-                    suffixIcon: TextButton(
-                      onPressed: () {
-                        Clipboard.setData(
-                            ClipboardData(text: _textEditingController.text));
-                        EasyLoading.showToast('Capture copied!');
-                      },
-                      child: Icon(
-                        Icons.copy,
-                        color: AppTheme.color979AA9,
-                      ),
+                    hintStyle: TextStyle(
+                      color: AppTheme.colorC4C5CD,
+                      fontSize: 12,
+                    ),
+                  ),
+                  maxLength: 1000,
+                  buildCounter: (_, {currentLength, maxLength, isFocused}) =>
+                      Padding(
+                    padding: EdgeInsets.zero,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              currentLength.toString() +
+                                  "/" +
+                                  maxLength.toString(),
+                              style: TextStyle(
+                                color: AppTheme.colorC4C5CD,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(
+                                text: _textEditingController.text));
+                            EasyLoading.showToast('Capture copied!');
+                          },
+                          child: Image(image: R.image.copy_sharetext()),
+                        ),
+                      ],
                     ),
                   ),
                   controller: _textEditingController,
                   maxLines: null,
                   style: TextStyle(
-                    color: AppTheme.color0F1015,
-                    fontSize: 14,
+                    color: AppTheme.color555764,
+                    fontSize: 12,
                   ),
                 ),
               ),
