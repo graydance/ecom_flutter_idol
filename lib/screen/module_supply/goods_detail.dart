@@ -45,7 +45,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
       RefreshController(initialRefresh: true);
 
   String _skuTitle = '';
-  String _selectedSkuDesc = '';
+  // String _selectedSkuDesc = '';
   GoodsSkus _selectedSku;
   ExpressTemplete _selectedExpress;
 
@@ -453,24 +453,24 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: 8,
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Text(
-                                              _selectedSkuDesc,
-                                              maxLines: 2,
-                                              textAlign: TextAlign.right,
-                                              style: TextStyle(
-                                                color: AppTheme.color555764,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                        // SizedBox(
+                                        //   width: 8,
+                                        // ),
+                                        // Expanded(
+                                        //   child: Padding(
+                                        //     padding: const EdgeInsets.symmetric(
+                                        //         horizontal: 8.0),
+                                        //     child: Text(
+                                        //       _selectedSkuDesc,
+                                        //       maxLines: 2,
+                                        //       textAlign: TextAlign.right,
+                                        //       style: TextStyle(
+                                        //         color: AppTheme.color555764,
+                                        //         fontSize: 12,
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
                                       ],
                                     ),
                                   ],
@@ -725,26 +725,26 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         selectedSku: _selectedSku,
         onSkuChanged: (sku) {
           _selectedSku = sku;
-          debugPrint('onSkuChanged >>> ${sku.toString()}');
-          List<String> skuSpecIds = _selectedSku.skuSpecIds.split('_');
-          if (skuSpecIds.length != _goodsDetail.specList.length) {
-            return;
-          }
+          // debugPrint('onSkuChanged >>> ${sku.toString()}');
+          // List<String> skuSpecIds = _selectedSku.skuSpecIds.split('_');
+          // if (skuSpecIds.length != _goodsDetail.specList.length) {
+          //   return;
+          // }
 
-          List<String> specDescs = [];
-          for (int i = 0; i < _goodsDetail.specList.length; i++) {
-            final spec = _goodsDetail.specList[i];
-            final specValue = spec.specValues.firstWhere(
-              (e) => e.id.toString() == skuSpecIds[i],
-              orElse: () => null,
-            );
-            if (specValue != null) {
-              specDescs.add('${spec.specName}(${specValue.specValue})');
-            }
-          }
-          setState(() {
-            _selectedSkuDesc = specDescs.join(', ');
-          });
+          // List<String> specDescs = [];
+          // for (int i = 0; i < _goodsDetail.specList.length; i++) {
+          //   final spec = _goodsDetail.specList[i];
+          //   final specValue = spec.specValues.firstWhere(
+          //     (e) => e.id.toString() == skuSpecIds[i],
+          //     orElse: () => null,
+          //   );
+          //   if (specValue != null) {
+          //     specDescs.add('${spec.specName}(${specValue.specValue})');
+          //   }
+          // }
+          // setState(() {
+          //   _selectedSkuDesc = specDescs.join(', ');
+          // });
         },
         onTapAction: (skuSpecIds, isCustomiz, customiz) {
           _onTapShare();
