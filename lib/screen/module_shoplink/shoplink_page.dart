@@ -303,72 +303,72 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                         ),
                       ),
                       SizedBox(
+                        height: 6,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                          minHeight: 24.0,
+                          maxHeight: 84.0,
+                        ),
+                        margin: EdgeInsets.symmetric(
+                          vertical: 6.0,
+                          horizontal: 30,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 6.0,
+                          horizontal: 4.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _shopDescIsEditing
+                              ? Colors.white
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(2)),
+                        ),
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          textCapitalization: TextCapitalization.sentences,
+                          controller: _shopDescController,
+                          focusNode: _shopDescFocusNode,
+                          maxLength: 512,
+                          style: TextStyle(
+                            color: _shopDescIsEditing
+                                ? Colours.color_0F1015
+                                : Colors.white,
+                            fontSize: 12,
+                            shadows: _shopDescIsEditing
+                                ? []
+                                : [
+                                    Shadow(
+                                        offset: Offset(1.0, 1.0),
+                                        blurRadius: 2.0,
+                                        color: Colours.color_575859),
+                                  ],
+                          ),
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Tap to add a shop description',
+                            hintStyle: TextStyle(
+                              color: _shopDescIsEditing
+                                  ? Colours.color_black45
+                                  : Colors.white,
+                            ),
+                          ).copyWith(counterText: ''),
+                          maxLines: null,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            StoreProvider.of<AppState>(context)
+                                .dispatch(EditStoreAction(EditStoreRequest(
+                              _userName,
+                              _userName,
+                              _shopDescController.text.trim(),
+                            )));
+                          },
+                        ),
+                      ),
+                      SizedBox(
                         height: 15,
                       ),
-                      // SizedBox(
-                      //   height: 6,
-                      // ),
-                      // Container(
-                      //   constraints: BoxConstraints(
-                      //     minHeight: 24.0,
-                      //     maxHeight: 84.0,
-                      //   ),
-                      //   margin: EdgeInsets.symmetric(
-                      //     vertical: 6.0,
-                      //     horizontal: 30,
-                      //   ),
-                      //   padding: EdgeInsets.symmetric(
-                      //     vertical: 6.0,
-                      //     horizontal: 4.0,
-                      //   ),
-                      //   decoration: BoxDecoration(
-                      //     color: _shopDescIsEditing
-                      //         ? Colors.white
-                      //         : Colors.transparent,
-                      //     borderRadius: BorderRadius.all(Radius.circular(2)),
-                      //   ),
-                      //   child: TextField(
-                      //     textAlign: TextAlign.center,
-                      //     textAlignVertical: TextAlignVertical.center,
-                      //     textCapitalization: TextCapitalization.sentences,
-                      //     controller: _shopDescController,
-                      //     focusNode: _shopDescFocusNode,
-                      //     maxLength: 512,
-                      //     style: TextStyle(
-                      //       color: _shopDescIsEditing
-                      //           ? Colours.color_0F1015
-                      //           : Colors.white,
-                      //       fontSize: 12,
-                      //       shadows: _shopDescIsEditing
-                      //           ? []
-                      //           : [
-                      //               Shadow(
-                      //                   offset: Offset(1.0, 1.0),
-                      //                   blurRadius: 2.0,
-                      //                   color: Colours.color_575859),
-                      //             ],
-                      //     ),
-                      //     decoration: InputDecoration.collapsed(
-                      //       hintText: 'Tap to add a shop description',
-                      //       hintStyle: TextStyle(
-                      //         color: _shopDescIsEditing
-                      //             ? Colours.color_black45
-                      //             : Colors.white,
-                      //       ),
-                      //     ).copyWith(counterText: ''),
-                      //     maxLines: null,
-                      //     textInputAction: TextInputAction.done,
-                      //     onEditingComplete: () {
-                      //       FocusScope.of(context).requestFocus(FocusNode());
-                      //       StoreProvider.of<AppState>(context)
-                      //           .dispatch(EditStoreAction(EditStoreRequest(
-                      //         _userName,
-                      //         _userName,
-                      //         _shopDescController.text.trim(),
-                      //       )));
-                      //     },
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
