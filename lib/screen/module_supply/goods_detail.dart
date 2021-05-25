@@ -8,10 +8,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:redux/redux.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
-import 'package:idol/models/goods_skus.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
@@ -22,12 +26,7 @@ import 'package:idol/store/actions/supply.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
-import 'package:idol/widgets/product_attributes_bottom_sheet.dart';
 import 'package:idol/widgets/video_player_widget.dart';
-import 'package:intl/intl.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:redux/redux.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 /// 产品详情页
 class GoodsDetailScreen extends StatefulWidget {
@@ -43,11 +42,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
-
-  String _skuTitle = '';
-  // String _selectedSkuDesc = '';
-  GoodsSkus _selectedSku;
-  ExpressTemplete _selectedExpress;
 
   @override
   void initState() {
@@ -76,11 +70,6 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
       converter: _ViewModel.fromStore,
       onInit: (store) {
         _goodsDetail = store.state.goodsDetailPage;
-        _skuTitle = _goodsDetail.specList.isNotEmpty
-            ? _goodsDetail.specList
-                .map((e) => '${e.specName}(${e.specValues.length})')
-                .join(', ')
-            : '';
       },
       builder: (context, vm) {
         return Scaffold(
@@ -139,19 +128,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
         try {
           final goodsDetail = await completer.future;
+          _goodsDetail = goodsDetail;
 
-          if (mounted) {
-            setState(() {
-              _goodsDetail = goodsDetail;
-              _skuTitle = _goodsDetail.specList.isNotEmpty
-                  ? _goodsDetail.specList
-                      .map((e) => '${e.specName}(${e.specValues.length})')
-                      .join(', ')
-                  : '';
-              _selectedExpress = _goodsDetail.expressTemplete.first;
-            });
-          }
-          debugPrint('_goodsDetail >>> $_goodsDetail');
+          if (mounted) setState(() {});
 
           _refreshController.refreshCompleted();
         } catch (error) {
@@ -436,47 +415,45 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         ),
                       ),
                     ),
-                    if (_goodsDetail.goodsSkus.isNotEmpty)
-                      ListView.separated(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (ctx, i) {
-                          final model = _goodsDetail.specList[i];
-                          final allSpecString = model.specValues
-                              .map((e) => e.specValue)
-                              .join(', ');
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                model.specName,
-                                style: TextStyle(
-                                  color: AppTheme.color0F1015,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (ctx, i) {
+                        final model = _goodsDetail.specList[i];
+                        final allSpecString =
+                            model.specValues.map((e) => e.specValue).join(', ');
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              model.specName,
+                              style: TextStyle(
+                                color: AppTheme.color0F1015,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
                               ),
-                              SizedBox(
-                                height: 8,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              allSpecString,
+                              style: TextStyle(
+                                color: AppTheme.color555764,
+                                fontSize: 12,
                               ),
-                              Text(
-                                allSpecString,
-                                style: TextStyle(
-                                  color: AppTheme.color555764,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                        separatorBuilder: (ctx, index) {
-                          return SizedBox(
-                            height: 20,
-                          );
-                        },
-                        itemCount: _goodsDetail.specList.length,
-                      ),
+                            ),
+                          ],
+                        );
+                      },
+                      separatorBuilder: (ctx, index) {
+                        return SizedBox(
+                          height: 20,
+                        );
+                      },
+                      itemCount: _goodsDetail.specList.length,
+                    ),
                   ],
                 ),
               ),
