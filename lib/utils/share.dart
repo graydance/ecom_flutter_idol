@@ -42,7 +42,6 @@ class ShareManager {
                 Clipboard.setData(ClipboardData(text: link));
                 EasyLoading.showToast('Capture copied');
               } else {
-                print('channel:' + channel + " , link:" + link);
                 Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
               }
               IdolRoute.pop(context);
@@ -141,6 +140,8 @@ class ShareManager {
           Clipboard.setData(ClipboardData(text: shareText));
         });
       });
+
+      imageLocalPaths.removeAt(currentImageIndex);
     }
 
     if (await Permission.storage.request().isGranted) {
@@ -154,7 +155,8 @@ class ShareManager {
   }
 }
 
-void downloadImages(BuildContext context, List<String> imageUrls) async {
+void downloadImagesAndCopyText(
+    BuildContext context, List<String> imageUrls, String shareText) async {
   debugPrint('Download images >>> $imageUrls');
 
   EasyLoading.show(status: 'Downloading...');
@@ -173,6 +175,8 @@ void downloadImages(BuildContext context, List<String> imageUrls) async {
         ImageGallerySaver.saveFile(imageLocalPath);
       });
     }
+
+    Clipboard.setData(ClipboardData(text: shareText));
   } catch (e) {
     EasyLoading.showError(e.toString());
   }
