@@ -295,9 +295,10 @@ class _ShareDialogState extends State<ShareDialog> {
                       right: 8,
                       child: InkWell(
                         onTap: () {
-                          downloadImages(
+                          downloadImagesAndCopyText(
                             context,
                             [widget.mediaUrls[_currentIndex]],
+                            _textEditingController.text,
                           );
                         },
                         child: Container(
