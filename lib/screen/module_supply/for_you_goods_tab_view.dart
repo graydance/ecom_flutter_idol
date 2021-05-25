@@ -20,8 +20,7 @@ class ForYouTabView extends StatefulWidget {
   State<StatefulWidget> createState() => _ForYouTabViewState();
 }
 
-class _ForYouTabViewState extends State<ForYouTabView>
-    with AutomaticKeepAliveClientMixin<ForYouTabView> {
+class _ForYouTabViewState extends State<ForYouTabView> {
   RefreshController _refreshController;
   int _currentPage = 1;
   List<GoodsDetail> _list = [];
@@ -29,9 +28,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
   var eventBusFn;
 
   Set<String> _reportedIds = {};
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -56,7 +52,6 @@ class _ForYouTabViewState extends State<ForYouTabView>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
       builder: (context, vm) {
@@ -74,6 +69,7 @@ class _ForYouTabViewState extends State<ForYouTabView>
           color: Colours.color_EA5228,
         ),
         child: ListView.separated(
+          addAutomaticKeepAlives: false,
           scrollDirection: Axis.vertical,
           separatorBuilder: (context, index) {
             return Divider(
