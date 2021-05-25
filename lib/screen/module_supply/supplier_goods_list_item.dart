@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:idol/models/goods.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/utils/global.dart';
 
 class SupplierGoodsListItem extends StatefulWidget {
@@ -86,18 +87,20 @@ class _SupplierGoodsListItemState extends State<SupplierGoodsListItem> {
                                 : widget._goods.tag.map((tag) {
                                     return Container(
                                       padding: EdgeInsets.only(
-                                          left: 2, right: 2,),
+                                        left: 2,
+                                        right: 2,
+                                      ),
                                       decoration: BoxDecoration(
                                           color: Colours.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(4)),
                                           border: Border.all(
-                                              color: Colours.color_48B6EF,
+                                              color: HexColor(tag.color),
                                               width: 1)),
                                       child: Text(
                                         tag.interestName,
                                         style: TextStyle(
-                                            color: Colours.color_48B6EF,
+                                            color: HexColor(tag.color),
                                             fontSize: 10),
                                       ),
                                     );

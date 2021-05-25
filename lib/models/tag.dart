@@ -1,10 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-/// id : "标签id"
-/// interestName : "标签名称"
-/// interestPortrait : "标签图标"
-/// interestDescription : "标签描述"
-/// interestType : 0
+import 'package:flutter/material.dart';
 
 @immutable
 class Tag {
@@ -14,6 +10,7 @@ class Tag {
   final String interestPortrait;
   final String interestDescription;
   final int interestType;
+  final String color;
 
   const Tag({
     this.id = '',
@@ -22,6 +19,7 @@ class Tag {
     this.interestPortrait = '',
     this.interestDescription = '',
     this.interestType = 0,
+    this.color = '',
   });
 
   Tag copyWith({
@@ -31,6 +29,7 @@ class Tag {
     String interestPortrait,
     String interestDescription,
     int interestType,
+    String color,
   }) {
     if ((id == null || identical(id, this.id)) &&
         (name == null || identical(name, this.name)) &&
@@ -50,67 +49,65 @@ class Tag {
       interestPortrait: interestPortrait ?? this.interestPortrait,
       interestDescription: interestDescription ?? this.interestDescription,
       interestType: interestType ?? this.interestType,
+      color: color ?? this.color,
     );
   }
 
   @override
   String toString() {
-    return 'Tag{id: $id, name: $name, interestName: $interestName, interestPortrait: $interestPortrait, interestDescription: $interestDescription, interestType: $interestType}';
+    return 'Tag(id: $id, name: $name, interestName: $interestName, interestPortrait: $interestPortrait, interestDescription: $interestDescription, interestType: $interestType, color: $color)';
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Tag &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          name == other.name &&
-          interestName == other.interestName &&
-          interestPortrait == other.interestPortrait &&
-          interestDescription == other.interestDescription &&
-          interestType == other.interestType;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Tag &&
+        other.id == id &&
+        other.name == name &&
+        other.interestName == interestName &&
+        other.interestPortrait == interestPortrait &&
+        other.interestDescription == interestDescription &&
+        other.interestType == interestType &&
+        other.color == color;
+  }
 
   @override
-  int get hashCode =>
-      id.hashCode ^
-      name.hashCode ^
-      interestName.hashCode ^
-      interestPortrait.hashCode ^
-      interestDescription.hashCode ^
-      interestType.hashCode;
+  int get hashCode {
+    return id.hashCode ^
+        name.hashCode ^
+        interestName.hashCode ^
+        interestPortrait.hashCode ^
+        interestDescription.hashCode ^
+        interestType.hashCode ^
+        color.hashCode;
+  }
 
-  factory Tag.fromMap(
-    Map<String, dynamic> map, {
-    String keyMapper(String key),
-  }) {
-    keyMapper ??= (key) => key;
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'interestName': interestName,
+      'interestPortrait': interestPortrait,
+      'interestDescription': interestDescription,
+      'interestType': interestType,
+      'color': color,
+    };
+  }
 
+  factory Tag.fromMap(Map<String, dynamic> map) {
     return Tag(
-      id: map[keyMapper('id')] as String,
-      name: map[keyMapper('name')] as String,
-      interestName: map[keyMapper('interestName')] as String,
-      interestPortrait: map[keyMapper('interestPortrait')] as String,
-      interestDescription: map[keyMapper('interestDescription')] as String,
-      interestType: map[keyMapper('interestType')] as int,
+      id: map['id'],
+      name: map['name'],
+      interestName: map['interestName'],
+      interestPortrait: map['interestPortrait'],
+      interestDescription: map['interestDescription'],
+      interestType: map['interestType'],
+      color: map['color'],
     );
   }
 
-  Map<String, dynamic> toMap({
-    String keyMapper(String key),
-  }) {
-    keyMapper ??= (key) => key;
+  String toJson() => json.encode(toMap());
 
-// ignore: unnecessary_cast
-    return {
-      keyMapper('id'): this.id,
-      keyMapper('name'): this.name,
-      keyMapper('interestName'): this.interestName,
-      keyMapper('interestPortrait'): this.interestPortrait,
-      keyMapper('interestDescription'): this.interestDescription,
-      keyMapper('interestType'): this.interestType,
-    } as Map<String, dynamic>;
-  }
-
-//</editor-fold>
-
+  factory Tag.fromJson(String source) => Tag.fromMap(json.decode(source));
 }

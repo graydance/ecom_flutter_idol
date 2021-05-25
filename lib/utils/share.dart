@@ -13,6 +13,7 @@ import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/dialog_share.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -22,7 +23,7 @@ class ShareManager {
 
   /// 分享Link
   static void showShareLinkDialog(BuildContext context, String link) {
-    showModalBottomSheet(
+    showCupertinoModalBottomSheet(
         context: context,
         builder: (context) {
           return ShareDialog(
@@ -30,7 +31,7 @@ class ShareManager {
             videoUrls,
             '1.Add shop link in the bio of social media account.\n2.Attract your fans with great content and post.',
             ShareType.link,
-            (channel) {
+            (channel, shareText, currentImageIndex) {
               final shareChannel = channel == 'System' ? 'More' : channel;
               AppEvent.shared.report(
                   event: AnalyticsEvent.shoplink_share_channel,
@@ -39,9 +40,8 @@ class ShareManager {
               if ('Copy Link' == channel) {
                 //复制
                 Clipboard.setData(ClipboardData(text: link));
-                EasyLoading.showToast('$link\n is Replicated!');
+                EasyLoading.showToast('Capture copied');
               } else {
-                print('channel:' + channel + " , link:" + link);
                 Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
               }
               IdolRoute.pop(context);
@@ -56,41 +56,46 @@ class ShareManager {
   }
 
   /// 分享商品
-  static void showShareGoodsDialog(BuildContext context, List<String> imageUrls,
-      String goodsName, String price) {
+  static void showShareGoodsDialog(
+      BuildContext context, List<String> imageUrls, String shareText) {
     AppEvent.shared.report(event: AnalyticsEvent.share_product_view);
+    debugPrint('shareText >> $shareText');
 
-    showModalBottomSheet(
+    showCupertinoModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         builder: (context) {
           return ShareDialog(
-              // 'Share great posts in feed',
-              '',
-              imageUrls,
-              // 'The product is now available in your store.\nShare the news with your fans on social media to make money!',
-              '',
-              ShareType.goods, (shareChannel) {
-            if (shareChannel != 'Download All') {
-              EasyLoading.showToast('Capture copied');
-            }
-            final shareText =
-                '$goodsName+ at US \$$price / piece only.\n\n\n🚨 LINK IN BIO TO SHOP⤵️\n\n🚨 FELLOW ME FOR SAVING 💰\n\n\n#olaak #rundeals #couponer #deals #savingmonsy #coupons #couponcommunity';
-            Clipboard.setData(ClipboardData(text: shareText));
+            // 'Share great posts in feed',
+            '',
+            imageUrls,
+            // 'The product is now available in your store.\nShare the news with your fans on social media to make money!',
+            '',
+            ShareType.goods,
+            (shareChannel, newShareText, currentImageIndex) {
+              Clipboard.setData(ClipboardData(text: newShareText));
 
-            Future.delayed(Duration(milliseconds: 500), () {
-              IdolRoute.pop(context);
-              _downloadAll(context, imageUrls, shareChannel);
-            });
-          }, tips: ''
-              // 'Tips: Share your own pictures with product can increase 38% Sales.',
-              );
+              Future.delayed(Duration(milliseconds: 500), () {
+                IdolRoute.pop(context);
+                _downloadAll(
+                  context,
+                  imageUrls,
+                  shareChannel,
+                  currentImageIndex,
+                  newShareText,
+                );
+              });
+            },
+            shareText: shareText,
+            tips: '',
+          );
         });
   }
 
-  static void _downloadAll(
-      BuildContext context, List<String> imageUrls, shareChannel) async {
-    debugPrint('Download images >>> $imageUrls');
+  static void _downloadAll(BuildContext context, List<String> imageUrls,
+      String shareChannel, int currentImageIndex, String shareText) async {
+    debugPrint(
+        'Download shareChannel >>> $shareChannel currentImageIndex >>> $currentImageIndex');
 
     EasyLoading.show(status: 'Downloading...');
     try {
@@ -98,7 +103,6 @@ class ShareManager {
           imageUrls.map((e) => downloadPicture(context, e)).toList());
 
       EasyLoading.dismiss();
-      EasyLoading.showSuccess('All images downloaded, and capture copied');
 
       _showGuideDialog(
         context,
@@ -106,6 +110,8 @@ class ShareManager {
         videoUrls[0],
         shareChannel,
         imageLocalPaths,
+        currentImageIndex,
+        shareText,
       );
     } catch (e) {
       EasyLoading.showError(e.toString());
@@ -113,45 +119,44 @@ class ShareManager {
   }
 
   static void _showGuideDialog(
-      BuildContext context,
-      String mediaType,
-      String guideVideoUrl,
-      String shareChannel,
-      List<String> imageLocalPaths) async {
+    BuildContext context,
+    String mediaType,
+    String guideVideoUrl,
+    String shareChannel,
+    List<String> imageLocalPaths,
+    int currentImageIndex,
+    String shareText,
+  ) async {
     final channel = shareChannel == 'System' ? 'More' : shareChannel;
     AppEvent.shared.report(
         event: AnalyticsEvent.product_share_channel,
         parameters: {AnalyticsEventParameter.type: channel});
 
     if (shareChannel != 'Download All') {
-      Ecomshare.shareTo(mediaType, shareChannel, imageLocalPaths.first);
-    } else {
-      if (await Permission.storage.request().isGranted) {
-        // Either the permission was already granted before or the user just granted it.
-        imageLocalPaths.forEach((imageLocalPath) {
-          ImageGallerySaver.saveFile(imageLocalPath);
+      Ecomshare.shareTo(
+              mediaType, shareChannel, imageLocalPaths[currentImageIndex])
+          .then((value) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          Clipboard.setData(ClipboardData(text: shareText));
         });
-      }
+      });
+
+      imageLocalPaths.removeAt(currentImageIndex);
     }
 
-    /*showDialog(
-        context: context,
-        builder: (context) {
-          return ShareDialog(
-            'How to share in $shareChannel',
-            guideVideoUrl,
-            '1. Go to my account in $shareChannel\n 2. Edit profile\n 3. Paste your shop link into Website',
-            ShareType.guide,
-            (sChannel) {
-              Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
-            },
-            shareChannel: shareChannel,
-          );
-        });*/
+    if (await Permission.storage.request().isGranted) {
+      // Either the permission was already granted before or the user just granted it.
+      imageLocalPaths.forEach((imageLocalPath) {
+        ImageGallerySaver.saveFile(imageLocalPath);
+      });
+    }
+
+    EasyLoading.showSuccess('All images downloaded, and capture copied');
   }
 }
 
-void downloadImages(BuildContext context, List<String> imageUrls) async {
+void downloadImagesAndCopyText(
+    BuildContext context, List<String> imageUrls, String shareText) async {
   debugPrint('Download images >>> $imageUrls');
 
   EasyLoading.show(status: 'Downloading...');
@@ -170,6 +175,8 @@ void downloadImages(BuildContext context, List<String> imageUrls) async {
         ImageGallerySaver.saveFile(imageLocalPath);
       });
     }
+
+    Clipboard.setData(ClipboardData(text: shareText));
   } catch (e) {
     EasyLoading.showError(e.toString());
   }

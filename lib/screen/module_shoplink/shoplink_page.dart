@@ -21,6 +21,7 @@ import 'package:idol/net/request/store.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/router.dart';
 import 'package:idol/screen/module_store/image_crop.dart';
 import 'package:idol/store/actions/actions.dart';
@@ -302,72 +303,72 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                         ),
                       ),
                       SizedBox(
+                        height: 6,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                          minHeight: 24.0,
+                          maxHeight: 84.0,
+                        ),
+                        margin: EdgeInsets.symmetric(
+                          vertical: 6.0,
+                          horizontal: 30,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 6.0,
+                          horizontal: 4.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _shopDescIsEditing
+                              ? Colors.white
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(2)),
+                        ),
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          textCapitalization: TextCapitalization.sentences,
+                          controller: _shopDescController,
+                          focusNode: _shopDescFocusNode,
+                          maxLength: 512,
+                          style: TextStyle(
+                            color: _shopDescIsEditing
+                                ? Colours.color_0F1015
+                                : Colors.white,
+                            fontSize: 12,
+                            shadows: _shopDescIsEditing
+                                ? []
+                                : [
+                                    Shadow(
+                                        offset: Offset(1.0, 1.0),
+                                        blurRadius: 2.0,
+                                        color: Colours.color_575859),
+                                  ],
+                          ),
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Tap to add a shop description',
+                            hintStyle: TextStyle(
+                              color: _shopDescIsEditing
+                                  ? Colours.color_black45
+                                  : Colors.white,
+                            ),
+                          ).copyWith(counterText: ''),
+                          maxLines: null,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            StoreProvider.of<AppState>(context)
+                                .dispatch(EditStoreAction(EditStoreRequest(
+                              _userName,
+                              _userName,
+                              _shopDescController.text.trim(),
+                            )));
+                          },
+                        ),
+                      ),
+                      SizedBox(
                         height: 15,
                       ),
-                      // SizedBox(
-                      //   height: 6,
-                      // ),
-                      // Container(
-                      //   constraints: BoxConstraints(
-                      //     minHeight: 24.0,
-                      //     maxHeight: 84.0,
-                      //   ),
-                      //   margin: EdgeInsets.symmetric(
-                      //     vertical: 6.0,
-                      //     horizontal: 30,
-                      //   ),
-                      //   padding: EdgeInsets.symmetric(
-                      //     vertical: 6.0,
-                      //     horizontal: 4.0,
-                      //   ),
-                      //   decoration: BoxDecoration(
-                      //     color: _shopDescIsEditing
-                      //         ? Colors.white
-                      //         : Colors.transparent,
-                      //     borderRadius: BorderRadius.all(Radius.circular(2)),
-                      //   ),
-                      //   child: TextField(
-                      //     textAlign: TextAlign.center,
-                      //     textAlignVertical: TextAlignVertical.center,
-                      //     textCapitalization: TextCapitalization.sentences,
-                      //     controller: _shopDescController,
-                      //     focusNode: _shopDescFocusNode,
-                      //     maxLength: 512,
-                      //     style: TextStyle(
-                      //       color: _shopDescIsEditing
-                      //           ? Colours.color_0F1015
-                      //           : Colors.white,
-                      //       fontSize: 12,
-                      //       shadows: _shopDescIsEditing
-                      //           ? []
-                      //           : [
-                      //               Shadow(
-                      //                   offset: Offset(1.0, 1.0),
-                      //                   blurRadius: 2.0,
-                      //                   color: Colours.color_575859),
-                      //             ],
-                      //     ),
-                      //     decoration: InputDecoration.collapsed(
-                      //       hintText: 'Tap to add a shop description',
-                      //       hintStyle: TextStyle(
-                      //         color: _shopDescIsEditing
-                      //             ? Colours.color_black45
-                      //             : Colors.white,
-                      //       ),
-                      //     ).copyWith(counterText: ''),
-                      //     maxLines: null,
-                      //     textInputAction: TextInputAction.done,
-                      //     onEditingComplete: () {
-                      //       FocusScope.of(context).requestFocus(FocusNode());
-                      //       StoreProvider.of<AppState>(context)
-                      //           .dispatch(EditStoreAction(EditStoreRequest(
-                      //         _userName,
-                      //         _userName,
-                      //         _shopDescController.text.trim(),
-                      //       )));
-                      //     },
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -637,8 +638,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                 ShareManager.showShareGoodsDialog(
                   context,
                   storeGoods.pictures,
-                  storeGoods.goodsName,
-                  storeGoods.currentPriceStr,
+                  storeGoods.shareText,
                 );
                 break;
               case 1:
@@ -990,13 +990,13 @@ class _Tile extends StatelessWidget {
                   return Container(
                     padding: EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colours.color_ED8514, width: 1),
+                      border: Border.all(color: HexColor(tag.color), width: 1),
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                     ),
                     child: Text(
                       tag.name,
                       style:
-                          TextStyle(color: Colours.color_ED8514, fontSize: 12),
+                          TextStyle(color: HexColor(tag.color), fontSize: 12),
                     ),
                   );
                 }).toList(),

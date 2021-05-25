@@ -8,21 +8,25 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:redux/redux.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 import 'package:idol/event/app_event.dart';
 import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
+import 'package:idol/models/models.dart';
 import 'package:idol/net/request/supply.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/router.dart';
 import 'package:idol/store/actions/supply.dart';
 import 'package:idol/utils/global.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
 import 'package:idol/widgets/video_player_widget.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:redux/redux.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 /// 产品详情页
 class GoodsDetailScreen extends StatefulWidget {
@@ -64,7 +68,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       converter: _ViewModel.fromStore,
-      onInit: (store) => _goodsDetail = store.state.goodsDetailPage,
+      onInit: (store) {
+        _goodsDetail = store.state.goodsDetailPage;
+      },
       builder: (context, vm) {
         return Scaffold(
           appBar: AppBar(
@@ -97,13 +103,13 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
               onPressed: () => IdolRoute.pop(context),
             ),
           ),
-          body: _buildBodyWidget(),
+          body: _buildBodyWidget(vm),
         );
       },
     );
   }
 
-  Widget _buildBodyWidget() {
+  Widget _buildBodyWidget(_ViewModel model) {
     var updateTime =
         DateTime.fromMillisecondsSinceEpoch(_goodsDetail.updateTime);
     _bottomButtonStatus = IdolButtonStatus.enable;
@@ -122,9 +128,10 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
 
         try {
           final goodsDetail = await completer.future;
-          setState(() {
-            _goodsDetail = goodsDetail;
-          });
+          _goodsDetail = goodsDetail;
+
+          if (mounted) setState(() {});
+
           _refreshController.refreshCompleted();
         } catch (error) {
           _refreshController.refreshFailed();
@@ -179,8 +186,7 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                   ShareManager.showShareGoodsDialog(
                                     context,
                                     _goodsDetail.goods,
-                                    _goodsDetail.goodsName,
-                                    _goodsDetail.suggestedPriceStr,
+                                    _goodsDetail.shareText,
                                   );
                                 },
                               ),
@@ -286,15 +292,14 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                                 padding: EdgeInsets.all(2),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: Colours.color_ED8514, width: 1),
+                                      color: HexColor(tag.color), width: 1),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(4)),
                                 ),
                                 child: Text(
                                   tag.interestName,
                                   style: TextStyle(
-                                      color: Colours.color_ED8514,
-                                      fontSize: 12),
+                                      color: HexColor(tag.color), fontSize: 12),
                                 ),
                               );
                             }).toList(),
@@ -310,10 +315,10 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                     SizedBox(
                       height: 5,
                     ),
-                    Text(
+                    SelectableText(
                       _goodsDetail.goodsName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      // maxLines: 2,
+                      // overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Colours.color_555764,
                         fontSize: 12,
@@ -362,7 +367,9 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                           TextSpan(
                             text: 'Suggested Price',
                             style: TextStyle(
-                                color: Colours.color_C4C5CD, fontSize: 12),
+                              color: Colours.color_C4C5CD,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -372,57 +379,218 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
               ),
               Container(
                 color: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
                 child: IdolButton(
-                  _goodsDetail.inMyStore == null
-                      ? '--'
-                      : (_goodsDetail.inMyStore == 0
-                          ? 'Pick & Sell'
-                          : 'Share to Earn'),
+                  _shareButtonTitle,
                   isOutlineStyle: _goodsDetail.inMyStore == 1,
                   status: _bottomButtonStatus,
                   listener: (status) {
-                    AppEvent.shared.report(
-                        event: AnalyticsEvent.detail_pick_share,
-                        parameters: {
-                          AnalyticsEventParameter.type:
-                              _goodsDetail.inMyStore == 1 ? 'share' : 'pick'
-                        });
-
-                    if (_goodsDetail.inMyStore == 1) {
-                      ShareManager.showShareGoodsDialog(
-                        context,
-                        _goodsDetail.goods,
-                        _goodsDetail.goodsName,
-                        _goodsDetail.suggestedPriceStr,
-                      );
-                    } else {
-                      final completer = Completer();
-                      completer.future.then((value) {
-                        setState(() {
-                          _goodsDetail = _goodsDetail.copyWith(inMyStore: 1);
-                        });
-                      }).catchError((error) {
-                        print(error);
-                      });
-                      StoreProvider.of<AppState>(context)
-                          .dispatch(AddToStoreAction(_goodsDetail, completer));
-
-                      completer.future.then((value) => _showMessageBar());
-                    }
+                    _onTapShare();
                   },
                 ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 16,
+                      ),
+                      child: Text(
+                        'Specifications and models',
+                        style: TextStyle(
+                          color: AppTheme.color0F1015,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (ctx, i) {
+                        final model = _goodsDetail.specList[i];
+                        final allSpecString =
+                            model.specValues.map((e) => e.specValue).join(', ');
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              model.specName,
+                              style: TextStyle(
+                                color: AppTheme.color0F1015,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              allSpecString,
+                              style: TextStyle(
+                                color: AppTheme.color555764,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      separatorBuilder: (ctx, index) {
+                        return SizedBox(
+                          height: 20,
+                        );
+                      },
+                      itemCount: _goodsDetail.specList.length,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 16,
+                      ),
+                      child: Text(
+                        'Different delivery opention',
+                        style: TextStyle(
+                          color: AppTheme.color0F1015,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (ctx, i) {
+                        final model = _goodsDetail.expressTemplete[i];
+                        final desc = _formatShippingMessage(
+                            _goodsDetail.shippedFrom,
+                            _goodsDetail.shippedTo,
+                            model);
+                        final price = _formatPrice(
+                            model.price, Global.getUser(context).monetaryUnit);
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${i + 1}. ${model.name} $price',
+                              style: TextStyle(
+                                color: AppTheme.color0F1015,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              desc,
+                              style: TextStyle(
+                                color: AppTheme.color555764,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      separatorBuilder: (ctx, index) {
+                        return SizedBox(
+                          height: 20,
+                        );
+                      },
+                      itemCount: _goodsDetail.expressTemplete.length,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 16,
+                      ),
+                      child: Text(
+                        'Service',
+                        style: TextStyle(
+                          color: AppTheme.color0F1015,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (ctx, i) {
+                        final model = _goodsDetail.serviceConfigs[i];
+                        return _buildServiceTile(model);
+                      },
+                      separatorBuilder: (ctx, index) {
+                        return SizedBox(
+                          height: 16,
+                        );
+                      },
+                      itemCount: _goodsDetail.serviceConfigs.length,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 8,
               ),
               Container(
                 color: Colours.white,
                 padding: EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 15,
+                  horizontal: 20,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                      ),
+                      child: Text(
+                        'Description',
+                        style: TextStyle(
+                          color: AppTheme.color0F1015,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     PopupMenuContainer<String>(
                       items: [
                         PopupMenuItem(value: 'Copy', child: Text('Copy'))
@@ -448,6 +616,82 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildServiceTile(ServiceConfig model) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CachedNetworkImage(
+          imageUrl: model.icon,
+          width: 30,
+          height: 30,
+        ),
+        SizedBox(
+          width: 12,
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                model.title,
+                style: TextStyle(
+                  color: AppTheme.color0F1015,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Text(
+                model.content,
+                style: TextStyle(
+                  color: AppTheme.color555764,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  String get _shareButtonTitle => _goodsDetail.inMyStore == null
+      ? '--'
+      : (_goodsDetail.inMyStore == 0 ? 'Pick & Sell' : 'Share to Earn');
+
+  void _onTapShare() {
+    AppEvent.shared.report(
+        event: AnalyticsEvent.detail_pick_share,
+        parameters: {
+          AnalyticsEventParameter.type:
+              _goodsDetail.inMyStore == 1 ? 'share' : 'pick'
+        });
+
+    if (_goodsDetail.inMyStore == 1) {
+      ShareManager.showShareGoodsDialog(
+        context,
+        _goodsDetail.goods,
+        _goodsDetail.shareText,
+      );
+    } else {
+      final completer = Completer();
+      completer.future.then((value) {
+        setState(() {
+          _goodsDetail = _goodsDetail.copyWith(inMyStore: 1);
+        });
+      }).catchError((error) {
+        print(error);
+      });
+      StoreProvider.of<AppState>(context)
+          .dispatch(AddToStoreAction(_goodsDetail, completer));
+
+      completer.future.then((value) => _showMessageBar());
+    }
   }
 
   String _removeAllHtmlTags(String htmlText) {
@@ -513,6 +757,24 @@ bool _isVideoSource(String url) {
       url.contains('.3gp') ||
       url.contains('.wmv') ||
       url.contains('.mkv'));
+}
+
+String _formatShippingMessage(
+    String shippedFrom, String shippedTo, ExpressTemplete model) {
+  if (model == null) {
+    return '';
+  }
+  final earlyDate = DateTime.now().add(Duration(days: model.min));
+  final earlyDateString = DateFormat('MM/dd').format(earlyDate);
+  final theShippedTo = shippedTo.trim().isEmpty ? 'United States' : shippedTo;
+  if (shippedFrom.isEmpty) {
+    return 'Shipped to $theShippedTo\nEstimated delivery as early as $earlyDateString';
+  }
+  return 'Shipped from $shippedFrom To $theShippedTo\nEstimated delivery as early as $earlyDateString';
+}
+
+String _formatPrice(String price, String currency) {
+  return double.tryParse(price) != 0 ? currency + price : 'Free';
 }
 
 class _ViewModel {

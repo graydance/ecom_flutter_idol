@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:idol/models/tag.dart';
 
-/// totalPage : 1
-/// currentPage : 1
-/// list : [{"id":"eLRGN8Bw","idolGoodsId":"红人商品id","picture":"https://www.baidu.com1","width":1,"height":1,"isSellOut":1,"isOffTheShelf":1},{"id":"OZ8MpEbg","idolGoodsId":"红人商品id","picture":"","width":1,"height":1,"isSellOut":1,"isOffTheShelf":1}]
 @immutable
 class StoreGoodsList {
   final int totalPage;
@@ -92,6 +89,7 @@ class StoreGoods {
   final List<Tag> tag;
   final int heatRank;
   final List<String> pictures;
+  final String shareText;
 
   const StoreGoods({
     this.id = '',
@@ -112,6 +110,7 @@ class StoreGoods {
     this.tag = const [],
     this.heatRank = 0,
     this.pictures = const [],
+    this.shareText = '',
   });
 
   @override
@@ -136,7 +135,8 @@ class StoreGoods {
         other.discount == discount &&
         listEquals(other.tag, tag) &&
         other.heatRank == heatRank &&
-        listEquals(other.pictures, pictures);
+        listEquals(other.pictures, pictures) &&
+        other.shareText == shareText;
   }
 
   @override
@@ -158,7 +158,8 @@ class StoreGoods {
         discount.hashCode ^
         tag.hashCode ^
         heatRank.hashCode ^
-        pictures.hashCode;
+        pictures.hashCode ^
+        shareText.hashCode;
   }
 
   StoreGoods copyWith({
@@ -180,6 +181,7 @@ class StoreGoods {
     List<Tag> tag,
     int heatRank,
     List<String> pictures,
+    String shareText,
   }) {
     return StoreGoods(
       id: id ?? this.id,
@@ -200,6 +202,7 @@ class StoreGoods {
       tag: tag ?? this.tag,
       heatRank: heatRank ?? this.heatRank,
       pictures: pictures ?? this.pictures,
+      shareText: shareText ?? this.shareText,
     );
   }
 
@@ -223,6 +226,7 @@ class StoreGoods {
       'tag': tag?.map((x) => x.toMap())?.toList(),
       'heatRank': heatRank,
       'pictures': pictures,
+      'shareText': shareText,
     };
   }
 
@@ -243,9 +247,10 @@ class StoreGoods {
       currentPrice: map['currentPrice'],
       currentPriceStr: map['currentPriceStr'],
       discount: map['discount'],
-      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x)) ?? []),
+      tag: List<Tag>.from(map['tag']?.map((x) => Tag.fromMap(x))),
       heatRank: map['heatRank'],
-      pictures: List<String>.from(map['pictures'] ?? []),
+      pictures: List<String>.from(map['pictures']),
+      shareText: map['shareText'],
     );
   }
 
@@ -256,6 +261,6 @@ class StoreGoods {
 
   @override
   String toString() {
-    return 'StoreGoods(id: $id, idolGoodsId: $idolGoodsId, picture: $picture, width: $width, height: $height, isSellOut: $isSellOut, isOffTheShelf: $isOffTheShelf, interestName: $interestName, supplierId: $supplierId, goodsName: $goodsName, originalPrice: $originalPrice, originalPriceStr: $originalPriceStr, currentPrice: $currentPrice, currentPriceStr: $currentPriceStr, discount: $discount, tag: $tag, heatRank: $heatRank, pictures: $pictures)';
+    return 'StoreGoods(id: $id, idolGoodsId: $idolGoodsId, picture: $picture, width: $width, height: $height, isSellOut: $isSellOut, isOffTheShelf: $isOffTheShelf, interestName: $interestName, supplierId: $supplierId, goodsName: $goodsName, originalPrice: $originalPrice, originalPriceStr: $originalPriceStr, currentPrice: $currentPrice, currentPriceStr: $currentPriceStr, discount: $discount, tag: $tag, heatRank: $heatRank, pictures: $pictures, shareText: $shareText)';
   }
 }

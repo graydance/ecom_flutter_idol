@@ -10,6 +10,7 @@ import 'package:idol/models/appstate.dart';
 import 'package:idol/models/goods_detail.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/event_bus.dart';
 import 'package:idol/utils/global.dart';
@@ -58,23 +59,22 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
     // });
   }
 
-  @override
-  void didChangeDependencies() {
-    widget.goodsDetail.goods.forEach((element) {
-      if (_isVideoSource(element)) {
-        return;
-      }
-      precacheImage(
-        CachedNetworkImageProvider(element),
-        context,
-      );
-    });
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   widget.goodsDetail.goods.forEach((element) {
+  //     if (_isVideoSource(element)) {
+  //       return;
+  //     }
+  //     precacheImage(
+  //       CachedNetworkImageProvider(element),
+  //       context,
+  //     );
+  //   });
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('ProductItemWidget >>> ' + widget.goodsDetail.toString());
     var updateTime =
         DateTime.fromMillisecondsSinceEpoch(widget.goodsDetail.updateTime);
 
@@ -127,50 +127,48 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
               height: 10,
             ),
             // Image|Video source.
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-              child: Container(
-                height: MediaQuery.of(context).size.width - 15 * 2,
-                child: Stack(
-                  children: [
-                    Stack(
-                      children: [
-                        Swiper(
-                          itemBuilder: (context, index) {
-                            return _createItemMediaWidget(
-                                widget.goodsDetail.goods[index]);
-                          },
-                          pagination: SwiperPagination(
-                              alignment: Alignment.bottomCenter,
-                              builder: DotSwiperPaginationBuilder(
-                                activeSize: 6,
-                                size: 5,
-                                color: Colours.color_50D8D8D8,
-                                activeColor: Colours.white,
-                              )),
-                          itemCount: widget.goodsDetail.goods.length,
-                        ),
-                      ],
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: MessageBar(
-                        height: _messageBarHeight,
-                        onTap: () {
-                          _hideMessageBar();
-                          ShareManager.showShareGoodsDialog(
-                            context,
-                            widget.goodsDetail.goods,
-                            widget.goodsDetail.goodsName,
-                            widget.goodsDetail.suggestedPriceStr,
-                          );
+            // ClipRRect(
+            //   borderRadius: BorderRadius.all(Radius.circular(6)),
+            Container(
+              height: MediaQuery.of(context).size.width - 15 * 2,
+              child: Stack(
+                children: [
+                  Stack(
+                    children: [
+                      Swiper(
+                        itemBuilder: (context, index) {
+                          return _createItemMediaWidget(
+                              widget.goodsDetail.goods[index]);
                         },
+                        pagination: SwiperPagination(
+                            alignment: Alignment.bottomCenter,
+                            builder: DotSwiperPaginationBuilder(
+                              activeSize: 6,
+                              size: 5,
+                              color: Colours.color_50D8D8D8,
+                              activeColor: Colours.white,
+                            )),
+                        itemCount: widget.goodsDetail.goods.length,
                       ),
+                    ],
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: MessageBar(
+                      height: _messageBarHeight,
+                      onTap: () {
+                        _hideMessageBar();
+                        ShareManager.showShareGoodsDialog(
+                          context,
+                          widget.goodsDetail.goods,
+                          widget.goodsDetail.shareText,
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             SizedBox(
@@ -189,13 +187,13 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                         padding: EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           border:
-                              Border.all(color: Colours.color_ED8514, width: 1),
+                              Border.all(color: HexColor(tag.color), width: 1),
                           borderRadius: BorderRadius.all(Radius.circular(4)),
                         ),
                         child: Text(
                           tag.interestName,
                           style: TextStyle(
-                              color: Colours.color_ED8514, fontSize: 12),
+                              color: HexColor(tag.color), fontSize: 12),
                         ),
                       );
                     }).toList(),
@@ -319,8 +317,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                         ShareManager.showShareGoodsDialog(
                                           context,
                                           widget.goodsDetail.goods,
-                                          widget.goodsDetail.goodsName,
-                                          widget.goodsDetail.suggestedPriceStr,
+                                          widget.goodsDetail.shareText,
                                         );
                                       } else {
                                         await _addProductToMyStore(
@@ -345,8 +342,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                                   ShareManager.showShareGoodsDialog(
                                     context,
                                     widget.goodsDetail.goods,
-                                    widget.goodsDetail.goodsName,
-                                    widget.goodsDetail.suggestedPriceStr,
+                                    widget.goodsDetail.shareText,
                                   );
                                 } else {
                                   _addProductToMyStore(widget.goodsDetail);

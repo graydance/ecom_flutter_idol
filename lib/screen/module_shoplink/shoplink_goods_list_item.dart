@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/utils/global.dart';
 
 class ShopLinkGoodsListItem extends StatefulWidget {
@@ -131,12 +132,12 @@ class _ShopLinkGoodsListItemState extends State<ShopLinkGoodsListItem> {
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(2)),
                                           border: Border.all(
-                                              color: Colours.color_ED8514,
+                                              color: HexColor(tag.color),
                                               width: 1)),
                                       child: Text(
                                         tag.interestName,
                                         style: TextStyle(
-                                            color: Colours.color_ED8514,
+                                            color: HexColor(tag.color),
                                             fontSize: 10),
                                       ),
                                     );

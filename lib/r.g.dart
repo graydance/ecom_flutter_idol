@@ -225,6 +225,12 @@ class _R_Image_AssetResource {
   final ic_share_more =
       const AssetResource("assets/images/ic_share_more.png", packageName: null);
 
+  /// asset: assets/images/ic_share_single_download.png
+  // ignore: non_constant_identifier_names
+  final ic_share_single_download = const AssetResource(
+      "assets/images/ic_share_single_download.png",
+      packageName: null);
+
   /// asset: assets/images/ic_share_twitter.png
   // ignore: non_constant_identifier_names
   final ic_share_twitter = const AssetResource(
@@ -240,6 +246,12 @@ class _R_Image_AssetResource {
   // ignore: non_constant_identifier_names
   final bg_login_signup = const AssetResource(
       "assets/images/main/bg_login_signup.png",
+      packageName: null);
+
+  /// asset: assets/images/main/copy_sharetext.png
+  // ignore: non_constant_identifier_names
+  final copy_sharetext = const AssetResource(
+      "assets/images/main/copy_sharetext.png",
       packageName: null);
 
   /// asset: assets/images/main/double_arrow_down.png
@@ -343,10 +355,55 @@ class _R_Image_AssetResource {
   final ic_whatsapp = const AssetResource("assets/images/main/ic_whatsapp.png",
       packageName: null);
 
+  /// asset: assets/images/main/icon_add.png
+  // ignore: non_constant_identifier_names
+  final icon_add =
+      const AssetResource("assets/images/main/icon_add.png", packageName: null);
+
+  /// asset: assets/images/main/icon_add_disable.png
+  // ignore: non_constant_identifier_names
+  final icon_add_disable = const AssetResource(
+      "assets/images/main/icon_add_disable.png",
+      packageName: null);
+
+  /// asset: assets/images/main/icon_airplane.png
+  // ignore: non_constant_identifier_names
+  final icon_airplane = const AssetResource(
+      "assets/images/main/icon_airplane.png",
+      packageName: null);
+
+  /// asset: assets/images/main/icon_close.png
+  // ignore: non_constant_identifier_names
+  final icon_close = const AssetResource("assets/images/main/icon_close.png",
+      packageName: null);
+
+  /// asset: assets/images/main/icon_remove.png
+  // ignore: non_constant_identifier_names
+  final icon_remove = const AssetResource("assets/images/main/icon_remove.png",
+      packageName: null);
+
+  /// asset: assets/images/main/icon_remove_disable.png
+  // ignore: non_constant_identifier_names
+  final icon_remove_disable = const AssetResource(
+      "assets/images/main/icon_remove_disable.png",
+      packageName: null);
+
+  /// asset: assets/images/main/icon_service.png
+  // ignore: non_constant_identifier_names
+  final icon_service = const AssetResource(
+      "assets/images/main/icon_service.png",
+      packageName: null);
+
   /// asset: assets/images/main/launch_background.webp
   // ignore: non_constant_identifier_names
   final launch_background_webp = const AssetResource(
       "assets/images/main/launch_background.webp",
+      packageName: null);
+
+  /// asset: assets/images/main/product_search.png
+  // ignore: non_constant_identifier_names
+  final product_search = const AssetResource(
+      "assets/images/main/product_search.png",
       packageName: null);
 
   /// asset: assets/images/main/whatsapp_small.png
@@ -678,6 +735,12 @@ class _R_Image {
     return AssetImage(asset.ic_share_more.keyName);
   }
 
+  /// asset: assets/images/ic_share_single_download.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_share_single_download() {
+    return AssetImage(asset.ic_share_single_download.keyName);
+  }
+
   /// asset: assets/images/ic_share_twitter.png
   // ignore: non_constant_identifier_names
   AssetImage ic_share_twitter() {
@@ -694,6 +757,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage bg_login_signup() {
     return AssetImage(asset.bg_login_signup.keyName);
+  }
+
+  /// asset: assets/images/main/copy_sharetext.png
+  // ignore: non_constant_identifier_names
+  AssetImage copy_sharetext() {
+    return AssetImage(asset.copy_sharetext.keyName);
   }
 
   /// asset: assets/images/main/double_arrow_down.png
@@ -798,10 +867,58 @@ class _R_Image {
     return AssetImage(asset.ic_whatsapp.keyName);
   }
 
+  /// asset: assets/images/main/icon_add.png
+  // ignore: non_constant_identifier_names
+  AssetImage icon_add() {
+    return AssetImage(asset.icon_add.keyName);
+  }
+
+  /// asset: assets/images/main/icon_add_disable.png
+  // ignore: non_constant_identifier_names
+  AssetImage icon_add_disable() {
+    return AssetImage(asset.icon_add_disable.keyName);
+  }
+
+  /// asset: assets/images/main/icon_airplane.png
+  // ignore: non_constant_identifier_names
+  AssetImage icon_airplane() {
+    return AssetImage(asset.icon_airplane.keyName);
+  }
+
+  /// asset: assets/images/main/icon_close.png
+  // ignore: non_constant_identifier_names
+  AssetImage icon_close() {
+    return AssetImage(asset.icon_close.keyName);
+  }
+
+  /// asset: assets/images/main/icon_remove.png
+  // ignore: non_constant_identifier_names
+  AssetImage icon_remove() {
+    return AssetImage(asset.icon_remove.keyName);
+  }
+
+  /// asset: assets/images/main/icon_remove_disable.png
+  // ignore: non_constant_identifier_names
+  AssetImage icon_remove_disable() {
+    return AssetImage(asset.icon_remove_disable.keyName);
+  }
+
+  /// asset: assets/images/main/icon_service.png
+  // ignore: non_constant_identifier_names
+  AssetImage icon_service() {
+    return AssetImage(asset.icon_service.keyName);
+  }
+
   /// asset: assets/images/main/launch_background.webp
   // ignore: non_constant_identifier_names
   AssetImage launch_background_webp() {
     return AssetImage(asset.launch_background_webp.keyName);
+  }
+
+  /// asset: assets/images/main/product_search.png
+  // ignore: non_constant_identifier_names
+  AssetImage product_search() {
+    return AssetImage(asset.product_search.keyName);
   }
 
   /// asset: assets/images/main/whatsapp_small.png

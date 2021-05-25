@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:hashtagable/hashtagable.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/res/theme.dart';
 import 'package:idol/router.dart';
 import 'package:idol/utils/share.dart';
 import 'package:idol/widgets/button.dart';
@@ -23,6 +25,8 @@ class ShareDialog extends StatefulWidget {
   // Image/Video url
   final List<String> mediaUrls;
 
+  final String shareText;
+
   // 描述
   final String desc;
 
@@ -33,14 +37,15 @@ class ShareDialog extends StatefulWidget {
   final ShareType shareType;
 
   // 分享按钮点击回调
-  final Function(String channel) onShareButtonClick;
+  final Function(String channel, String shareText, int currentImageIndex)
+      onShareButtonClick;
 
   // 分享渠道
   final String shareChannel;
 
   ShareDialog(this.title, this.mediaUrls, this.desc, this.shareType,
       this.onShareButtonClick,
-      {this.tips, this.shareChannel});
+      {this.shareText, this.tips, this.shareChannel});
 
   @override
   _ShareDialogState createState() => _ShareDialogState();
@@ -121,6 +126,8 @@ class _MyPikVideo extends State<MyPikVideo> {
 
 class _ShareDialogState extends State<ShareDialog> {
   List<String> _supportShareChannels = [];
+  TextEditingController _textEditingController;
+  int _currentIndex = 0;
 
   final Map<String, AssetImage> _supportChannelIconMap = {
     'Instagram': R.image.ic_share_instagram(),
@@ -133,6 +140,7 @@ class _ShareDialogState extends State<ShareDialog> {
 
   @override
   void initState() {
+    _textEditingController = TextEditingController(text: widget.shareText);
     super.initState();
     initSharePlatformState();
   }
@@ -160,19 +168,31 @@ class _ShareDialogState extends State<ShareDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-        type: MaterialType.transparency,
-        child: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          child: Container(
-            color: Colours.white,
-            child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
-              child: _createShareWidget(),
-            ),
-          ),
-        ));
+    return AnimatedPadding(
+      duration: Duration(milliseconds: 250),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          // 触摸收起键盘
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Material(
+            type: MaterialType.transparency,
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Container(
+                color: Colours.white,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom),
+                  child: _createShareWidget(),
+                ),
+              ),
+            )),
+      ),
+    );
   }
 
   Widget _createShareWidget() {
@@ -243,61 +263,124 @@ class _ShareDialogState extends State<ShareDialog> {
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(70, 0, 70, 10),
-                child: AspectRatio(
-                  aspectRatio: 1.0, //_controller.value.aspectRatio,
-                  child: Swiper(
-                    itemBuilder: (context, index) {
-                      return Stack(
-                        children: [
-                          CachedNetworkImage(
+                child: Stack(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1.0, //_controller.value.aspectRatio,
+                      child: Swiper(
+                        itemBuilder: (context, index) {
+                          return CachedNetworkImage(
                             placeholder: (context, _) => Image(
                               image: R.image.goods_placeholder(),
                               fit: BoxFit.cover,
                             ),
                             imageUrl: widget.mediaUrls[index],
                             fit: BoxFit.contain,
+                          );
+                        },
+                        pagination: SwiperPagination(
+                            alignment: Alignment.bottomCenter,
+                            builder: DotSwiperPaginationBuilder(
+                              activeSize: 6,
+                              size: 5,
+                              color: Colours.color_50D8D8D8,
+                              activeColor: Colours.white,
+                            )),
+                        itemCount: widget.mediaUrls.length,
+                        onIndexChanged: (value) => _currentIndex = value,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: InkWell(
+                        onTap: () {
+                          downloadImagesAndCopyText(
+                            context,
+                            [widget.mediaUrls[_currentIndex]],
+                            _textEditingController.text,
+                          );
+                        },
+                        child: Container(
+                          height: 20,
+                          width: 20,
+                          child: Image(
+                            image: R.image.ic_share_single_download(),
                           ),
-                          Positioned(
-                            bottom: 8,
-                            right: 8,
-                            child: InkWell(
-                              onTap: () {
-                                downloadImages(
-                                  context,
-                                  [widget.mediaUrls[index]],
-                                );
-                              },
-                              child: Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                  color: Colors.black54,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                child: Icon(
-                                  Icons.file_download,
-                                  color: Colors.white,
-                                  size: 14,
-                                ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                color: AppTheme.colorF4F4F4,
+                padding: const EdgeInsets.only(
+                  left: 12,
+                  right: 12,
+                  bottom: 10,
+                ),
+                child: HashTagTextField(
+                  decoratedStyle: TextStyle(
+                    fontSize: 12,
+                    color: Colors.blue,
+                  ),
+                  basicStyle: TextStyle(
+                    color: AppTheme.color555764,
+                    fontSize: 12,
+                  ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    hintText: 'Share Text',
+                    hintStyle: TextStyle(
+                      color: AppTheme.colorC4C5CD,
+                      fontSize: 12,
+                    ),
+                  ),
+                  maxLength: 1000,
+                  buildCounter: (_, {currentLength, maxLength, isFocused}) =>
+                      Padding(
+                    padding: EdgeInsets.zero,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              currentLength.toString() +
+                                  "/" +
+                                  maxLength.toString(),
+                              style: TextStyle(
+                                color: AppTheme.colorC4C5CD,
+                                fontSize: 10,
                               ),
                             ),
                           ),
-                        ],
-                      );
-                    },
-                    pagination: SwiperPagination(
-                        alignment: Alignment.bottomCenter,
-                        builder: DotSwiperPaginationBuilder(
-                          activeSize: 6,
-                          size: 5,
-                          color: Colours.color_50D8D8D8,
-                          activeColor: Colours.white,
-                        )),
-                    itemCount: widget.mediaUrls.length,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(
+                                text: _textEditingController.text));
+                            EasyLoading.showToast('Capture copied!');
+                          },
+                          child: Image(image: R.image.copy_sharetext()),
+                        ),
+                      ],
+                    ),
                   ),
+                  controller: _textEditingController,
+                  maxLines: null,
                 ),
+              ),
+              SizedBox(
+                height: 10,
               ),
               Text(
                 widget.tips,
@@ -324,7 +407,11 @@ class _ShareDialogState extends State<ShareDialog> {
       return GestureDetector(
         onTap: () {
           if (widget.onShareButtonClick != null) {
-            widget.onShareButtonClick(channel);
+            widget.onShareButtonClick(
+              channel,
+              _textEditingController.text,
+              _currentIndex,
+            );
           }
         },
         child: Column(
@@ -459,7 +546,11 @@ class _ShareDialogState extends State<ShareDialog> {
           IdolButton('Go to $channel', status: IdolButtonStatus.enable,
               listener: (status) {
             if (widget.onShareButtonClick != null) {
-              widget.onShareButtonClick(channel);
+              widget.onShareButtonClick(
+                channel,
+                _textEditingController.text,
+                _currentIndex,
+              );
             }
           }),
         ],
