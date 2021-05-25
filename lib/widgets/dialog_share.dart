@@ -37,7 +37,8 @@ class ShareDialog extends StatefulWidget {
   final ShareType shareType;
 
   // 分享按钮点击回调
-  final Function(String channel, String shareText) onShareButtonClick;
+  final Function(String channel, String shareText, int currentImageIndex)
+      onShareButtonClick;
 
   // 分享渠道
   final String shareChannel;
@@ -405,7 +406,11 @@ class _ShareDialogState extends State<ShareDialog> {
       return GestureDetector(
         onTap: () {
           if (widget.onShareButtonClick != null) {
-            widget.onShareButtonClick(channel, _textEditingController.text);
+            widget.onShareButtonClick(
+              channel,
+              _textEditingController.text,
+              _currentIndex,
+            );
           }
         },
         child: Column(
@@ -540,7 +545,11 @@ class _ShareDialogState extends State<ShareDialog> {
           IdolButton('Go to $channel', status: IdolButtonStatus.enable,
               listener: (status) {
             if (widget.onShareButtonClick != null) {
-              widget.onShareButtonClick(channel, _textEditingController.text);
+              widget.onShareButtonClick(
+                channel,
+                _textEditingController.text,
+                _currentIndex,
+              );
             }
           }),
         ],
