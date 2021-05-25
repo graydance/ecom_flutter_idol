@@ -82,7 +82,12 @@ class ShareManager {
               Future.delayed(Duration(milliseconds: 500), () {
                 IdolRoute.pop(context);
                 _downloadAll(
-                    context, imageUrls, shareChannel, currentImageIndex);
+                  context,
+                  imageUrls,
+                  shareChannel,
+                  currentImageIndex,
+                  newShareText,
+                );
               });
             },
             shareText: shareText,
@@ -92,7 +97,7 @@ class ShareManager {
   }
 
   static void _downloadAll(BuildContext context, List<String> imageUrls,
-      String shareChannel, int currentImageIndex) async {
+      String shareChannel, int currentImageIndex, String shareText) async {
     debugPrint(
         'Download shareChannel >>> $shareChannel currentImageIndex >>> $currentImageIndex');
 
@@ -113,6 +118,7 @@ class ShareManager {
         shareChannel,
         imageLocalPaths,
         currentImageIndex,
+        shareText,
       );
     } catch (e) {
       EasyLoading.showError(e.toString());
@@ -120,12 +126,14 @@ class ShareManager {
   }
 
   static void _showGuideDialog(
-      BuildContext context,
-      String mediaType,
-      String guideVideoUrl,
-      String shareChannel,
-      List<String> imageLocalPaths,
-      int currentImageIndex) async {
+    BuildContext context,
+    String mediaType,
+    String guideVideoUrl,
+    String shareChannel,
+    List<String> imageLocalPaths,
+    int currentImageIndex,
+    String shareText,
+  ) async {
     final channel = shareChannel == 'System' ? 'More' : shareChannel;
     AppEvent.shared.report(
         event: AnalyticsEvent.product_share_channel,
@@ -133,7 +141,12 @@ class ShareManager {
 
     if (shareChannel != 'Download All') {
       Ecomshare.shareTo(
-          mediaType, shareChannel, imageLocalPaths[currentImageIndex]);
+              mediaType, shareChannel, imageLocalPaths[currentImageIndex])
+          .then((value) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          Clipboard.setData(ClipboardData(text: shareText));
+        });
+      });
     } else {
       if (await Permission.storage.request().isGranted) {
         // Either the permission was already granted before or the user just granted it.
