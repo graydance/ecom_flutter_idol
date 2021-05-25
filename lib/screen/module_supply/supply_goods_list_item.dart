@@ -59,23 +59,22 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
     // });
   }
 
-  @override
-  void didChangeDependencies() {
-    widget.goodsDetail.goods.forEach((element) {
-      if (_isVideoSource(element)) {
-        return;
-      }
-      precacheImage(
-        CachedNetworkImageProvider(element),
-        context,
-      );
-    });
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   widget.goodsDetail.goods.forEach((element) {
+  //     if (_isVideoSource(element)) {
+  //       return;
+  //     }
+  //     precacheImage(
+  //       CachedNetworkImageProvider(element),
+  //       context,
+  //     );
+  //   });
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('ProductItemWidget >>> ' + widget.goodsDetail.toString());
     var updateTime =
         DateTime.fromMillisecondsSinceEpoch(widget.goodsDetail.updateTime);
 
@@ -128,49 +127,48 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
               height: 10,
             ),
             // Image|Video source.
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-              child: Container(
-                height: MediaQuery.of(context).size.width - 15 * 2,
-                child: Stack(
-                  children: [
-                    Stack(
-                      children: [
-                        Swiper(
-                          itemBuilder: (context, index) {
-                            return _createItemMediaWidget(
-                                widget.goodsDetail.goods[index]);
-                          },
-                          pagination: SwiperPagination(
-                              alignment: Alignment.bottomCenter,
-                              builder: DotSwiperPaginationBuilder(
-                                activeSize: 6,
-                                size: 5,
-                                color: Colours.color_50D8D8D8,
-                                activeColor: Colours.white,
-                              )),
-                          itemCount: widget.goodsDetail.goods.length,
-                        ),
-                      ],
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: MessageBar(
-                        height: _messageBarHeight,
-                        onTap: () {
-                          _hideMessageBar();
-                          ShareManager.showShareGoodsDialog(
-                            context,
-                            widget.goodsDetail.goods,
-                            widget.goodsDetail.shareText,
-                          );
+            // ClipRRect(
+            //   borderRadius: BorderRadius.all(Radius.circular(6)),
+            Container(
+              height: MediaQuery.of(context).size.width - 15 * 2,
+              child: Stack(
+                children: [
+                  Stack(
+                    children: [
+                      Swiper(
+                        itemBuilder: (context, index) {
+                          return _createItemMediaWidget(
+                              widget.goodsDetail.goods[index]);
                         },
+                        pagination: SwiperPagination(
+                            alignment: Alignment.bottomCenter,
+                            builder: DotSwiperPaginationBuilder(
+                              activeSize: 6,
+                              size: 5,
+                              color: Colours.color_50D8D8D8,
+                              activeColor: Colours.white,
+                            )),
+                        itemCount: widget.goodsDetail.goods.length,
                       ),
+                    ],
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: MessageBar(
+                      height: _messageBarHeight,
+                      onTap: () {
+                        _hideMessageBar();
+                        ShareManager.showShareGoodsDialog(
+                          context,
+                          widget.goodsDetail.goods,
+                          widget.goodsDetail.shareText,
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             SizedBox(
