@@ -13,7 +13,6 @@ import 'package:idol/res/colors.dart';
 import 'package:idol/screen/module_supply/supply_goods_list_item.dart';
 import 'package:idol/store/actions/supply.dart';
 import 'package:idol/utils/event_bus.dart';
-import 'package:idol/utils/share.dart';
 
 class ForYouTabView extends StatefulWidget {
   @override
@@ -93,11 +92,8 @@ class _ForYouTabViewState extends State<ForYouTabView> {
               idx: index,
               goodsDetail: model,
               onProductAddedStoreListener: (goodsDetail) {
-                ShareManager.showShareGoodsDialog(
-                  context,
-                  goodsDetail.goods,
-                  goodsDetail.shareText,
-                );
+                _list[index] = goodsDetail;
+                if (mounted) setState(() {});
               },
             );
           },

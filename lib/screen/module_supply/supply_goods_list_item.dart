@@ -381,8 +381,13 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
       goodsDetail,
       completer,
     ));
-    completer.future.then((value) => _showMessageBar()).then((value) => eventBus
-        .fire(StartPickAnimation(widget.goodsDetail.goods.first ?? '')));
+    completer.future.then((value) {
+      if (widget.onProductAddedStoreListener != null) {
+        widget.onProductAddedStoreListener(goodsDetail.copyWith(inMyStore: 1));
+      }
+      _showMessageBar();
+      eventBus.fire(StartPickAnimation(widget.goodsDetail.goods.first ?? ''));
+    });
   }
 
   Widget _createItemMediaWidget(String sourceUrl) {
