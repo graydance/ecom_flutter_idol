@@ -67,8 +67,9 @@ class ForYouFailure implements ForYouState {
 
 class ForYouAction {
   final FollowingForYouRequest request;
+  final Completer completer;
 
-  ForYouAction(this.request);
+  ForYouAction(this.request, this.completer);
 }
 
 class ForYouSuccessAction {
