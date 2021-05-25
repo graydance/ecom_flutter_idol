@@ -40,7 +40,7 @@ class ShareManager {
               if ('Copy Link' == channel) {
                 //复制
                 Clipboard.setData(ClipboardData(text: link));
-                EasyLoading.showToast('$link\n is Replicated!');
+                EasyLoading.showToast('Capture copied');
               } else {
                 print('channel:' + channel + " , link:" + link);
                 Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
@@ -74,9 +74,6 @@ class ShareManager {
             '',
             ShareType.goods,
             (shareChannel, newShareText, currentImageIndex) {
-              if (shareChannel != 'Download All') {
-                EasyLoading.showToast('Capture copied');
-              }
               Clipboard.setData(ClipboardData(text: newShareText));
 
               Future.delayed(Duration(milliseconds: 500), () {
@@ -107,9 +104,6 @@ class ShareManager {
           imageUrls.map((e) => downloadPicture(context, e)).toList());
 
       EasyLoading.dismiss();
-      if (shareChannel == 'Download All') {
-        EasyLoading.showSuccess('All images downloaded, and capture copied');
-      }
 
       _showGuideDialog(
         context,
@@ -147,14 +141,16 @@ class ShareManager {
           Clipboard.setData(ClipboardData(text: shareText));
         });
       });
-    } else {
-      if (await Permission.storage.request().isGranted) {
-        // Either the permission was already granted before or the user just granted it.
-        imageLocalPaths.forEach((imageLocalPath) {
-          ImageGallerySaver.saveFile(imageLocalPath);
-        });
-      }
     }
+
+    if (await Permission.storage.request().isGranted) {
+      // Either the permission was already granted before or the user just granted it.
+      imageLocalPaths.forEach((imageLocalPath) {
+        ImageGallerySaver.saveFile(imageLocalPath);
+      });
+    }
+
+    EasyLoading.showSuccess('All images downloaded, and capture copied');
   }
 }
 
