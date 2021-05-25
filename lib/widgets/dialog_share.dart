@@ -181,7 +181,7 @@ class _ShareDialogState extends State<ShareDialog> {
         child: Material(
             type: MaterialType.transparency,
             child: SingleChildScrollView(
-              // physics: NeverScrollableScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               child: Container(
                 color: Colours.white,
                 child: Padding(
