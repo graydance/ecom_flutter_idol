@@ -337,9 +337,8 @@ final Middleware<AppState> salesHistoryMiddleware =
     DioClient.getInstance()
         .post(ApiPath.salesHistory, baseRequest: action.request)
         .whenComplete(() => null)
-        .then((data) => {
-      action.completer.complete(SalesHistoryList.fromMap(data))
-            })
+        .then(
+            (data) => action.completer.complete(SalesHistoryList.fromMap(data)))
         .catchError((err) {
       // print(err.toString());
       // store.dispatch(SalesHistoryFailureAction(err.toString()));
@@ -401,13 +400,18 @@ final Middleware<AppState> supplyGoodsListMiddleware =
     DioClient.getInstance()
         .post(ApiPath.supplyGoodsList, baseRequest: action.request)
         .whenComplete(() => null)
-        .then((data) => {
-              store.dispatch(action is FollowingAction
-                  ? FollowingSuccessAction(GoodsDetailList.fromMap(data))
-                  : ForYouSuccessAction(GoodsDetailList.fromMap(data)))
-            })
-        .catchError((err) {
-      print(err.toString());
+        .then((data) {
+      final list = GoodsDetailList.fromMap(data);
+      if (action is ForYouAction) {
+        action.completer.complete(list);
+      }
+      store.dispatch(action is FollowingAction
+          ? FollowingSuccessAction(GoodsDetailList.fromMap(data))
+          : ForYouSuccessAction(GoodsDetailList.fromMap(data)));
+    }).catchError((err) {
+      if (action is ForYouAction) {
+        action.completer.completeError(err.toString());
+      }
       store.dispatch(action is FollowingAction
           ? FollowingFailureAction(err.toString())
           : ForYouFailureAction(err.toString()));
