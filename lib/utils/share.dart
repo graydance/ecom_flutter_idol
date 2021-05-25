@@ -31,7 +31,7 @@ class ShareManager {
             videoUrls,
             '1.Add shop link in the bio of social media account.\n2.Attract your fans with great content and post.',
             ShareType.link,
-            (channel, shareText) {
+            (channel, shareText, currentImageIndex) {
               final shareChannel = channel == 'System' ? 'More' : channel;
               AppEvent.shared.report(
                   event: AnalyticsEvent.shoplink_share_channel,
@@ -67,30 +67,39 @@ class ShareManager {
         backgroundColor: Colors.transparent,
         builder: (context) {
           return ShareDialog(
-              // 'Share great posts in feed',
-              '',
-              imageUrls,
-              // 'The product is now available in your store.\nShare the news with your fans on social media to make money!',
-              '',
-              ShareType.goods, (shareChannel, newShareText) {
-            if (shareChannel != 'Download All') {
-              EasyLoading.showToast('Capture copied');
-            }
-            Clipboard.setData(ClipboardData(text: newShareText));
+            // 'Share great posts in feed',
+            '',
+            imageUrls,
+            // 'The product is now available in your store.\nShare the news with your fans on social media to make money!',
+            '',
+            ShareType.goods,
+            (shareChannel, newShareText, currentImageIndex) {
+              if (shareChannel != 'Download All') {
+                EasyLoading.showToast('Capture copied');
+              }
+              Clipboard.setData(ClipboardData(text: newShareText));
 
-            Future.delayed(Duration(milliseconds: 500), () {
-              IdolRoute.pop(context);
-              _downloadAll(context, imageUrls, shareChannel);
-            });
-          }, shareText: shareText, tips: ''
-              // 'Tips: Share your own pictures with product can increase 38% Sales.',
-              );
+              Future.delayed(Duration(milliseconds: 500), () {
+                IdolRoute.pop(context);
+                _downloadAll(
+                  context,
+                  imageUrls,
+                  shareChannel,
+                  currentImageIndex,
+                  newShareText,
+                );
+              });
+            },
+            shareText: shareText,
+            tips: '',
+          );
         });
   }
 
-  static void _downloadAll(
-      BuildContext context, List<String> imageUrls, shareChannel) async {
-    debugPrint('Download images >>> $imageUrls');
+  static void _downloadAll(BuildContext context, List<String> imageUrls,
+      String shareChannel, int currentImageIndex, String shareText) async {
+    debugPrint(
+        'Download shareChannel >>> $shareChannel currentImageIndex >>> $currentImageIndex');
 
     EasyLoading.show(status: 'Downloading...');
     try {
@@ -98,7 +107,9 @@ class ShareManager {
           imageUrls.map((e) => downloadPicture(context, e)).toList());
 
       EasyLoading.dismiss();
-      EasyLoading.showSuccess('All images downloaded, and capture copied');
+      if (shareChannel == 'Download All') {
+        EasyLoading.showSuccess('All images downloaded, and capture copied');
+      }
 
       _showGuideDialog(
         context,
@@ -106,6 +117,8 @@ class ShareManager {
         videoUrls[0],
         shareChannel,
         imageLocalPaths,
+        currentImageIndex,
+        shareText,
       );
     } catch (e) {
       EasyLoading.showError(e.toString());
@@ -113,18 +126,27 @@ class ShareManager {
   }
 
   static void _showGuideDialog(
-      BuildContext context,
-      String mediaType,
-      String guideVideoUrl,
-      String shareChannel,
-      List<String> imageLocalPaths) async {
+    BuildContext context,
+    String mediaType,
+    String guideVideoUrl,
+    String shareChannel,
+    List<String> imageLocalPaths,
+    int currentImageIndex,
+    String shareText,
+  ) async {
     final channel = shareChannel == 'System' ? 'More' : shareChannel;
     AppEvent.shared.report(
         event: AnalyticsEvent.product_share_channel,
         parameters: {AnalyticsEventParameter.type: channel});
 
     if (shareChannel != 'Download All') {
-      Ecomshare.shareTo(mediaType, shareChannel, imageLocalPaths.first);
+      Ecomshare.shareTo(
+              mediaType, shareChannel, imageLocalPaths[currentImageIndex])
+          .then((value) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          Clipboard.setData(ClipboardData(text: shareText));
+        });
+      });
     } else {
       if (await Permission.storage.request().isGranted) {
         // Either the permission was already granted before or the user just granted it.
@@ -133,21 +155,6 @@ class ShareManager {
         });
       }
     }
-
-    /*showDialog(
-        context: context,
-        builder: (context) {
-          return ShareDialog(
-            'How to share in $shareChannel',
-            guideVideoUrl,
-            '1. Go to my account in $shareChannel\n 2. Edit profile\n 3. Paste your shop link into Website',
-            ShareType.guide,
-            (sChannel) {
-              Ecomshare.shareTo(mediaType, shareChannel, imageLocalPath);
-            },
-            shareChannel: shareChannel,
-          );
-        });*/
   }
 }
 
