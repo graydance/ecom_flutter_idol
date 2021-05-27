@@ -40,7 +40,7 @@ class ShareManager {
               if ('Copy Link' == channel) {
                 //复制
                 Clipboard.setData(ClipboardData(text: link));
-                EasyLoading.showToast('Capture copied');
+                EasyLoading.showToast('Link Copied');
               } else {
                 Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
               }
