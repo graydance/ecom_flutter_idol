@@ -39,6 +39,7 @@ import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -155,11 +156,16 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                     children: [
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {
-                            IdolRoute.startInnerWebView(
-                                context,
-                                InnerWebViewArguments('$_userName\'s Shop',
-                                    '$linkDomain$_userName'));
+                          onTap: () async {
+                            final url = '$linkDomain$_userName';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              IdolRoute.startInnerWebView(
+                                  context,
+                                  InnerWebViewArguments(
+                                      '$_userName\'s Shop', url));
+                            }
                           },
                           child: Text(
                             '$linkDomain$_userName',
