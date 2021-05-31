@@ -127,6 +127,17 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   }
 
   Widget _buildHeaderWidget() {
+    var descInputDecoration = InputDecoration.collapsed(
+      hintText: 'Tap to add a shop description',
+      hintStyle: TextStyle(
+        color: _shopDescIsEditing ? Colours.color_black45 : Colors.white,
+      ),
+    );
+
+    if (!_shopDescIsEditing) {
+      descInputDecoration = descInputDecoration.copyWith(counterText: '');
+    }
+
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
@@ -336,7 +347,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           textCapitalization: TextCapitalization.sentences,
                           controller: _shopDescController,
                           focusNode: _shopDescFocusNode,
-                          maxLength: 512,
+                          maxLength: 200,
                           style: TextStyle(
                             color: _shopDescIsEditing
                                 ? Colours.color_0F1015
@@ -351,14 +362,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                                         color: Colours.color_575859),
                                   ],
                           ),
-                          decoration: InputDecoration.collapsed(
-                            hintText: 'Tap to add a shop description',
-                            hintStyle: TextStyle(
-                              color: _shopDescIsEditing
-                                  ? Colours.color_black45
-                                  : Colors.white,
-                            ),
-                          ).copyWith(counterText: ''),
+                          decoration: descInputDecoration,
                           maxLines: null,
                           textInputAction: TextInputAction.done,
                           onEditingComplete: () {
