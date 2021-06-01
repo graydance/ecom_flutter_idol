@@ -87,7 +87,7 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.all(15),
-                  child: Text('Enter your password',
+                  child: Text('Enter your Olaak password continue',
                       style:
                           TextStyle(color: Colours.color_3B3F42, fontSize: 14)),
                 )),
@@ -107,7 +107,7 @@ class _VerifyPasswordState extends State<VerifyPasswordScreen> {
                 isCollapsed: true,
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                hintText: 'Password',
+                hintText: 'Olaak Password',
                 hintStyle: TextStyle(color: Colours.color_B1B2B3, fontSize: 14),
                 suffixIcon: IconButton(
                     icon: Icon(
