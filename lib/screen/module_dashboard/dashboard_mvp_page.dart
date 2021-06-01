@@ -40,7 +40,6 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
 
   static final _storage = new FlutterSecureStorage();
   SuperTooltip _tooltip;
-  Timer _toopTipTimer;
 
   final List<String> _tabValues = [
     'Past Sales',
@@ -152,15 +151,12 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
     // but close the ToolTip
     if (_tooltip.isOpen) {
       _tooltip.close();
-      _cancelToolTipTimer();
       return false;
     }
     return true;
   }
 
   void _showEarningTip(BuildContext context) {
-    _cancelToolTipTimer();
-
     if (_tooltip != null && _tooltip.isOpen) {
       _tooltip.close();
       return;
@@ -199,15 +195,6 @@ class _DashboardMVPPageState extends State<DashboardMVPPage>
     );
 
     _tooltip.show(context);
-    _toopTipTimer = Timer(Duration(seconds: 3), () {
-      if (_tooltip != null && _tooltip.isOpen) {
-        _tooltip.close();
-      }
-    });
-  }
-
-  _cancelToolTipTimer() {
-    if (_toopTipTimer != null) _toopTipTimer.cancel();
   }
 
   Widget _createChildWidgetByState(_ViewModel _viewModel) {

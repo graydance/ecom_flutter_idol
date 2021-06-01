@@ -37,6 +37,7 @@ class GoodsDetail {
   final int isCustomiz;
 
   final String shareText;
+  final List<GoodsItem> recommend;
 
   const GoodsDetail({
     this.id = '',
@@ -64,6 +65,7 @@ class GoodsDetail {
     this.expressTemplete = const [],
     this.isCustomiz = 0,
     this.shareText = '',
+    this.recommend = const [],
   });
 
   GoodsDetail copyWith({
@@ -92,6 +94,7 @@ class GoodsDetail {
     List<ExpressTemplete> expressTemplete,
     int isCustomiz,
     String shareText,
+    List<GoodsItem> recommend,
   }) {
     return GoodsDetail(
       id: id ?? this.id,
@@ -119,12 +122,13 @@ class GoodsDetail {
       expressTemplete: expressTemplete ?? this.expressTemplete,
       isCustomiz: isCustomiz ?? this.isCustomiz,
       shareText: shareText ?? this.shareText,
+      recommend: recommend ?? this.recommend,
     );
   }
 
   @override
   String toString() {
-    return 'GoodsDetail(id: $id, supplierName: $supplierName, supplierId: $supplierId, followStatus: $followStatus, goodsName: $goodsName, earningPrice: $earningPrice, earningPriceStr: $earningPriceStr, suggestedPrice: $suggestedPrice, suggestedPriceStr: $suggestedPriceStr, goodsDescription: $goodsDescription, discount: $discount, soldNum: $soldNum, collectNum: $collectNum, inMyStore: $inMyStore, tag: $tag, goods: $goods, updateTime: $updateTime, goodsSkus: $goodsSkus, specList: $specList, serviceConfigs: $serviceConfigs, shippedFrom: $shippedFrom, shippedTo: $shippedTo, expressTemplete: $expressTemplete, isCustomiz: $isCustomiz, shareText: $shareText)';
+    return 'GoodsDetail(id: $id, supplierName: $supplierName, supplierId: $supplierId, followStatus: $followStatus, goodsName: $goodsName, earningPrice: $earningPrice, earningPriceStr: $earningPriceStr, suggestedPrice: $suggestedPrice, suggestedPriceStr: $suggestedPriceStr, goodsDescription: $goodsDescription, discount: $discount, soldNum: $soldNum, collectNum: $collectNum, inMyStore: $inMyStore, tag: $tag, goods: $goods, updateTime: $updateTime, goodsSkus: $goodsSkus, specList: $specList, serviceConfigs: $serviceConfigs, shippedFrom: $shippedFrom, shippedTo: $shippedTo, expressTemplete: $expressTemplete, isCustomiz: $isCustomiz, shareText: $shareText, recommend: $recommend)';
   }
 
   @override
@@ -156,7 +160,8 @@ class GoodsDetail {
         other.shippedTo == shippedTo &&
         listEquals(other.expressTemplete, expressTemplete) &&
         other.isCustomiz == isCustomiz &&
-        other.shareText == shareText;
+        other.shareText == shareText &&
+        listEquals(other.recommend, recommend);
   }
 
   @override
@@ -185,7 +190,8 @@ class GoodsDetail {
         shippedTo.hashCode ^
         expressTemplete.hashCode ^
         isCustomiz.hashCode ^
-        shareText.hashCode;
+        shareText.hashCode ^
+        recommend.hashCode;
   }
 
   Map<String, dynamic> toMap() {
@@ -215,6 +221,7 @@ class GoodsDetail {
       'expressTemplete': expressTemplete?.map((x) => x.toMap())?.toList(),
       'isCustomiz': isCustomiz,
       'shareText': shareText,
+      'recommend': recommend?.map((x) => x.toMap())?.toList(),
     };
   }
 
@@ -249,6 +256,8 @@ class GoodsDetail {
           map['expressTemplete']?.map((x) => ExpressTemplete.fromMap(x)) ?? []),
       isCustomiz: map['isCustomiz'] ?? 0,
       shareText: map['shareText'] ?? '',
+      recommend: List<GoodsItem>.from(
+          map['recommend']?.map((x) => GoodsItem.fromMap(x)) ?? []),
     );
   }
 

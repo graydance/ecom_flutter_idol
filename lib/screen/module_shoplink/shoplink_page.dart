@@ -39,6 +39,7 @@ import 'package:idol/widgets/tutorialOverlay.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ShopLinkPage extends StatefulWidget {
   @override
@@ -126,6 +127,17 @@ class _ShopLinkPageState extends State<ShopLinkPage>
   }
 
   Widget _buildHeaderWidget() {
+    var descInputDecoration = InputDecoration.collapsed(
+      hintText: 'Tap to add a shop description',
+      hintStyle: TextStyle(
+        color: _shopDescIsEditing ? Colours.color_black45 : Colors.white,
+      ),
+    );
+
+    if (!_shopDescIsEditing) {
+      descInputDecoration = descInputDecoration.copyWith(counterText: '');
+    }
+
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
@@ -155,11 +167,16 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                     children: [
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {
-                            IdolRoute.startInnerWebView(
-                                context,
-                                InnerWebViewArguments('$_userName\'s Shop',
-                                    '$linkDomain$_userName'));
+                          onTap: () async {
+                            final url = '$linkDomain$_userName';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              IdolRoute.startInnerWebView(
+                                  context,
+                                  InnerWebViewArguments(
+                                      '$_userName\'s Shop', url));
+                            }
                           },
                           child: Text(
                             '$linkDomain$_userName',
@@ -330,7 +347,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                           textCapitalization: TextCapitalization.sentences,
                           controller: _shopDescController,
                           focusNode: _shopDescFocusNode,
-                          maxLength: 512,
+                          maxLength: 200,
                           style: TextStyle(
                             color: _shopDescIsEditing
                                 ? Colours.color_0F1015
@@ -345,14 +362,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
                                         color: Colours.color_575859),
                                   ],
                           ),
-                          decoration: InputDecoration.collapsed(
-                            hintText: 'Tap to add a shop description',
-                            hintStyle: TextStyle(
-                              color: _shopDescIsEditing
-                                  ? Colours.color_black45
-                                  : Colors.white,
-                            ),
-                          ).copyWith(counterText: ''),
+                          decoration: descInputDecoration,
                           maxLines: null,
                           textInputAction: TextInputAction.done,
                           onEditingComplete: () {

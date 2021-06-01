@@ -30,6 +30,7 @@ class _WithdrawScreenState extends State {
   TextEditingController _amountController = TextEditingController();
   String _withdrawTypeId;
   String _withdrawTypeName = 'Select the payment';
+  String _accountHintText = '';
   int _serviceCharge = 0;
   int _paymentTypeIndex = -1;
   FocusNode _accountFocusNode = FocusNode(debugLabel: 'accountFocusNode');
@@ -310,12 +311,17 @@ class _WithdrawScreenState extends State {
                               maxLines: 1,
                               //maxLength: 254,
                               keyboardType: TextInputType.emailAddress,
-
                               decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  isCollapsed: true,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 1.0)),
+                                border: InputBorder.none,
+                                isCollapsed: true,
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 1.0),
+                                hintText: _accountHintText,
+                                hintStyle: TextStyle(
+                                  color: Colours.color_B1B2B3,
+                                  fontSize: 14,
+                                ),
+                              ),
                             ),
                           )
                         ],
@@ -366,10 +372,16 @@ class _WithdrawScreenState extends State {
                               //maxLength: 254,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  isCollapsed: true,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 1.0)),
+                                border: InputBorder.none,
+                                isCollapsed: true,
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 1.0),
+                                hintText: _accountHintText,
+                                hintStyle: TextStyle(
+                                  color: Colours.color_B1B2B3,
+                                  fontSize: 14,
+                                ),
+                              ),
                             ),
                           )
                         ],
@@ -521,6 +533,7 @@ class _WithdrawScreenState extends State {
                     setState(() {
                       _paymentTypeIndex = index;
                       _withdrawTypeName = withdrawType.payName;
+                      _accountHintText = withdrawType.payName + ' account';
                       _withdrawTypeId = withdrawType.id;
                       _serviceCharge = withdrawType.serviceFee;
                     });
