@@ -493,11 +493,14 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                         final price = _formatPrice(
                             model.price, Global.getUser(context).monetaryUnit);
 
+                        final index = _goodsDetail.expressTemplete.length > 1
+                            ? '${i + 1}. '
+                            : '';
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${i + 1}. ${model.name} $price',
+                              '$index${model.name} $price',
                               style: TextStyle(
                                 color: AppTheme.color0F1015,
                                 fontSize: 14,
