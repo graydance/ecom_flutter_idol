@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -24,7 +22,6 @@ class BalanceScreen extends StatefulWidget {
 
 class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
   SuperTooltip _tooltip;
-  Timer _toolTipTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +53,6 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
 
   void _showEarningTip(
       BuildContext context, String content, TooltipDirection td) {
-    _cancelToolTipTimer();
-
     if (_tooltip != null && _tooltip.isOpen) {
       _tooltip.close();
       return;
@@ -96,15 +91,6 @@ class _BalanceScreenState extends State with SingleTickerProviderStateMixin {
     );
 
     _tooltip.show(context);
-    _toolTipTimer = Timer(Duration(seconds: 3), () {
-      if (_tooltip != null && _tooltip.isOpen) {
-        _tooltip.close();
-      }
-    });
-  }
-
-  _cancelToolTipTimer() {
-    if (_toolTipTimer != null) _toolTipTimer.cancel();
   }
 
   Widget _buildWidget(_ViewModel _viewModel) {
