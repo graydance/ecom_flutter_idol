@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -611,6 +612,21 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 8,
+              ),
+              _goodsDetail.recommend != null &&
+                      _goodsDetail.recommend.isNotEmpty
+                  ? Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: SimilarProducts(
+                          recommends: _goodsDetail.recommend,
+                          currency: Global.getUser(context).monetaryUnit),
+                    )
+                  : Container(),
             ],
           ),
         ),
@@ -713,6 +729,235 @@ class _GoodsDetailScreenState extends State<GoodsDetailScreen> {
     setState(() {
       _messageBarHeight = 0;
     });
+  }
+}
+
+class SimilarProducts extends StatelessWidget {
+  final List<GoodsItem> recommends;
+  final String currency;
+  const SimilarProducts({
+    Key key,
+    @required this.recommends,
+    @required this.currency,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+          ),
+          child: Text(
+            'Recommended items',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.color0F1015,
+            ),
+          ),
+        ),
+        StaggeredGridView.countBuilder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(top: 4),
+          crossAxisCount: 4,
+          mainAxisSpacing: 4.0,
+          crossAxisSpacing: 4.0,
+          itemBuilder: (context, index) {
+            final model = recommends[index];
+            return GoodsTile(currency, model, _getSize(context, model));
+          },
+          staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+          itemCount: recommends.length,
+        ),
+      ],
+    );
+  }
+
+  TileImageSize _getSize(BuildContext context, GoodsItem item) {
+    debugPrint('GoodsItem >>> ' + item.toString());
+    var screenWidth = (MediaQuery.of(context).size.width - 16 * 2 - 4 * 4) / 2;
+    var height = item.height / item.width * screenWidth;
+
+    final size = TileImageSize(screenWidth, height);
+    return size;
+  }
+}
+
+class TileImageSize {
+  const TileImageSize(this.width, this.height);
+
+  final double width;
+  final double height;
+}
+
+class GoodsTile extends StatelessWidget {
+  const GoodsTile(this.currency, this.model, this.size);
+
+  final String currency;
+  final GoodsItem model;
+  final TileImageSize size;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final completer = Completer();
+        StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
+            GoodsDetailRequest(model.supplierId, model.idolGoodsId),
+            completer));
+
+        EasyLoading.show();
+        try {
+          final goodsDetail = await completer.future;
+          EasyLoading.dismiss();
+          StoreProvider.of<AppState>(context)
+              .dispatch(ShowGoodsDetailAction(goodsDetail));
+        } catch (error) {
+          EasyLoading.dismiss();
+          EasyLoading.showError(error.toString());
+        }
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+        ),
+        clipBehavior: Clip.antiAlias,
+        elevation: 0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: size.height,
+              child: Stack(
+                children: [
+                  Center(
+                    child: CachedNetworkImage(
+                      placeholder: (context, _) => Image(
+                        image: R.image.goods_placeholder(),
+                        fit: BoxFit.cover,
+                      ),
+                      imageUrl: model.picture,
+                      fit: BoxFit.contain,
+                      memCacheHeight: size.height.ceil(),
+                    ),
+                  ),
+                  if (model.discount.isNotEmpty)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                          left: 6,
+                          top: 4,
+                          right: 14,
+                          bottom: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFFF68A51),
+                              Color(0xFFEA5228),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              bottomRight: Radius.circular(100)),
+                        ),
+                        child: Text(
+                          '${model.discount} off',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${model.goodsName}',
+                    style: TextStyle(
+                      color: AppTheme.color555764,
+                      fontSize: 12,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.ideographic,
+                    children: [
+                      Text(
+                        '$currency${model.currentPriceStr}',
+                        style: TextStyle(
+                          color: Color(0xff0F1015),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          textBaseline: TextBaseline.ideographic,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        '$currency${model.originalPriceStr}',
+                        style: TextStyle(
+                          color: AppTheme.color979AA9,
+                          fontSize: 14,
+                          decoration: TextDecoration.lineThrough,
+                          textBaseline: TextBaseline.ideographic,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (model.tag.isNotEmpty)
+                    SizedBox(
+                      height: 4,
+                    ),
+                  Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: model.tag
+                        .map(
+                          (tag) => Container(
+                            padding: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: HexColor(tag.color), width: 1),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4)),
+                            ),
+                            child: Text(
+                              tag.interestName,
+                              style: TextStyle(
+                                  color: HexColor(tag.color), fontSize: 12),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 

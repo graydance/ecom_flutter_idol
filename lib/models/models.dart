@@ -15,3 +15,4 @@ export 'best_sales_list.dart';
 export 'sales_history_list.dart';
 export 'express_templete.dart';
 export 'service_config.dart';
+export 'goods_item.dart';
