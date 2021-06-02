@@ -507,6 +507,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           },
           controller: _refreshController,
           child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             physics: BouncingScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
