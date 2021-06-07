@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:idol/res/colors.dart';
 import 'package:idol/res/theme.dart';
+import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
@@ -73,14 +74,20 @@ class _GoodsCategoryScreenState extends State<GoodsCategoryScreen> {
       children: [
         ListView.builder(
           itemBuilder: (ctx, i) {
-            return ListTile(
-              title: Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: Text(
-                  model.childrenList[i].name,
-                  style: TextStyle(
-                    color: AppTheme.color555764,
-                    fontSize: 14,
+            return InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed(RouterPath.goodsCategoryFilter,
+                    arguments: model.childrenList[i]);
+              },
+              child: ListTile(
+                title: Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Text(
+                    model.childrenList[i].name,
+                    style: TextStyle(
+                      color: AppTheme.color555764,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),

@@ -15,6 +15,10 @@ import 'package:idol/store/actions/supply.dart';
 import 'package:idol/utils/event_bus.dart';
 
 class ForYouTabView extends StatefulWidget {
+  final GoodsCategory caterogy;
+
+  const ForYouTabView({Key key, this.caterogy}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _ForYouTabViewState();
 }
@@ -34,19 +38,23 @@ class _ForYouTabViewState extends State<ForYouTabView> {
     _refreshController = RefreshController(initialRefresh: true);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
 
-    // 注册监听器，订阅 eventBus
-    eventBusFn = eventBus.on<SupplyRefresh>().listen((event) {
-      // ignore: deprecated_member_use
-      _refreshController.scrollController.animateTo(0,
-          duration: Duration(milliseconds: 800), curve: Curves.ease);
-    });
+    if (widget.caterogy != null) {
+      // 注册监听器，订阅 eventBus
+      eventBusFn = eventBus.on<SupplyRefresh>().listen((event) {
+        // ignore: deprecated_member_use
+        _refreshController.scrollController.animateTo(0,
+            duration: Duration(milliseconds: 800), curve: Curves.ease);
+      });
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    //取消订阅
-    eventBusFn.cancel();
+    if (widget.caterogy != null) {
+      //取消订阅
+      eventBusFn.cancel();
+    }
   }
 
   @override
@@ -110,7 +118,9 @@ class _ForYouTabViewState extends State<ForYouTabView> {
           }).catchError((error) {
             _refreshController.refreshFailed();
           });
-          final action = ForYouAction(FollowingForYouRequest(1, 1), completer);
+          final action = ForYouAction(
+              FollowingForYouRequest(1, 1, categoryId: widget.caterogy?.id),
+              completer);
           StoreProvider.of<AppState>(context).dispatch(action);
         },
         onLoading: () async {
@@ -130,7 +140,9 @@ class _ForYouTabViewState extends State<ForYouTabView> {
             _refreshController.loadFailed();
           });
           final action = ForYouAction(
-              FollowingForYouRequest(1, _currentPage + 1), completer);
+              FollowingForYouRequest(1, _currentPage + 1,
+                  categoryId: widget.caterogy?.id),
+              completer);
           StoreProvider.of<AppState>(context).dispatch(action);
         },
         controller: _refreshController,
