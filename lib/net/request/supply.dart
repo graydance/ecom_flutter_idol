@@ -9,7 +9,10 @@ class FollowingForYouRequest implements BaseRequest {
   // pageSize default 20
   final int limit;
 
-  const FollowingForYouRequest(this.type, this.page, {this.limit = 20})
+  final int categoryId;
+
+  const FollowingForYouRequest(this.type, this.page,
+      {this.limit = 20, this.categoryId})
       : assert(type == 0 || type == 1),
         assert(page >= 1);
 
@@ -20,6 +23,7 @@ class FollowingForYouRequest implements BaseRequest {
       keyMapper('type'): this.type,
       keyMapper('page'): this.page,
       keyMapper('limit'): this.limit,
+      if (this.categoryId != null) keyMapper("categoryId"): this.categoryId,
     };
   }
 }
@@ -105,5 +109,16 @@ class FollowRequest implements BaseRequest {
     return {
       keyMapper('supplierId'): this.supplierId,
     };
+  }
+}
+
+class GoodsCategoryRequest implements BaseRequest {
+  GoodsCategoryRequest();
+
+  Map<String, dynamic> toMap({
+    String keyMapper(String key),
+  }) {
+    keyMapper ??= (key) => key;
+    return {};
   }
 }

@@ -155,6 +155,7 @@ flutter:
   - assets/images/supply/ic_tab_supplier_hot_product_unselected.png
   - assets/images/supply/ic_tab_supplier_new_product_selected.png
   - assets/images/supply/ic_tab_supplier_new_product_unselected.png
+  - assets/images/supply/icon_goods_category.png
   - assets/images/supply/pause.png
   - assets/images/supply/play.png
   - assets/images/widget/dialog_close.png

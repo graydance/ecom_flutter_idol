@@ -7,6 +7,7 @@ import 'package:idol/models/arguments/supplier_detail.dart';
 import 'package:idol/screen/module_dashboard/sales_history_mvp.dart';
 import 'package:idol/screen/module_main/validate_email.dart';
 import 'package:idol/screen/module_settings/set_mvp_password.dart';
+import 'package:idol/screen/module_supply/goods_category.dart';
 import 'package:idol/screen/screens.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/arguments.dart';
@@ -37,6 +38,7 @@ class RouterPath {
   static const String index = '/index';
   static const String joinus = '/join_us';
   static const String forgotPassword = '/forgot_password';
+  static const String goodsCategory = '/category';
 }
 
 enum Command {
@@ -70,6 +72,7 @@ class IdolRoute {
       RouterPath.index: (context) => IndexScreen(),
       RouterPath.joinus: (context) => JoinUsScreen(),
       RouterPath.forgotPassword: (context) => ForgotPasswordScreen(),
+      RouterPath.goodsCategory: (context) => GoodsCategoryScreen(),
     };
   }
 

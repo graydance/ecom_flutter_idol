@@ -186,6 +186,8 @@ List<Middleware<AppState>> createStoreMiddleware() {
     }),
     TypedMiddleware<AppState, MyInfoGoodsListAction>(
         fetchStoreGoodsListMiddleware),
+    TypedMiddleware<AppState, FetchGoodsCategoryAction>(
+        fetchGoodsCategoryMiddleware),
   ];
 }
 
@@ -661,6 +663,24 @@ final Middleware<AppState> resetPasswordMiddleware =
         .then((data) {
       action.completer.complete();
     }).catchError((err) => action.completer.completeError(err.toString()));
+    next(action);
+  }
+};
+
+final Middleware<AppState> fetchGoodsCategoryMiddleware =
+    (Store<AppState> store, action, NextDispatcher next) {
+  if (action is FetchGoodsCategoryAction) {
+    DioClient.getInstance()
+        .post(ApiPath.goodsCategory, baseRequest: GoodsCategoryRequest())
+        .whenComplete(() => null)
+        .then((data) {
+      debugPrint("goodsCategory >>> $data");
+      final model = CategoryList.fromMap(data);
+      store.dispatch(OnUpdateCategoryListAction(model));
+      action.completer.complete();
+    }).catchError((err) {
+      action.completer.completeError(err.toString());
+    });
     next(action);
   }
 };

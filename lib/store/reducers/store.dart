@@ -1,3 +1,4 @@
+import 'package:idol/models/models.dart';
 import 'package:idol/models/store_goods_list.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:redux/redux.dart';
@@ -134,4 +135,13 @@ final myStoreGoodsReducer = combineReducers<StoreGoodsList>([
 StoreGoodsList _onUpdateMyStoreGoods(
     StoreGoodsList state, OnUpdateMyStoreGoods action) {
   return action.model;
+}
+
+final categoryReducer = combineReducers<CategoryList>([
+  TypedReducer<CategoryList, OnUpdateCategoryListAction>(_onUpdateCategory),
+]);
+
+CategoryList _onUpdateCategory(
+    CategoryList state, OnUpdateCategoryListAction action) {
+  return action.list;
 }

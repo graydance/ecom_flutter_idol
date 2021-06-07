@@ -16,3 +16,4 @@ export 'sales_history_list.dart';
 export 'express_templete.dart';
 export 'service_config.dart';
 export 'goods_item.dart';
+export 'category_list.dart';

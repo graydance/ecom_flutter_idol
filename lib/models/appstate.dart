@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
+
 import 'package:idol/models/arguments/rewards_detail.dart';
 import 'package:idol/models/arguments/supplier_detail.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/store/actions/main.dart';
-import 'package:meta/meta.dart';
 
 import 'arguments/arguments.dart';
 
@@ -46,8 +47,8 @@ class AppState {
   final UpdatePasswordState updatePasswordState;
   final InnerWebViewArguments innerWebViewArguments;
   final GoodsDetail goodsDetailPage;
-
   final StoreGoodsList myStoreGoods;
+  final CategoryList goodsCategory;
 
   AppState({
     this.goodsDetailPage = const GoodsDetail(),
@@ -87,6 +88,7 @@ class AppState {
     this.updatePasswordState = const UpdatePasswordInitial(),
     this.innerWebViewArguments = const InnerWebViewArguments('', ''),
     this.myStoreGoods = const StoreGoodsList(),
+    this.goodsCategory = const CategoryList(),
   });
 
   AppState copyWith({
@@ -127,6 +129,7 @@ class AppState {
     UpdatePasswordState updatePasswordState,
     InnerWebViewArguments innerWebViewArguments,
     List<StoreGoods> myStoreGoods,
+    CategoryList goodsCategory,
   }) {
     if ((goodsDetailPage == null ||
             identical(goodsDetailPage, this.goodsDetailPage)) &&
@@ -252,6 +255,7 @@ class AppState {
       innerWebViewArguments:
           innerWebViewArguments ?? this.innerWebViewArguments,
       myStoreGoods: myStoreGoods ?? this.myStoreGoods,
+      goodsCategory: goodsCategory ?? this.goodsCategory,
     );
   }
 
@@ -296,7 +300,8 @@ class AppState {
         other.updatePasswordState == updatePasswordState &&
         other.innerWebViewArguments == innerWebViewArguments &&
         other.goodsDetailPage == goodsDetailPage &&
-        other.myStoreGoods == myStoreGoods;
+        other.myStoreGoods == myStoreGoods &&
+        other.goodsCategory == goodsCategory;
   }
 
   @override
@@ -337,6 +342,7 @@ class AppState {
         updatePasswordState.hashCode ^
         innerWebViewArguments.hashCode ^
         goodsDetailPage.hashCode ^
-        myStoreGoods.hashCode;
+        myStoreGoods.hashCode ^
+        goodsCategory.hashCode;
   }
 }
