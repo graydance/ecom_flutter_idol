@@ -4,6 +4,13 @@ import 'package:ecomshare/ecomshare.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:idol/conf.dart';
 import 'package:idol/event/app_event.dart';
 import 'package:idol/net/api.dart';
@@ -12,11 +19,6 @@ import 'package:idol/utils/global.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
 import 'package:idol/widgets/dialog_share.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:uuid/uuid.dart';
 
 class ShareManager {
   static final _storage = new FlutterSecureStorage();
@@ -42,7 +44,7 @@ class ShareManager {
                 Clipboard.setData(ClipboardData(text: link));
                 EasyLoading.showToast('Link Copied');
               } else {
-                Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link);
+                Ecomshare.shareTo(Ecomshare.MEDIA_TYPE_TEXT, channel, link, []);
               }
               IdolRoute.pop(context);
             },
@@ -134,7 +136,10 @@ class ShareManager {
 
     if (shareChannel != 'Download All') {
       Ecomshare.shareTo(
-              mediaType, shareChannel, imageLocalPaths[currentImageIndex])
+              mediaType,
+              shareChannel,
+              imageLocalPaths[currentImageIndex],
+              imageLocalPaths.take(6).toList())
           .then((value) {
         Future.delayed(Duration(milliseconds: 500), () {
           Clipboard.setData(ClipboardData(text: shareText));
@@ -187,8 +192,20 @@ Future<String> downloadPicture(BuildContext context, String imageUrl) async {
   try {
     Directory tempDir = await getTemporaryDirectory();
     savePath = tempDir.path + '/' + Uuid().v4() + '.jpg';
+
+    return DioClient.getInstance()
+        .download(imageUrl, savePath)
+        .then((value) async {
+      final targetPath = tempDir.path + '/' + Uuid().v4() + '.jpg';
+      final file = await FlutterImageCompress.compressAndGetFile(
+        savePath,
+        targetPath,
+        quality: 70,
+      );
+      debugPrint('file.absolute.path >>> ${file.absolute.path}');
+      return file.absolute.path;
+    });
   } catch (e) {
     return Future.error(e);
   }
-  return DioClient.getInstance().download(imageUrl, savePath);
 }
