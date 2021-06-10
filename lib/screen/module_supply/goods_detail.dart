@@ -810,8 +810,7 @@ class GoodsTile extends StatelessWidget {
       onTap: () async {
         final completer = Completer();
         StoreProvider.of<AppState>(context).dispatch(GoodsDetailAction(
-            GoodsDetailRequest(model.supplierId, model.idolGoodsId),
-            completer));
+            GoodsDetailRequest(model.supplierId, model.id), completer));
 
         EasyLoading.show();
         try {
@@ -946,7 +945,7 @@ class GoodsTile extends StatelessWidget {
                                   BorderRadius.all(Radius.circular(4)),
                             ),
                             child: Text(
-                              tag.interestName,
+                              tag.name,
                               style: TextStyle(
                                   color: HexColor(tag.color), fontSize: 12),
                             ),

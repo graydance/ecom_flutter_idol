@@ -551,6 +551,12 @@ class _R_Image_AssetResource {
       "assets/images/supply/ic_tab_supplier_new_product_unselected.png",
       packageName: null);
 
+  /// asset: assets/images/supply/icon_goods_category.png
+  // ignore: non_constant_identifier_names
+  final icon_goods_category = const AssetResource(
+      "assets/images/supply/icon_goods_category.png",
+      packageName: null);
+
   /// asset: assets/images/supply/pause.png
   // ignore: non_constant_identifier_names
   final pause =
@@ -1069,6 +1075,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_tab_supplier_new_product_unselected() {
     return AssetImage(asset.ic_tab_supplier_new_product_unselected.keyName);
+  }
+
+  /// asset: assets/images/supply/icon_goods_category.png
+  // ignore: non_constant_identifier_names
+  AssetImage icon_goods_category() {
+    return AssetImage(asset.icon_goods_category.keyName);
   }
 
   /// asset: assets/images/supply/pause.png

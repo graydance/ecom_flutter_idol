@@ -106,7 +106,7 @@ class GoodsItem {
       id: map['id'],
       idolGoodsId: map['idolGoodsId'],
       heatRank: map['heatRank'],
-      supplierId: map['supplierId'],
+      supplierId: map['supplierId'] ?? '',
       width: map['width'] ?? 1,
       height: map['height'] ?? 1,
       picture: map['picture'],

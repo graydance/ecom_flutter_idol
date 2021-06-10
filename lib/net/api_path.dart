@@ -85,4 +85,6 @@ class ApiPath {
 
   //忘记密码
   static final String resetPassword = '/idol/pub/reset_password';
+
+  static final String goodsCategory = "/idol/pub/get_before_category";
 }

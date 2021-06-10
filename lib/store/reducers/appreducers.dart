@@ -60,5 +60,6 @@ AppState appReducer(AppState state, action) {
     innerWebViewArguments:
         innerWebViewArgumentsReducer(state.innerWebViewArguments, action),
     myStoreGoods: myStoreGoodsReducer(state.myStoreGoods, action),
+    goodsCategory: categoryReducer(state.goodsCategory, action),
   );
 }

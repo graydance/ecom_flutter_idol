@@ -507,6 +507,7 @@ class _ShopLinkPageState extends State<ShopLinkPage>
           },
           controller: _refreshController,
           child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             physics: BouncingScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
@@ -518,20 +519,25 @@ class _ShopLinkPageState extends State<ShopLinkPage>
             ],
           ),
         ),
-        Align(
+        Visibility(
+          visible: !_shopDescIsEditing,
+          child: Align(
             alignment: Alignment.bottomRight,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => Global.launchCustomerService(),
               child: Container(
-                  height: 44,
-                  width: 44,
-                  margin: EdgeInsets.only(right: 15, bottom: 10),
-                  child: Image(
-                    fit: BoxFit.contain,
-                    image: AssetImage('assets/images/shoplink/suc_manager.png'),
-                  )),
-            )),
+                height: 44,
+                width: 44,
+                margin: EdgeInsets.only(right: 15, bottom: 10),
+                child: Image(
+                  fit: BoxFit.contain,
+                  image: R.image.suc_manager(),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

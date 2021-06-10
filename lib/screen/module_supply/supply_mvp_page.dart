@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
 import 'package:idol/screen/module_supply/for_you_goods_tab_view.dart';
 
 class SupplyMVPPage extends StatefulWidget {
@@ -32,6 +34,16 @@ class _SupplyMVPPageState extends State<SupplyMVPPage>
                   style: TextStyle(color: Colours.color_0F1015, fontSize: 20),
                 ),
                 centerTitle: true,
+                actions: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(RouterPath.goodsCategory);
+                    },
+                    child: Image(
+                      image: R.image.icon_goods_category(),
+                    ),
+                  )
+                ],
               ),
             ],
           ),

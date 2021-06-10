@@ -376,11 +376,6 @@ class _WithdrawScreenState extends State {
                                 isCollapsed: true,
                                 contentPadding:
                                     EdgeInsets.symmetric(vertical: 1.0),
-                                hintText: _accountHintText,
-                                hintStyle: TextStyle(
-                                  color: Colours.color_B1B2B3,
-                                  fontSize: 14,
-                                ),
                               ),
                             ),
                           )

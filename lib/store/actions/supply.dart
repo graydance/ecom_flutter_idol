@@ -275,3 +275,15 @@ class ShowGoodsDetailAction {
   final GoodsDetail detail;
   ShowGoodsDetailAction(this.detail);
 }
+
+class FetchGoodsCategoryAction {
+  final Completer completer;
+
+  FetchGoodsCategoryAction(this.completer);
+}
+
+class OnUpdateCategoryListAction {
+  final CategoryList list;
+
+  OnUpdateCategoryListAction(this.list);
+}
