@@ -1,11 +1,14 @@
 import 'package:flustars/flustars.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:idol/conf.dart';
 import 'package:idol/models/models.dart';
 import 'package:idol/net/request/signup_signin.dart';
 import 'package:idol/r.g.dart';
 import 'package:idol/res/colors.dart';
+import 'package:idol/router.dart';
 import 'package:idol/store/actions/actions.dart';
 import 'package:idol/utils/keystore.dart';
 import 'package:idol/utils/localStorage.dart';
@@ -49,7 +52,7 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
               child: Stack(
                 children: [
                   Container(
-                    alignment: Alignment.center,
+                    // alignment: Alignment.center,
                     width: double.infinity,
                     height: double.infinity,
                     decoration: BoxDecoration(
@@ -57,11 +60,15 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
                           image: R.image.bg_login_signup(), fit: BoxFit.cover),
                     ),
                     child: SingleChildScrollView(
-                      child: Center(
+                      child: SafeArea(
                         child: Padding(
                           padding: EdgeInsets.only(left: 40, right: 40),
                           child: Column(
                             children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.15,
+                              ),
                               Text(
                                 'Enter Your Email',
                                 style: TextStyle(
@@ -135,6 +142,69 @@ class _ValidateEmailScreenState extends State<ValidateEmailScreen> {
                                     ),
                                   ),
                                 ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              RichText(
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                    text:
+                                        'By signing up, you acknowledge that you agree to our\n',
+                                    style: TextStyle(
+                                      color: Colours.color_white60,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                      text: 'Terms & Conditions,',
+                                      style: TextStyle(
+                                        color: Colours.color_white60,
+                                        fontSize: 10,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          // link Terms & Conditions
+                                          IdolRoute.startInnerWebView(
+                                              context,
+                                              InnerWebViewArguments(
+                                                  'Terms & Conditions',
+                                                  termsConditionsUri));
+                                        }),
+                                  TextSpan(text: ' '),
+                                  TextSpan(
+                                      text: 'Privacy Policy,',
+                                      style: TextStyle(
+                                        color: Colours.color_white60,
+                                        fontSize: 10,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          IdolRoute.startInnerWebView(
+                                              context,
+                                              InnerWebViewArguments(
+                                                  'Privacy Policy',
+                                                  privacyPolicyUri));
+                                        }),
+                                  TextSpan(text: ' '),
+                                  TextSpan(
+                                      text: 'Cookie Policy.',
+                                      style: TextStyle(
+                                        color: Colours.color_white60,
+                                        fontSize: 10,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          IdolRoute.startInnerWebView(
+                                              context,
+                                              InnerWebViewArguments(
+                                                  'Cookie Policy',
+                                                  cookiePolicyUri));
+                                        }),
+                                ]),
                               ),
                             ],
                           ),
