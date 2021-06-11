@@ -145,8 +145,6 @@ class ShareManager {
           Clipboard.setData(ClipboardData(text: shareText));
         });
       });
-
-      imageLocalPaths.removeAt(currentImageIndex);
     }
 
     if (await Permission.storage.request().isGranted) {
