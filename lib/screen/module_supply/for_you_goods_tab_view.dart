@@ -103,6 +103,7 @@ class _ForYouTabViewState extends State<ForYouTabView> {
                 _list[index] = goodsDetail;
                 if (mounted) setState(() {});
               },
+              fromCategory: widget.caterogy != null,
             );
           },
         ),
