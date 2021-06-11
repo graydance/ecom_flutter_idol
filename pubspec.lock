@@ -223,7 +223,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: c533a5e2d53b6ef721b993342a02f55f5dbc1d33
+      resolved-ref: d64f6b26ff2558f61ceaddb4beecd90594efe26e
       url: "https://github.com/graydance/ecomshare.git"
     source: git
     version: "0.0.1"
@@ -384,6 +384,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0-nullsafety.0"
+  flutter_image_compress:
+    dependency: "direct main"
+    description:
+      name: flutter_image_compress
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
   flutter_layout_grid:
     dependency: transitive
     description:

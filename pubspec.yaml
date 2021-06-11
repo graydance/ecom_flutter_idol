@@ -55,6 +55,7 @@ dependencies:
   hashtagable:
     git:
       url: 'https://github.com/graydance/hashtagable.git'
+  flutter_image_compress: ^1.0.0-nullsafety
 dev_dependencies:
   flutter_test:
     sdk: flutter
