@@ -109,14 +109,8 @@ class _ViewModel {
   _ViewModel(this.list);
 
   static _ViewModel fromStore(Store<AppState> store) {
-    return _ViewModel(store.state.goodsCategory.categoryList);
-    // final demo = List.generate(
-    //     10,
-    //     (index) => GoodsCategory(
-    //         id: index,
-    //         name: "name$index",
-    //         childrenList: List.generate(index + 2,
-    //             (i) => GoodsCategory(id: index, name: "children$i"))));
-    // return _ViewModel(demo);
+    final list = store.state.goodsCategory.categoryList;
+    final filterList = list.where((e) => e.childrenList.isNotEmpty).toList();
+    return _ViewModel(filterList);
   }
 }

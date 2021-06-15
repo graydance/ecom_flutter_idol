@@ -26,12 +26,14 @@ class FollowingGoodsListItem extends StatefulWidget {
   final GoodsDetail goodsDetail;
   final int idx;
   final OnProductAddedStoreListener onProductAddedStoreListener;
+  final bool fromCategory;
 
   const FollowingGoodsListItem(
       {Key key,
       this.idx,
       this.goodsDetail = const GoodsDetail(),
-      this.onProductAddedStoreListener})
+      this.onProductAddedStoreListener,
+      this.fromCategory = false})
       : super(key: key);
 
   @override
@@ -287,7 +289,7 @@ class _FollowingGoodsListItemState extends State<FollowingGoodsListItem> {
                   flex: 3,
                   child: SizedBox(
                     height: 44,
-                    child: widget.idx == 0
+                    child: widget.idx == 0 && widget.fromCategory == false
                         ? TutorialOverlay(
                             key: Global.tokPikAndSell,
                             bubbleText:
