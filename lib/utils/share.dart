@@ -83,7 +83,6 @@ class ShareManager {
                   context,
                   imageUrls,
                   shareChannel,
-                  currentImageIndex,
                   newShareText,
                 );
               });
@@ -95,9 +94,9 @@ class ShareManager {
   }
 
   static void _downloadAll(BuildContext context, List<String> imageUrls,
-      String shareChannel, int currentImageIndex, String shareText) async {
+      String shareChannel, String shareText) async {
     debugPrint(
-        'Download shareChannel >>> $shareChannel currentImageIndex >>> $currentImageIndex');
+        'Download shareChannel >>> $shareChannel imageUrls count >>> ${imageUrls.length}');
 
     EasyLoading.show(status: 'Downloading...');
     try {
@@ -112,7 +111,6 @@ class ShareManager {
         videoUrls[0],
         shareChannel,
         imageLocalPaths,
-        currentImageIndex,
         shareText,
       );
     } catch (e) {
@@ -126,7 +124,6 @@ class ShareManager {
     String guideVideoUrl,
     String shareChannel,
     List<String> imageLocalPaths,
-    int currentImageIndex,
     String shareText,
   ) async {
     final channel = shareChannel == 'System' ? 'More' : shareChannel;
@@ -135,18 +132,14 @@ class ShareManager {
         parameters: {AnalyticsEventParameter.type: channel});
 
     if (shareChannel != 'Download All') {
-      Ecomshare.shareTo(
-              mediaType,
-              shareChannel,
-              imageLocalPaths[currentImageIndex],
-              imageLocalPaths.take(6).toList())
-          .then((value) {
-        Future.delayed(Duration(milliseconds: 500), () {
+      final sharePaths = [...imageLocalPaths.take(6)];
+      debugPrint('sharePaths count >>> ${sharePaths.length}');
+      Ecomshare.shareTo(mediaType, shareChannel, "", sharePaths).then((value) {
+        Future.delayed(Duration(milliseconds: 1000), () {
           Clipboard.setData(ClipboardData(text: shareText));
         });
       });
     }
-
     if (await Permission.storage.request().isGranted) {
       // Either the permission was already granted before or the user just granted it.
       imageLocalPaths.forEach((imageLocalPath) {
