@@ -146,8 +146,8 @@ class _ShopLinkPageState extends State<ShopLinkPage>
               ? NetworkImage(
                   _avatar,
                 )
-              : AssetImage('assets/images/avatar.png'),
-          fit: BoxFit.fitWidth,
+              : R.image.ic_shoplink_bg(),
+          fit: BoxFit.cover,
         ),
         border: Border.all(color: Colours.white, width: 1.0),
         color: Colours.color_F8F8F8,

@@ -444,6 +444,12 @@ class _R_Image_AssetResource {
   final ic_pv = const AssetResource("assets/images/shoplink/ic_pv.png",
       packageName: null);
 
+  /// asset: assets/images/shoplink/ic_shoplink_bg.png
+  // ignore: non_constant_identifier_names
+  final ic_shoplink_bg = const AssetResource(
+      "assets/images/shoplink/ic_shoplink_bg.png",
+      packageName: null);
+
   /// asset: assets/images/shoplink/suc_manager.png
   // ignore: non_constant_identifier_names
   final suc_manager = const AssetResource(
@@ -967,6 +973,12 @@ class _R_Image {
   // ignore: non_constant_identifier_names
   AssetImage ic_pv() {
     return AssetImage(asset.ic_pv.keyName);
+  }
+
+  /// asset: assets/images/shoplink/ic_shoplink_bg.png
+  // ignore: non_constant_identifier_names
+  AssetImage ic_shoplink_bg() {
+    return AssetImage(asset.ic_shoplink_bg.keyName);
   }
 
   /// asset: assets/images/shoplink/suc_manager.png
